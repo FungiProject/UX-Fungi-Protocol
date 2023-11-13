@@ -1,11 +1,10 @@
-import Home from "@/components/Sections/Home";
 import SideBar from "@/components/Layout/SideBar";
 import React from "react";
 
-export default function HomePage() {
+export default function FundPage() {
   return (
     <div>
-      <SideBar page={<Home />} />
+      <SideBar page={<div>FundPage</div>} />
     </div>
   );
 }
