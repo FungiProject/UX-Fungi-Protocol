@@ -11,6 +11,11 @@ import Polygon from "../../public/Polygon.svg";
 import Mainnet from "../../public/Mainnet.svg";
 import Arbitrum from "../../public/Arbitrum.svg";
 
+import Planet from "../../public/Planet.svg";
+import Coins from "../../public/Coins.svg";
+
+import DefaultImage from "../../public/DefaultImage.svg";
+
 export const navigation = [
   {
     name: "Network",
@@ -66,5 +71,70 @@ export const integrations = [
       "Decentralized liquidity protocol where users can participate as depositors or borrowers.",
     networks: [Mainnet.src, Arbitrum.src, Polygon.src],
     status: false,
+  },
+];
+
+export const homeCards = [
+  {
+    title: "Funds",
+    amount: 0,
+    imageHeight: 75,
+    imageWidth: 75,
+    imageSrc: Planet.src,
+  },
+  {
+    title: "AUM",
+    amount: 0,
+    imageHeight: 70,
+    imageWidth: 70,
+    imageSrc: Coins.src,
+  },
+];
+
+export const funds = [
+  {
+    name: "Block Fund",
+    aum: 1000000,
+    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
+    image: DefaultImage.src,
+    members: 1345,
+    allTime: 23,
+    href: "0x",
+  },
+  {
+    name: "Block Fund",
+    aum: 1000000,
+    networks: [Mainnet.src, Arbitrum.src],
+    image: DefaultImage.src,
+    members: 1345,
+    allTime: -23,
+    href: "0x",
+  },
+  {
+    name: "Block Fund",
+    aum: 1000000,
+    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
+    image: DefaultImage.src,
+    members: 1345,
+    allTime: 13,
+    href: "0x",
+  },
+  {
+    name: "Block Fund",
+    aum: 1000000,
+    networks: [Mainnet.src],
+    image: DefaultImage.src,
+    members: 1345,
+    allTime: -43,
+    href: "0x",
+  },
+  {
+    name: "Block Fund",
+    aum: 1000000,
+    networks: [Arbitrum.src, Polygon.src],
+    image: DefaultImage.src,
+    members: 1345,
+    allTime: 3,
+    href: "0x",
   },
 ];
