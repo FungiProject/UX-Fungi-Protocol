@@ -3,6 +3,7 @@ import { fundType, homeDataType } from "@/types/Types";
 import React, { useEffect, useState } from "react";
 import HomeCard from "../Cards/Homecard";
 import SearchBar from "../Filters/SearchBar";
+import FundsTable from "../Tables/FundsTable";
 
 export default function Home() {
   const [search, setSearch] = useState<string>("");
@@ -40,6 +41,10 @@ export default function Home() {
         })}
       </div>
       <SearchBar getInfo={getInfo} />
+      <FundsTable />
+      <div className="flex">
+        <div>1</div> <div>2</div> <div>3</div> <div>4</div> <div>5</div>
+      </div>
     </main>
   );
 }
