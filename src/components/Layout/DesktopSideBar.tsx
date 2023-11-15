@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { navigationType } from "@/types/Types";
 import { navigation } from "@/constants/Constants";
 import Logo from "../../../public/Logo.svg";
+import CreateFundModal from "../Modals/CreateFundModal";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function DesktopSideBar() {
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const router = useRouter();
+
+  const getOpenModal = (status: boolean) => {
+    setOpenModal(status);
+  };
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:flex-col h-[700px] w-[160px] my-[25px]">
@@ -56,9 +62,13 @@ export default function DesktopSideBar() {
               </Link>
             </div>
           ))}
-          <button className="text-white bg-main px-[18px] py-[12px] rounded-xl text-sm font-medium">
+          <button
+            className="text-white bg-main px-[18px] py-[12px] rounded-xl text-sm font-medium"
+            onClick={() => setOpenModal(true)}
+          >
             Create Fund
           </button>
+          {openModal && <CreateFundModal getOpenModal={getOpenModal} />}
         </div>
       </div>
     </div>
