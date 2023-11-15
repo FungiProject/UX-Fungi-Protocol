@@ -14,7 +14,7 @@ export default function FundsTable() {
         <div className="col-span-2 ml-[40px]">All Time</div>
       </div>{" "}
       {funds.map((fund: fundType) => {
-        return <FundsTableCard fund={fund} />;
+        return <FundsTableCard fund={fund} key={fund.name} />;
       })}
     </div>
   );

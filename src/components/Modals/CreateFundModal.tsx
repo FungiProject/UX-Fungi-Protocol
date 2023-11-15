@@ -43,15 +43,18 @@ export default function CreateFundModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full sm:max-w-[1150px] sm:p-6">
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
-                    className="rounded-md bg-white text-gray-700 hover:text-black focus:outline-none "
+                    className="rounded-md bg-white hover:text-gray-700 text-black focus:outline-none"
                     onClick={() => closeModal()}
                   >
                     <span className="sr-only">Close</span>
-                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                    <XMarkIcon
+                      className="h-[25px] w-[25px]"
+                      aria-hidden="true"
+                    />
                   </button>
                 </div>
                 <div className="sm:flex sm:items-start w-full ">

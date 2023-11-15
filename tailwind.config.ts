@@ -13,6 +13,9 @@ const config: Config = {
         main: "#514AF3",
         secondBlack: "#0F0F0F",
       },
+      boxShadow: {
+        input: "0 1px 10px 0px #514AF3",
+      },
       borderWidth: { 1: "1px" },
     },
   },
