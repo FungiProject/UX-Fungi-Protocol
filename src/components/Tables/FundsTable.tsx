@@ -1,4 +1,3 @@
-import { funds } from "@/constants/Constants";
 import { fundType } from "@/types/Types";
 import React from "react";
 import FundsTableCard from "../Cards/FundsTableCard";

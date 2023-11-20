@@ -113,7 +113,11 @@ export default function Home() {
       </div>
       <div className="flex items-center gap-x-[20px]">
         <SearchBar getInfo={getInfo} query={search} />
-        <ShortBy getSortChange={getSortChange} />
+        <ShortBy
+          getSortChange={getSortChange}
+          shorts={["Aum", "Members", "All Time"]}
+          classSquare="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        />
       </div>
 
       <FundsTable

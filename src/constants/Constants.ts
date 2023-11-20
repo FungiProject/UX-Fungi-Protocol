@@ -450,3 +450,78 @@ export const networks = [
   { name: "Arbitrum", id: 42161, image: Arbitrum.src },
   { name: "Polygon Mumbai", id: 80001, image: Polygon.src },
 ];
+
+export const assetsMainnet = [
+  {
+    name: "Etherium",
+    symbol: "ETH",
+    coingeckoApi: "ethereum",
+    image: Mainnet.src,
+  },
+  {
+    name: "AAVE",
+    symbol: "AAVE",
+    coingeckoApi: "aave",
+    image: AAVE.src,
+  },
+  {
+    name: "Uniswap",
+    symbol: "UNI",
+    coingeckoApi: "uniswap",
+    image: Uniswap.src,
+  },
+];
+
+export const assetsArbitrum = [
+  {
+    name: "Etherium",
+    symbol: "ETH",
+    coingeckoApi: "ethereum",
+    image: Mainnet.src,
+  },
+  {
+    name: "AAVE",
+    symbol: "AAVE",
+    coingeckoApi: "aave",
+    image: AAVE.src,
+  },
+  {
+    name: "Uniswap",
+    symbol: "UNI",
+    coingeckoApi: "uniswap",
+    image: Uniswap.src,
+  },
+  {
+    name: "GMX",
+    symbol: "GMX",
+    coingeckoApi: "gmx",
+    image: GMX.src,
+  },
+  {
+    name: "Arbitrum",
+    symbol: "ARB",
+    coingeckoApi: "arbitrum",
+    image: Arbitrum.src,
+  },
+];
+
+export const assetsPolygon = [
+  {
+    name: "Polygon",
+    symbol: "MATIC",
+    coingeckoApi: "matic-network",
+    image: Polygon.src,
+  },
+  {
+    name: "AAVE",
+    symbol: "AAVE",
+    coingeckoApi: "aave",
+    image: AAVE.src,
+  },
+  {
+    name: "Uniswap",
+    symbol: "UNI",
+    coingeckoApi: "uniswap",
+    image: Uniswap.src,
+  },
+];

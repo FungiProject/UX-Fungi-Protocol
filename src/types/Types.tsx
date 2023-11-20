@@ -35,3 +35,13 @@ export type NetworkType = {
   id: number;
   image: string;
 };
+
+export type assetType = {
+  name: string;
+  symbol: string;
+  coingeckoApi: string;
+  image: string;
+  price: number;
+  marketCap: number;
+  volumen24: number;
+};

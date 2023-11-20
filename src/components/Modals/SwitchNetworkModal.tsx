@@ -26,7 +26,11 @@ export default function SwitchNetworkModal({
   };
 
   useEffect(() => {
-    if (chain && chain.id === 80001) {
+    if (
+      (chain && chain.id === 80001) ||
+      (chain && chain.id === 42161) ||
+      (chain && chain.id === 1)
+    ) {
       setOpen(false);
       getOpenModal(false);
     }

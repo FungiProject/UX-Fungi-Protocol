@@ -7,16 +7,19 @@ import { useNetwork, useSwitchNetwork } from "wagmi";
 
 type NetworkDropdownProps = {
   getSortChange: (short: string) => void;
+  shorts: string[];
+  classSquare: string;
 };
 
 export default function ChangeNetworkDropdown({
   getSortChange,
+  shorts,
+  classSquare,
 }: NetworkDropdownProps) {
   const [selection, setSelection] = useState<string>("Short By");
-  const shorts = ["Aum", "Members", "All Time"];
 
   return (
-    <Menu as="div" className="relative inline-block text-left mr-8">
+    <Menu as="div" className="relative inline-block text-left ">
       <div>
         <Menu.Button className="inline-flex items-center justify-between gap-x-1.5 rounded-full text-black px-[22px] py-[9px] w-[270px] shadow-lg outline-none bg-white">
           {selection}
@@ -36,7 +39,7 @@ export default function ChangeNetworkDropdown({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className={classSquare}>
           <div className="py-1 flex flex-col px-5">
             {shorts.map((short: string) => {
               return (
@@ -46,7 +49,7 @@ export default function ChangeNetworkDropdown({
                       getSortChange(short);
                       setSelection(short);
                     }}
-                    className="my-1 grid grid-cols-3 justify-end align-end  items-center"
+                    className="my-1 text-start justify-end align-end  items-center"
                   >
                     <span className="col-span-2 text-start">{short}</span>
                   </button>
