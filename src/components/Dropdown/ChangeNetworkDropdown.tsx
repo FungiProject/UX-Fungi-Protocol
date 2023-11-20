@@ -10,14 +10,14 @@ type NetworkDropdownProps = {
   networks: NetworkType[];
 };
 
-export default function NetworkDropdown({
+export default function ChangeNetworkDropdown({
   title,
   networks,
 }: NetworkDropdownProps) {
   const [chainSelected, setChainSelected] = useState<NetworkType>();
   const { chain } = useNetwork();
-  const { chains, error, isLoading, pendingChainId, switchNetwork } =
-    useSwitchNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+
   useEffect(() => {
     if (chain) {
       const chainSelected = networks.filter(
@@ -30,7 +30,7 @@ export default function NetworkDropdown({
   return (
     <Menu as="div" className="relative inline-block text-left mr-8">
       <div>
-        <Menu.Button className="inline-flex w-fit items-center justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <Menu.Button className="inline-flex w-fit items-center justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-lg">
           {chainSelected && (
             <Image
               width={25}

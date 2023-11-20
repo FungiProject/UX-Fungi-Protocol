@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import DefaultImage from "../../../public/DefaultImage.svg";
 import Image from "next/image";
+import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
+import { NetworkType } from "@/types/Types";
+import { networks } from "@/constants/Constants";
+import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
+
+import Telegram from "../../../public/Telegram.svg";
+import X from "../../../public/X.svg";
 
 export default function CreateFundForm() {
   const [fundName, setFundName] = useState<string | undefined>();
@@ -8,7 +15,9 @@ export default function CreateFundForm() {
   const [performanceFee, setPerformanceFee] = useState<number | undefined>();
   const [initialDeposit, setInitialDeposit] = useState<number | undefined>();
   const [aboutFund, setAboutFund] = useState<string | undefined>();
+  const [typeSelected, setTypeSelected] = useState<string>("Choose Type");
   const [profileImage, setProfileImage] = useState<any>();
+  const [networksSelected, setNetworksSelected] = useState<NetworkType[]>([]);
 
   const handleFundName = (e: string) => {
     setFundName(e);
@@ -30,16 +39,30 @@ export default function CreateFundForm() {
     setAboutFund(e);
   };
 
+  const handleRemoveNetwork = (networkToRemove: NetworkType) => {
+    const updatedNetworksSelected = networksSelected.filter(
+      (network) => network.id !== networkToRemove.id
+    );
+    setNetworksSelected(updatedNetworksSelected);
+  };
+
   const clickUploader = () => {
     const myElement = document.querySelector(".file-uploader");
 
     if (myElement) {
-      // Realizar el casting a HTMLElement
       const myElementCasted = myElement as HTMLElement;
-
-      // Ahora, puedes usar la propiedad 'click'
       myElementCasted.click();
     }
+  };
+
+  const getNetwork = (network: NetworkType) => {
+    if (!networksSelected.some((selected) => selected.id === network.id)) {
+      setNetworksSelected([...networksSelected, network]);
+    }
+  };
+
+  const getType = (type: string) => {
+    setTypeSelected(type);
   };
 
   return (
@@ -102,48 +125,53 @@ export default function CreateFundForm() {
             placeholder="Fungi Panas"
           />
         </div>
-        {/* Change to selector */}
         <div className="grid grid-cols-2 py-[15px] items-center">
           <span className="mx-[12px]">Choose Networks</span>
-          <input
-            value={fundName}
-            onChange={(e) => handleFundName(e.target.value)}
-            onFocus={(e) =>
-              e.target.addEventListener(
-                "wheel",
-                function (e) {
-                  e.preventDefault();
-                },
-                { passive: false }
-              )
-            }
-            type="text"
-            name="fundName"
-            id="fundName"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
-            placeholder="Fungi Panas"
-          />
+          <div className="flex w-screen">
+            {networksSelected.length !== 3 && (
+              <SelectNetworkDropdown
+                getNetwork={getNetwork}
+                networks={networks}
+                classDropdown={
+                  networksSelected.length === 0
+                    ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
+                    : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
+                }
+              />
+            )}
+            {networksSelected.map((network: NetworkType) => {
+              return (
+                <div key={network.id} className="relative">
+                  <button
+                    onClick={() => handleRemoveNetwork(network)}
+                    className="absolute -top-3.5 left-8 p-1 font-semibold cursor-pointer"
+                  >
+                    X
+                  </button>
+                  <Image
+                    width={35}
+                    height={35}
+                    alt="Network Image"
+                    src={network.image}
+                    aria-hidden="true"
+                    className="mx-2"
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>{" "}
-        {/* Change to selector */}
         <div className="grid grid-cols-2 py-[15px] items-center">
           <span className="mx-[12px]">Type of Fund</span>
-          <input
-            value={fundName}
-            onChange={(e) => handleFundName(e.target.value)}
-            onFocus={(e) =>
-              e.target.addEventListener(
-                "wheel",
-                function (e) {
-                  e.preventDefault();
-                },
-                { passive: false }
-              )
+          <TypeFundDropdown
+            getType={getType}
+            types={["Private", "Public"]}
+            typeSelected={typeSelected}
+            classDropdown={
+              typeSelected === "Choose Type"
+                ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
+                : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
             }
-            type="text"
-            name="fundName"
-            id="fundName"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
-            placeholder="Fungi Panas"
           />
         </div>
         <div className="grid grid-cols-2 py-[15px] items-center">
@@ -218,8 +246,22 @@ export default function CreateFundForm() {
         <div className="grid grid-cols-2 py-[15px] items-center">
           <span className="mx-[12px]">Socials</span>
           <div className="flex">
-            <div>Telegram</div>
-            <div>Twitter</div>
+            <Image
+              width={42}
+              height={42}
+              alt="Network Image"
+              src={Telegram.src}
+              aria-hidden="true"
+              className="mx-2"
+            />
+            <Image
+              width={42}
+              height={42}
+              alt="Network Image"
+              src={X.src}
+              aria-hidden="true"
+              className="mx-2"
+            />
           </div>
         </div>{" "}
         <div className="grid grid-cols-2 py-[15px] items-center">

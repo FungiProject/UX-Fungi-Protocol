@@ -21,7 +21,7 @@ export default function LogoutButton() {
   return (
     <button
       onClick={() => logingOut()}
-      className="bg-white py-[9px] rounded-full text-black flex w-[160px] items-center justify-center"
+      className="bg-white py-[9px] rounded-full text-black flex w-[160px] items-center justify-center shadow-lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import LogoutButton from "../Buttons/LogOutButton";
 import { useAccount } from "wagmi";
 import LoginButton from "../Buttons/LoginButton";
-import NetworkDropdown from "../Dropdown/NetworkDropdown";
+import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 import { networks } from "@/constants/Constants";
 
 interface ActionsSideBarProps {
@@ -25,7 +25,7 @@ export default function ActionsSideBar({ page }: ActionsSideBarProps) {
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
             {connectedWallet ? (
               <div className="flex items-center">
-                <NetworkDropdown title="" networks={networks} />{" "}
+                <ChangeNetworkDropdown title="" networks={networks} />{" "}
                 <LogoutButton />
               </div>
             ) : (
