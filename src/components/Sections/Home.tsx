@@ -76,15 +76,23 @@ export default function Home() {
       }
     }
 
-    return pageNumbers.map((pageNumber, index) => (
-      <button
-        key={index}
-        className={pageNumber === currentPage ? "font-bold" : ""}
-        onClick={() => handlePageChange(Number(pageNumber))}
-      >
-        {pageNumber}
-      </button>
-    ));
+    return pageNumbers.map((pageNumber, index) =>
+      pageNumber.toString() !== "..." ? (
+        <button
+          key={index}
+          className={
+            pageNumber === currentPage
+              ? "bg-main py-0.5 px-2 rounded-lg text-white"
+              : "mx-2.5"
+          }
+          onClick={() => handlePageChange(Number(pageNumber))}
+        >
+          {pageNumber}
+        </button>
+      ) : (
+        <span className="mx-1">{pageNumber}</span>
+      )
+    );
   };
 
   return (
@@ -113,24 +121,29 @@ export default function Home() {
         startIndex={startIndex}
         endIndex={endIndex}
       />
-      <div className="flex justify-center mt-4 space-x-2 ">
-        {currentPage !== 1 && (
-          <button className="mr-2" onClick={() => handleClickPrevious()}>
-            <ChevronLeftIcon
-              className=" w-[45px] h-[36px] text-black"
-              aria-hidden="true"
-            />
-          </button>
-        )}
-        {renderPageNumbers()}{" "}
-        {currentPage !== fundsArrayCopy.length / 5 && (
-          <button className="ml-2" onClick={() => handleClickNext()}>
-            <ChevronRightIcon
-              className=" w-[45px] h-[36px] text-black"
-              aria-hidden="true"
-            />
-          </button>
-        )}
+      <div className="flex items-center mt-4 relative">
+        <span>
+          Showing {startIndex}-{endIndex} out of {fundsArrayCopy.length}
+        </span>
+        <div className="flex justify-center items-center absolute inset-x-0 bottom-0 top-3">
+          {currentPage !== 1 && (
+            <button onClick={() => handleClickPrevious()}>
+              <ChevronLeftIcon
+                className=" w-[45px] h-[36px] text-black"
+                aria-hidden="true"
+              />
+            </button>
+          )}
+          {renderPageNumbers()}{" "}
+          {currentPage < fundsArrayCopy.length / 5 && (
+            <button onClick={() => handleClickNext()}>
+              <ChevronRightIcon
+                className=" w-[45px] h-[36px] text-black"
+                aria-hidden="true"
+              />
+            </button>
+          )}
+        </div>
       </div>
     </main>
   );
