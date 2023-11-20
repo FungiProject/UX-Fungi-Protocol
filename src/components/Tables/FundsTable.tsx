@@ -5,9 +5,15 @@ import FundsTableCard from "../Cards/FundsTableCard";
 
 type FundsTableProps = {
   funds: fundType[];
+  startIndex: number;
+  endIndex: number;
 };
 
-export default function FundsTable({ funds }: FundsTableProps) {
+export default function FundsTable({
+  funds,
+  startIndex,
+  endIndex,
+}: FundsTableProps) {
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg">
       <div className="grid grid-cols-7 pb-[26px] text-xl font-medium">
@@ -17,9 +23,9 @@ export default function FundsTable({ funds }: FundsTableProps) {
         <div className="text-center">Members</div>
         <div className="col-span-2 ml-[40px]">All Time</div>
       </div>{" "}
-      {funds.map((fund: fundType) => {
-        return <FundsTableCard fund={fund} key={fund.name} />;
-      })}
+      {funds.slice(startIndex, endIndex).map((fund: fundType) => (
+        <FundsTableCard fund={fund} key={fund.name} />
+      ))}
     </div>
   );
 }
