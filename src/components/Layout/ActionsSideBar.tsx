@@ -3,6 +3,8 @@ import React, { ReactElement, useEffect, useState } from "react";
 import LogoutButton from "../Buttons/LogOutButton";
 import { useAccount } from "wagmi";
 import LoginButton from "../Buttons/LoginButton";
+import NetworkDropdown from "../Dropdown/NetworkDropdown";
+import { networks } from "@/constants/Constants";
 
 interface ActionsSideBarProps {
   page: ReactElement;
@@ -21,7 +23,14 @@ export default function ActionsSideBar({ page }: ActionsSideBarProps) {
       <div className="flex shrink-0 items-center gap-x-4  sticky top-0 z-50 mt-[40px]">
         <div className="flex flex-1 gap-x-1 self-stretch lg:gap-x-3 z-50">
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
-            {connectedWallet ? <LogoutButton /> : <LoginButton />}
+            {connectedWallet ? (
+              <div className="flex items-center">
+                <NetworkDropdown title="" networks={networks} />{" "}
+                <LogoutButton />
+              </div>
+            ) : (
+              <LoginButton />
+            )}
           </div>
         </div>
       </div>

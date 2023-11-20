@@ -13,7 +13,7 @@ export default function SearchBar({ getInfo }: SearchBar) {
       <input
         type="text"
         placeholder="Search"
-        className="rounded-full text-black px-[22px] py-[9px] w-[270px] shadow-lg"
+        className="rounded-full text-black px-[22px] py-[9px] w-[270px] shadow-lg outline-none"
         onChange={(e) => handleSearchChange(e)}
       />
     </div>

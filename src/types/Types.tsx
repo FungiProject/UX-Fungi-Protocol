@@ -29,3 +29,9 @@ export type fundType = {
   allTime: number;
   href: string;
 };
+
+export type NetworkType = {
+  name: string;
+  id: number;
+  image: string;
+};
