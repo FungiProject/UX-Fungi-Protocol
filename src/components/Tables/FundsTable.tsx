@@ -3,7 +3,11 @@ import { fundType } from "@/types/Types";
 import React from "react";
 import FundsTableCard from "../Cards/FundsTableCard";
 
-export default function FundsTable() {
+type FundsTableProps = {
+  funds: fundType[];
+};
+
+export default function FundsTable({ funds }: FundsTableProps) {
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg">
       <div className="grid grid-cols-7 pb-[26px] text-xl font-medium">

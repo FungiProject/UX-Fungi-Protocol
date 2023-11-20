@@ -4,25 +4,40 @@ import React, { useEffect, useState } from "react";
 import HomeCard from "../Cards/Homecard";
 import SearchBar from "../Filters/SearchBar";
 import FundsTable from "../Tables/FundsTable";
+import { funds } from "@/constants/Constants";
+import ShortBy from "../Filters/ShortBy";
 
 export default function Home() {
+  const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>(funds);
   const [search, setSearch] = useState<string>("");
-  const [funds, setFunds] = useState<fundType[]>([]);
-  const [fundsCopy, setFundsCopy] = useState<fundType[]>([]);
+  const [sortBy, setSortBy] = useState<string>("");
 
   const getInfo = (query: string) => {
     setSearch(query);
   };
 
+  const getSortChange = (option: string) => {
+    setSortBy(option);
+  };
+
   useEffect(() => {
     let copy = [...funds];
     if (search.length !== 0) {
-      copy = funds.filter((fund: fundType) =>
+      copy = copy.filter((fund: fundType) =>
         fund.name.toLowerCase().includes(search.toLowerCase())
       );
     }
-    setFundsCopy(copy);
-  }, [search]);
+
+    if (sortBy === "Aum") {
+      copy.sort((a, b) => b.aum - a.aum);
+    } else if (sortBy === "Members") {
+      copy.sort((a, b) => b.members - a.members);
+    } else if (sortBy === "All Time") {
+      copy.sort((a, b) => b.allTime - a.allTime);
+    }
+
+    setFundsArrayCopy(copy);
+  }, [search, sortBy]);
 
   return (
     <main>
@@ -40,8 +55,12 @@ export default function Home() {
           );
         })}
       </div>
-      <SearchBar getInfo={getInfo} />
-      <FundsTable />
+      <div className="flex items-center gap-x-[20px]">
+        <SearchBar getInfo={getInfo} query={search} />
+        <ShortBy getSortChange={getSortChange} />
+      </div>
+
+      <FundsTable funds={fundsArrayCopy} />
       <div className="flex">
         <div>1</div> <div>2</div> <div>3</div> <div>4</div> <div>5</div>
       </div>
