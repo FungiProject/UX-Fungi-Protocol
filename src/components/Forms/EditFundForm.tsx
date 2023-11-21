@@ -9,7 +9,7 @@ import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
 import Telegram from "../../../public/Telegram.svg";
 import X from "../../../public/X.svg";
 
-export default function CreateFundForm() {
+export default function EditFundInfoForm() {
   const [fundName, setFundName] = useState<string | undefined>();
   const [managementFee, setManagementFee] = useState<number | undefined>();
   const [performanceFee, setPerformanceFee] = useState<number | undefined>();
@@ -68,7 +68,7 @@ export default function CreateFundForm() {
   return (
     <div className="grid grid-cols-2 px-[170px] py-[60px] items-center">
       <div onClick={() => clickUploader()} className="hover:cursor-pointer">
-        <span className="ml-[50px]">Fund Profile Pic</span>
+        <span className="">Fund Profile Pic</span>
         {/* Resolve conexion to the backend */}
         <div>
           <input

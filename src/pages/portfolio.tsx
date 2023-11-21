@@ -1,5 +1,7 @@
 import SideBar from "@/components/Layout/SideBar";
+import ErrorPage from "@/components/Sections/ErrorPage";
 import Portfolio from "@/components/Sections/Portfolio";
+import useWindowSize from "@/hooks/useWindowSize";
 import React from "react";
 
 export default function PortfolioPage() {
