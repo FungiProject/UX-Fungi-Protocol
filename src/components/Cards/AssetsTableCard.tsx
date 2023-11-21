@@ -1,9 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-import Link from "next/link";
 import { assetType } from "@/types/Types";
-import useCoinGeckoData from "@/hooks/useCoinGeckoData";
 
 type AssetsTableCardProps = { asset: assetType; index: number };
 
