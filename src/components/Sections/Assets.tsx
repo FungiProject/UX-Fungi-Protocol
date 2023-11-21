@@ -11,10 +11,12 @@ import {
 import ShortBy from "../Filters/ShortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useNetwork } from "wagmi";
+import Loader from "../Loader/Loader";
 
 export default function Assets() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
   const [initialAssets, setInitialAssets] = useState<assetType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
@@ -83,6 +85,7 @@ export default function Assets() {
       await Promise.all(promises);
       setAssetsArrayCopy(copy);
       setInitialAssets(initials);
+      setLoading(false);
     };
 
     fetchData();
@@ -141,7 +144,7 @@ export default function Assets() {
       )
     );
   };
-
+  console.log(assetsArrayCopy);
   return (
     <main>
       <div className="flex items-center gap-x-[20px] justify-end mt-20">
@@ -153,11 +156,18 @@ export default function Assets() {
         />
       </div>
 
-      <AssetsTable
-        assets={assetsArrayCopy}
-        startIndex={startIndex}
-        endIndex={endIndex}
-      />
+      {!loading ? (
+        <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg flex justify-center">
+          {" "}
+          <Loader />
+        </div>
+      ) : (
+        <AssetsTable
+          assets={assetsArrayCopy}
+          startIndex={startIndex}
+          endIndex={endIndex}
+        />
+      )}
 
       <div className="flex items-center mt-4 relative">
         <span>

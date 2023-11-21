@@ -7,3 +7,16 @@ html{
     background-color:  #F4F4FF;
     margin: 0 43px 0 25px;
 }
+
+.loader-scale {
+    animation: pulse 2s infinite alternate;
+  }
+  
+  @keyframes pulse {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.2);
+    }
+  }

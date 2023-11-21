@@ -1,5 +1,6 @@
 import SideBar from "@/components/Layout/SideBar";
 import ErrorPage from "@/components/Sections/ErrorPage";
+import FundDetails from "@/components/Sections/FundDetails";
 import useWindowSize from "@/hooks/useWindowSize";
 import React from "react";
 
@@ -11,7 +12,7 @@ export default function FundPage() {
   }
   return (
     <div>
-      <SideBar page={<div>FundPage</div>} />
+      <SideBar page={<FundDetails />} />
     </div>
   );
 }
