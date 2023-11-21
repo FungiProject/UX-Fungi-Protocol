@@ -70,6 +70,7 @@ export default function Assets() {
           );
 
           const data = response.data;
+          console.log(data);
           asset.price = data?.market_data.current_price.usd;
           asset.marketCap = data?.market_data.market_cap.usd;
           asset.volumen24 =
