@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 
 import { assetType } from "@/types/Types";
+import formatNumber from "@/utils/formatNumber";
 
 type AssetsTableCardProps = { asset: assetType; index: number };
 
@@ -24,9 +25,9 @@ export default function AssetsTableCard({
       <div className="flex items-start flex-col col-span-2">
         <div>{asset.name}</div> <div>{asset.symbol}</div>
       </div>
-      <div className="text-center">${asset?.price}</div>
-      <div className="text-center">${asset.marketCap}</div>
-      <div className="text-center">${asset.volumen24}</div>
+      <div className="text-center">${formatNumber(asset?.price)}</div>
+      <div className="text-center">${formatNumber(asset.marketCap)}</div>
+      <div className="text-center">${formatNumber(asset.volumen24)}</div>
     </div>
   );
 }

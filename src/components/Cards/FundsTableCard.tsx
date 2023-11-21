@@ -3,6 +3,7 @@ import React from "react";
 
 import Link from "next/link";
 import { fundType } from "@/types/Types";
+import formatNumber from "@/utils/formatNumber";
 
 type HomeTableCardProps = { fund: fundType };
 
@@ -20,7 +21,7 @@ export default function FundsTableCard({ fund }: HomeTableCardProps) {
         />
         <div className="ml-[30px]">{fund.name}</div>
       </div>
-      <div className="text-center">${fund.aum}</div>{" "}
+      <div className="text-center">${formatNumber(fund.aum)}</div>{" "}
       <div className="flex justify-center">
         {fund.networks.map((network: string, index: number) => {
           return (
