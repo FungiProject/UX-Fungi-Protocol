@@ -7,6 +7,7 @@ import EditFundInfoModal from "../Modals/EditFundInfoModal";
 
 import Telegram from "../../../public/Telegram.svg";
 import X from "../../../public/X.svg";
+import formatTimestampToDate from "@/utils/formatTimestampToDate";
 
 type UserInfoProps = { address: `0x${string}` | undefined; isUser: boolean };
 
@@ -15,7 +16,7 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
   const getOpenModal = (status: boolean) => {
     setOpenModal(status);
   };
-  const date = 1700559927;
+  const date = 1700559927000;
   return (
     <main className="flex items-center">
       <Image
@@ -36,7 +37,7 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
             />
           </button>
         </div>
-        <span>Joined {date}</span>{" "}
+        <span>Joined {formatTimestampToDate(date)}</span>{" "}
         {!isUser && (
           <div className="flex">
             <Image
