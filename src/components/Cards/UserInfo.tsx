@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DefaultImage from "../../../public/DefaultImage.svg";
 import Image from "next/image";
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
@@ -13,10 +13,18 @@ type UserInfoProps = { address: `0x${string}` | undefined; isUser: boolean };
 
 export default function UserInfo({ address, isUser }: UserInfoProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [formatAddress, setFormatAddress] = useState<string | null>(null);
   const getOpenModal = (status: boolean) => {
     setOpenModal(status);
   };
   const date = 1700559927000;
+
+  useEffect(() => {
+    if (address) {
+      setFormatAddress(address.substring(0, 10) + "...");
+    }
+  }, [address]);
+
   return (
     <main className="flex items-center">
       <Image
@@ -29,7 +37,7 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
       <div className="flex flex-col">
         <div className="flex items-center">
           {" "}
-          <span> {address ? address.substring(0, 10) + "..." : <></>}</span>
+          <span> {formatAddress ? <span>{formatAddress}</span> : <></>}</span>
           <button onClick={() => setOpenModal(true)}>
             <PencilSquareIcon
               className="ml-2 h-[20px] w-[20px] text-black"

@@ -72,7 +72,6 @@ export default function Assets() {
           );
 
           const data = response.data;
-          console.log(data);
           asset.price = data?.market_data.current_price.usd;
           asset.marketCap = data?.market_data.market_cap.usd;
           asset.volumen24 =
@@ -144,7 +143,7 @@ export default function Assets() {
       )
     );
   };
-  console.log(assetsArrayCopy);
+
   return (
     <main>
       <div className="flex items-center gap-x-[20px] justify-end mt-20">
@@ -156,7 +155,7 @@ export default function Assets() {
         />
       </div>
 
-      {!loading ? (
+      {loading ? (
         <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg flex justify-center">
           {" "}
           <Loader />

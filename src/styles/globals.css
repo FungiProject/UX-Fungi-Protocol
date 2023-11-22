@@ -12,11 +12,11 @@ html{
     animation: pulse 2s infinite alternate;
   }
   
-  @keyframes pulse {
+@keyframes pulse {
     from {
-      transform: scale(1);
+        transform: scale(1);
     }
     to {
-      transform: scale(1.2);
+        transform: scale(1.2);
     }
-  }
+}
