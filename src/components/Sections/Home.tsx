@@ -7,6 +7,7 @@ import FundsTable from "../Tables/FundsTable";
 import { funds } from "@/constants/Constants";
 import ShortBy from "../Filters/ShortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import NotificationsCard from "../Cards/NotificationsCard";
 
 export default function Home() {
   const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>(funds);
