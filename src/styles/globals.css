@@ -11,6 +11,10 @@ html{
 .loader-scale {
     animation: pulse 2s infinite alternate;
   }
+
+  .shadow-input{
+   box-shadow:  0px 2px 10px 0px #514AF3;
+  }
   
 @keyframes pulse {
     from {
