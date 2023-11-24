@@ -10,11 +10,11 @@ html{
 
 .loader-scale {
     animation: pulse 2s infinite alternate;
-  }
+}
 
-  .shadow-input{
-   box-shadow:  0px 2px 10px 0px #514AF3;
-  }
+.shadow-input{
+    box-shadow:  0px 2px 10px 0px #514AF3;
+}
   
 @keyframes pulse {
     from {
@@ -24,3 +24,28 @@ html{
         transform: scale(1.2);
     }
 }
+.spinner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  @keyframes colorChange {
+    0%, 100% {
+      background-color: #e0cafe;
+    }
+    50% {
+      background-color: #514AF3;
+    }
+  }
