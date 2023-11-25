@@ -525,3 +525,5 @@ export const assetsPolygon = [
     image: Uniswap.src,
   },
 ];
+
+export const actions = ["Swap", "Fees", "Deposit", "Withdraw"];
