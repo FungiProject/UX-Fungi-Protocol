@@ -1,4 +1,5 @@
 import React from "react";
+import TxButton from "../Buttons/TxButton";
 import DWCActionCard from "../Cards/DWCActionCard";
 
 type ActionsProps = {
@@ -13,6 +14,7 @@ export default function Actions({ actionSelected }: ActionsProps) {
       ) : (
         <div>Swapper</div>
       )}
+      {/* <TxButton /> */}
     </main>
   );
 }
