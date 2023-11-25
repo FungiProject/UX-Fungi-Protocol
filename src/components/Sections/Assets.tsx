@@ -11,7 +11,7 @@ import {
 import ShortBy from "../Filters/ShortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useNetwork } from "wagmi";
-import Loader from "../Loader/Loader";
+import Spinner from "../Loader/Spinner";
 
 export default function Assets() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
@@ -156,9 +156,8 @@ export default function Assets() {
       </div>
 
       {loading ? (
-        <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg flex justify-center">
-          {" "}
-          <Loader />
+        <div className="w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg flex justify-center items-center">
+          <Spinner />
         </div>
       ) : (
         <AssetsTable
@@ -170,7 +169,7 @@ export default function Assets() {
 
       <div className="flex items-center mt-4 relative">
         <span>
-          Showing {startIndex}-{endIndex} out of {assetsArrayCopy.length}
+          Showing {startIndex + 1}-{endIndex} out of {assetsArrayCopy.length}
         </span>
         <div className="flex justify-center items-center absolute inset-x-0 bottom-0 top-3">
           {currentPage !== 1 && (

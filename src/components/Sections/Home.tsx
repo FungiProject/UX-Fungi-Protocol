@@ -127,7 +127,7 @@ export default function Home() {
       />
       <div className="flex items-center mt-4 relative">
         <span>
-          Showing {startIndex}-{endIndex} out of {fundsArrayCopy.length}
+          Showing {startIndex + 1}-{endIndex} out of {fundsArrayCopy.length}
         </span>
         <div className="flex justify-center items-center absolute inset-x-0 bottom-0 top-3">
           {currentPage !== 1 && (

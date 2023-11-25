@@ -527,3 +527,5 @@ export const assetsPolygon = [
 ];
 
 export const actions = ["Swap", "Fees", "Deposit", "Withdraw"];
+
+export const fundViews = ["Overview", "Portfolio", "Activity", "Members"];
