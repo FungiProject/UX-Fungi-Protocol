@@ -6,6 +6,7 @@
 html{
     background-color:  #F4F4FF;
     margin: 0 43px 0 25px;
+
 }
 
 .loader-scale {
@@ -50,7 +51,7 @@ html{
     }
   }
 
-  input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;

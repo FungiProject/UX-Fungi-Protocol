@@ -1,9 +1,10 @@
+// React
 import React from "react";
 
-export default function Spinner() {
-  const dots = Array.from({ length: 8 }, (_, index) => index);
+export default function Loader() {
   const numDots = 8;
-  const duration = 5;
+  const duration = 1.2;
+  const dots = Array.from({ length: numDots }, (_, index) => index);
 
   return (
     <div className="spinner">
