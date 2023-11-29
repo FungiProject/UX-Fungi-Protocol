@@ -9,7 +9,7 @@ type HomeTableCardProps = { fund: fundType };
 
 export default function FundsTableCard({ fund }: HomeTableCardProps) {
   return (
-    <div className="border-t-1 border-gray-300 grid grid-cols-7 py-[24px] items-center">
+    <div className="border-t-1 border-gray-300 grid grid-cols-7 py-[24px] items-center text-lg">
       <div className="flex col-span-2 items-center">
         {" "}
         <Image
