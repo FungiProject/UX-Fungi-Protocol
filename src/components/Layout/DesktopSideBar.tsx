@@ -58,9 +58,9 @@ export default function DesktopSideBar() {
                 className={classNames(
                   item.name.toLowerCase() ===
                     router.route.slice(1, router.route.length) ||
-                    router.route === item.name.toLowerCase()
-                    ? "text-white"
-                    : "text-gray-300",
+                    router.route === item.href
+                    ? "text-white font-bold"
+                    : "text-gray-400",
                   "group flex flex-col items-center gap-x-3 rounded-md text-sm font-medium hover:text-white"
                 )}
               >
@@ -70,9 +70,11 @@ export default function DesktopSideBar() {
                   alt="Navigation Image"
                   src={item.image}
                   className={classNames(
-                    router.route === "/" && item.name.toLowerCase() === "home"
-                      ? "text-white"
-                      : "text-gray-600 group-hover:text-white",
+                    item.name.toLowerCase() ===
+                      router.route.slice(1, router.route.length) ||
+                      router.route === item.href
+                      ? "text-red-500"
+                      : "text-gray-600 group-hover:text-white opacity-20",
                     `shrink-0`
                   )}
                   aria-hidden="true"
