@@ -9,7 +9,8 @@ import ShortBy from "../Filters/ShortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export default function Home() {
-  const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>(funds);
+  const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>([...funds]);
+  const [originalFunds, setOriginalFunds] = useState([...funds]);
   const [search, setSearch] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -42,7 +43,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let copy = [...funds];
+    let copy = [...originalFunds];
+
     if (search.length !== 0) {
       copy = copy.filter((fund: fundType) =>
         fund.name.toLowerCase().includes(search.toLowerCase())
@@ -58,7 +60,11 @@ export default function Home() {
     }
 
     setFundsArrayCopy(copy);
-  }, [search, sortBy]);
+  }, [search, sortBy, originalFunds]);
+
+  useEffect(() => {
+    setOriginalFunds([...funds]);
+  }, [funds]);
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
