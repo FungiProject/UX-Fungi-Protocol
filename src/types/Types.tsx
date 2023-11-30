@@ -45,3 +45,8 @@ export type assetType = {
   marketCap: number;
   volumen24: number;
 };
+
+export type memberType = {
+  address: string;
+  image: string;
+};

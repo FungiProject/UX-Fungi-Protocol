@@ -70,7 +70,7 @@ export default function Assets() {
           const response = await axios.get(
             `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}`
           );
-          console.log(response);
+
           const data = response.data;
           asset.price = data?.market_data.current_price.usd;
           asset.marketCap = data?.market_data.market_cap.usd;
