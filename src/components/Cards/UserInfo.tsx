@@ -6,7 +6,9 @@ import EditUserInfoModal from "../Modals/EditUserInfoModal";
 import EditFundInfoModal from "../Modals/EditFundInfoModal";
 
 import Telegram from "../../../public/Telegram.svg";
-import X from "../../../public/X.svg";
+import TwitterWhite from "../../../public/TwitterWhite.svg";
+import Folders from "../../../public/Folders.svg";
+import SearchIcon from "../../../public/SearchIcon.svg";
 import formatTimestampToDate from "@/utils/formatTimestampToDate";
 
 type UserInfoProps = { address: `0x${string}` | undefined; isUser: boolean };
@@ -45,33 +47,35 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
             />
           </button>
         </div>
-        <span className="text-xl">Joined {formatTimestampToDate(date)}</span>{" "}
+        <span className="text-xl">
+          {isUser ? "Joined" : "Created"} {formatTimestampToDate(date)}
+        </span>{" "}
         {!isUser && (
           <div className="flex">
             <Image
               height={25}
               width={25}
               alt="User Image"
-              src={DefaultImage.src}
+              src={Folders.src}
               className="mr-[8px]"
             />{" "}
             <Image
               height={25}
               width={25}
               alt="User Image"
-              src={DefaultImage.src}
+              src={SearchIcon.src}
               className="mr-[8px]"
             />
             <Image
               height={20}
               width={20}
               alt="User Image"
-              src={X.src}
+              src={TwitterWhite.src}
               className="mr-[8px]"
             />
             <Image
-              height={20}
-              width={20}
+              height={25}
+              width={25}
               alt="User Image"
               src={Telegram.src}
               className="mr-[8px]"
