@@ -6,12 +6,14 @@ type FundsTableProps = {
   funds: fundType[];
   startIndex: number;
   endIndex: number;
+  isPortfolio: boolean;
 };
 
 export default function FundsTable({
   funds,
   startIndex,
   endIndex,
+  isPortfolio,
 }: FundsTableProps) {
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg overflow-hidden">
@@ -25,7 +27,7 @@ export default function FundsTable({
       {funds
         .slice(startIndex, endIndex)
         .map((fund: fundType, index: number) => (
-          <FundsTableCard fund={fund} key={index} />
+          <FundsTableCard fund={fund} key={index} isPortfolio={isPortfolio} />
         ))}
     </div>
   );

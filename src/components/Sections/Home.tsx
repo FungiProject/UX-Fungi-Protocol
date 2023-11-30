@@ -130,6 +130,7 @@ export default function Home() {
         funds={fundsArrayCopy}
         startIndex={startIndex}
         endIndex={endIndex}
+        isPortfolio={false}
       />
       <div className="flex items-center mt-4 relative">
         <span>

@@ -2,7 +2,7 @@ import { assetType } from "@/types/Types";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import Spinner from "../Loader/Spinner";
-import PorfolioTable from "../Tables/PortfolioTable";
+import PorfolioViewTable from "../Tables/PorfolioViewTable";
 
 export default function PortfolioView() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
@@ -73,7 +73,7 @@ export default function PortfolioView() {
           <Spinner />
         </div>
       ) : (
-        <PorfolioTable
+        <PorfolioViewTable
           assets={assetsArrayCopy}
           startIndex={startIndex}
           endIndex={endIndex}

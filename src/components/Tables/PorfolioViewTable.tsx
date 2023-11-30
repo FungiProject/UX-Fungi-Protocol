@@ -2,17 +2,17 @@ import React from "react";
 import { assetType } from "@/types/Types";
 import AssetsTableCard from "../Cards/AssetsTableCard";
 
-type AssetsTableProps = {
+type PorfolioViewTableProps = {
   assets: assetType[];
   startIndex: number;
   endIndex: number;
 };
 
-export default function PorfolioTable({
+export default function PorfolioViewTable({
   assets,
   startIndex,
   endIndex,
-}: AssetsTableProps) {
+}: PorfolioViewTableProps) {
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg">
       <div className="grid grid-cols-6 pb-[26px] text-xl font-medium px-10">

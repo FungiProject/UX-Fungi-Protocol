@@ -5,20 +5,24 @@ import Link from "next/link";
 import { fundType } from "@/types/Types";
 import formatNumber from "@/utils/formatNumber";
 
-type HomeTableCardProps = { fund: fundType };
+type HomeTableCardProps = { fund: fundType; isPortfolio: boolean };
 
-export default function FundsTableCard({ fund }: HomeTableCardProps) {
+export default function FundsTableCard({
+  fund,
+  isPortfolio,
+}: HomeTableCardProps) {
   return (
     <div className="border-t-1 border-gray-300 grid grid-cols-7 py-[24px] items-center text-lg">
       <div className="flex col-span-2 items-center">
-        {" "}
-        <Image
-          width={50}
-          height={50}
-          alt="Logo"
-          src={fund.image}
-          className="ml-[15px]"
-        />
+        {!isPortfolio && (
+          <Image
+            width={50}
+            height={50}
+            alt="Logo"
+            src={fund.image}
+            className="ml-[15px]"
+          />
+        )}
         <div className="ml-[30px]">{fund.name}</div>
       </div>
       <div className="text-center">${formatNumber(fund.aum)}</div>{" "}
@@ -51,7 +55,7 @@ export default function FundsTableCard({ fund }: HomeTableCardProps) {
           className="rounded-full bg-main px-[10px] py-[8px] w-[75px] text-center text-white mr-[15px]"
           href={`/fund/0x`}
         >
-          Join
+          {isPortfolio ? "Open" : "Join"}
         </Link>
       </div>
     </div>

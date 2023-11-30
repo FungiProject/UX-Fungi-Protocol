@@ -22,6 +22,7 @@ export default function FundDetails() {
   const getActionSelected = (action: string) => {
     setActionSelected(action);
   };
+
   const getViewComponent = () => {
     switch (actionSelected) {
       case "Overview":
