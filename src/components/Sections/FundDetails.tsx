@@ -53,14 +53,14 @@ export default function FundDetails() {
         address={router.query.address as `0x${string}`}
         isUser={false}
       />
-      <div className="flex flex-col items-end">
+      <div className="flex flex-col items-end mb-[12px]">
         {/* isOwner in function of fund owner */}
         <ActionsButton fund={router.query.address as string} isOwner={true} />
         <ActionsSwitcher
           actions={fundViews}
           actionSelected={actionSelected}
           getActionSelected={getActionSelected}
-          className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-2xl"
+          className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-xl"
           paddingButton="py-[4px]"
         />
       </div>

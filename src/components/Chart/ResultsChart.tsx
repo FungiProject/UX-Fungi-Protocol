@@ -16,7 +16,7 @@ export default function ResultsChart({
 }: ResultsChartProps) {
   const [chartTime, setChartTime] = useState("1h");
   return (
-    <main className="mt-[12px] h-[574px] flex flex-col bg-white rounded-xl px-[40px] py-[16px]">
+    <main className="h-[574px] flex flex-col bg-white rounded-xl px-[40px] py-[16px] shadow-xl">
       <div className="flex justify-between">
         <div className=" flex flex-col">
           <span className="text-xl">AUM</span>
