@@ -1,5 +1,6 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import DepositWitdrawModal from "../Modals/DepositWitdrawModal";
 
 type ActionsButtonProps = {
   fund: string;
@@ -7,6 +8,18 @@ type ActionsButtonProps = {
 };
 
 export default function ActionsButton({ fund, isOwner }: ActionsButtonProps) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>("");
+
+  const getOpenModal = (status: boolean) => {
+    setOpenModal(status);
+  };
+
+  const chooseModal = (modal: string) => {
+    setModalType(modal);
+    setOpenModal(true);
+  };
+
   return (
     <main className="mr-[35px]">
       {isOwner ? (
@@ -17,13 +30,24 @@ export default function ActionsButton({ fund, isOwner }: ActionsButtonProps) {
         </Link>
       ) : (
         <div className="flex gap-x-[22px]">
-          {" "}
-          <button className="bg-main text-white rounded-lg px-16 py-3.5 text-sm">
+          <button
+            className="bg-main text-white rounded-lg px-16 py-3.5 text-sm"
+            onClick={() => chooseModal("Deposit")}
+          >
             Deposit
           </button>
-          <button className="bg-main text-white rounded-lg px-16 py-3.5 text-sm">
+          <button
+            className="bg-main text-white rounded-lg px-16 py-3.5 text-sm"
+            onClick={() => chooseModal("Withdraw")}
+          >
             Withdraw
-          </button>{" "}
+          </button>
+          {openModal && (
+            <DepositWitdrawModal
+              getOpenModal={getOpenModal}
+              modalType={modalType}
+            />
+          )}
         </div>
       )}
     </main>

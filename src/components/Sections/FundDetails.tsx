@@ -11,10 +11,13 @@ import PortfolioView from "../FundViews/PortfolioView";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 
 export default function FundDetails() {
-  const [actionSelected, setActionSelected] = useState("Overview");
+  const [actionSelected, setActionSelected] = useState<string>("Overview");
+  const [ownerLoaded, setOwnerLoaded] = useState<boolean>(false);
   const [view, setView] = useState<ReactElement | null>(null);
   const { address } = useAccount();
   const router = useRouter();
+
+  const owner = "0xF70c1cEa8909563619547128A92dd7CC965F9657";
 
   const getActionSelected = (action: string) => {
     setActionSelected(action);
@@ -44,6 +47,10 @@ export default function FundDetails() {
   }, []);
 
   useEffect(() => {
+    setOwnerLoaded(true);
+  }, [address]);
+
+  useEffect(() => {
     getViewComponent();
   }, [actionSelected, router]);
 
@@ -54,8 +61,12 @@ export default function FundDetails() {
         isUser={false}
       />
       <div className="flex flex-col items-end mb-[12px]">
-        {/* isOwner in function of fund owner */}
-        <ActionsButton fund={router.query.address as string} isOwner={true} />
+        {ownerLoaded && (
+          <ActionsButton
+            fund={router.query.address as string}
+            isOwner={owner !== address}
+          />
+        )}
         <ActionsSwitcher
           actions={fundViews}
           actionSelected={actionSelected}

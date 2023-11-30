@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DefaultImage from "../../../public/DefaultImage.svg";
 import Image from "next/image";
+import TxButton from "../Buttons/TxButton";
 
 type DWCActionCardProps = {
   actionSelected: string;
@@ -49,6 +50,7 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
           </div>
         </div>
       </div>
+      {/* <TxButton /> */}
     </main>
   );
 }

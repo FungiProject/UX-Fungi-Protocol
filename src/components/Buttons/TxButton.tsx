@@ -9,7 +9,7 @@ import {
 // Viem
 import { polygonMumbai } from "viem/chains";
 
-interface TxButtonProps {
+type TxButtonProps = {
   address: `0x${string}`;
   abi: any;
   functionName: string;
@@ -17,7 +17,7 @@ interface TxButtonProps {
   children: ReactNode;
   getTxStatus: (status: string, name: string) => void;
   className: string;
-}
+};
 
 export default function TxButton({
   address,
