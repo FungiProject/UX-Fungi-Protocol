@@ -12,7 +12,7 @@ function IntegrationCard({
   status,
 }: integrationType) {
   return (
-    <div className="mx-auto flex flex-col justify-between text-center items-center shadow-xl w-[386px] max-h-[270px] rounded-lg px-[26px] py-[18px] bg-white mb-[46px]">
+    <div className="mx-auto flex flex-col justify-between text-center items-center shadow-xl w-full max-h-[270px] rounded-lg px-[26px] py-[18px] bg-white mb-[46px]">
       <Image width={50} height={50} alt="Logo" src={protocolImage} />
       <h1 className="my-[13px] text-3xl font-medium">{title}</h1>
       <div className="max-w-[266px] text-sm">

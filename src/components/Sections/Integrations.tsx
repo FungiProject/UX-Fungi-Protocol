@@ -5,7 +5,7 @@ import IntegrationCard from "../Cards/IntegrationCard";
 
 export default function Integrations() {
   return (
-    <div className="h-fit grid grid-cols-3 mt-[82px]">
+    <div className="h-fit grid grid-cols-2 xl:grid-cols-3 mt-[82px] gap-x-[40px]">
       {integrations.map((integration: integrationType) => {
         return (
           <IntegrationCard
