@@ -94,7 +94,7 @@ export default function Portfolio() {
 
   return (
     <main>
-      <UserInfo address={address} isUser={true} />
+      <UserInfo address={address} isUser={true} isOwner={true} />
       <div className="mt-[25px]">
         <ResultsChart personalBalance={personalBalance} />
       </div>

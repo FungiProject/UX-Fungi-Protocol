@@ -70,12 +70,11 @@ export default function Assets() {
           const response = await axios.get(
             `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}`
           );
-
+          console.log(response);
           const data = response.data;
           asset.price = data?.market_data.current_price.usd;
           asset.marketCap = data?.market_data.market_cap.usd;
-          asset.volumen24 =
-            data?.market_data.market_cap_change_24h_in_currency.usd;
+          asset.volumen24 = data?.market_data.total_volume.usd;
         } catch (error) {
           console.log(error);
         }

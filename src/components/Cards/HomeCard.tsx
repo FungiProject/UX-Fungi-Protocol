@@ -15,13 +15,7 @@ export default function HomeCard({
       <div className="font-medium ">
         <h1 className="text-4xl">{title}</h1>{" "}
         <h2 className="text-2xl">
-          <CountUp
-            start={0}
-            end={amount}
-            duration={2.8}
-            delay={0.6}
-            separator=" "
-          />
+          <CountUp start={0} end={amount} duration={1.4} delay={0.6} />
         </h2>
       </div>
       <Image

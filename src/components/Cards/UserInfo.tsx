@@ -11,9 +11,13 @@ import Folders from "../../../public/Folders.svg";
 import SearchIcon from "../../../public/SearchIcon.svg";
 import formatTimestampToDate from "@/utils/formatTimestampToDate";
 
-type UserInfoProps = { address: `0x${string}` | undefined; isUser: boolean };
+type UserInfoProps = {
+  address: `0x${string}` | undefined;
+  isUser: boolean;
+  isOwner: boolean;
+};
 
-export default function UserInfo({ address, isUser }: UserInfoProps) {
+export default function UserInfo({ address, isUser, isOwner }: UserInfoProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [formatAddress, setFormatAddress] = useState<string | null>(null);
   const getOpenModal = (status: boolean) => {
@@ -40,18 +44,20 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
         <div className="flex items-center text-3xl">
           {" "}
           <span> {formatAddress ? <span>{formatAddress}</span> : <></>}</span>
-          <button onClick={() => setOpenModal(true)}>
-            <PencilSquareIcon
-              className="ml-2 h-[20px] w-[20px] text-black"
-              aria-hidden="true"
-            />
-          </button>
+          {isOwner && (
+            <button onClick={() => setOpenModal(true)}>
+              <PencilSquareIcon
+                className="ml-2 h-[20px] w-[20px] text-black"
+                aria-hidden="true"
+              />
+            </button>
+          )}
         </div>
         <span className="text-xl">
           {isUser ? "Joined" : "Created"} {formatTimestampToDate(date)}
         </span>{" "}
         {!isUser && (
-          <div className="flex">
+          <div className="flex mt-[6px]">
             <Image
               height={25}
               width={25}

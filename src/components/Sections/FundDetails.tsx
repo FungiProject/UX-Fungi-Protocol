@@ -60,6 +60,7 @@ export default function FundDetails() {
       <UserInfo
         address={router.query.address as `0x${string}`}
         isUser={false}
+        isOwner={owner !== address}
       />
       <div className="flex flex-col items-end mb-[12px]">
         {ownerLoaded && (
