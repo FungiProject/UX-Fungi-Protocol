@@ -60,7 +60,7 @@ export default function DesktopSideBar() {
                     router.route.slice(1, router.route.length) ||
                     router.route === item.href
                     ? "text-white font-bold"
-                    : "text-gray-400",
+                    : "text-gray-400 opacity-60 hover:opacity-100",
                   "group flex flex-col items-center gap-x-3 rounded-md text-sm font-medium hover:text-white"
                 )}
               >
@@ -73,8 +73,8 @@ export default function DesktopSideBar() {
                     item.name.toLowerCase() ===
                       router.route.slice(1, router.route.length) ||
                       router.route === item.href
-                      ? "text-red-500"
-                      : "text-gray-600 group-hover:text-white opacity-20",
+                      ? "text-white"
+                      : "text-white group-hover:text-white ",
                     `shrink-0`
                   )}
                   aria-hidden="true"

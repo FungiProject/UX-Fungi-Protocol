@@ -13,7 +13,6 @@ export default function FundsTable({
   startIndex,
   endIndex,
 }: FundsTableProps) {
-  console.log(funds);
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg overflow-hidden">
       <div className="grid grid-cols-7 pb-[26px] text-xl font-medium">
