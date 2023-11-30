@@ -35,7 +35,7 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
         className="mr-4"
       />
       <div className="flex flex-col">
-        <div className="flex items-center">
+        <div className="flex items-center text-3xl">
           {" "}
           <span> {formatAddress ? <span>{formatAddress}</span> : <></>}</span>
           <button onClick={() => setOpenModal(true)}>
@@ -45,7 +45,7 @@ export default function UserInfo({ address, isUser }: UserInfoProps) {
             />
           </button>
         </div>
-        <span>Joined {formatTimestampToDate(date)}</span>{" "}
+        <span className="text-xl">Joined {formatTimestampToDate(date)}</span>{" "}
         {!isUser && (
           <div className="flex">
             <Image
