@@ -26,16 +26,7 @@ export default function LogoutButton() {
       onMouseLeave={() => setIsHovered(false)}
     >
       {!isHovered ? (
-        <>
-          {address ? address.substring(0, 6) + "..." : <></>}
-          <Image
-            width={25}
-            height={25}
-            alt="Logo"
-            src={Chain.src}
-            className="ml-2"
-          />
-        </>
+        <>{address ? address.substring(0, 10) + "..." : <></>}</>
       ) : (
         <>
           <span>Disconnect</span>{" "}

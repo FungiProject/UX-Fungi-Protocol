@@ -6,6 +6,8 @@ import DangerIcon from "../../../public/DangerIcon.svg";
 import Image from "next/image";
 
 import Spinner from "../Loader/Spinner";
+import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
+import { networks } from "@/constants/Constants";
 
 interface SwitchNetworkModalInterface {
   getOpenModal: (openModal: boolean) => void;
@@ -64,8 +66,8 @@ export default function SwitchNetworkModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-3xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:m-8 max-w-[300px] sm:p-6 shadow-input">
-                <div className="items-end w-full flex flex-row text-center max-w-[300px]">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-3xl bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:m-8 max-w-[400px] sm:p-6 shadow-input">
+                <div className="items-end w-full flex flex-row text-center max-w-[400px]">
                   <Image
                     height={60}
                     width={60}
@@ -80,11 +82,12 @@ export default function SwitchNetworkModal({
                     >
                       Wrong Network
                     </Dialog.Title>
+                    <ChangeNetworkDropdown title="" networks={networks} />{" "}
                     <p className="text-xs font-medium">
                       Your wallet is not on the correct network!
                     </p>
                     {/* Change to network selector */}
-                    <button
+                    {/* <button
                       disabled={!switchNetwork || 80001 === chain?.id}
                       key={80001}
                       onClick={() => closeModal()}
@@ -94,7 +97,7 @@ export default function SwitchNetworkModal({
                       {isLoading && pendingChainId === 80001
                         ? "Switching Network"
                         : "Switch Network"}
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </Dialog.Panel>
