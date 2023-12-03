@@ -2,7 +2,11 @@ import React from "react";
 import MembersTable from "../Tables/MembersTable";
 import Polygon from "../../../public/Polygon.svg";
 
-export default function MembersView() {
+type MembersViewProps = {
+  typeMember: string;
+};
+
+export default function MembersView({ typeMember }: MembersViewProps) {
   const members = [
     {
       address: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",

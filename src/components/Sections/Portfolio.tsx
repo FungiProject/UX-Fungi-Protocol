@@ -103,8 +103,8 @@ export default function Portfolio() {
           actions={["Invested", "Created"]}
           actionSelected={actionSelected}
           getActionSelected={getActionSelected}
-          className="h-[40px] p-[4px] w-[300px] rounded-full grid grid-cols-2 bg-white items-center text-center mt-[90px] shadow-xl"
-          paddingButton="py-[4px]"
+          className="h-[40px] p-[4px] w-[300px] rounded-full grid grid-cols-2 bg-white items-center text-center mt-[90px] shadow-xl text-sm"
+          paddingButton="py-[6px]"
         />
       </div>
       <FundsTable

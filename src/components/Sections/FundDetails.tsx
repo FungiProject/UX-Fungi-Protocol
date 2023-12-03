@@ -8,19 +8,31 @@ import ActivityView from "../FundViews/ActivityView";
 import MembersView from "../FundViews/MembersView";
 import OverviewView from "../FundViews/OverviewView";
 import PortfolioView from "../FundViews/PortfolioView";
+import MembersModal from "../Modals/MembersModal";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 
 export default function FundDetails() {
   const [actionSelected, setActionSelected] = useState<string>("Overview");
+  const [typeMember, setTypeMember] = useState<string>("Members");
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [ownerLoaded, setOwnerLoaded] = useState<boolean>(false);
   const [view, setView] = useState<ReactElement | null>(null);
   const { address } = useAccount();
   const router = useRouter();
 
   const owner = "0xF70c1cEa8909563619547128A92dd7CC965F9657";
+  const typesMembersTable = ["Members", "Whitelisted"];
 
   const getActionSelected = (action: string) => {
     setActionSelected(action);
+  };
+
+  const getTypeMember = (action: string) => {
+    setTypeMember(action);
+  };
+
+  const getOpenModal = (status: boolean) => {
+    setOpenModal(status);
   };
 
   const getViewComponent = () => {
@@ -35,7 +47,7 @@ export default function FundDetails() {
         setView(<PortfolioView />);
         break;
       case "Members":
-        setView(<MembersView />);
+        setView(<MembersView typeMember={typeMember} />);
         break;
       default:
         setView(<OverviewView />);
@@ -60,23 +72,51 @@ export default function FundDetails() {
       <UserInfo
         address={router.query.address as `0x${string}`}
         isUser={false}
-        isOwner={owner !== address}
+        isOwner={owner === address}
       />
+
       <div className="flex flex-col items-end mb-[12px]">
         {ownerLoaded && (
           <ActionsButton
             fund={router.query.address as string}
-            isOwner={owner !== address}
+            isOwner={owner === address}
           />
         )}
-        <ActionsSwitcher
-          actions={fundViews}
-          actionSelected={actionSelected}
-          getActionSelected={getActionSelected}
-          className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-xl"
-          paddingButton="py-[4px]"
-        />
+        <div
+          className={`flex items-center w-full ${
+            ownerLoaded && owner === address && actionSelected === "Members"
+              ? "justify-between"
+              : "justify-end"
+          }`}
+        >
+          {ownerLoaded && actionSelected === "Members" && owner === address && (
+            <div className="flex items-center mt-[17px]">
+              <button
+                className="rounded-full bg-main px-[35px] py-[8px] text-center text-white mr-[13px] text-xs h-[40px]"
+                onClick={() => setOpenModal(true)}
+              >
+                Add Wallet
+              </button>
+              {openModal && <MembersModal getOpenModal={getOpenModal} />}
+              <ActionsSwitcher
+                actions={typesMembersTable}
+                actionSelected={typeMember}
+                getActionSelected={getTypeMember}
+                className="h-[40px] p-[4px] w-[300px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-xl text-sm"
+                paddingButton="py-[6px]"
+              />
+            </div>
+          )}
+          <ActionsSwitcher
+            actions={fundViews}
+            actionSelected={actionSelected}
+            getActionSelected={getActionSelected}
+            className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-xl text-sm"
+            paddingButton="py-[6px]"
+          />
+        </div>
       </div>
+
       {view && view}
     </main>
   );

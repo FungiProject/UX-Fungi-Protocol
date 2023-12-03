@@ -1,15 +1,12 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import CreateFundForm from "../Forms/CreateFundForm";
 
-interface CreateFundModalInterface {
+interface MembersModalInterface {
   getOpenModal: (openmodal: boolean) => void;
 }
 
-export default function CreateFundModal({
-  getOpenModal,
-}: CreateFundModalInterface) {
+export default function MembersModal({ getOpenModal }: MembersModalInterface) {
   const [open, setOpen] = useState(true);
 
   const closeModal = () => {
@@ -59,7 +56,7 @@ export default function CreateFundModal({
                 </div>
                 <div className="sm:flex sm:items-start w-full ">
                   <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                    <CreateFundForm />
+                    Members
                   </div>
                 </div>
               </Dialog.Panel>

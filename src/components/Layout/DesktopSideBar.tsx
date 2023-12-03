@@ -25,15 +25,15 @@ export default function DesktopSideBar() {
     setNeedSwitch(modalState);
   };
 
+  const getOpenModal = (status: boolean) => {
+    setOpenModal(status);
+  };
+
   useEffect(() => {
     if (chain && chain.id !== 42161 && chain.id !== 80001 && chain.id !== 1) {
       setNeedSwitch(true);
     }
   }, [chain]);
-
-  const getOpenModal = (status: boolean) => {
-    setOpenModal(status);
-  };
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:flex-col h-[700px] w-[160px] my-[25px]">

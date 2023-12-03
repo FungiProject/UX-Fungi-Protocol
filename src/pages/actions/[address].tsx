@@ -29,8 +29,8 @@ export default function ActionsPage() {
         actionSelected={actionSelected}
         getActionSelected={getActionSelected}
         actions={actions}
-        className="h-[48px] p-[4px] w-[700px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[86px] shadow-2xl"
-        paddingButton="py-[6px]"
+        className="h-[48px] p-[4px] w-[700px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[86px] shadow-2xl text-sm"
+        paddingButton="py-[8px]"
       />
       <Actions actionSelected={actionSelected} />
     </main>
