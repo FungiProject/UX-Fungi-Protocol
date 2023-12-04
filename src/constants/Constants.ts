@@ -10,6 +10,7 @@ import Uniswap from "../../public/Uniswap.svg";
 import Polygon from "../../public/Polygon.svg";
 import Mainnet from "../../public/Mainnet.svg";
 import Arbitrum from "../../public/Arbitrum.svg";
+import USDC from "../../public/USDC.svg";
 
 import Planet from "../../public/Planet.svg";
 import Coins from "../../public/Coins.svg";
@@ -474,6 +475,13 @@ export const assetsMainnet = [
     coingeckoApi: "uniswap",
     image: Uniswap.src,
   },
+  {
+    name: "USD Coin",
+    address: "",
+    symbol: "USDC",
+    coingeckoApi: "usd-coin",
+    image: USDC.src,
+  },
 ];
 
 export const assetsArbitrum = [
@@ -512,6 +520,13 @@ export const assetsArbitrum = [
     coingeckoApi: "arbitrum",
     image: Arbitrum.src,
   },
+  {
+    name: "USD Coin (PoS)",
+    address: "",
+    symbol: "USDC.e",
+    coingeckoApi: "usd-coin-ethereum-bridged",
+    image: USDC.src,
+  },
 ];
 
 export const assetsPolygon = [
@@ -536,6 +551,13 @@ export const assetsPolygon = [
     coingeckoApi: "uniswap",
     image: Uniswap.src,
   },
+  {
+    name: "USD Coin (PoS)",
+    address: "",
+    symbol: "USDC.e",
+    coingeckoApi: "bridged-usdc-polygon-pos-bridge",
+    image: USDC.src,
+  },
 ];
 
 export const assetsPolygonMumbai = [
@@ -559,6 +581,13 @@ export const assetsPolygonMumbai = [
     symbol: "UNI",
     coingeckoApi: "uniswap",
     image: Uniswap.src,
+  },
+  {
+    name: "USD Coin (PoS)",
+    address: "",
+    symbol: "USDC.e",
+    coingeckoApi: "bridged-usdc-polygon-pos-bridge",
+    image: USDC.src,
   },
 ];
 

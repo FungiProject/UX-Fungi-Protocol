@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DefaultImage from "../../../public/DefaultImage.svg";
+import USDC from "../../../public/USDC.svg";
 import Image from "next/image";
 import TxButton from "../Buttons/TxButton";
 
@@ -35,7 +35,7 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
               height={25}
               width={25}
               alt="USDC"
-              src={DefaultImage.src}
+              src={USDC.src}
               className="ml-1.5"
             />
           </div>{" "}
