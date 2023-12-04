@@ -30,7 +30,13 @@ export default function DesktopSideBar() {
   };
 
   useEffect(() => {
-    if (chain && chain.id !== 42161 && chain.id !== 80001 && chain.id !== 1) {
+    if (
+      chain &&
+      chain.id !== 42161 &&
+      chain.id !== 80001 &&
+      chain.id !== 1 &&
+      chain.id !== 137
+    ) {
       setNeedSwitch(true);
     }
   }, [chain]);

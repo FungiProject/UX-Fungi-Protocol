@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import local from "next/font/local";
 // Wagmi
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { mainnet, arbitrum, polygonMumbai } from "wagmi/chains";
+import { mainnet, arbitrum, polygonMumbai, polygon } from "wagmi/chains";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -16,7 +16,7 @@ const satoshi = local({
 });
 
 const { publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, arbitrum, polygonMumbai],
+  [mainnet, arbitrum, polygonMumbai, polygon],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API as string }),
     publicProvider(),

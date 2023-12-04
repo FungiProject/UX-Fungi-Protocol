@@ -7,6 +7,7 @@ import {
   assetsPolygon,
   assetsArbitrum,
   assetsMainnet,
+  assetsPolygonMumbai,
   networks,
 } from "@/constants/Constants";
 import SortBy from "../Filters/SortBy";
@@ -57,25 +58,31 @@ export default function Assets() {
     let initials: any[] = [];
     if (!sortByNetwork) {
       if (chain && chain.id === 80001) {
-        copy = assetsPolygon;
-        initials = assetsPolygon;
+        copy = assetsPolygonMumbai;
+        initials = assetsPolygonMumbai;
       } else if (chain && chain.id === 42161) {
         copy = assetsArbitrum;
         initials = assetsArbitrum;
       } else if (chain && chain.id === 1) {
         copy = assetsMainnet;
         initials = assetsMainnet;
+      } else if (selectedNetwork && selectedNetwork.id === 137) {
+        copy = assetsPolygon;
+        initials = assetsPolygon;
       }
     } else {
       if (selectedNetwork && selectedNetwork.id === 80001) {
-        copy = assetsPolygon;
-        initials = assetsPolygon;
+        copy = assetsPolygonMumbai;
+        initials = assetsPolygonMumbai;
       } else if (selectedNetwork && selectedNetwork.id === 42161) {
         copy = assetsArbitrum;
         initials = assetsArbitrum;
       } else if (selectedNetwork && selectedNetwork.id === 1) {
         copy = assetsMainnet;
         initials = assetsMainnet;
+      } else if (selectedNetwork && selectedNetwork.id === 137) {
+        copy = assetsPolygon;
+        initials = assetsPolygon;
       }
     }
 

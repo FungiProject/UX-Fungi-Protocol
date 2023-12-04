@@ -448,24 +448,28 @@ export const funds = [
 export const networks = [
   { name: "Mainnet", id: 1, image: Mainnet.src },
   { name: "Arbitrum", id: 42161, image: Arbitrum.src },
+  { name: "Polygon", id: 137, image: Polygon.src },
   { name: "Polygon Mumbai", id: 80001, image: Polygon.src },
 ];
 
 export const assetsMainnet = [
   {
     name: "Etherium",
+    address: "",
     symbol: "ETH",
     coingeckoApi: "ethereum",
     image: Mainnet.src,
   },
   {
     name: "AAVE",
+    address: "",
     symbol: "AAVE",
     coingeckoApi: "aave",
     image: AAVE.src,
   },
   {
     name: "Uniswap",
+    address: "",
     symbol: "UNI",
     coingeckoApi: "uniswap",
     image: Uniswap.src,
@@ -475,30 +479,35 @@ export const assetsMainnet = [
 export const assetsArbitrum = [
   {
     name: "Etherium",
+    address: "",
     symbol: "ETH",
     coingeckoApi: "ethereum",
     image: Mainnet.src,
   },
   {
     name: "AAVE",
+    address: "",
     symbol: "AAVE",
     coingeckoApi: "aave",
     image: AAVE.src,
   },
   {
     name: "Uniswap",
+    address: "",
     symbol: "UNI",
     coingeckoApi: "uniswap",
     image: Uniswap.src,
   },
   {
     name: "GMX",
+    address: "",
     symbol: "GMX",
     coingeckoApi: "gmx",
     image: GMX.src,
   },
   {
     name: "Arbitrum",
+    address: "",
     symbol: "ARB",
     coingeckoApi: "arbitrum",
     image: Arbitrum.src,
@@ -508,18 +517,45 @@ export const assetsArbitrum = [
 export const assetsPolygon = [
   {
     name: "Polygon",
+    address: "",
     symbol: "MATIC",
     coingeckoApi: "matic-network",
     image: Polygon.src,
   },
   {
     name: "AAVE",
+    address: "",
     symbol: "AAVE",
     coingeckoApi: "aave",
     image: AAVE.src,
   },
   {
     name: "Uniswap",
+    address: "",
+    symbol: "UNI",
+    coingeckoApi: "uniswap",
+    image: Uniswap.src,
+  },
+];
+
+export const assetsPolygonMumbai = [
+  {
+    name: "Polygon",
+    address: "",
+    symbol: "MATIC",
+    coingeckoApi: "matic-network",
+    image: Polygon.src,
+  },
+  {
+    name: "AAVE",
+    address: "",
+    symbol: "AAVE",
+    coingeckoApi: "aave",
+    image: AAVE.src,
+  },
+  {
+    name: "Uniswap",
+    address: "",
     symbol: "UNI",
     coingeckoApi: "uniswap",
     image: Uniswap.src,

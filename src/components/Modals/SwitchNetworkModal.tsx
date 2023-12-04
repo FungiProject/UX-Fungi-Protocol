@@ -33,7 +33,8 @@ export default function SwitchNetworkModal({
     if (
       (chain && chain.id === 80001) ||
       (chain && chain.id === 42161) ||
-      (chain && chain.id === 1)
+      (chain && chain.id === 1) ||
+      (chain && chain.id === 137)
     ) {
       setOpen(false);
       getOpenModal(false);
