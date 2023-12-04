@@ -81,57 +81,66 @@ export default function FundDetails() {
 
   return (
     <main>
-      <UserInfo
-        address={router.query.address as `0x${string}`}
-        isUser={false}
-        isOwner={owner === address}
-      />
-
-      <div className="flex flex-col items-end mb-[12px]">
-        {ownerLoaded && (
-          <ActionsButton
-            fund={router.query.address as string}
+      {ownerLoaded ? (
+        <>
+          {" "}
+          <UserInfo
+            address={router.query.address as `0x${string}`}
+            isUser={false}
             isOwner={owner === address}
           />
-        )}
-        <div
-          className={`flex items-center w-full ${
-            ownerLoaded && owner === address && actionSelected === "Members"
-              ? "justify-between"
-              : "justify-end"
-          }`}
-        >
-          {ownerLoaded && actionSelected === "Members" && owner === address && (
-            <div className="flex items-center mt-[17px]">
-              <button
-                className="rounded-full bg-main px-[35px] py-[8px] text-center text-white mr-[13px] text-xs h-[40px]"
-                onClick={() => setOpenModal(true)}
-              >
-                Add Wallet
-              </button>
-              {openModal && (
-                <MembersModal getOpenModal={getOpenModal} members={members} />
+          <div className="flex flex-col items-end mb-[12px]">
+            <ActionsButton
+              fund={router.query.address as string}
+              isOwner={owner === address}
+            />
+
+            <div
+              className={`flex items-center w-full ${
+                owner === address && actionSelected === "Members"
+                  ? "justify-between"
+                  : "justify-end"
+              }`}
+            >
+              {actionSelected === "Members" && owner === address && (
+                <div className="flex items-center mt-[17px]">
+                  <>
+                    <button
+                      className="rounded-full bg-main px-[35px] py-[8px] text-center text-white mr-[13px] text-xs h-[40px]"
+                      onClick={() => setOpenModal(true)}
+                    >
+                      Add Wallet
+                    </button>
+                    {openModal && (
+                      <MembersModal
+                        getOpenModal={getOpenModal}
+                        members={members}
+                      />
+                    )}
+                    <ActionsSwitcher
+                      actions={typesMembersTable}
+                      actionSelected={typeMember}
+                      getActionSelected={getTypeMember}
+                      className="h-[40px] p-[4px] w-[300px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-xl text-sm"
+                      paddingButton="py-[6px]"
+                    />
+                  </>
+                </div>
               )}
               <ActionsSwitcher
-                actions={typesMembersTable}
-                actionSelected={typeMember}
-                getActionSelected={getTypeMember}
-                className="h-[40px] p-[4px] w-[300px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-xl text-sm"
+                actions={fundViews}
+                actionSelected={actionSelected}
+                getActionSelected={getActionSelected}
+                className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-xl text-sm"
                 paddingButton="py-[6px]"
               />
             </div>
-          )}
-          <ActionsSwitcher
-            actions={fundViews}
-            actionSelected={actionSelected}
-            getActionSelected={getActionSelected}
-            className="h-[40px] p-[4px] w-[600px] rounded-full grid grid-cols-4 bg-white items-center text-center mt-[17px] shadow-xl text-sm"
-            paddingButton="py-[6px]"
-          />
-        </div>
-      </div>
-
-      {view && view}
+          </div>
+          {view && view}
+        </>
+      ) : (
+        <></>
+      )}
     </main>
   );
 }
