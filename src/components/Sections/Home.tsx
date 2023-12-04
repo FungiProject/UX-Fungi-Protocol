@@ -5,14 +5,14 @@ import HomeCard from "../Cards/Homecard";
 import SearchBar from "../Filters/SearchBar";
 import FundsTable from "../Tables/FundsTable";
 import { funds } from "@/constants/Constants";
-import ShortBy from "../Filters/ShortBy";
+import SortBy from "../Filters/SortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export default function Home() {
   const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>([...funds]);
   const [originalFunds, setOriginalFunds] = useState([...funds]);
   const [search, setSearch] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Sort By");
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const ITEMS_PER_PAGE = 5;
@@ -119,10 +119,11 @@ export default function Home() {
       </div>
       <div className="flex items-center gap-x-[20px]">
         <SearchBar getInfo={getInfo} query={search} />
-        <ShortBy
+        <SortBy
           getSortChange={getSortChange}
-          shorts={["Aum", "Members", "All Time"]}
+          sorts={["Aum", "Members", "All Time"]}
           classSquare="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          selection={sortBy}
         />
       </div>
 

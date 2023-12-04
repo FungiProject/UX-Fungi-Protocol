@@ -16,6 +16,7 @@ export default function SearchBar({ getInfo, query }: SearchBar) {
       {!query ? <MagnifyingGlassIcon className="h-6 w-6 mr-4" /> : <></>}
       <input
         type="text"
+        value={query}
         placeholder="Search"
         className="rounded-full text-black outline-none placeholder:text-black py-[9px]"
         onChange={(e) => handleSearchChange(e)}

@@ -8,22 +8,42 @@ type NetworkDropdownProps = {
   getNetwork: (id: NetworkType) => void;
   networks: NetworkType[];
   classDropdown: string;
+  selectedNetwork?: NetworkType;
 };
 
 export default function SelectNetworkDropdown({
   getNetwork,
   networks,
   classDropdown,
+  selectedNetwork,
 }: NetworkDropdownProps) {
   return (
-    <Menu as="div" className="relative inline-block text-left mr-8 ">
+    <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className={classDropdown}>
-          Choose Network
-          <ChevronDownIcon
-            className="-mr-1 h-5 w-5 text-gray-400"
-            aria-hidden="true"
-          />
+          {selectedNetwork ? (
+            <>
+              <Image
+                width={25}
+                height={25}
+                alt="Network image"
+                src={selectedNetwork.image}
+                aria-hidden="true"
+              />{" "}
+              <ChevronDownIcon
+                className="-mr-1 h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </>
+          ) : (
+            <>
+              Choose Network
+              <ChevronDownIcon
+                className="-mr-1 h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </>
+          )}
         </Menu.Button>
       </div>
 

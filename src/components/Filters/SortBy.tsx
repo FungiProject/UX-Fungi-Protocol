@@ -5,19 +5,19 @@ import { NetworkType } from "@/types/Types";
 import Image from "next/image";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
-type NetworkDropdownProps = {
-  getSortChange: (short: string) => void;
-  shorts: string[];
+type SortByProps = {
+  getSortChange: (sort: string) => void;
+  sorts: string[];
   classSquare: string;
+  selection: string;
 };
 
-export default function ChangeNetworkDropdown({
+export default function SortBy({
   getSortChange,
-  shorts,
+  sorts,
   classSquare,
-}: NetworkDropdownProps) {
-  const [selection, setSelection] = useState<string>("Short By");
-
+  selection,
+}: SortByProps) {
   return (
     <Menu as="div" className="relative inline-block text-left ">
       <div>
@@ -41,17 +41,16 @@ export default function ChangeNetworkDropdown({
       >
         <Menu.Items className={classSquare}>
           <div className="py-1 flex flex-col px-5">
-            {shorts.map((short: string) => {
+            {sorts.map((sort: string) => {
               return (
-                <Menu.Item key={short}>
+                <Menu.Item key={sort}>
                   <button
                     onClick={() => {
-                      getSortChange(short);
-                      setSelection(short);
+                      getSortChange(sort);
                     }}
                     className="my-1 text-start justify-end align-end  items-center"
                   >
-                    <span className="col-span-2 text-start">{short}</span>
+                    <span className="col-span-2 text-start">{sort}</span>
                   </button>
                 </Menu.Item>
               );

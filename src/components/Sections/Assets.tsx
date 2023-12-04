@@ -1,4 +1,4 @@
-import { assetType } from "@/types/Types";
+import { assetType, NetworkType } from "@/types/Types";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import SearchBar from "../Filters/SearchBar";
@@ -7,19 +7,21 @@ import {
   assetsPolygon,
   assetsArbitrum,
   assetsMainnet,
+  networks,
 } from "@/constants/Constants";
-import ShortBy from "../Filters/ShortBy";
+import SortBy from "../Filters/SortBy";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useNetwork } from "wagmi";
 import Spinner from "../Loader/Spinner";
+import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
 
 export default function Assets() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
   const [initialAssets, setInitialAssets] = useState<assetType[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>();
   const [search, setSearch] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Sort By");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { chain } = useNetwork();
 
@@ -50,10 +52,10 @@ export default function Assets() {
     setCurrentPage(currentPage - 1);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let copy: any[] = [];
-      let initials: any[] = [];
+  const fetchData = async (sortByNetwork: boolean) => {
+    let copy: any[] = [];
+    let initials: any[] = [];
+    if (!sortByNetwork) {
       if (chain && chain.id === 80001) {
         copy = assetsPolygon;
         initials = assetsPolygon;
@@ -64,30 +66,54 @@ export default function Assets() {
         copy = assetsMainnet;
         initials = assetsMainnet;
       }
+    } else {
+      if (selectedNetwork && selectedNetwork.id === 80001) {
+        copy = assetsPolygon;
+        initials = assetsPolygon;
+      } else if (selectedNetwork && selectedNetwork.id === 42161) {
+        copy = assetsArbitrum;
+        initials = assetsArbitrum;
+      } else if (selectedNetwork && selectedNetwork.id === 1) {
+        copy = assetsMainnet;
+        initials = assetsMainnet;
+      }
+    }
 
-      const promises = copy.map(async (asset) => {
-        try {
-          const response = await axios.get(
-            `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}`
-          );
+    const promises = copy.map(async (asset) => {
+      try {
+        const response = await axios.get(
+          `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}`
+        );
 
-          const data = response.data;
-          asset.price = data?.market_data.current_price.usd;
-          asset.marketCap = data?.market_data.market_cap.usd;
-          asset.volumen24 = data?.market_data.total_volume.usd;
-        } catch (error) {
-          console.log(error);
-        }
-      });
+        const data = response.data;
+        asset.price = data?.market_data.current_price.usd;
+        asset.marketCap = data?.market_data.market_cap.usd;
+        asset.volumen24 = data?.market_data.total_volume.usd;
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
-      await Promise.all(promises);
-      setAssetsArrayCopy(copy);
-      setInitialAssets(initials);
-      setLoading(false);
-    };
+    await Promise.all(promises);
 
-    fetchData();
+    setAssetsArrayCopy(copy);
+    setInitialAssets(initials);
+    setSortBy("Short By");
+    setSearch("");
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData(false);
+  }, []);
+
+  useEffect(() => {
+    fetchData(false);
   }, [chain]);
+
+  useEffect(() => {
+    fetchData(true);
+  }, [selectedNetwork]);
 
   useEffect(() => {
     let copy = [...initialAssets];
@@ -143,14 +169,27 @@ export default function Assets() {
     );
   };
 
+  const getNetwork = (network: NetworkType) => {
+    setSelectedNetwork(network);
+  };
+
   return (
     <main>
       <div className="flex items-center gap-x-[20px] justify-end mt-20">
         <SearchBar getInfo={getInfo} query={search} />
-        <ShortBy
+        <SortBy
           getSortChange={getSortChange}
-          shorts={["Price", "Market Cap", "Volume 24h"]}
+          sorts={["Price", "Market Cap", "Volume 24h"]}
           classSquare="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          selection={sortBy}
+        />
+        <SelectNetworkDropdown
+          getNetwork={getNetwork}
+          networks={networks}
+          selectedNetwork={selectedNetwork}
+          classDropdown={`inline-flex ${
+            selectedNetwork ? "w-fit py-2" : "w-[270px] py-3"
+          } shadow-lg outline-none bg-white items-center justify-between gap-x-1.5 rounded-full px-3  text-sm font-semibold text-gray-900`}
         />
       </div>
 
