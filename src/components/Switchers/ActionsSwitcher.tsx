@@ -20,6 +20,7 @@ export default function ActionsSwitcher({
       {actions.map((action: string) => {
         return (
           <button
+            key={action}
             onClick={() => getActionSelected(action)}
             className={
               action === actionSelected

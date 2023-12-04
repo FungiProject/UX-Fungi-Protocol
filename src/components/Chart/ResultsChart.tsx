@@ -55,6 +55,7 @@ export default function ResultsChart({
                     ? "bg-gray-100 text-black"
                     : "text-gray-400"
                 }`}
+                key={time}
                 onClick={() => setChartTime(time)}
               >
                 {time}

@@ -45,7 +45,11 @@ export default function TypeFundDropdown({
             {types.map((type: string) => {
               return (
                 <Menu.Item key={type}>
-                  <button onClick={() => getType(type)} className="my-1">
+                  <button
+                    onClick={() => getType(type)}
+                    className="my-1"
+                    key={type}
+                  >
                     {type}
                   </button>
                 </Menu.Item>
