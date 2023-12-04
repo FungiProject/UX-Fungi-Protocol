@@ -25,7 +25,7 @@ export default function ActionsSideBar({ page }: ActionsSideBarProps) {
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
             {connectedWallet ? (
               <div className="flex items-center">
-                <ChangeNetworkDropdown title="" networks={networks} />{" "}
+                <ChangeNetworkDropdown isModal={false} networks={networks} />{" "}
                 <LogoutButton />
               </div>
             ) : (

@@ -75,17 +75,24 @@ export default function SwitchNetworkModal({
                     src={DangerIcon.src}
                     className="mr-4"
                   />
-                  <div className="mt-3 sm:mt-0 sm:text-left w-[150px] mr-[70px]">
-                    <Dialog.Title
-                      as="h3"
-                      className="font-medium leading-6 text-gray-900 text-lg"
-                    >
-                      Wrong Network
-                    </Dialog.Title>
-                    <ChangeNetworkDropdown title="" networks={networks} />{" "}
-                    <p className="text-xs font-medium">
+                  <div className="mt-3 sm:mt-0 sm:text-left w-[300px] ">
+                    <div className="flex justify-between">
+                      <Dialog.Title
+                        as="h3"
+                        className="font-medium leading-6 text-gray-900 text-lg mr-[70px]"
+                      >
+                        Wrong Network
+                      </Dialog.Title>{" "}
+                      <ChangeNetworkDropdown
+                        isModal={true}
+                        networks={networks}
+                      />
+                    </div>
+
+                    <p className="text-xs font-medium mr-[100px]">
                       Your wallet is not on the correct network!
                     </p>
+
                     {/* Change to network selector */}
                     {/* <button
                       disabled={!switchNetwork || 80001 === chain?.id}

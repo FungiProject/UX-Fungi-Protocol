@@ -6,13 +6,13 @@ import Image from "next/image";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
 type NetworkDropdownProps = {
-  title: string;
   networks: NetworkType[];
+  isModal?: boolean;
 };
 
 export default function ChangeNetworkDropdown({
-  title,
   networks,
+  isModal,
 }: NetworkDropdownProps) {
   const [chainSelected, setChainSelected] = useState<NetworkType>();
   const { chain } = useNetwork();
@@ -28,7 +28,10 @@ export default function ChangeNetworkDropdown({
   }, [chain]);
 
   return (
-    <Menu as="div" className="relative inline-block text-left mr-8">
+    <Menu
+      as="div"
+      className={`relative inline-block text-left ${isModal ? "" : "mr-8"}`}
+    >
       <div>
         <Menu.Button className="inline-flex w-fit items-center justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-lg">
           {chainSelected && (
@@ -56,25 +59,35 @@ export default function ChangeNetworkDropdown({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1 flex flex-col px-5">
+        <Menu.Items
+          className={`absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
+            isModal ? "w-32" : "w-56"
+          }`}
+        >
+          <div
+            className={`py-1 flex  ${isModal ? "flex-row" : "flex-col px-5"} `}
+          >
             {networks.map((network: NetworkType) => {
               return (
                 <Menu.Item key={network.name}>
                   <button
                     onClick={() => switchNetwork?.(network.id)}
-                    className="my-1 grid grid-cols-3 justify-end align-end  items-center"
+                    className={`my-1 ${
+                      isModal ? "" : "grid grid-cols-3"
+                    } g justify-end align-end  items-center`}
                   >
-                    <span className="col-span-2 text-start">
-                      {network.name}
-                    </span>
+                    {!isModal && (
+                      <span className="col-span-2 text-start">
+                        {network.name}
+                      </span>
+                    )}
                     <Image
                       width={25}
                       height={25}
                       alt="Network image"
                       src={network.image}
                       aria-hidden="true"
-                      className="ml-10"
+                      className={`${isModal ? "ml-4" : "ml-10"}`}
                     />
                   </button>
                 </Menu.Item>
