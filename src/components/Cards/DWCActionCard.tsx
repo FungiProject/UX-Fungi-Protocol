@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import USDC from "../../../public/USDC.svg";
 import Image from "next/image";
 import TxButton from "../Buttons/TxButton";
@@ -18,9 +18,11 @@ type DWCActionCardProps = {
 
 export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
   const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
+  const [children, setChildren] = useState<ReactElement>(<span></span>);
+  const [balance, setBalance] = useState<number | undefined>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { address } = useAccount();
   const { chain } = useNetwork();
-
   const handleAmountChange = (amount: number) => {
     setAmountTo(amount);
   };
@@ -49,6 +51,32 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
     }
   };
 
+  const initialTxButton = () => {
+    switch (actionSelected) {
+      case "Deposit":
+        setChildren(<span>Approve</span>);
+        break;
+      case "Fees":
+        setChildren(<span>Claim</span>);
+        break;
+      case "Withdraw":
+        setChildren(<span>Withdraw</span>);
+        break;
+      default:
+        break;
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    initialTxButton();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    initialTxButton();
+  }, [actionSelected]);
+
   return (
     <main className="mt-[108px] ">
       <h1 className="text-4xl font-medium ml-[15px] mb-[30px]">
@@ -76,14 +104,19 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
             />
           </div>{" "}
           <div>
-            Balance: <span>1000</span>
+            Balance: <span>{balance}</span>
             <button className="text-main ml-1.5" onClick={() => maxBalance()}>
               Max
             </button>
           </div>
         </div>
       </div>
-      {/* <TxButton /> */}
+      {!isLoading && (
+        <TxButton
+          className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover"
+          children={children}
+        />
+      )}
     </main>
   );
 }
