@@ -11,7 +11,13 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 import "@/styles/globals.css";
 
 const satoshi = local({
-  src: "../../public/fonts/Satoshi.otf",
+  src: [
+    {
+      path: "../../public/fonts/SatoshiRegular.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   display: "swap",
 });
 
