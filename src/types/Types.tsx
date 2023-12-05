@@ -38,6 +38,7 @@ export type NetworkType = {
 
 export type assetType = {
   name: string;
+  address: string;
   symbol: string;
   coingeckoApi: string;
   image: string;

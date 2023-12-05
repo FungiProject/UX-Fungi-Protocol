@@ -66,7 +66,7 @@ export default function Assets() {
       } else if (chain && chain.id === 1) {
         copy = assetsMainnet;
         initials = assetsMainnet;
-      } else if (selectedNetwork && selectedNetwork.id === 137) {
+      } else if (chain && chain.id === 137) {
         copy = assetsPolygon;
         initials = assetsPolygon;
       }

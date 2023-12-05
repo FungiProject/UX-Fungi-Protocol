@@ -1,7 +1,7 @@
 import { Alchemy, Network } from "alchemy-sdk";
 
 export default async function getMaxTokens(
-  walletAddress: string,
+  walletAddress: `0x${string}`,
   tokenAddress: string,
   network: string
 ) {

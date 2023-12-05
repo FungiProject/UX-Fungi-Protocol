@@ -553,7 +553,7 @@ export const assetsPolygon = [
   },
   {
     name: "USD Coin (PoS)",
-    address: "",
+    address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     symbol: "USDC.e",
     coingeckoApi: "bridged-usdc-polygon-pos-bridge",
     image: USDC.src,
