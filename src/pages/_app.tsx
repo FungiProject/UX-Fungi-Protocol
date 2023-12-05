@@ -17,6 +17,16 @@ const satoshi = local({
       weight: "400",
       style: "normal",
     },
+    {
+      path: "../../public/fonts/SatoshiMedium.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/SatoshiBold.otf",
+      weight: "700",
+      style: "normal",
+    },
   ],
   display: "swap",
 });
