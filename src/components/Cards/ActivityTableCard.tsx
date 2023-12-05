@@ -7,10 +7,12 @@ import Loader from "../Loader/Spinner";
 
 type ActivityTableCardProps = {
   activity: any;
+  index: number;
 };
 
 export default function ActivityTableCard({
   activity,
+  index,
 }: ActivityTableCardProps) {
   const [ensName, setEnsName] = useState<string | undefined>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -32,17 +34,23 @@ export default function ActivityTableCard({
   };
 
   return (
-    <main className="grid grid-cols-3 border-b-1 py-[32px] min-h-[150px]">
-      <div className="flex flex-col">
-        <span>{activity.type}</span>
+    <main
+      className={`grid grid-cols-3 ${
+        index === 4 ? "" : "border-b-1"
+      }  h-[145px] font-semibold`}
+    >
+      <div className="flex flex-col py-[27.5px] justify-center h-full">
+        <span className="font-bold">{activity.type}</span>
         {activity.type === "Swap" && (
           <span>
-            From: <span>{activity.amountIn}</span>
+            <span className="font-bold">From: </span>{" "}
+            <span>{activity.amountIn}</span>
           </span>
         )}
         {activity.type === "Swap" ? (
           <span>
-            To: <span>{activity.amountOut}</span>
+            <span className="font-bold">To:</span>{" "}
+            <span>{activity.amountOut}</span>
           </span>
         ) : (
           <span>
@@ -60,10 +68,10 @@ export default function ActivityTableCard({
           />
         </div>
       </div>
-      <div className="flex flex-col text-center justify-center h-full">
+      <div className="flex flex-col text-center justify-center h-full py-[27.5px] ">
         {!isLoading ? (
           <span>
-            By:{" "}
+            <span className="font-bold">By: </span>
             {ensName !== undefined
               ? ensName
               : activity.sender.substring(0, 10) + "..."}
@@ -74,7 +82,7 @@ export default function ActivityTableCard({
           </div>
         )}
       </div>
-      <div className="flex flex-col text-end justify-center h-full">
+      <div className="flex flex-col text-end justify-center h-full py-[27.5px]">
         <span>{formatTimestampToDateActivity(activity.time * 1000)}</span>
       </div>
     </main>

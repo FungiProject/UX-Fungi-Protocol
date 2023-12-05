@@ -14,10 +14,18 @@ export default function ActivityViewTable({
   endIndex,
 }: ActivityViewTableProps) {
   return (
-    <div className="mt-[20px] w-full h-[574px]  px-[20px] bg-white rounded-lg">
-      {activities.slice(startIndex, endIndex).map((activity: any) => {
-        return <ActivityTableCard activity={activity} key={activity.name} />;
-      })}
+    <div className="mt-[20px] w-full h-[725px]  px-[20px] bg-white rounded-lg">
+      {activities
+        .slice(startIndex, endIndex)
+        .map((activity: any, index: number) => {
+          return (
+            <ActivityTableCard
+              activity={activity}
+              key={activity.name}
+              index={index}
+            />
+          );
+        })}
     </div>
   );
 }
