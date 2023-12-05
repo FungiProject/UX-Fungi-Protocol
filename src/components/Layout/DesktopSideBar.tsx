@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { navigationType } from "@/types/Types";
-import { navigation } from "@/constants/Constants";
+import { navigationType, NetworkType } from "@/types/Types";
+import { navigation, networks } from "@/constants/Constants";
 import Logo from "../../../public/Logo.svg";
 import CreateFundModal from "../Modals/CreateFundModal";
 import SwitchNetworkModal from "../Modals/SwitchNetworkModal";
@@ -16,6 +16,8 @@ function classNames(...classes: string[]) {
 
 export default function DesktopSideBar() {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [restOfNetworks, setRestOfNetworks] = useState<NetworkType[]>([]);
+  const [previousNetwork, setPreviousNetwork] = useState<NetworkType>();
   const [needSwitch, setNeedSwitch] = useState<boolean>(false);
   const router = useRouter();
 
@@ -38,13 +40,25 @@ export default function DesktopSideBar() {
       chain.id !== 137
     ) {
       setNeedSwitch(true);
+    } else {
+      const prev = networks.filter((network) => network.name === chain?.name);
+      const rest: NetworkType[] = networks.filter(
+        (network) => network.name !== prev[0].name
+      );
+
+      setPreviousNetwork(prev[0]);
+      setRestOfNetworks(rest);
     }
   }, [chain]);
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:flex-col h-[700px] w-[160px] my-[25px]">
-      {needSwitch && chain && (
-        <SwitchNetworkModal getOpenModal={getSwitchModal} />
+      {needSwitch && chain && previousNetwork && restOfNetworks && (
+        <SwitchNetworkModal
+          getOpenModal={getSwitchModal}
+          previousNetwork={previousNetwork}
+          restOfNetworks={restOfNetworks}
+        />
       )}
       <div className="flex justify-center bg-secondBlack h-full w-full rounded-2xl py-[24px]">
         <div className="flex flex-col justify-between items-center">

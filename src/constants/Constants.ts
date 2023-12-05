@@ -447,8 +447,8 @@ export const funds = [
 ];
 
 export const networks = [
-  { name: "Mainnet", id: 1, image: Mainnet.src },
-  { name: "Arbitrum", id: 42161, image: Arbitrum.src },
+  { name: "Ethereum", id: 1, image: Mainnet.src },
+  { name: "Arbitrum One", id: 42161, image: Arbitrum.src },
   { name: "Polygon", id: 137, image: Polygon.src },
   { name: "Polygon Mumbai", id: 80001, image: Polygon.src },
 ];
