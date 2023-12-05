@@ -104,7 +104,7 @@ export default function DesktopSideBar() {
             </div>
           ))}
           <button
-            className="text-white bg-main px-[18px] py-[12px] rounded-xl text-sm font-medium"
+            className="text-white bg-main px-[18px] py-[12px] rounded-xl text-sm font-medium hover:bg-mainHover"
             onClick={() => setOpenModal(true)}
           >
             Create Fund

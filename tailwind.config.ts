@@ -12,6 +12,7 @@ const config: Config = {
       colors: {
         main: "#514AF3",
         secondBlack: "#0F0F0F",
+        mainHover: "#706aff",
       },
       boxShadow: {
         input: "0 1px 10px 0px #514AF3",
