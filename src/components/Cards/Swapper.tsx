@@ -75,7 +75,6 @@ export default function Swapper({ actionSelected }: SwapperProps) {
   }, [chain]);
 
   const getTokenTo = (token: assetType) => {
-    console.log(token);
     setTokenTo(token);
   };
 
