@@ -42,9 +42,9 @@ export type assetType = {
   symbol: string;
   coingeckoApi: string;
   image: string;
-  price: number;
-  marketCap: number;
-  volumen24: number;
+  price?: number;
+  marketCap?: number;
+  volumen24?: number;
 };
 
 export type memberType = {

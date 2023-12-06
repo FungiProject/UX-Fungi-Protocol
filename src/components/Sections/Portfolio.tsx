@@ -11,7 +11,7 @@ import FundsTable from "../Tables/FundsTable";
 export default function Portfolio() {
   const [actionSelected, setActionSelected] = useState("Invested");
   const [fundsArrayCopy, setFundsArrayCopy] = useState<fundType[]>([...funds]);
-  const [originalFunds, setOriginalFunds] = useState([...funds]);
+  const [originalFunds, setOriginalFunds] = useState<fundType[]>([...funds]);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const ITEMS_PER_PAGE = 5;

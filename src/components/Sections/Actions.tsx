@@ -1,6 +1,7 @@
 import React from "react";
-import TxButton from "../Buttons/TxButton";
+
 import DWCActionCard from "../Cards/DWCActionCard";
+import Swapper from "../Cards/Swapper";
 
 type ActionsProps = {
   actionSelected: string;
@@ -12,9 +13,8 @@ export default function Actions({ actionSelected }: ActionsProps) {
       {actionSelected !== "Swap" ? (
         <DWCActionCard actionSelected={actionSelected} />
       ) : (
-        <div>Swapper</div>
+        <Swapper actionSelected={actionSelected} />
       )}
-      {/* <TxButton /> */}
     </main>
   );
 }

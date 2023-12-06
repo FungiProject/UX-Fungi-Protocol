@@ -118,7 +118,12 @@ export default function Home() {
         })}
       </div>
       <div className="flex items-center gap-x-[20px]">
-        <SearchBar getInfo={getInfo} query={search} />
+        <SearchBar
+          getInfo={getInfo}
+          query={search}
+          classMain="rounded-full text-black px-[22px] items-center w-[270px] shadow-lg outline-none placeholder:text-black bg-white flex"
+          placeholder="Search"
+        />
         <SortBy
           getSortChange={getSortChange}
           sorts={["Aum", "Members", "All Time"]}

@@ -16,6 +16,7 @@ const config: Config = {
       },
       boxShadow: {
         input: "0 1px 10px 0px #514AF3",
+        searchBar: "0px 1px 10px 0px rgba(81, 74, 243, 0.50)",
       },
       borderWidth: { 1: "1px" },
     },

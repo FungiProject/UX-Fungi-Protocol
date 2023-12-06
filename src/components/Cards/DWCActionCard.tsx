@@ -21,8 +21,10 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
   const [children, setChildren] = useState<ReactElement>(<span></span>);
   const [balance, setBalance] = useState<number | undefined>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const { address } = useAccount();
   const { chain } = useNetwork();
+
   const handleAmountChange = (amount: number) => {
     setAmountTo(amount);
   };
