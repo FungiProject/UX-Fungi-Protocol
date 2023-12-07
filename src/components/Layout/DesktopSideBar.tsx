@@ -47,13 +47,15 @@ export default function DesktopSideBar() {
     ) {
       setNeedSwitch(true);
     } else {
-      const prev = networks.filter((network) => network.name === chain?.name);
-      const rest: NetworkType[] = networks.filter(
-        (network) => network.name !== prev[0].name
-      );
+      if (chain) {
+        const prev = networks.filter((network) => network.name === chain?.name);
+        const rest: NetworkType[] = networks.filter(
+          (network) => network.name !== prev[0].name
+        );
 
-      setPreviousNetwork(prev[0]);
-      setRestOfNetworks(rest);
+        setPreviousNetwork(prev[0]);
+        setRestOfNetworks(rest);
+      }
     }
   }, [chain]);
 

@@ -15,6 +15,24 @@ import USDC from "../../public/USDC.svg";
 import Polygon from "../../public/Polygon.svg";
 import Mainnet from "../../public/Mainnet.svg";
 import Arbitrum from "../../public/Arbitrum.svg";
+// Arbitrum Tokens
+import Chainlink from "../../public/ArbitrumTokens/Chainlink.jpeg";
+import WBTC from "../../public/ArbitrumTokens/WBTC.jpeg";
+import Tether from "../../public/ArbitrumTokens/Tether.jpeg";
+import Dai from "../../public/ArbitrumTokens/Dai.jpeg";
+import Lido from "../../public/ArbitrumTokens/Lido.jpeg";
+import Curve from "../../public/ArbitrumTokens/Curve.jpeg";
+import RocketPool from "../../public/ArbitrumTokens/RocketPool.jpeg";
+import Stargate from "../../public/ArbitrumTokens/Stargate.jpeg";
+import Radiant from "../../public/ArbitrumTokens/Radiant.jpeg";
+import Gains from "../../public/ArbitrumTokens/Gains.jpeg";
+import Joe from "../../public/ArbitrumTokens/Joe.jpeg";
+import Magic from "../../public/ArbitrumTokens/Magic.jpeg";
+import Pendle from "../../public/ArbitrumTokens/Pendle.jpeg";
+import Spell from "../../public/ArbitrumTokens/Spell.jpeg";
+import Balancer from "../../public/ArbitrumTokens/Balancer.jpeg";
+import Frax from "../../public/ArbitrumTokens/Frax.jpeg";
+import Sushi from "../../public/ArbitrumTokens/Sushi.jpeg";
 
 export const navigation = [
   {
@@ -452,6 +470,163 @@ export const networks = [
   { name: "Polygon Mumbai", id: 80001, image: Polygon.src },
 ];
 
+export const assetsArbitrum = [
+  {
+    name: "Ethereum",
+    address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    symbol: "ETH",
+    coingeckoApi: "ethereum",
+    image: Mainnet.src,
+  },
+  {
+    name: "USD Tether",
+    address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+    symbol: "USDT",
+    coingeckoApi: "tether",
+    image: Tether.src,
+  },
+  {
+    name: "USD Coin",
+    address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    symbol: "USDC",
+    coingeckoApi: "usd-coin",
+    image: USDC.src,
+  },
+  {
+    name: "Wrapped Bitcoin",
+    address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+    symbol: "WBTC",
+    coingeckoApi: "wrapped-bitcoin",
+    image: WBTC.src,
+  },
+  {
+    name: "Chainlink ",
+    address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+    symbol: "LINK",
+    coingeckoApi: "chainlink",
+    image: Chainlink.src,
+  },
+  {
+    name: "Dai",
+    address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+    symbol: "DAI",
+    coingeckoApi: "dai",
+    image: Dai.src,
+  },
+  {
+    name: "Uniswap",
+    address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+    symbol: "UNI",
+    coingeckoApi: "uniswap",
+    image: Uniswap.src,
+  },
+  {
+    name: "Lido",
+    address: "0x13Ad51ed4F1B7e9Dc168d8a00cB3f4dDD85EfA60",
+    symbol: "LDO",
+    coingeckoApi: "ldo",
+    image: Lido.src,
+  },
+  {
+    name: "Arbitrum",
+    address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+    symbol: "ARB",
+    coingeckoApi: "arbitrum",
+    image: Arbitrum.src,
+  },
+  {
+    name: "Curve DAO",
+    address: "0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978",
+    symbol: "CRV",
+    coingeckoApi: "curve-dao-token",
+    image: Curve.src,
+  },
+  {
+    name: "Rocket Pool",
+    address: "0xB766039cc6DB368759C1E56B79AFfE831d0Cc507",
+    symbol: "RPL",
+    coingeckoApi: "rocket-pool",
+    image: RocketPool.src,
+  },
+  {
+    name: "GMX",
+    address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+    symbol: "GMX",
+    coingeckoApi: "gmx",
+    image: GMX.src,
+  },
+  {
+    name: "Stargate Finance",
+    address: "0x6694340fc020c5E6B96567843da2df01b2CE1eb6",
+    symbol: "STG",
+    coingeckoApi: "stargate-finance",
+    image: Stargate.src,
+  },
+  {
+    name: "Radiant Capital",
+    address: "0x3082CC23568eA640225c2467653dB90e9250AaA0",
+    symbol: "RDNT",
+    coingeckoApi: "radiant-capital",
+    image: Radiant.src,
+  },
+  {
+    name: "Joe",
+    address: "0x371c7ec6D8039ff7933a2AA28EB827Ffe1F52f07",
+    symbol: "JOE",
+    coingeckoApi: "joe",
+    image: Joe.src,
+  },
+  {
+    name: "Magic",
+    address: "0x539bdE0d7Dbd336b79148AA742883198BBF60342",
+    symbol: "MAGIC",
+    coingeckoApi: "magic",
+    image: Magic.src,
+  },
+  {
+    name: "Gains Network",
+    address: "0x18c11FD286C5EC11c3b683Caa813B77f5163A122",
+    symbol: "GNS",
+    coingeckoApi: "gains-network",
+    image: Gains.src,
+  },
+  {
+    name: "Pendle",
+    address: "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+    symbol: "PENDLE",
+    coingeckoApi: "pendle",
+    image: Pendle.src,
+  },
+  {
+    name: "Spell",
+    address: "0x3E6648C5a70A150A88bCE65F4aD4d506Fe15d2AF",
+    symbol: "SPEll",
+    coingeckoApi: "spell-token",
+    image: Spell.src,
+  },
+  {
+    name: "Balancer",
+    address: "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
+    symbol: "BAL",
+    coingeckoApi: "balancer",
+    image: Balancer.src,
+  },
+  {
+    name: "Frax Share",
+    address: "0x9d2F299715D94d8A7E6F5eaa8E654E8c74a988A7",
+    symbol: "FXS",
+    coingeckoApi: "frax",
+    image: Frax.src,
+  },
+  {
+    name: "Sushi",
+    address: "0xd4d42F0b6DEF4CE0383636770eF773390d85c61A",
+    symbol: "SUSHI",
+    coingeckoApi: "sushi",
+    image: Sushi.src,
+  },
+];
+
 export const assetsMainnet = [
   {
     name: "Etherium",
@@ -473,44 +648,6 @@ export const assetsMainnet = [
     symbol: "UNI",
     coingeckoApi: "uniswap",
     image: Uniswap.src,
-  },
-  {
-    name: "USD Coin",
-    address: "",
-    symbol: "USDC",
-    coingeckoApi: "usd-coin",
-    image: USDC.src,
-  },
-];
-
-export const assetsArbitrum = [
-  {
-    name: "Etherium",
-    address: "",
-    symbol: "ETH",
-    coingeckoApi: "ethereum",
-    image: Mainnet.src,
-  },
-  {
-    name: "AAVE",
-    address: "",
-    symbol: "AAVE",
-    coingeckoApi: "aave",
-    image: AAVE.src,
-  },
-  {
-    name: "Uniswap",
-    address: "",
-    symbol: "UNI",
-    coingeckoApi: "uniswap",
-    image: Uniswap.src,
-  },
-  {
-    name: "GMX",
-    address: "",
-    symbol: "GMX",
-    coingeckoApi: "gmx",
-    image: GMX.src,
   },
   {
     name: "Arbitrum",

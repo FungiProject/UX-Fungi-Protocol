@@ -132,12 +132,12 @@ export default function TokensModal({
                         >
                           <div className="pl-[46px] flex">
                             <Image
-                              width={40}
-                              height={40}
+                              width={46}
+                              height={46}
                               alt="Network Image"
                               src={asset.image}
                               aria-hidden="true"
-                              className="mr-4 rounded-full"
+                              className="mr-6 rounded-full"
                             />
                             <div className="flex flex-col">
                               <span>{asset.name}</span>

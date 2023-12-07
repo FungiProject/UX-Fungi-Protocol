@@ -13,7 +13,7 @@ type NetworkDropdownProps = {
   getNetwork: (id: NetworkType) => void;
   networks: NetworkType[];
   classDropdown: string;
-  selectedNetwork?: NetworkType;
+  selectedNetwork?: NetworkType | null;
 };
 
 export default function SelectNetworkDropdown({

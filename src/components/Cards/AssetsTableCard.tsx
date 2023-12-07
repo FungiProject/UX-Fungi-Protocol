@@ -43,7 +43,7 @@ export default function AssetsTableCard({
           height={50}
           alt="Logo"
           src={asset.image}
-          className="ml-[50px]"
+          className="ml-[50px] rounded-full"
         />
       </div>
       <div className="flex items-start flex-col col-span-2">

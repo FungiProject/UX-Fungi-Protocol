@@ -27,7 +27,9 @@ export default function Assets() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
   const [initialAssets, setInitialAssets] = useState<assetType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>();
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkType | null>(
+    null
+  );
   const [search, setSearch] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("Sort By");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -95,35 +97,39 @@ export default function Assets() {
 
     const promises = copy.map(async (asset) => {
       try {
+        console.log(`Fetching data for ${asset.coingeckoApi}`);
         const response = await axios.get(
-          `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}`
+          `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}?x_cg_demo_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API}`
         );
-
-        const data = response.data;
-        asset.price = data?.market_data.current_price.usd;
-        asset.marketCap = data?.market_data.market_cap.usd;
-        asset.volumen24 = data?.market_data.total_volume.usd;
+        if (response.status === 200) {
+          const data = response.data;
+          asset.price = data?.market_data.current_price.usd;
+          asset.marketCap = data?.market_data.market_cap.usd;
+          asset.volumen24 = data?.market_data.total_volume.usd;
+        } else {
+          console.log("Error");
+        }
       } catch (error) {
-        console.log(error);
+        asset.price = 0;
+        asset.marketCap = 0;
+        asset.volumen24 = 0;
       }
     });
 
-    await Promise.all(promises);
-
-    setAssetsArrayCopy(copy);
-    setInitialAssets(initials);
-    setSortBy("Short By");
-    setSearch("");
-    setLoading(false);
+    await Promise.all(promises).then(() => {
+      setAssetsArrayCopy(copy);
+      setInitialAssets(initials);
+      setSortBy("Short By");
+      setSearch("");
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
-    fetchData(false);
+    return () => {
+      fetchData(false);
+    };
   }, []);
-
-  useEffect(() => {
-    fetchData(false);
-  }, [chain]);
 
   useEffect(() => {
     fetchData(true);
@@ -190,7 +196,12 @@ export default function Assets() {
   return (
     <main>
       <div className="flex items-center gap-x-[20px] justify-end mt-20">
-        <SearchBar getInfo={getInfo} query={search} />
+        <SearchBar
+          getInfo={getInfo}
+          query={search}
+          classMain="rounded-full text-black px-[22px] items-center w-[270px] shadow-lg outline-none placeholder:text-black bg-white flex"
+          placeholder="Search"
+        />
         <SortBy
           getSortChange={getSortChange}
           sorts={["Price", "Market Cap", "Volume 24h"]}
