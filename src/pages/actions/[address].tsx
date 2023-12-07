@@ -1,12 +1,18 @@
+// React
+import React, { useState } from "react";
+// Next
+import Link from "next/link";
+import { useRouter } from "next/router";
+// Components
 import Actions from "@/components/Sections/Actions";
 import ErrorPage from "@/components/Sections/ErrorPage";
 import ActionsSwitcher from "@/components/Switchers/ActionsSwitcher";
+// Constants
 import { actions } from "@/constants/Constants";
+// Hooks
 import useWindowSize from "@/hooks/useWindowSize";
+// Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
 
 export default function ActionsPage() {
   const [actionSelected, setActionSelected] = useState("Swap");

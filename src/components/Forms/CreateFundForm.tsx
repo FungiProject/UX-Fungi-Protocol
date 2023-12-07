@@ -1,13 +1,18 @@
+// React
 import React, { useState } from "react";
+// Images
 import DefaultImage from "../../../public/DefaultImage.svg";
-import Image from "next/image";
-import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
-import { NetworkType } from "@/types/Types";
-import { networks } from "@/constants/Constants";
-import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
-
 import Telegram from "../../../public/Telegram.svg";
 import X from "../../../public/X.svg";
+// Next
+import Image from "next/image";
+// Components
+import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
+import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
+// Types
+import { NetworkType } from "@/types/Types";
+// Constants
+import { networks } from "@/constants/Constants";
 
 export default function CreateFundForm() {
   const [fundName, setFundName] = useState<string | undefined>();

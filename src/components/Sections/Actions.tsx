@@ -1,5 +1,6 @@
+// React
 import React from "react";
-
+// Components
 import DWCActionCard from "../Cards/DWCActionCard";
 import Swapper from "../Cards/Swapper";
 

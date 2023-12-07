@@ -1,14 +1,19 @@
+// React
 import React, { useState, useEffect } from "react";
+// Images
 import DefaultImage from "../../../public/DefaultImage.svg";
-import Image from "next/image";
-import { PencilSquareIcon } from "@heroicons/react/20/solid";
-import EditUserInfoModal from "../Modals/EditUserInfoModal";
-import EditFundInfoModal from "../Modals/EditFundInfoModal";
-
 import Telegram from "../../../public/Telegram.svg";
 import TwitterWhite from "../../../public/TwitterWhite.svg";
 import Folders from "../../../public/Folders.svg";
 import SearchIcon from "../../../public/SearchIcon.svg";
+// Next
+import Image from "next/image";
+// Heroicons
+import { PencilSquareIcon } from "@heroicons/react/20/solid";
+// Components
+import EditUserInfoModal from "../Modals/EditUserInfoModal";
+import EditFundInfoModal from "../Modals/EditFundInfoModal";
+// Utils
 import formatTimestampToDate from "@/utils/formatTimestampToDate";
 
 type UserInfoProps = {

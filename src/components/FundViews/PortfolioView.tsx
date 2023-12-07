@@ -1,6 +1,10 @@
-import { assetType } from "@/types/Types";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// React
 import React, { useState } from "react";
+// Types
+import { assetType } from "@/types/Types";
+// Heroicons
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// Components
 import Spinner from "../Loader/Spinner";
 import PorfolioViewTable from "../Tables/PorfolioViewTable";
 

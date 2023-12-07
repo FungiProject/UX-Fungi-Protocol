@@ -1,11 +1,15 @@
-import { homeCards } from "@/constants/Constants";
-import { fundType, homeDataType } from "@/types/Types";
+// React
 import React, { useEffect, useState } from "react";
+// Constants
+import { homeCards, funds } from "@/constants/Constants";
+// Types
+import { fundType, homeDataType } from "@/types/Types";
+// Components
 import HomeCard from "../Cards/Homecard";
 import SearchBar from "../Filters/SearchBar";
 import FundsTable from "../Tables/FundsTable";
-import { funds } from "@/constants/Constants";
 import SortBy from "../Filters/SortBy";
+// Heroicons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export default function Home() {

@@ -1,5 +1,8 @@
+// React
 import React from "react";
+// Types
 import { assetType } from "@/types/Types";
+// Components
 import AssetsTableCard from "../Cards/AssetsTableCard";
 
 type PorfolioViewTableProps = {

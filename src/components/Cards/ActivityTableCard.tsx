@@ -1,8 +1,13 @@
+// React
 import React, { useEffect, useState } from "react";
+// Next
 import Image from "next/image";
+// Images
 import SearchIcon from "../../../public/SearchIcon.svg";
+// Utils
 import { formatTimestampToDateActivity } from "@/utils/formatTimestampToDate";
 import getEns from "@/utils/getEns";
+// Components
 import Loader from "../Loader/Spinner";
 
 type ActivityTableCardProps = {

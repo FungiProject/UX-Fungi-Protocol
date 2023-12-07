@@ -1,3 +1,6 @@
+// React
+import React from "react";
+// Heroicons
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 type SearchBar = {

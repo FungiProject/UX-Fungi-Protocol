@@ -1,8 +1,11 @@
+// React
+import React from "react";
+// Hooks
+import useWindowSize from "@/hooks/useWindowSize";
+// Components
+import ErrorPage from "@/components/Sections/ErrorPage";
 import Home from "@/components/Sections/Home";
 import SideBar from "@/components/Layout/SideBar";
-import React from "react";
-import useWindowSize from "@/hooks/useWindowSize";
-import ErrorPage from "@/components/Sections/ErrorPage";
 
 export default function HomePage() {
   const size = useWindowSize();

@@ -1,10 +1,14 @@
+// React
 import React, { ReactElement, useEffect, useState } from "react";
-
+// Components
 import LogoutButton from "../Buttons/LogOutButton";
-import { useAccount, useNetwork } from "wagmi";
-import LoginButton from "../Buttons/LoginButton";
 import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
+import LoginButton from "../Buttons/LoginButton";
+// Wagmi
+import { useAccount, useNetwork } from "wagmi";
+// Components
 import { networks } from "@/constants/Constants";
+// Types
 import { NetworkType } from "@/types/Types";
 
 interface ActionsSideBarProps {

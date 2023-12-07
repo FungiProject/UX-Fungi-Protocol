@@ -1,5 +1,6 @@
-import { assetType } from "@/types/Types";
+// React
 import React from "react";
+// Components
 import ActivityTableCard from "../Cards/ActivityTableCard";
 
 type ActivityViewTableProps = {

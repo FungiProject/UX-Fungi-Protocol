@@ -1,7 +1,10 @@
+// React
+import React, { useState } from "react";
+// Constants
 import { activities } from "@/constants/Constants";
-import { assetType } from "@/types/Types";
+// Heroicons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
+// Components
 import Spinner from "../Loader/Spinner";
 import ActivityViewTable from "../Tables/ActivityViewTable";
 

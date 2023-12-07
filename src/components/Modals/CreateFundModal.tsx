@@ -1,6 +1,10 @@
+// React
 import { Fragment, useState } from "react";
+// Headlessui
 import { Dialog, Transition } from "@headlessui/react";
+// Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
+// Components
 import CreateFundForm from "../Forms/CreateFundForm";
 
 interface CreateFundModalInterface {

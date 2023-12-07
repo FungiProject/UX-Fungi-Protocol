@@ -1,8 +1,14 @@
-import { funds } from "@/constants/Constants";
-import { fundType } from "@/types/Types";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// React
 import React, { useEffect, useState } from "react";
+// Constants
+import { funds } from "@/constants/Constants";
+// Types
+import { fundType } from "@/types/Types";
+// Heroicons
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// Wagmi
 import { useAccount } from "wagmi";
+// Components
 import UserInfo from "../Cards/UserInfo";
 import ResultsChart from "../Chart/ResultsChart";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";

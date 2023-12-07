@@ -1,8 +1,16 @@
-import { assetType, NetworkType } from "@/types/Types";
-import axios from "axios";
+// React
 import React, { useEffect, useState } from "react";
+// Types
+import { assetType, NetworkType } from "@/types/Types";
+// Axios
+import axios from "axios";
+// Components
 import SearchBar from "../Filters/SearchBar";
 import AssetsTable from "../Tables/AssetsTable";
+import SortBy from "../Filters/SortBy";
+import Spinner from "../Loader/Spinner";
+import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
+// Constants
 import {
   assetsPolygon,
   assetsArbitrum,
@@ -10,11 +18,10 @@ import {
   assetsPolygonMumbai,
   networks,
 } from "@/constants/Constants";
-import SortBy from "../Filters/SortBy";
+// Heroicons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+// Wagmi
 import { useNetwork } from "wagmi";
-import Spinner from "../Loader/Spinner";
-import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
 
 export default function Assets() {
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);

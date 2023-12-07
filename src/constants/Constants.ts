@@ -1,21 +1,20 @@
+// Images
 import NetworkNavBar from "../../public/NetworkNavBar.svg";
 import AssetsNavBar from "../../public/AssetsNavBar.svg";
 import IntegrationsNavBar from "../../public/IntegrationsNavBar.svg";
 import PortfolioNavBar from "../../public/PortfolioNavBar.svg";
-
+import Planet from "../../public/Planet.svg";
+import Coins from "../../public/Coins.svg";
+import DefaultImage from "../../public/DefaultImage.svg";
+// Tokens Images
 import AAVE from "../../public/AAVE.svg";
 import GMX from "../../public/GMX.svg";
 import Uniswap from "../../public/Uniswap.svg";
-
+import USDC from "../../public/USDC.svg";
+// Networks Images
 import Polygon from "../../public/Polygon.svg";
 import Mainnet from "../../public/Mainnet.svg";
 import Arbitrum from "../../public/Arbitrum.svg";
-import USDC from "../../public/USDC.svg";
-
-import Planet from "../../public/Planet.svg";
-import Coins from "../../public/Coins.svg";
-
-import DefaultImage from "../../public/DefaultImage.svg";
 
 export const navigation = [
   {

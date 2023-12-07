@@ -1,7 +1,10 @@
+// React
 import React from "react";
+// Next
 import Image from "next/image";
-
+// Heroicons
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
+// Types
 import { integrationType } from "@/types/Types";
 
 function IntegrationCard({

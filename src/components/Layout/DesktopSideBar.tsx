@@ -1,10 +1,16 @@
+// React
 import React, { useState, useEffect } from "react";
+// Next
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+// Types
 import { navigationType, NetworkType } from "@/types/Types";
+// Constants
 import { navigation, networks } from "@/constants/Constants";
+// Images
 import Logo from "../../../public/Logo.svg";
+// Components
 import CreateFundModal from "../Modals/CreateFundModal";
 import SwitchNetworkModal from "../Modals/SwitchNetworkModal";
 

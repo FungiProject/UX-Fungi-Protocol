@@ -1,7 +1,10 @@
-import Image from "next/image";
+// React
 import React from "react";
-
+// Next
+import Image from "next/image";
+// Types
 import { assetType } from "@/types/Types";
+// Utils
 import formatNumber from "@/utils/formatNumber";
 
 type AssetsTableCardProps = {

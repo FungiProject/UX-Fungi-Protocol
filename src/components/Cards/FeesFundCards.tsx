@@ -1,5 +1,8 @@
+// Images
 import React from "react";
+// Next
 import Image from "next/image";
+// Images
 import SearchIcon from "../../../public/SearchIcon.svg";
 
 type FeesFundCardsProps = {

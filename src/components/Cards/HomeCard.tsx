@@ -1,7 +1,10 @@
-import { homeDataType } from "@/types/Types";
-import Image from "next/image";
+// React
 import React from "react";
 import CountUp from "react-countup";
+// Next
+import Image from "next/image";
+// Types
+import { homeDataType } from "@/types/Types";
 
 export default function HomeCard({
   title,

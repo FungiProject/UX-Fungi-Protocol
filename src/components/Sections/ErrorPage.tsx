@@ -1,5 +1,8 @@
+// React
 import React from "react";
+// Next
 import Image from "next/image";
+// Images
 import Logo from "../../../public/Logo.svg";
 
 export default function ErrorPage() {

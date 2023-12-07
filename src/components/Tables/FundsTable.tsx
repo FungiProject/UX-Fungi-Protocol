@@ -1,5 +1,8 @@
+// Types
 import { fundType } from "@/types/Types";
+// React
 import React from "react";
+// Components
 import FundsTableCard from "../Cards/FundsTableCard";
 
 type FundsTableProps = {

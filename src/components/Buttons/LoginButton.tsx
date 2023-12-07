@@ -1,5 +1,6 @@
+// React
 import React from "react";
-
+// Wagmi
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 

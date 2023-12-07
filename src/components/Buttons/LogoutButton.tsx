@@ -1,9 +1,11 @@
+// React
+import React, { useState } from "react";
+// Next
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
-
+// Wagmi
 import { useDisconnect, useAccount } from "wagmi";
-
+// Images
 import Chain from "../../../public/Chain.svg";
 
 export default function LogoutButton() {

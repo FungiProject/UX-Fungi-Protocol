@@ -1,6 +1,10 @@
-import { memberType } from "@/types/Types";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// React
 import React, { useState } from "react";
+// Types
+import { memberType } from "@/types/Types";
+// Heroicons
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+// Components
 import MembersTable from "../Tables/MembersTable";
 
 type MembersViewProps = {

@@ -1,11 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
+// React
+import React, { Fragment, useEffect, useState } from "react";
+// Headlessui
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import DWCActionCard from "../Cards/DWCActionCard";
-import { assetType } from "@/types/Types";
+// Components
 import SearchBar from "../Filters/SearchBar";
-import Image from "next/image";
+// Types
+import { assetType } from "@/types/Types";
+// Utils
 import formatNumber from "@/utils/formatNumber";
+// Next
+import Image from "next/image";
+// Heroicons
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface TokensModalProps {
   getOpenModal: (openModal: boolean) => void;

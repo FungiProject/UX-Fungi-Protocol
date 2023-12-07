@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useState } from "react";
+// React
+import { Fragment } from "react";
+// Headlessui
 import { Menu, Transition } from "@headlessui/react";
+// Heroicons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { NetworkType } from "@/types/Types";
-import Image from "next/image";
-import { useNetwork, useSwitchNetwork } from "wagmi";
 
 type SortByProps = {
   getSortChange: (sort: string) => void;

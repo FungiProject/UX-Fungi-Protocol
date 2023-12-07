@@ -1,8 +1,11 @@
+// React
+import React from "react";
+// Hooks
+import useWindowSize from "@/hooks/useWindowSize";
+// Components
 import SideBar from "@/components/Layout/SideBar";
 import ErrorPage from "@/components/Sections/ErrorPage";
 import FundDetails from "@/components/Sections/FundDetails";
-import useWindowSize from "@/hooks/useWindowSize";
-import React from "react";
 
 export default function FundPage() {
   const size = useWindowSize();

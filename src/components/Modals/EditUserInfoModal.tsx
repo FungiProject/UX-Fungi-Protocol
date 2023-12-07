@@ -1,6 +1,10 @@
-import { Fragment, useState } from "react";
+// React
+import React, { Fragment, useState } from "react";
+// Headlessui
 import { Dialog, Transition } from "@headlessui/react";
+// Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
+// Components
 import EditUserForm from "../Forms/EditUserForm";
 
 interface TokensModalInterface {

@@ -1,5 +1,8 @@
+// Types
 import { memberType } from "@/types/Types";
+// React
 import React from "react";
+// Components
 import MemberTableCard from "../Cards/MemberTableCard";
 
 type MembersTableProps = {

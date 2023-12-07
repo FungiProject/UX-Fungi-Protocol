@@ -1,13 +1,9 @@
+// React
 import React, { useState } from "react";
+// Components
 import DefaultImage from "../../../public/DefaultImage.svg";
+// Next
 import Image from "next/image";
-import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
-import { NetworkType } from "@/types/Types";
-import { networks } from "@/constants/Constants";
-import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
-
-import Telegram from "../../../public/Telegram.svg";
-import X from "../../../public/X.svg";
 
 type EditUserFormProps = {
   address: `0x${string}` | undefined;

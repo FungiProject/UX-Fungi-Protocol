@@ -1,13 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
+// React
+import React, { Fragment, useEffect, useState } from "react";
+// Headlessui
 import { Dialog, Transition } from "@headlessui/react";
-
+// Wagmi
 import { useSwitchNetwork, useNetwork } from "wagmi";
-import DangerIcon from "../../../public/DangerIcon.svg";
+// Next
 import Image from "next/image";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import Spinner from "../Loader/Spinner";
-import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
-import { networks } from "@/constants/Constants";
+// Types
 import { NetworkType } from "@/types/Types";
 
 interface SwitchNetworkModalInterface {

@@ -1,10 +1,13 @@
+// React
 import React from "react";
+// Components
 import AboutFundCard from "../Cards/AboutFundCard";
+import FeesFundCards from "../Cards/FeesFundCards";
+import ResultsChart from "../Chart/ResultsChart";
+// Images
 import Polygon from "../../../public/Polygon.svg";
 import Mainnet from "../../../public/Mainnet.svg";
 import Arbitrum from "../../../public/Arbitrum.svg";
-import FeesFundCards from "../Cards/FeesFundCards";
-import ResultsChart from "../Chart/ResultsChart";
 
 export default function OverviewView() {
   const description =

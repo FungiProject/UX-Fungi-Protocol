@@ -1,5 +1,6 @@
+// React
 import { ReactElement } from "react";
-
+// Components
 import ActionsSideBar from "./ActionsSideBar";
 import DesktopSideBar from "./DesktopSideBar";
 

@@ -1,8 +1,11 @@
-import Image from "next/image";
+// React
 import React from "react";
-
+// Next
+import Image from "next/image";
 import Link from "next/link";
+// Types
 import { fundType } from "@/types/Types";
+// Utils
 import formatNumber from "@/utils/formatNumber";
 
 type HomeTableCardProps = { fund: fundType; isPortfolio: boolean };

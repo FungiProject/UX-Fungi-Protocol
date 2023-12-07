@@ -1,8 +1,12 @@
-import { Fragment, useState } from "react";
-import { Menu, Transition } from "@headlessui/react";
+// React
+import { useState } from "react";
+// Heroicons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+// Types
 import { assetType } from "@/types/Types";
+// Next
 import Image from "next/image";
+// Components
 import TokensModal from "../Modals/TokensModal";
 
 type TokenDropdownProps = {

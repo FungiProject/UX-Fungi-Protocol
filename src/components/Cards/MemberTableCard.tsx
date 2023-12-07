@@ -1,8 +1,11 @@
-import { memberType } from "@/types/Types";
+// React
 import React, { useEffect, useState } from "react";
+// Next
 import Image from "next/image";
+// Types
+import { memberType } from "@/types/Types";
+// Utils
 import getEns from "@/utils/getEns";
-import { type } from "os";
 
 type MemberTableCardProps = {
   member: memberType;

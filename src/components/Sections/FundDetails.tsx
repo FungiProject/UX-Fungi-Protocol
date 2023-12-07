@@ -1,7 +1,12 @@
-import { fundViews } from "@/constants/Constants";
-import { useRouter } from "next/router";
+// React
 import React, { ReactElement, useEffect, useState } from "react";
+// Next
+import { useRouter } from "next/router";
+// Constants
+import { fundViews } from "@/constants/Constants";
+// Wagmi
 import { useAccount } from "wagmi";
+// Components
 import ActionsButton from "../Buttons/ActionsButton";
 import UserInfo from "../Cards/UserInfo";
 import ActivityView from "../FundViews/ActivityView";
@@ -10,6 +15,7 @@ import OverviewView from "../FundViews/OverviewView";
 import PortfolioView from "../FundViews/PortfolioView";
 import MembersModal from "../Modals/MembersModal";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
+// Images
 import DefaultImage from "../../../public/DefaultImage.svg";
 
 export default function FundDetails() {

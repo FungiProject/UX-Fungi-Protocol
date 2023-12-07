@@ -1,10 +1,16 @@
+// React
 import React, { ReactElement, useEffect, useState } from "react";
+// Images
 import USDC from "../../../public/USDC.svg";
+// Next
 import Image from "next/image";
+// Components
 import TxButton from "../Buttons/TxButton";
+// Utils
 import getMaxTokens from "@/utils/getMaxToken";
-import { assetType } from "@/types/Types";
+// Wagmi
 import { useAccount, useNetwork } from "wagmi";
+// Constants
 import {
   assetsArbitrum,
   assetsMainnet,

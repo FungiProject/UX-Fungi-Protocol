@@ -1,17 +1,19 @@
+// React
 import React, { ReactElement, useEffect, useState } from "react";
-import USDC from "../../../public/USDC.svg";
-import Image from "next/image";
+// Components
 import TxButton from "../Buttons/TxButton";
-import getMaxTokens from "@/utils/getMaxToken";
+import TokenDropdown from "../Dropdown/TokenDropdown";
+// Types
 import { assetType } from "@/types/Types";
+// Wagmi
 import { useAccount, useNetwork } from "wagmi";
+// Constants
 import {
   assetsArbitrum,
   assetsMainnet,
   assetsPolygon,
   assetsPolygonMumbai,
 } from "@/constants/Constants";
-import TokenDropdown from "../Dropdown/TokenDropdown";
 
 type SwapperProps = {
   actionSelected: string;

@@ -1,8 +1,14 @@
-import { Fragment, useState } from "react";
+// React
+import React, { Fragment, useState } from "react";
+// Headlessui
 import { Dialog, Transition } from "@headlessui/react";
+// Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
+// Components
 import MemberCard from "../Cards/MemberCard";
+// Types
 import { memberType } from "@/types/Types";
+// Images
 import defaultImage from "../../../public/defaultImage.svg";
 
 interface MembersModalInterface {
