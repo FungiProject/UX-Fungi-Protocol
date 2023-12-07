@@ -1,7 +1,7 @@
 // React
 import React, { ReactElement, useEffect, useState } from "react";
 // Images
-import USDC from "../../../public/USDC.svg";
+import USDC from "../../../public/MainnetTokens/USDC.svg";
 // Next
 import Image from "next/image";
 // Components
