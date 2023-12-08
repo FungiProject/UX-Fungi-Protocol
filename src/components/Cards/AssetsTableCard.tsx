@@ -20,17 +20,28 @@ export default function AssetsTableCard({
 }: AssetsTableCardProps) {
   const assetsPageChildren = (
     <>
-      {" "}
-      <div className="text-center">${formatNumber(asset?.price)}</div>
-      <div className="text-center">${formatNumber(asset.marketCap)}</div>
-      <div className="text-center">${formatNumber(asset.volumen24)}</div>
+      <div className="text-center">
+        ${asset?.price !== undefined && formatNumber(asset.price)}
+      </div>
+      <div className="text-center">
+        ${asset?.marketCap !== undefined && formatNumber(asset.marketCap)}
+      </div>
+      <div className="text-center">
+        ${asset?.volumen24 !== undefined && formatNumber(asset.volumen24)}
+      </div>
     </>
   );
   const porfolioPageChildren = (
     <>
-      <div className="text-center">${formatNumber(asset?.price)}</div>
-      <div className="text-center">${formatNumber(asset.marketCap)}</div>
-      <div className="text-center">${formatNumber(asset.volumen24)}</div>
+      <div className="text-center">
+        ${asset?.price !== undefined && formatNumber(asset.price)}
+      </div>
+      <div className="text-center">
+        ${asset?.marketCap !== undefined && formatNumber(asset.marketCap)}
+      </div>
+      <div className="text-center">
+        ${asset?.volumen24 !== undefined && formatNumber(asset.volumen24)}
+      </div>
     </>
   );
 
