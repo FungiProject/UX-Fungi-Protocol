@@ -37,7 +37,6 @@ import Sand from "../../public/MainnetTokens/Sand.jpeg";
 import Mana from "../../public/MainnetTokens/Mana.jpeg";
 import Fantom from "../../public/MainnetTokens/Fantom.jpeg";
 import ApeCoin from "../../public/MainnetTokens/ApeCoin.jpeg";
-// import Ox from "../../public/MainnetTokens/Ox.jpeg";
 import TheGraph from "../../public/MainnetTokens/TheGraph.jpeg";
 import Compound from "../../public/MainnetTokens/Compound.jpeg";
 import inch from "../../public/MainnetTokens/1inch.jpeg";
@@ -53,6 +52,8 @@ import YearnFinance from "../../public/MainnetTokens/YearnFinance.jpeg";
 import AAVE from "../../public/MainnetTokens/AAVE.svg";
 import Uniswap from "../../public/MainnetTokens/Uniswap.svg";
 import USDC from "../../public/MainnetTokens/USDC.svg";
+
+// import Ox from "../../public/MainnetTokens/Ox.jpeg";
 
 export const navigation = [
   {
