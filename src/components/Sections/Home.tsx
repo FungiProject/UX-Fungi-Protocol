@@ -5,7 +5,7 @@ import { homeCards, funds } from "@/constants/Constants";
 // Types
 import { fundType, homeDataType } from "@/types/Types";
 // Components
-import HomeCard from "../Cards/Homecard";
+import HomeCard from "../Cards/HomeCard";
 import SearchBar from "../Filters/SearchBar";
 import FundsTable from "../Tables/FundsTable";
 import SortBy from "../Filters/SortBy";
