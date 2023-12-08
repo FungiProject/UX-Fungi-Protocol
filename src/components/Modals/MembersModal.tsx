@@ -9,7 +9,7 @@ import MemberCard from "../Cards/MemberCard";
 // Types
 import { memberType } from "@/types/Types";
 // Images
-import defaultImage from "../../../public/defaultImage.svg";
+import DefaultImage from "../../../public/DefaultImage.svg";
 
 interface MembersModalInterface {
   getOpenModal: (openmodal: boolean) => void;
@@ -56,7 +56,7 @@ export default function MembersModal({
 
       if (!isAddressExists) {
         const newAddress: memberType = {
-          image: defaultImage.src,
+          image: DefaultImage.src,
           address: inputValue,
         };
 
