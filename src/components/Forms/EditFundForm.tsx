@@ -14,7 +14,7 @@ import { NetworkType } from "@/types/Types";
 // Constants
 import { networks } from "@/constants/Constants";
 
-export default function EditFundInfoForm() {
+export default function EditFundForm() {
   const [fundName, setFundName] = useState<string | undefined>();
   const [managementFee, setManagementFee] = useState<number | undefined>();
   const [performanceFee, setPerformanceFee] = useState<number | undefined>();
@@ -71,9 +71,9 @@ export default function EditFundInfoForm() {
   };
 
   return (
-    <div className="grid grid-cols-2 px-[170px] py-[60px] items-center">
+    <div className="grid grid-cols-3 px-[170px] py-[60px] items-center">
       <div onClick={() => clickUploader()} className="hover:cursor-pointer">
-        <span className="">Fund Profile Pic</span>
+        <span className="ml-[45px]">Fund Profile Pic</span>
         {/* Resolve conexion to the backend */}
         <div>
           <input
@@ -108,8 +108,8 @@ export default function EditFundInfoForm() {
           )}
         </div>
       </div>
-      <div className="text-center">
-        <div className="grid grid-cols-2 py-[15px] items-center">
+      <div className="text-center col-span-2">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Fund Name</span>
           <input
             value={fundName}
@@ -126,22 +126,18 @@ export default function EditFundInfoForm() {
             type="text"
             name="fundName"
             id="fundName"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
+            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none col-span-2"
             placeholder="Fungi Panas"
           />
-        </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        </div>{" "}
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Choose Networks</span>
           <div className="flex w-screen">
             {networksSelected.length !== 3 && (
               <SelectNetworkDropdown
                 getNetwork={getNetwork}
                 networks={networks}
-                classDropdown={
-                  networksSelected.length === 0
-                    ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                    : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                }
+                classDropdown="shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 col-span-2"
               />
             )}
             {networksSelected.map((network: NetworkType) => {
@@ -159,96 +155,23 @@ export default function EditFundInfoForm() {
                     alt="Network Image"
                     src={network.image}
                     aria-hidden="true"
-                    className="mx-2"
+                    className="ml-5"
                   />
                 </div>
               );
             })}
           </div>
-        </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        </div>
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Type of Fund</span>
           <TypeFundDropdown
             getType={getType}
             types={["Private", "Public"]}
             typeSelected={typeSelected}
-            classDropdown={
-              typeSelected === "Choose Type"
-                ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-            }
+            classDropdown="shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 col-span-2"
           />
         </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
-          <span className="mx-[12px]">Management Fee (%)</span>
-          <input
-            value={managementFee}
-            onChange={(e) => handleManagementFee(Number(e.target.value))}
-            onFocus={(e) =>
-              e.target.addEventListener(
-                "wheel",
-                function (e) {
-                  e.preventDefault();
-                },
-                { passive: false }
-              )
-            }
-            type="number"
-            min={0}
-            step={0.1}
-            name="managementFee"
-            id="managementFee"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
-            placeholder="2 %"
-          />
-        </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
-          <span className="mx-[12px]">Performance Fee (%)</span>
-          <input
-            value={performanceFee}
-            onChange={(e) => handlePerformanceFee(Number(e.target.value))}
-            onFocus={(e) =>
-              e.target.addEventListener(
-                "wheel",
-                function (e) {
-                  e.preventDefault();
-                },
-                { passive: false }
-              )
-            }
-            type="number"
-            min={0}
-            step={0.1}
-            name="performanceFee"
-            id="performanceFee"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none"
-            placeholder="20 %"
-          />
-        </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
-          <span className="mx-[12px]">Initial Deposit</span>
-          <input
-            value={initialDeposit}
-            onChange={(e) => handleInitialDeposit(Number(e.target.value))}
-            onFocus={(e) =>
-              e.target.addEventListener(
-                "wheel",
-                function (e) {
-                  e.preventDefault();
-                },
-                { passive: false }
-              )
-            }
-            type="number"
-            min={0}
-            step={0.1}
-            name="initialDeposit"
-            id="initialDeposit"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none"
-            placeholder="$1000 USDC"
-          />
-        </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Socials</span>
           <div className="flex">
             <Image
@@ -269,7 +192,7 @@ export default function EditFundInfoForm() {
             />
           </div>
         </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">About Fund</span>
           <textarea
             value={aboutFund}
@@ -285,7 +208,7 @@ export default function EditFundInfoForm() {
             }
             name="aboutFund"
             id="aboutFund"
-            className="shadow-input rounded-lg w-[300px]  px-5 py-[16px] outline-none"
+            className="shadow-input rounded-lg w-[300px]  px-5 py-[16px] outline-none col-span-2"
             placeholder="We make money..."
           />
         </div>

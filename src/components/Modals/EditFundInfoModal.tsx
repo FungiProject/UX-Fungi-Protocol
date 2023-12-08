@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
 // Components
-import CreateFundForm from "../Forms/CreateFundForm";
+import EditFundForm from "../Forms/EditFundForm";
 
 interface EditFundInfoModalProps {
   getOpenModal: (openmodal: boolean) => void;
@@ -65,7 +65,7 @@ export default function EditFundInfoModal({
                 </div>
                 <div className="sm:flex sm:items-start w-full ">
                   <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                    <CreateFundForm />
+                    <EditFundForm />
                   </div>
                 </div>
               </Dialog.Panel>
