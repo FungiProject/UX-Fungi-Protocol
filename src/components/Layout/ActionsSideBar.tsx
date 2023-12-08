@@ -1,7 +1,7 @@
 // React
 import React, { ReactElement, useEffect, useState } from "react";
 // Components
-import LogoutButton from "../Buttons/LogOutButton";
+import LogoutButton from "../Buttons/LogoutButton";
 import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 import LoginButton from "../Buttons/LoginButton";
 // Wagmi
