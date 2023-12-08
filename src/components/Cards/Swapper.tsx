@@ -200,8 +200,9 @@ export default function Swapper({ actionSelected }: SwapperProps) {
           className={`bg-main w-full mt-[24px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
             tokenTo && tokenFrom ? "opacity-100" : "opacity-30"
           }`}
-          children={<span>Approve {tokenFrom?.symbol}</span>}
-        />
+        >
+          <span>Approve {tokenFrom?.symbol}</span>
+        </TxButton>
         {/* <TxButton
           className={`bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
             approve ? "opacity-100" : "opacity-30"
@@ -212,8 +213,9 @@ export default function Swapper({ actionSelected }: SwapperProps) {
           className={`bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover 
             opacity-30
           `}
-          children={<span>Swap {tokenFrom?.symbol}</span>}
-        />
+        >
+          <span>Swap {tokenFrom?.symbol}</span>
+        </TxButton>
       </div>
     </main>
   );

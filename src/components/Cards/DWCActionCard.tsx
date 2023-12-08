@@ -120,16 +120,14 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
         </div>
       </div>
       {!isLoading && (
-        <TxButton
-          className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover"
-          children={children}
-        />
+        <TxButton className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover">
+          {children}
+        </TxButton>
       )}
       {actionSelected === "Deposit" && (
-        <TxButton
-          className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover opacity-30"
-          children={<span>Deposit</span>}
-        />
+        <TxButton className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover opacity-30">
+          <span>Deposit</span>
+        </TxButton>
       )}
     </main>
   );

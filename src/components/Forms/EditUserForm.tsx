@@ -93,10 +93,9 @@ export default function EditUserForm({ address }: EditUserFormProps) {
       </div>{" "}
       <div className="flex justify-center w-full col-span-3">
         {" "}
-        <TxButton
-          className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[16px] text-white tracking-wider hover:bg-mainHover "
-          children={<span>Save Changes</span>}
-        />
+        <TxButton className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[16px] text-white tracking-wider hover:bg-mainHover ">
+          <span>Save Changes</span>
+        </TxButton>
       </div>
     </div>
   );

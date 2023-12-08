@@ -288,10 +288,9 @@ export default function CreateFundForm() {
         </div>{" "}
         <div className="grid grid-cols-3">
           <span></span>
-          <TxButton
-            className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[24px] text-white tracking-wider hover:bg-mainHover col-span-2"
-            children={<span>Create Fund</span>}
-          />
+          <TxButton className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[24px] text-white tracking-wider hover:bg-mainHover col-span-2">
+            <span>Create Fund</span>
+          </TxButton>
         </div>
       </div>
     </div>
