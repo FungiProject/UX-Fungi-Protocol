@@ -69,7 +69,9 @@ export default function MembersView({
           {pageNumber}
         </button>
       ) : (
-        <span className="mx-1">{pageNumber}</span>
+        <span className="mx-1" key={index}>
+          {pageNumber}
+        </span>
       )
     );
   };
