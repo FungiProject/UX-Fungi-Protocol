@@ -36,7 +36,7 @@ import Synthetix from "../../public/MainnetTokens/Synthetix.jpeg";
 import Sand from "../../public/MainnetTokens/Sand.jpeg";
 import Mana from "../../public/MainnetTokens/Mana.jpeg";
 import Fantom from "../../public/MainnetTokens/Fantom.jpeg";
-import ApeCoin from "../../public/MainnetTokens/ApeCoin.jpeg";
+import ApeCoin from "../../public/MainnetTokens/ApeCoin.png";
 import TheGraph from "../../public/MainnetTokens/TheGraph.jpeg";
 import Compound from "../../public/MainnetTokens/Compound.jpeg";
 import inch from "../../public/MainnetTokens/1inch.jpeg";
