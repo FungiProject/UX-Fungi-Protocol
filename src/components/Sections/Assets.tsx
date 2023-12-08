@@ -118,6 +118,7 @@ export default function Assets() {
 
     await Promise.all(promises).then(() => {
       setAssetsArrayCopy(copy);
+      setCurrentPage(1);
       setInitialAssets(initials);
       setSortBy("Short By");
       setSearch("");
@@ -130,6 +131,10 @@ export default function Assets() {
       fetchData(false);
     };
   }, []);
+
+  useEffect(() => {
+    fetchData(false);
+  }, [chain]);
 
   useEffect(() => {
     fetchData(true);

@@ -13,6 +13,7 @@ import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
 import { NetworkType } from "@/types/Types";
 // Constants
 import { networks } from "@/constants/Constants";
+import TxButton from "../Buttons/TxButton";
 
 export default function CreateFundForm() {
   const [fundName, setFundName] = useState<string | undefined>();
@@ -71,7 +72,7 @@ export default function CreateFundForm() {
   };
 
   return (
-    <div className="grid grid-cols-2 px-[170px] py-[60px] items-center">
+    <div className="grid grid-cols-5 pl-[140px] py-[30px] items-center">
       <div onClick={() => clickUploader()} className="hover:cursor-pointer">
         <span className="ml-[50px]">Fund Profile Pic</span>
         {/* Resolve conexion to the backend */}
@@ -108,8 +109,8 @@ export default function CreateFundForm() {
           )}
         </div>
       </div>
-      <div className="text-center">
-        <div className="grid grid-cols-2 py-[15px] items-center">
+      <div className="text-center col-span-3">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Fund Name</span>
           <input
             value={fundName}
@@ -126,22 +127,18 @@ export default function CreateFundForm() {
             type="text"
             name="fundName"
             id="fundName"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
+            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none col-span-2"
             placeholder="Fungi Panas"
           />
         </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Choose Networks</span>
           <div className="flex w-screen">
             {networksSelected.length !== 3 && (
               <SelectNetworkDropdown
                 getNetwork={getNetwork}
                 networks={networks}
-                classDropdown={
-                  networksSelected.length === 0
-                    ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                    : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                }
+                classDropdown="shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 col-span-2"
               />
             )}
             {networksSelected.map((network: NetworkType) => {
@@ -159,14 +156,14 @@ export default function CreateFundForm() {
                     alt="Network Image"
                     src={network.image}
                     aria-hidden="true"
-                    className="mx-2"
+                    className="ml-5"
                   />
                 </div>
               );
             })}
           </div>
         </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Type of Fund</span>
           <TypeFundDropdown
             getType={getType}
@@ -174,12 +171,12 @@ export default function CreateFundForm() {
             typeSelected={typeSelected}
             classDropdown={
               typeSelected === "Choose Type"
-                ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
-                : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900"
+                ? "shadow-input inline-flex w-[300px] items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 col-span-2"
+                : "shadow-input inline-flex w-fit items-center justify-between gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 col-span-2"
             }
           />
         </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Management Fee (%)</span>
           <input
             value={managementFee}
@@ -198,11 +195,11 @@ export default function CreateFundForm() {
             step={0.1}
             name="managementFee"
             id="managementFee"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none"
+            className="shadow-input rounded-lg w-[300px] h-[40px] px-5 outline-none col-span-2"
             placeholder="2 %"
           />
         </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Performance Fee (%)</span>
           <input
             value={performanceFee}
@@ -221,11 +218,11 @@ export default function CreateFundForm() {
             step={0.1}
             name="performanceFee"
             id="performanceFee"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none"
+            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none col-span-2"
             placeholder="20 %"
           />
         </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Initial Deposit</span>
           <input
             value={initialDeposit}
@@ -244,13 +241,13 @@ export default function CreateFundForm() {
             step={0.1}
             name="initialDeposit"
             id="initialDeposit"
-            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none"
+            className="shadow-input rounded-lg w-[300px] h-[40px] px-5  outline-none col-span-2"
             placeholder="$1000 USDC"
           />
         </div>
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">Socials</span>
-          <div className="flex">
+          <div className="flex col-span-2">
             <Image
               width={42}
               height={42}
@@ -269,7 +266,7 @@ export default function CreateFundForm() {
             />
           </div>
         </div>{" "}
-        <div className="grid grid-cols-2 py-[15px] items-center">
+        <div className="grid grid-cols-3 py-[15px] items-center">
           <span className="mx-[12px]">About Fund</span>
           <textarea
             value={aboutFund}
@@ -285,8 +282,15 @@ export default function CreateFundForm() {
             }
             name="aboutFund"
             id="aboutFund"
-            className="shadow-input rounded-lg w-[300px]  px-5 py-[16px] outline-none"
+            className="shadow-input rounded-lg w-[600px] h-[241px] px-5 py-[16px] outline-none col-span-2"
             placeholder="We make money..."
+          />
+        </div>{" "}
+        <div className="grid grid-cols-3">
+          <span></span>
+          <TxButton
+            className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[24px] text-white tracking-wider hover:bg-mainHover col-span-2"
+            children={<span>Create Fund</span>}
           />
         </div>
       </div>

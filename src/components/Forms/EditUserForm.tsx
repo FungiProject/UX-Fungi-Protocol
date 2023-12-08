@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import DefaultImage from "../../../public/DefaultImage.svg";
 // Next
 import Image from "next/image";
+import TxButton from "../Buttons/TxButton";
 
 type EditUserFormProps = {
   address: `0x${string}` | undefined;
@@ -27,7 +28,7 @@ export default function EditUserForm({ address }: EditUserFormProps) {
   };
 
   return (
-    <div className="grid grid-cols-2 px-[80px] py-[60px] items-center w-full max-w-[600px]">
+    <div className="grid grid-cols-3 px-[80px] py-[60px] items-center w-full">
       <div
         onClick={() => clickUploader()}
         className="hover:cursor-pointer max-w-[300px] text-center"
@@ -89,6 +90,13 @@ export default function EditUserForm({ address }: EditUserFormProps) {
             placeholder={address}
           />
         </div>
+      </div>{" "}
+      <div className="flex justify-center w-full col-span-3">
+        {" "}
+        <TxButton
+          className="bg-main w-[125px] mt-[34px] text-xs rounded-full py-[8px] px-[16px] text-white tracking-wider hover:bg-mainHover "
+          children={<span>Save Changes</span>}
+        />
       </div>
     </div>
   );
