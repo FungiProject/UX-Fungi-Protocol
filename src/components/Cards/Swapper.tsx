@@ -14,6 +14,8 @@ import {
   assetsPolygon,
   assetsPolygonMumbai,
 } from "@/constants/Constants";
+import getMaxTokens from "@/utils/getMaxToken";
+import { formatUnits } from "viem";
 
 type SwapperProps = {
   actionSelected: string;
@@ -21,6 +23,7 @@ type SwapperProps = {
 
 export default function Swapper({ actionSelected }: SwapperProps) {
   const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
+  const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [children, setChildren] = useState<ReactElement>(<span></span>);
   const [balance, setBalance] = useState<number | undefined>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -29,6 +32,13 @@ export default function Swapper({ actionSelected }: SwapperProps) {
   const [assets, setAssets] = useState<assetType[] | null>(null);
   const [network, setNetwork] = useState<string | null>(null);
 
+  const [maxBalanceTokenFrom, setMaxBalanceTokenFrom] = useState<null | number>(
+    null
+  );
+  const [maxBalanceTokenTo, setMaxBalanceTokenTo] = useState<null | number>(
+    null
+  );
+
   const { address } = useAccount();
   const { chain } = useNetwork();
 
@@ -36,29 +46,39 @@ export default function Swapper({ actionSelected }: SwapperProps) {
     setAmountTo(amount);
   };
 
-  //   const maxBalance = () => {
-  //     let assets;
-  //     let network;
-  //     if (chain && chain.id === 80001) {
-  //       assets = assetsPolygonMumbai;
-  //       network = "mumbai";
-  //     } else if (chain && chain.id === 42161) {
-  //       assets = assetsArbitrum;
-  //       network = "atbitrum";
-  //     } else if (chain && chain.id === 1) {
-  //       assets = assetsMainnet;
-  //       network = "mainnet";
-  //     } else if (chain && chain.id === 137) {
-  //       assets = assetsPolygon;
-  //       network = "polygon";
-  //     }
-  //     if (assets && address && network) {
-  //       const usdcAddress = assets.filter(
-  //         (asset: any) => asset.symbol === "USDC.e" || asset.symbol === "USDC"
-  //       );
-  //       const balance = getMaxTokens(address, usdcAddress[0].address, network);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchMax = async () => {
+      if (address && network && tokenFrom) {
+        try {
+          const result = await getMaxTokens(
+            address,
+            tokenFrom?.address,
+            network
+          );
+          setMaxBalanceTokenFrom(result);
+        } catch (error) {
+          console.error("Error fetching max tokens of", tokenFrom.symbol);
+        }
+      }
+    };
+
+    fetchMax();
+  }, [tokenFrom]);
+
+  useEffect(() => {
+    const fetchMax = async () => {
+      if (address && network && tokenTo) {
+        try {
+          const result = await getMaxTokens(address, tokenTo?.address, network);
+          setMaxBalanceTokenTo(result);
+        } catch (error) {
+          console.error("Error fetching max tokens of", tokenTo.symbol);
+        }
+      }
+    };
+
+    fetchMax();
+  }, [tokenTo]);
 
   useEffect(() => {
     if (chain && chain.id === 80001) {
@@ -85,7 +105,7 @@ export default function Swapper({ actionSelected }: SwapperProps) {
   };
 
   return (
-    <main className="mt-[108px] ">
+    <main className="mt-[58px] ">
       <div>
         <h1 className="text-4xl font-medium ml-[15px] mb-[30px]">
           {actionSelected}
@@ -97,7 +117,7 @@ export default function Swapper({ actionSelected }: SwapperProps) {
             min={0}
             className="placeholder:text-gray-500 text-3xl outline-none"
             placeholder="0.00"
-            value={amountTo}
+            value={amountFrom}
             onChange={(e: any) => handleAmountChange(e.target.value)}
           />
           <div className="flex flex-col text-sm font-medium">
@@ -111,26 +131,30 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                   type="From"
                 />
               )}
-              {/* {tokenTo && (
-              <div>
-                Balance: <span>{balance}</span>
-                <button
-                  className="text-main ml-1.5"
-                  onClick={() => maxBalance()}
-                >
-                  Max
-                </button>
-              </div>
-            )} */}
+
+              {/* {tokenFrom && (
+                <div>
+                  Balance:{" "}
+                  <span>
+                    {maxBalanceTokenFrom &&
+                      Number(
+                        formatUnits(
+                          maxBalanceTokenFrom as unknown as bigint,
+                          18
+                        )
+                      ).toFixed(3)}
+                  </span>
+                  <button
+                    className="text-main ml-1.5"
+                    onClick={() => setAmountTo(maxBalanceTokenFrom)}
+                  >
+                    Max
+                  </button>
+                </div>
+              )} */}
             </div>
           </div>
         </div>
-        {/* {!isLoading && (
-          <TxButton
-            className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover"
-            children={children}
-          />
-        )}{" "} */}
       </div>
       <div className="mt-[16px]">
         <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[22px]">
@@ -155,10 +179,16 @@ export default function Swapper({ actionSelected }: SwapperProps) {
             )}
             {/* {tokenTo && (
               <div>
-                Balance: <span>{balance}</span>
+                Balance:{" "}
+                <span>
+                  {maxBalanceTokenFrom &&
+                    Number(
+                      formatUnits(maxBalanceTokenTo as unknown as bigint, 18)
+                    ).toFixed(3)}
+                </span>
                 <button
                   className="text-main ml-1.5"
-                  onClick={() => maxBalance()}
+                  onClick={() => setAmountTo(maxBalanceTokenTo)}
                 >
                   Max
                 </button>
@@ -166,12 +196,24 @@ export default function Swapper({ actionSelected }: SwapperProps) {
             )} */}
           </div>
         </div>
-        {!isLoading && (
-          <TxButton
-            className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover"
-            children={children}
-          />
-        )}{" "}
+        <TxButton
+          className={`bg-main w-full mt-[24px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
+            tokenTo && tokenFrom ? "opacity-100" : "opacity-30"
+          }`}
+          children={<span>Approve {tokenFrom?.symbol}</span>}
+        />
+        {/* <TxButton
+          className={`bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
+            approve ? "opacity-100" : "opacity-30"
+          }`}
+          children={<span>Approve {tokenFrom?.symbol}</span>}
+        /> */}
+        <TxButton
+          className={`bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover 
+            opacity-30
+          `}
+          children={<span>Swap {tokenFrom?.symbol}</span>}
+        />
       </div>
     </main>
   );

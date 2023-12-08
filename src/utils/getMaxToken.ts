@@ -26,5 +26,5 @@ export default async function getMaxTokens(
     tokenAddress,
   ]);
 
-  console.log(response);
+  return Number(response.tokenBalances[0].tokenBalance);
 }
