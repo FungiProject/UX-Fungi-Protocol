@@ -6,7 +6,7 @@ import TokenDropdown from "../Dropdown/TokenDropdown";
 // Types
 import { assetType } from "@/types/Types";
 // Wagmi
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount, useContractRead, useNetwork } from "wagmi";
 // Constants
 import {
   assetsArbitrum,
@@ -14,8 +14,12 @@ import {
   assetsPolygon,
   assetsPolygonMumbai,
 } from "@/constants/Constants";
+// Utils
 import getMaxTokens from "@/utils/getMaxToken";
+// Viem
 import { formatUnits } from "viem";
+// Abis
+import { abiERC20 } from "../../../abis/abis.json";
 
 type SwapperProps = {
   actionSelected: string;
@@ -41,6 +45,18 @@ export default function Swapper({ actionSelected }: SwapperProps) {
 
   const { address } = useAccount();
   const { chain } = useNetwork();
+
+  const { data: tokenFromDecimals } = useContractRead({
+    address: tokenFrom?.address as `0x${string}`,
+    abi: abiERC20,
+    functionName: "decimals",
+  });
+
+  const { data: tokenToDecimals } = useContractRead({
+    address: tokenTo?.address as `0x${string}`,
+    abi: abiERC20,
+    functionName: "decimals",
+  });
 
   const handleAmountChange = (amount: number) => {
     setAmountTo(amount);
@@ -110,7 +126,7 @@ export default function Swapper({ actionSelected }: SwapperProps) {
         <h1 className="text-4xl font-medium ml-[15px] mb-[30px]">
           {actionSelected}
         </h1>
-        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[22px]">
+        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[16px]">
           <input
             type="number"
             step={0.0000001}
@@ -132,17 +148,18 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                 />
               )}
 
-              {/* {tokenFrom && (
-                <div>
+              {tokenFrom &&
+              maxBalanceTokenFrom &&
+              tokenFromDecimals !== undefined ? (
+                <div className="mt-[6px]">
                   Balance:{" "}
                   <span>
-                    {maxBalanceTokenFrom &&
-                      Number(
-                        formatUnits(
-                          maxBalanceTokenFrom as unknown as bigint,
-                          18
-                        )
-                      ).toFixed(3)}
+                    {Number(
+                      formatUnits(
+                        maxBalanceTokenFrom as unknown as bigint,
+                        tokenFromDecimals as number
+                      )
+                    ).toFixed(3)}
                   </span>
                   <button
                     className="text-main ml-1.5"
@@ -151,13 +168,15 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                     Max
                   </button>
                 </div>
-              )} */}
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-[16px]">
-        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[22px]">
+        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[16px]">
           <input
             type="number"
             step={0.0000001}
@@ -177,15 +196,17 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                 type="To"
               />
             )}
-            {/* {tokenTo && (
-              <div>
+            {tokenTo && maxBalanceTokenTo && tokenToDecimals !== undefined ? (
+              <div className="mt-[6px]">
                 Balance:{" "}
                 <span>
-                  {maxBalanceTokenFrom &&
-                    Number(
-                      formatUnits(maxBalanceTokenTo as unknown as bigint, 18)
-                    ).toFixed(3)}
-                </span>
+                  {Number(
+                    formatUnits(
+                      maxBalanceTokenTo as unknown as bigint,
+                      tokenToDecimals as number
+                    )
+                  ).toFixed(3)}
+                </span>{" "}
                 <button
                   className="text-main ml-1.5"
                   onClick={() => setAmountTo(maxBalanceTokenTo)}
@@ -193,16 +214,11 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                   Max
                 </button>
               </div>
-            )} */}
+            ) : (
+              <div> </div>
+            )}
           </div>
         </div>
-        <TxButton
-          className={`bg-main w-full mt-[24px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
-            tokenTo && tokenFrom ? "opacity-100" : "opacity-30"
-          }`}
-        >
-          <span>Approve {tokenFrom?.symbol}</span>
-        </TxButton>
         {/* <TxButton
           className={`bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover ${
             approve ? "opacity-100" : "opacity-30"
