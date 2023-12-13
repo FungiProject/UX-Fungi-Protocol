@@ -6,12 +6,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import SearchBar from "../Filters/SearchBar";
 // Types
 import { assetType } from "@/types/Types";
-// Utils
-import formatNumber from "@/utils/formatNumber";
-// Next
-import Image from "next/image";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import TokenCard from "../Cards/TokenCard";
 
 interface TokensModalProps {
   getOpenModal: (openModal: boolean) => void;
@@ -125,29 +122,7 @@ export default function TokensModal({
 
                   <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
                     {assetsArrayCopy.map((asset: assetType) => {
-                      return (
-                        <button
-                          className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
-                          onClick={() => selectToken(asset)}
-                          key={asset.symbol}
-                        >
-                          <div className="pl-[46px] flex">
-                            <Image
-                              width={46}
-                              height={46}
-                              alt="Network Image"
-                              src={asset.image}
-                              aria-hidden="true"
-                              className="mr-6 rounded-full"
-                            />
-                            <div className="flex flex-col">
-                              <span>{asset.name}</span>
-                              <span>{asset.symbol}</span>
-                            </div>
-                          </div>{" "}
-                          <div>{formatNumber(1000)}</div>
-                        </button>
-                      );
+                      return <TokenCard asset={asset} getToken={selectToken} />;
                     })}
                   </div>
                 </div>
