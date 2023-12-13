@@ -62,7 +62,6 @@ export default function TokenCard({ asset, getToken }: TokenCardProps) {
     <button
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
       onClick={() => getToken(asset)}
-      key={asset.symbol}
     >
       <div className="pl-[46px] flex">
         <Image

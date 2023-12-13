@@ -122,7 +122,13 @@ export default function TokensModal({
 
                   <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
                     {assetsArrayCopy.map((asset: assetType) => {
-                      return <TokenCard asset={asset} getToken={selectToken} />;
+                      return (
+                        <TokenCard
+                          asset={asset}
+                          getToken={selectToken}
+                          key={asset.address}
+                        />
+                      );
                     })}
                   </div>
                 </div>
