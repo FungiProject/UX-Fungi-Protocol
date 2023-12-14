@@ -213,7 +213,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
@@ -258,7 +258,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
@@ -303,7 +303,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
@@ -348,7 +348,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
@@ -393,7 +393,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
@@ -438,7 +438,7 @@ export const funds = [
     href: "0x",
   },
   {
-    name: "Ukhezo Fund",
+    name: "Terminal Fund",
     aum: 100,
     networks: [Arbitrum.src, Polygon.src],
     image: DefaultImage.src,
