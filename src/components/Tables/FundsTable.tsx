@@ -19,7 +19,7 @@ export default function FundsTable({
   isPortfolio,
 }: FundsTableProps) {
   return (
-    <div className="mt-[20px] w-full h-[574px] pt-[23px] px-[20px] bg-white rounded-lg overflow-hidden">
+    <div className="mt-[20px] w-full h-[574px] pt-[23px] bg-white rounded-lg overflow-hidden">
       <div className="grid grid-cols-7 pb-[26px] text-xl font-medium">
         <div className="col-span-2 ml-[100px]">Name</div>{" "}
         <div className="text-center">AUM</div>{" "}

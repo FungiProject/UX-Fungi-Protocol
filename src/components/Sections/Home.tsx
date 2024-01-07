@@ -5,8 +5,7 @@ import { homeCards, funds } from "../../../constants/Constants";
 // Types
 import { fundType, homeDataType } from "@/types/Types";
 // Components
-import HomeCard from "../Cards/HomeCard";
-import SearchBar from "../Filters/SearchBar";
+import PageContainer from "../Container/PageContainer";
 import FundsTable from "../Tables/FundsTable";
 import SortBy from "../Filters/SortBy";
 // Heroicons
@@ -101,36 +100,44 @@ export default function Home() {
 
   return (
     <main>
-      <FundsTable
-        funds={fundsArrayCopy}
-        startIndex={startIndex}
-        endIndex={endIndex}
-        isPortfolio={false}
+      <PageContainer
+        main={
+          <div>
+            <FundsTable
+              funds={fundsArrayCopy}
+              startIndex={startIndex}
+              endIndex={endIndex}
+              isPortfolio={false}
+            />
+            <div className="flex items-center mt-4 relative">
+              <span>
+                Showing {startIndex + 1}-{endIndex} out of{" "}
+                {fundsArrayCopy.length}
+              </span>
+              <div className="flex justify-center items-center absolute inset-x-0 bottom-0 top-3">
+                {currentPage !== 1 && (
+                  <button onClick={() => handleClickPrevious()}>
+                    <ChevronLeftIcon
+                      className=" w-[45px] h-[36px] text-black"
+                      aria-hidden="true"
+                    />
+                  </button>
+                )}
+                {renderPageNumbers()}{" "}
+                {currentPage < fundsArrayCopy.length / 5 && (
+                  <button onClick={() => handleClickNext()}>
+                    <ChevronRightIcon
+                      className=" w-[45px] h-[36px] text-black"
+                      aria-hidden="true"
+                    />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        }
+        secondary={<div>Pepe</div>}
       />
-      <div className="flex items-center mt-4 relative">
-        <span>
-          Showing {startIndex + 1}-{endIndex} out of {fundsArrayCopy.length}
-        </span>
-        <div className="flex justify-center items-center absolute inset-x-0 bottom-0 top-3">
-          {currentPage !== 1 && (
-            <button onClick={() => handleClickPrevious()}>
-              <ChevronLeftIcon
-                className=" w-[45px] h-[36px] text-black"
-                aria-hidden="true"
-              />
-            </button>
-          )}
-          {renderPageNumbers()}{" "}
-          {currentPage < fundsArrayCopy.length / 5 && (
-            <button onClick={() => handleClickNext()}>
-              <ChevronRightIcon
-                className=" w-[45px] h-[36px] text-black"
-                aria-hidden="true"
-              />
-            </button>
-          )}
-        </div>
-      </div>
     </main>
   );
 }
