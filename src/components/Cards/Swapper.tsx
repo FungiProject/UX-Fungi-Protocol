@@ -13,7 +13,7 @@ import {
   assetsMainnet,
   assetsPolygon,
   assetsPolygonMumbai,
-} from "@/constants/Constants";
+} from "../../../constants/Constants";
 // Utils
 import getMaxTokens from "@/utils/getMaxToken";
 // Viem

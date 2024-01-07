@@ -1,7 +1,7 @@
 // React
 import React from "react";
 // Constants
-import { integrations } from "@/constants/Constants";
+import { integrations } from "../../../constants/Constants";
 // Types
 import { integrationType } from "@/types/Types";
 // Components

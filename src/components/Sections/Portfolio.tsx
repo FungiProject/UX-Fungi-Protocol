@@ -1,7 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
 // Constants
-import { funds } from "@/constants/Constants";
+import { funds } from "../../../constants/Constants";
 // Types
 import { fundType } from "@/types/Types";
 // Heroicons

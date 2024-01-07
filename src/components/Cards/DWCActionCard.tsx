@@ -16,7 +16,7 @@ import {
   assetsMainnet,
   assetsPolygon,
   assetsPolygonMumbai,
-} from "@/constants/Constants";
+} from "../../../constants/Constants";
 
 type DWCActionCardProps = {
   actionSelected: string;

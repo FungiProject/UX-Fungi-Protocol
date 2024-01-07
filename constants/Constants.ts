@@ -1,79 +1,89 @@
 // Images
-import NetworkNavBar from "../../public/NetworkNavBar.svg";
-import AssetsNavBar from "../../public/AssetsNavBar.svg";
-import IntegrationsNavBar from "../../public/IntegrationsNavBar.svg";
-import PortfolioNavBar from "../../public/PortfolioNavBar.svg";
-import Planet from "../../public/Planet.svg";
-import Coins from "../../public/Coins.svg";
-import DefaultImage from "../../public/DefaultImage.svg";
+import NetworkNavBar from "../public/NetworkNavBar.svg";
+import AssetsNavBar from "../public/AssetsNavBar.svg";
+import IntegrationsNavBar from "../public/IntegrationsNavBar.svg";
+import PortfolioNavBar from "../public/PortfolioNavBar.svg";
+import Planet from "../public/Planet.svg";
+import Coins from "../public/Coins.svg";
+import DefaultImage from "../public/DefaultImage.svg";
 // Arbitrum Tokens
-import Chainlink from "../../public/ArbitrumTokens/Chainlink.jpeg";
-import Polygon from "../../public/MainnetTokens/Polygon.svg";
-import Mainnet from "../../public/MainnetTokens/Mainnet.svg";
-import GMX from "../../public/ArbitrumTokens/GMX.svg";
-import WBTC from "../../public/ArbitrumTokens/WBTC.jpeg";
-import Tether from "../../public/ArbitrumTokens/Tether.jpeg";
-import Dai from "../../public/ArbitrumTokens/Dai.jpeg";
-import Lido from "../../public/ArbitrumTokens/Lido.jpeg";
-import Curve from "../../public/ArbitrumTokens/Curve.jpeg";
-import RocketPool from "../../public/ArbitrumTokens/RocketPool.jpeg";
-import Stargate from "../../public/ArbitrumTokens/Stargate.jpeg";
-import Radiant from "../../public/ArbitrumTokens/Radiant.jpeg";
-import Gains from "../../public/ArbitrumTokens/Gains.jpeg";
-import Joe from "../../public/ArbitrumTokens/Joe.jpeg";
-import Magic from "../../public/ArbitrumTokens/Magic.jpeg";
-import Pendle from "../../public/ArbitrumTokens/Pendle.jpeg";
-import Spell from "../../public/ArbitrumTokens/Spell.jpeg";
-import Balancer from "../../public/ArbitrumTokens/Balancer.jpeg";
-import Frax from "../../public/ArbitrumTokens/Frax.jpeg";
-import Sushi from "../../public/ArbitrumTokens/Sushi.jpeg";
+import Chainlink from "../public/ArbitrumTokens/Chainlink.jpeg";
+import Polygon from "../public/MainnetTokens/Polygon.svg";
+import Mainnet from "../public/MainnetTokens/Mainnet.svg";
+import GMX from "../public/ArbitrumTokens/GMX.svg";
+import WBTC from "../public/ArbitrumTokens/WBTC.jpeg";
+import Tether from "../public/ArbitrumTokens/Tether.jpeg";
+import Dai from "../public/ArbitrumTokens/Dai.jpeg";
+import Lido from "../public/ArbitrumTokens/Lido.jpeg";
+import Curve from "../public/ArbitrumTokens/Curve.jpeg";
+import RocketPool from "../public/ArbitrumTokens/RocketPool.jpeg";
+import Stargate from "../public/ArbitrumTokens/Stargate.jpeg";
+import Radiant from "../public/ArbitrumTokens/Radiant.jpeg";
+import Gains from "../public/ArbitrumTokens/Gains.jpeg";
+import Joe from "../public/ArbitrumTokens/Joe.jpeg";
+import Magic from "../public/ArbitrumTokens/Magic.jpeg";
+import Pendle from "../public/ArbitrumTokens/Pendle.jpeg";
+import Spell from "../public/ArbitrumTokens/Spell.jpeg";
+import Balancer from "../public/ArbitrumTokens/Balancer.jpeg";
+import Frax from "../public/ArbitrumTokens/Frax.jpeg";
+import Sushi from "../public/ArbitrumTokens/Sushi.jpeg";
 // Mainnet Tokens
-import Shiba from "../../public/MainnetTokens/Shiba.jpeg";
-import Arbitrum from "../../public/ArbitrumTokens/Arbitrum.svg";
-import Maker from "../../public/MainnetTokens/Maker.jpeg";
-import Immutable from "../../public/MainnetTokens/Immutable.jpeg";
-import Synthetix from "../../public/MainnetTokens/Synthetix.jpeg";
-import Sand from "../../public/MainnetTokens/Sand.jpeg";
-import Mana from "../../public/MainnetTokens/Mana.jpeg";
-import Fantom from "../../public/MainnetTokens/Fantom.jpeg";
-import ApeCoin from "../../public/MainnetTokens/ApeCoin.png";
-import TheGraph from "../../public/MainnetTokens/TheGraph.jpeg";
-import Compound from "../../public/MainnetTokens/Compound.jpeg";
-import inch from "../../public/MainnetTokens/1inch.jpeg";
-import BAT from "../../public/MainnetTokens/BAT.jpeg";
-import Convex from "../../public/MainnetTokens/Convex.jpeg";
-import Enjin from "../../public/MainnetTokens/Enjin.jpeg";
-import Olympus from "../../public/MainnetTokens/Olympus.jpeg";
-import ENS from "../../public/MainnetTokens/ENS.jpeg";
-import Ankr from "../../public/MainnetTokens/Ankr.jpeg";
-import Numeraire from "../../public/MainnetTokens/Numeraire.jpeg";
-import Perpetual from "../../public/MainnetTokens/Perpetual.jpeg";
-import YearnFinance from "../../public/MainnetTokens/YearnFinance.jpeg";
-import AAVE from "../../public/MainnetTokens/AAVE.svg";
-import Uniswap from "../../public/MainnetTokens/Uniswap.svg";
-import USDC from "../../public/MainnetTokens/USDC.svg";
+import Shiba from "../public/MainnetTokens/Shiba.jpeg";
+import Arbitrum from "../public/ArbitrumTokens/Arbitrum.svg";
+import Maker from "../public/MainnetTokens/Maker.jpeg";
+import Immutable from "../public/MainnetTokens/Immutable.jpeg";
+import Synthetix from "../public/MainnetTokens/Synthetix.jpeg";
+import Sand from "../public/MainnetTokens/Sand.jpeg";
+import Mana from "../public/MainnetTokens/Mana.jpeg";
+import Fantom from "../public/MainnetTokens/Fantom.jpeg";
+import ApeCoin from "../public/MainnetTokens/ApeCoin.png";
+import TheGraph from "../public/MainnetTokens/TheGraph.jpeg";
+import Compound from "../public/MainnetTokens/Compound.jpeg";
+import inch from "../public/MainnetTokens/1inch.jpeg";
+import BAT from "../public/MainnetTokens/BAT.jpeg";
+import Convex from "../public/MainnetTokens/Convex.jpeg";
+import Enjin from "../public/MainnetTokens/Enjin.jpeg";
+import Olympus from "../public/MainnetTokens/Olympus.jpeg";
+import ENS from "../public/MainnetTokens/ENS.jpeg";
+import Ankr from "../public/MainnetTokens/Ankr.jpeg";
+import Numeraire from "../public/MainnetTokens/Numeraire.jpeg";
+import Perpetual from "../public/MainnetTokens/Perpetual.jpeg";
+import YearnFinance from "../public/MainnetTokens/YearnFinance.jpeg";
+import AAVE from "../public/MainnetTokens/AAVE.svg";
+import Uniswap from "../public/MainnetTokens/Uniswap.svg";
+import USDC from "../public/MainnetTokens/USDC.svg";
 
 // import Ox from "../../public/MainnetTokens/Ox.jpeg";
 
 export const navigation = [
   {
-    name: "Network",
+    name: "Home",
     href: "/",
     image: NetworkNavBar.src,
   },
   {
-    name: "Portfolio",
-    href: "/portfolio",
+    name: "Spot",
+    href: "/spot",
     image: PortfolioNavBar.src,
   },
   {
-    name: "Assets",
-    href: "/assets",
+    name: "Perps",
+    href: "/perpetuals",
     image: AssetsNavBar.src,
   },
   {
-    name: "Integrations",
-    href: "/integrations",
+    name: "Credit",
+    href: "/credit",
+    image: IntegrationsNavBar.src,
+  },
+  {
+    name: "Yield",
+    href: "/yield",
+    image: IntegrationsNavBar.src,
+  },
+  {
+    name: "NFTs",
+    href: "/nfts",
     image: IntegrationsNavBar.src,
   },
 ];

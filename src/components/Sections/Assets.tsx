@@ -17,7 +17,7 @@ import {
   assetsMainnet,
   assetsPolygonMumbai,
   networks,
-} from "@/constants/Constants";
+} from "../../../constants/Constants";
 // Heroicons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 // Wagmi

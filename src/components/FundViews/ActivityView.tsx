@@ -1,7 +1,7 @@
 // React
 import React, { useState } from "react";
 // Constants
-import { activities } from "@/constants/Constants";
+import { activities } from "../../../constants/Constants";
 // Heroicons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 // Components

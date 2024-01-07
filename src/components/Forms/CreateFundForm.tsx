@@ -12,7 +12,7 @@ import TypeFundDropdown from "../Dropdown/TypeFundDropdown";
 // Types
 import { NetworkType } from "@/types/Types";
 // Constants
-import { networks } from "@/constants/Constants";
+import { networks } from "../../../constants/Constants";
 import TxButton from "../Buttons/TxButton";
 
 export default function CreateFundForm() {

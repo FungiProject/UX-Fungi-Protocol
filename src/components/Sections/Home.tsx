@@ -1,7 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
 // Constants
-import { homeCards, funds } from "@/constants/Constants";
+import { homeCards, funds } from "../../../constants/Constants";
 // Types
 import { fundType, homeDataType } from "@/types/Types";
 // Components
@@ -28,14 +28,6 @@ export default function Home() {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-  };
-
-  const getInfo = (query: string) => {
-    setSearch(query);
-  };
-
-  const getSortChange = (option: string) => {
-    setSortBy(option);
   };
 
   const handleClickNext = () => {
@@ -109,35 +101,6 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex flex-row mt-[22px] gap-x-[20px] mb-[25px]">
-        {homeCards.map((infoCard: homeDataType, index: number) => {
-          return (
-            <HomeCard
-              title={infoCard.title}
-              amount={index === 0 ? 1000 : 1000000}
-              imageHeight={infoCard.imageHeight}
-              imageWidth={infoCard.imageWidth}
-              imageSrc={infoCard.imageSrc}
-              key={infoCard.title}
-            />
-          );
-        })}
-      </div>
-      <div className="flex items-center gap-x-[20px]">
-        <SearchBar
-          getInfo={getInfo}
-          query={search}
-          classMain="rounded-full text-black px-[22px] items-center w-[270px] shadow-lg outline-none placeholder:text-black bg-white flex"
-          placeholder="Search"
-        />
-        <SortBy
-          getSortChange={getSortChange}
-          sorts={["Aum", "Members", "All Time"]}
-          classSquare="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          selection={sortBy}
-        />
-      </div>
-
       <FundsTable
         funds={fundsArrayCopy}
         startIndex={startIndex}
