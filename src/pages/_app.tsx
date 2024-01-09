@@ -1,6 +1,5 @@
 // Next
 import type { AppProps } from "next/app";
-import local from "next/font/local";
 // Wagmi
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { mainnet, arbitrum, polygonMumbai, polygon } from "wagmi/chains";
@@ -9,27 +8,6 @@ import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import "@/styles/globals.css";
-
-const satoshi = local({
-  src: [
-    {
-      path: "../../public/fonts/SatoshiRegular.otf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/SatoshiMedium.otf",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/SatoshiBold.otf",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  display: "swap",
-});
 
 const { publicClient, webSocketPublicClient } = configureChains(
   [mainnet, arbitrum, polygonMumbai, polygon],
@@ -55,7 +33,7 @@ const config = createConfig({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={config}>
-      <main className={satoshi.className}>
+      <main className="font-dmSans">
         <Component {...pageProps} />
       </main>
     </WagmiConfig>

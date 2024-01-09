@@ -1,5 +1,6 @@
 export type navigationType = {
-  image: string;
+  imageActive: string;
+  imageDesactive: string;
   name: string;
   href: string;
 };

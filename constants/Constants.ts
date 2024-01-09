@@ -1,6 +1,6 @@
 // Images
-import NetworkNavBar from "../public/NetworkNavBar.svg";
-import AssetsNavBar from "../public/AssetsNavBar.svg";
+import HomeActive from "../public/NetworkNavBar.svg";
+import HomeDesactive from "../public/AssetsNavBar.svg";
 import IntegrationsNavBar from "../public/IntegrationsNavBar.svg";
 import PortfolioNavBar from "../public/PortfolioNavBar.svg";
 import Planet from "../public/Planet.svg";
@@ -59,32 +59,38 @@ export const navigation = [
   {
     name: "Home",
     href: "/",
-    image: NetworkNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
   {
     name: "Spot",
     href: "/spot",
-    image: PortfolioNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
   {
     name: "Perps",
     href: "/perpetuals",
-    image: AssetsNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
   {
     name: "Credit",
     href: "/credit",
-    image: IntegrationsNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
   {
     name: "Yield",
     href: "/yield",
-    image: IntegrationsNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
   {
     name: "NFTs",
     href: "/nfts",
-    image: IntegrationsNavBar.src,
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
   },
 ];
 

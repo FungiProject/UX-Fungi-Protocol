@@ -112,7 +112,11 @@ export default function ActionsSideBar() {
                 width={20}
                 height={20}
                 alt="Logo"
-                src={link.image}
+                src={
+                  link.name === actionSelected
+                    ? link.imageActive
+                    : link.imageDesactive
+                }
                 aria-hidden="true"
                 className="mr-3"
               />
