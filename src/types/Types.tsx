@@ -21,14 +21,11 @@ export type homeDataType = {
   imageSrc: string;
 };
 
-export type fundType = {
-  name: string;
-  aum: number;
-  networks: string[];
-  image: string;
-  members: number;
-  allTime: number;
-  href: string;
+export type positionType = {
+  type: string;
+  number: number;
+  totalValue: number;
+  unPnL: number;
 };
 
 export type NetworkType = {

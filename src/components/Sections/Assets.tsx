@@ -7,7 +7,6 @@ import axios from "axios";
 // Components
 import SearchBar from "../Filters/SearchBar";
 import AssetsTable from "../Tables/AssetsTable";
-import SortBy from "../Filters/SortBy";
 import Spinner from "../Loader/Spinner";
 import SelectNetworkDropdown from "../Dropdown/SelectNetworkDropdown";
 // Constants
@@ -31,7 +30,6 @@ export default function Assets() {
     null
   );
   const [search, setSearch] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("Sort By");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { chain } = useNetwork();
 
@@ -48,10 +46,6 @@ export default function Assets() {
 
   const getInfo = (query: string) => {
     setSearch(query);
-  };
-
-  const getSortChange = (option: string) => {
-    setSortBy(option);
   };
 
   const handleClickNext = () => {
@@ -120,7 +114,7 @@ export default function Assets() {
       setAssetsArrayCopy(copy);
       setCurrentPage(1);
       setInitialAssets(initials);
-      setSortBy("Short By");
+
       setSearch("");
       setLoading(false);
     });
@@ -148,34 +142,8 @@ export default function Assets() {
       );
     }
 
-    if (sortBy === "Price") {
-      copy.sort((a: assetType, b: assetType) => {
-        if (a.price !== undefined && b.price !== undefined) {
-          return b.price - a.price;
-        } else {
-          return 0;
-        }
-      });
-    } else if (sortBy === "Market Cap") {
-      copy.sort((a, b) => {
-        if (a.marketCap !== undefined && b.marketCap !== undefined) {
-          return b.marketCap - a.marketCap;
-        } else {
-          return 0;
-        }
-      });
-    } else if (sortBy === "Volume 24h") {
-      copy.sort((a, b) => {
-        if (a.volumen24 !== undefined && b.volumen24 !== undefined) {
-          return b.volumen24 - a.volumen24;
-        } else {
-          return 0;
-        }
-      });
-    }
-
     setAssetsArrayCopy(copy);
-  }, [search, sortBy]);
+  }, [search]);
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -227,12 +195,7 @@ export default function Assets() {
           classMain="rounded-full text-black px-[22px] items-center w-[270px] shadow-lg outline-none placeholder:text-black bg-white flex"
           placeholder="Search"
         />
-        <SortBy
-          getSortChange={getSortChange}
-          sorts={["Price", "Market Cap", "Volume 24h"]}
-          classSquare="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          selection={sortBy}
-        />
+
         <SelectNetworkDropdown
           getNetwork={getNetwork}
           networks={networks}

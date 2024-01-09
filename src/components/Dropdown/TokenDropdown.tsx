@@ -34,21 +34,21 @@ export default function TokenDropdown({
     <div>
       {token ? (
         <button
-          className="flex justify-between w-full shadow-input rounded-full font-semibold px-[12px] py-2.5 items-center"
+          className="flex justify-between w-[175px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
           onClick={() => setOpenModal(true)}
         >
           <span>{token.symbol}</span>
           <Image
             height={25}
             width={25}
-            alt="USDC"
+            alt="Token Image"
             src={token.image}
             className="ml-5"
           />
         </button>
       ) : (
         <button
-          className="flex justify-between shadow-input rounded-full font-semibold px-[8px] py-2.5 items-center w-[175px]"
+          className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center w-[175px]"
           onClick={() => setOpenModal(true)}
         >
           {type}

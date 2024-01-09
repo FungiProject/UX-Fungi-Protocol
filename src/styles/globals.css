@@ -18,7 +18,7 @@ html{
 }
 
 .shadow-input{
-    box-shadow:  0px 2px 10px 0px #514AF3;
+    box-shadow: 0px 0.537px 5.37px 0px rgba(81, 74, 243, 0.25);
 }
   
 @keyframes pulse {

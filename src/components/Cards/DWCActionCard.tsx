@@ -1,15 +1,10 @@
 // React
 import React, { ReactElement, useEffect, useState } from "react";
-// Images
-import USDC from "../../../public/MainnetTokens/USDC.svg";
-// Next
-import Image from "next/image";
 // Components
 import TxButton from "../Buttons/TxButton";
-// Utils
-import getMaxTokens from "@/utils/getMaxToken";
+import TokenDropdown from "../Dropdown/TokenDropdown";
 // Wagmi
-import { useAccount, useNetwork } from "wagmi";
+import { useContractRead, useNetwork } from "wagmi";
 // Constants
 import {
   assetsArbitrum,
@@ -17,6 +12,12 @@ import {
   assetsPolygon,
   assetsPolygonMumbai,
 } from "../../../constants/Constants";
+// Types
+import { assetType } from "@/types/Types";
+// Abis
+import { abiERC20 } from "../../../abis/abis.json";
+// Viem
+import { formatUnits } from "viem";
 
 type DWCActionCardProps = {
   actionSelected: string;
@@ -25,47 +26,30 @@ type DWCActionCardProps = {
 export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
   const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
   const [children, setChildren] = useState<ReactElement>(<span></span>);
-  const [balance, setBalance] = useState<number | undefined>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [assets, setAssets] = useState<assetType[] | null>(null);
+  const [network, setNetwork] = useState<string | null>(null);
+  const [tokenTo, setTokenTo] = useState<assetType | null>(null);
+  const [maxBalanceTokenTo, setMaxBalanceTokenTo] = useState<null | number>(
+    null
+  );
 
-  const { address } = useAccount();
   const { chain } = useNetwork();
+
+  const { data: tokenToDecimals } = useContractRead({
+    address: tokenTo?.address as `0x${string}`,
+    abi: abiERC20,
+    functionName: "decimals",
+  });
 
   const handleAmountChange = (amount: number) => {
     setAmountTo(amount);
-  };
-
-  const maxBalance = () => {
-    let assets;
-    let network;
-    if (chain && chain.id === 80001) {
-      assets = assetsPolygonMumbai;
-      network = "mumbai";
-    } else if (chain && chain.id === 42161) {
-      assets = assetsArbitrum;
-      network = "atbitrum";
-    } else if (chain && chain.id === 1) {
-      assets = assetsMainnet;
-      network = "mainnet";
-    } else if (chain && chain.id === 137) {
-      assets = assetsPolygon;
-      network = "polygon";
-    }
-    if (assets && address && network) {
-      const usdcAddress = assets.filter(
-        (asset: any) => asset.symbol === "USDC.e" || asset.symbol === "USDC"
-      );
-      const balance = getMaxTokens(address, usdcAddress[0].address, network);
-    }
   };
 
   const initialTxButton = () => {
     switch (actionSelected) {
       case "Deposit":
         setChildren(<span>Approve</span>);
-        break;
-      case "Fees":
-        setChildren(<span>Claim</span>);
         break;
       case "Withdraw":
         setChildren(<span>Withdraw</span>);
@@ -76,6 +60,26 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
     setIsLoading(false);
   };
 
+  const getTokenTo = (token: assetType) => {
+    setTokenTo(token);
+  };
+
+  useEffect(() => {
+    if (chain && chain.id === 80001) {
+      setAssets(assetsPolygonMumbai);
+      setNetwork("mumbai");
+    } else if (chain && chain.id === 42161) {
+      setAssets(assetsArbitrum);
+      setNetwork("arbitrum");
+    } else if (chain && chain.id === 1) {
+      setAssets(assetsMainnet);
+      setNetwork("mainnet");
+    } else if (chain && chain.id === 137) {
+      setAssets(assetsPolygon);
+      setNetwork("polygon");
+    }
+  }, [chain]);
+
   useEffect(() => {
     initialTxButton();
   }, []);
@@ -84,38 +88,55 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
     setIsLoading(true);
     initialTxButton();
   }, [actionSelected]);
-
+  console.log(tokenTo, maxBalanceTokenTo, tokenToDecimals);
   return (
-    <main className="mt-[108px] ">
-      <h1 className="text-4xl font-medium ml-[15px] mb-[30px]">
+    <main className="mt-[40px] ">
+      <h1 className="text-2xl font-medium ml-[28px] mb-[16px]">
         {actionSelected}
       </h1>
-      <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[22px]">
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
         <input
           type="number"
           step={0.0000001}
           min={0}
-          className="placeholder:text-gray-500 text-3xl outline-none"
+          className="outline-none placeholder:text-black"
           placeholder="0.00"
           value={amountTo}
           onChange={(e: any) => handleAmountChange(e.target.value)}
         />
         <div className="flex flex-col text-sm font-medium">
-          <div className="flex items-center text-2xl justify-end">
-            <span>USDC</span>
-            <Image
-              height={25}
-              width={25}
-              alt="USDC"
-              src={USDC.src}
-              className="ml-1.5"
-            />
-          </div>{" "}
-          <div>
-            Balance: <span>{balance}</span>
-            <button className="text-main ml-1.5" onClick={() => maxBalance()}>
-              Max
-            </button>
+          <div className="flex flex-col text-sm font-medium">
+            {assets && (
+              <TokenDropdown
+                assets={assets}
+                getToken={getTokenTo}
+                token={tokenTo}
+                type="Token"
+                oppositToken={null}
+              />
+            )}
+
+            {tokenTo && maxBalanceTokenTo && tokenToDecimals !== undefined ? (
+              <div className="mt-[6px] flex justify-end">
+                Balance:{" "}
+                <span className="ml-1">
+                  {Number(
+                    formatUnits(
+                      maxBalanceTokenTo as unknown as bigint,
+                      tokenToDecimals as number
+                    )
+                  ).toFixed(3)}
+                </span>
+                <button
+                  className="text-main ml-1.5"
+                  onClick={() => setAmountTo(100)}
+                >
+                  Max
+                </button>
+              </div>
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
       </div>
