@@ -4,8 +4,6 @@ import React, { ReactElement, useEffect, useState } from "react";
 import LogoutButton from "../Buttons/LogoutButton";
 import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 import LoginButton from "../Buttons/LoginButton";
-import Assets from "../Sections/Assets";
-import Portfolio from "../Sections/Portfolio";
 import Home from "../Sections/Home";
 // Wagmi
 import { useAccount, useNetwork } from "wagmi";
@@ -18,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 // Images
 import Logo from "../../../public/Logo.svg";
+import Spot from "../Sections/Spot";
 
 export default function ActionsSideBar() {
   const { isConnected } = useAccount();
@@ -37,10 +36,10 @@ export default function ActionsSideBar() {
         setPage(<Home getSelectedAction={getSelectedAction} />);
         break;
       case "Spot":
-        setPage(<Portfolio />);
+        setPage(<Spot />);
         break;
       case "Perps":
-        setPage(<Assets />);
+        setPage(<Spot />);
         break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
