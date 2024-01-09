@@ -10,9 +10,13 @@ import formatNumber from "@/utils/formatNumber";
 
 type HomeTableProps = {
   positions: positionType[];
+  getSelectedAction: (action: string) => void;
 };
 
-export default function HomeTable({ positions }: HomeTableProps) {
+export default function HomeTable({
+  positions,
+  getSelectedAction,
+}: HomeTableProps) {
   const balance = 958673.87;
   const cash = 102.34;
   return (
@@ -33,7 +37,11 @@ export default function HomeTable({ positions }: HomeTableProps) {
         <ActionsButton fund={""} isOwner={false} />
       </div>
       {positions.map((position: positionType, index: number) => (
-        <HomeTableCard position={position} key={index} />
+        <HomeTableCard
+          position={position}
+          key={index}
+          getSelectedAction={getSelectedAction}
+        />
       ))}
     </div>
   );

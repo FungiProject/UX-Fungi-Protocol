@@ -6,7 +6,11 @@ import HomeTable from "../Tables/HomeTable";
 
 import ResultsChart from "../Chart/ResultsChart";
 
-export default function Home() {
+type HomeProps = {
+  getSelectedAction: (action: string) => void;
+};
+
+export default function Home({ getSelectedAction }: HomeProps) {
   const positions = [
     {
       type: "Spot",
@@ -24,7 +28,12 @@ export default function Home() {
   return (
     <main>
       <PageContainer
-        main={<HomeTable positions={positions} />}
+        main={
+          <HomeTable
+            positions={positions}
+            getSelectedAction={getSelectedAction}
+          />
+        }
         secondary={<ResultsChart personalBalance={0} />}
       />
     </main>

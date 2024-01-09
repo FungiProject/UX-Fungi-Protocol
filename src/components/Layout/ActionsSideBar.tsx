@@ -22,16 +22,19 @@ import Logo from "../../../public/Logo.svg";
 export default function ActionsSideBar() {
   const { isConnected } = useAccount();
   const [connectedWallet, setConnectedWallet] = useState(false);
-  const [page, setPage] = useState<ReactElement>(<Home />);
   const [previousNetwork, setPreviousNetwork] = useState<NetworkType>();
   const [actionSelected, setActionSelected] = useState<string>("Home");
+
+  const getSelectedAction = (action: string) => {
+    setActionSelected(action);
+  };
 
   const { chain } = useNetwork();
 
   const getViewComponent = () => {
     switch (actionSelected) {
       case "Home":
-        setPage(<Home />);
+        setPage(<Home getSelectedAction={getSelectedAction} />);
         break;
       case "Spot":
         setPage(<Portfolio />);
@@ -40,10 +43,14 @@ export default function ActionsSideBar() {
         setPage(<Assets />);
         break;
       default:
-        setPage(<Home />);
+        setPage(<Home getSelectedAction={getSelectedAction} />);
         break;
     }
   };
+
+  const [page, setPage] = useState<ReactElement>(
+    <Home getSelectedAction={getSelectedAction} />
+  );
 
   useEffect(() => {
     isConnected ? setConnectedWallet(true) : setConnectedWallet(false);
@@ -71,7 +78,7 @@ export default function ActionsSideBar() {
     <div>
       <div className="flex shrink-0 items-center gap-x-4 z-50 mt-[40px]">
         <div className="flex flex-1 gap-x-1 self-stretch lg:gap-x-3 z-5 ml-[75px] mr-[25px]">
-          <Link href="/" className="text-red-500">
+          <Link href="/" className="flex items-center">
             <Image
               width={62}
               height={68}
@@ -79,7 +86,9 @@ export default function ActionsSideBar() {
               src={Logo.src}
               aria-hidden="true"
             />
+            <h1 className="text-4xl font-bold ml-[20px]">{actionSelected}</h1>
           </Link>
+
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
             {connectedWallet && previousNetwork ? (
               <div className="flex items-center">
