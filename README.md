@@ -1,6 +1,6 @@
-## Fungi Wallet
+## Fungi App
 
-The Fungi Protocol Wallet is a dapp that allows its users to create and manage Smart Contract Accounts (SCAs) in an interface focused on DeFi operations. Our UI allows SCA owners to perform all basic transaction types typical of a crypto wallet such as receive funds, transfer ETH or ERC20s, holding NFTs, and transfer ownership. Besides this, the user will have a number of tools to facilitate the interaction with DeFi and thus get a yield over their own assets, e.g. build an investment portfolio, provide liquidity, perform long and short operations with GMX, etc.
+The Fungi App allows its users to create and manage Smart Contract Accounts (SCAs) in an interface focused on DeFi operations. Our UI allows SCA owners to perform all basic transaction types typical of a crypto wallet such as receive funds, transfer ETH or ERC20s, holding NFTs, and transfer ownership. Besides this, the user will have a number of tools to facilitate the interaction with DeFi and thus get a yield over their own assets, e.g. build an investment portfolio, provide liquidity, perform long and short operations with GMX, etc.
 
 The Fungi Wallet uses Alchemy's Account Kit to create the SCAs, to be more concrete, the implementation being used is the Light Account, which has gone through security audits, and supports a variety of functionalities that makes for a great developer and user experience.
 
