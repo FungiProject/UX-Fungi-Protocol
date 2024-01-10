@@ -6,7 +6,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import ErrorPage from "@/components/Sections/ErrorPage";
 import ActionsSideBar from "@/components/Layout/ActionsSideBar";
 
-export default function HomePage() {
+export default function HistoryPage() {
   const size = useWindowSize();
 
   if (size.width && size.width < 1024) {
@@ -15,7 +15,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <ActionsSideBar isHistory={false} />
+      <ActionsSideBar isHistory={true} />
     </div>
   );
 }

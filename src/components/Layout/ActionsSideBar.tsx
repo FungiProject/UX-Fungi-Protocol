@@ -17,8 +17,13 @@ import Link from "next/link";
 // Images
 import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
+import History from "../Sections/History";
 
-export default function ActionsSideBar() {
+type ActionsSideBarProps = {
+  isHistory: boolean;
+};
+
+export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   const { isConnected } = useAccount();
   const [connectedWallet, setConnectedWallet] = useState(false);
   const [previousNetwork, setPreviousNetwork] = useState<NetworkType>();
@@ -41,6 +46,9 @@ export default function ActionsSideBar() {
       case "Perps":
         setPage(<Spot />);
         break;
+      case "Transaction History":
+        setPage(<History />);
+        break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
         break;
@@ -58,6 +66,10 @@ export default function ActionsSideBar() {
   useEffect(() => {
     getViewComponent();
   }, [actionSelected]);
+
+  useEffect(() => {
+    isHistory && setActionSelected("Transaction History");
+  }, [isHistory]);
 
   useEffect(() => {
     if (
@@ -104,35 +116,37 @@ export default function ActionsSideBar() {
           </div>
         </div>
       </div>
-      <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
-        {navigation.map((link: navigationType) => {
-          return (
-            <button
-              key={link.href}
-              onClick={() => setActionSelected(link.name)}
-              className={
-                link.name === actionSelected
-                  ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center`
-                  : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px]"
-              }
-            >
-              <Image
-                width={20}
-                height={20}
-                alt="Logo"
-                src={
+      {!isHistory && (
+        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
+          {navigation.map((link: navigationType) => {
+            return (
+              <button
+                key={link.href}
+                onClick={() => setActionSelected(link.name)}
+                className={
                   link.name === actionSelected
-                    ? link.imageActive
-                    : link.imageDesactive
+                    ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center`
+                    : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px]"
                 }
-                aria-hidden="true"
-                className="mr-3"
-              />
-              {link.name}
-            </button>
-          );
-        })}
-      </div>
+              >
+                <Image
+                  width={20}
+                  height={20}
+                  alt="Logo"
+                  src={
+                    link.name === actionSelected
+                      ? link.imageActive
+                      : link.imageDesactive
+                  }
+                  aria-hidden="true"
+                  className="mr-3"
+                />
+                {link.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <main>{page}</main>
     </div>

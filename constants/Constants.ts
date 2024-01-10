@@ -665,7 +665,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701772887,
   },
   {
@@ -673,7 +673,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -681,7 +681,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    receiver: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
+    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
     time: 1701772887,
   },
   {
@@ -689,15 +689,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701772887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    receiver: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701772887,
   },
   {
@@ -705,7 +697,15 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    receiver: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
+    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
+    time: 1701772887,
+  },
+  {
+    type: "Swap",
+    amountOut: "2000 LINK",
+    amountIn: "3000 UNI",
+    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
     time: 1701772887,
   },
   {
@@ -713,7 +713,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -721,7 +721,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701772887,
   },
   {
@@ -729,7 +729,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -737,7 +737,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -745,7 +745,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701772887,
   },
   {
@@ -753,7 +753,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -761,7 +761,7 @@ export const activities = [
     amountOut: "2000 USDC.e",
     amountIn: null,
     sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    receiver: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
+    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
     time: 1701742887,
   },
   {
@@ -769,7 +769,7 @@ export const activities = [
     amountOut: "2000 LINK",
     amountIn: "3000 UNI",
     sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    receiver: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
+    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
     time: 1701772887,
   },
 ];
