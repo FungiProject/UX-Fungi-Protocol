@@ -20,7 +20,7 @@ import { abiERC20 } from "../../../abis/abis.json";
 import { formatUnits } from "viem";
 
 type DWCActionCardProps = {
-  actionSelected: string;
+  actionSelected?: string;
 };
 
 export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
@@ -55,6 +55,7 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
         setChildren(<span>Withdraw</span>);
         break;
       default:
+        setChildren(<span>Approve</span>);
         break;
     }
     setIsLoading(false);
@@ -88,9 +89,9 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
     setIsLoading(true);
     initialTxButton();
   }, [actionSelected]);
-  console.log(tokenTo, maxBalanceTokenTo, tokenToDecimals);
+
   return (
-    <main className="mt-[40px] ">
+    <main className={actionSelected ? "mt-[40px]" : "mt-[12px]"}>
       <h1 className="text-2xl font-medium ml-[28px] mb-[16px]">
         {actionSelected}
       </h1>
@@ -113,6 +114,7 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
                 token={tokenTo}
                 type="Token"
                 oppositToken={null}
+                className="flex justify-between w-[175px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
               />
             )}
 

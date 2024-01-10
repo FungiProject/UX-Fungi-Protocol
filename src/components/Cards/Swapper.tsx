@@ -21,11 +21,7 @@ import { formatUnits } from "viem";
 // Abis
 import { abiERC20 } from "../../../abis/abis.json";
 
-type SwapperProps = {
-  actionSelected: string;
-};
-
-export default function Swapper({ actionSelected }: SwapperProps) {
+export default function Swapper() {
   const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [children, setChildren] = useState<ReactElement>(<span></span>);
@@ -121,17 +117,14 @@ export default function Swapper({ actionSelected }: SwapperProps) {
   };
 
   return (
-    <main className="mt-[58px] ">
+    <main className="mt-[12px] ">
       <div>
-        <h1 className="text-4xl font-medium ml-[15px] mb-[30px]">
-          {actionSelected}
-        </h1>
-        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[16px]">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
           <input
             type="number"
             step={0.0000001}
             min={0}
-            className="placeholder:text-gray-500 text-3xl outline-none"
+            className="outline-none placeholder:text-black"
             placeholder="0.00"
             value={amountFrom}
             onChange={(e: any) => handleAmountChange(e.target.value)}
@@ -145,6 +138,7 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                   token={tokenFrom}
                   oppositToken={tokenTo}
                   type="From"
+                  className="flex justify-between w-[125px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
                 />
               )}
 
@@ -176,12 +170,12 @@ export default function Swapper({ actionSelected }: SwapperProps) {
         </div>
       </div>
       <div className="mt-[16px]">
-        <div className="flex items-center justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[16px]">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
           <input
             type="number"
             step={0.0000001}
             min={0}
-            className="placeholder:text-gray-500 text-3xl outline-none"
+            className="outline-none placeholder:text-black"
             placeholder="0.00"
             value={amountTo}
             onChange={(e: any) => handleAmountChange(e.target.value)}
@@ -194,6 +188,7 @@ export default function Swapper({ actionSelected }: SwapperProps) {
                 token={tokenTo}
                 oppositToken={tokenFrom}
                 type="To"
+                className="flex justify-between w-[125px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
               />
             )}
             {tokenTo && maxBalanceTokenTo && tokenToDecimals !== undefined ? (

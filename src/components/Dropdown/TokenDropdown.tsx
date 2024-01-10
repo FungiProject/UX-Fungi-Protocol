@@ -15,6 +15,7 @@ type TokenDropdownProps = {
   token: assetType | null;
   oppositToken: assetType | null;
   type: string;
+  className: string;
 };
 
 export default function TokenDropdown({
@@ -23,6 +24,7 @@ export default function TokenDropdown({
   token,
   oppositToken,
   type,
+  className,
 }: TokenDropdownProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -33,10 +35,7 @@ export default function TokenDropdown({
   return (
     <div>
       {token ? (
-        <button
-          className="flex justify-between w-[175px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
-          onClick={() => setOpenModal(true)}
-        >
+        <button className={className} onClick={() => setOpenModal(true)}>
           <span>{token.symbol}</span>
           <Image
             height={25}
