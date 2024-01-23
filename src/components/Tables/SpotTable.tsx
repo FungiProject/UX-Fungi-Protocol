@@ -1,7 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
 // Components
-import AssetsTableCard from "../Cards/AssetsTableCard";
+import SpotTableCard from "../Cards/SpotTableCard";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 // Axios
 import axios from "axios";
@@ -18,7 +18,7 @@ import {
 } from "../../../constants/Constants";
 import Loader from "../Loader/Spinner";
 
-export default function AssetsTable() {
+export default function SpotTable() {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
@@ -122,7 +122,7 @@ export default function AssetsTable() {
       ) : (
         <div className="overflow-auto h-[590px]">
           {assetsArrayCopy.map((asset: assetType, index: number) => (
-            <AssetsTableCard asset={asset} key={asset.name} index={index} />
+            <SpotTableCard asset={asset} key={asset.name} index={index} />
           ))}
         </div>
       )}
