@@ -18,6 +18,7 @@ import Link from "next/link";
 import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
+import Perps from "../Sections/Perps";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -44,7 +45,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         setPage(<Spot />);
         break;
       case "Perps":
-        setPage(<Spot />);
+        setPage(<Perps />);
         break;
       case "Transaction History":
         setPage(<History />);
