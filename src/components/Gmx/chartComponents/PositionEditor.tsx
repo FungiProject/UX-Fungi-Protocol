@@ -26,13 +26,13 @@ import {
   getTotalFeeItem,
   useGasLimits,
   useGasPrice,
-} from "domain/synthetics/fees";
+} from "../domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
-} from "domain/synthetics/orders";
+} from "../domain/synthetics/orders";
 import {
   PositionInfo,
   formatLeverage,
@@ -40,27 +40,27 @@ import {
   getLeverage,
   getLiquidationPrice,
   usePositionsConstants,
-} from "domain/synthetics/positions";
+} from "../domain/synthetics/positions";
 import {
   TokensData,
   adaptToV1InfoTokens,
   convertToTokenAmount,
   convertToUsd,
-} from "domain/synthetics/tokens";
+} from "../domain/synthetics/tokens";
 import {
   TradeFees,
   getMarkPrice,
   getMinCollateralUsdForLeverage,
-} from "domain/synthetics/trade";
+} from "../domain/synthetics/trade";
 import {
   getCommonError,
   getEditCollateralError,
-} from "domain/synthetics/trade/utils/validation";
+} from "../domain/synthetics/trade/utils/validation";
 import { BigNumber, ethers } from "ethers";
-import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { DUST_BNB } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useChainId } from "../lib/chains";
+import { contractFetcher } from "../lib/contracts";
+import { DUST_BNB } from "../lib/legacy";
+import { useLocalStorageSerializeKey } from "../lib/localStorage";
 import {
   formatAmountFree,
   formatTokenAmount,
@@ -68,11 +68,11 @@ import {
   formatUsd,
   limitDecimals,
   parseValue,
-} from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { usePrevious } from "lib/usePrevious";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import useWallet from "lib/wallets/useWallet";
+} from "../lib/numbers";
+import { getByKey } from "../lib/objects";
+import { usePrevious } from "../lib/usePrevious";
+import useIsMetamaskMobile from "../lib/wallets/useIsMetamaskMobile";
+import useWallet from "../lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "./TradeFeesRow";

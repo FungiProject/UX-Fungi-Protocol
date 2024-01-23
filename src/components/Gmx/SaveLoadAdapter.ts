@@ -1,6 +1,6 @@
 import { ChartData } from "charting_library";
-import { getTokenBySymbol } from "../config/tokens";
-import { Token } from "../domain/tokens";
+import { getTokenBySymbol } from "./config/tokens";
+import { Token } from "./domain/tokens";
 
 type ChartDataInfo = ChartData & {
   appVersion?: number;
