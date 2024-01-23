@@ -92,6 +92,12 @@ export const navigation = [
     imageActive: HomeActive.src,
     imageDesactive: HomeDesactive.src,
   },
+  {
+    name: "GM",
+    href: "/gm",
+    imageActive: HomeActive.src,
+    imageDesactive: HomeDesactive.src,
+  },
 ];
 
 export const integrations = [

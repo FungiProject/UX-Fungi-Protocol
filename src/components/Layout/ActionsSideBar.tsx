@@ -18,6 +18,7 @@ import Link from "next/link";
 import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
+import GM from "../Sections/GM";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -48,6 +49,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         break;
       case "Transaction History":
         setPage(<History />);
+        break;
+      case "GM":
+        setPage(<GM />);
         break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
@@ -117,7 +121,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         </div>
       </div>
       {!isHistory && (
-        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
+        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-7 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
           {navigation.map((link: navigationType) => {
             return (
               <button
@@ -129,6 +133,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                     : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px]"
                 }
               >
+              
                 <Image
                   width={20}
                   height={20}

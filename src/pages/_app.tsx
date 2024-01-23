@@ -6,6 +6,7 @@ import { mainnet, arbitrum, polygonMumbai, polygon } from "wagmi/chains";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { SettingsContextProvider } from "@/components/Gmx/context/SettingsContext/SettingsContextProvider";
 
 import "@/styles/globals.css";
 
@@ -33,9 +34,11 @@ const config = createConfig({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={config}>
+      <SettingsContextProvider>
       <main className="font-dmSans">
         <Component {...pageProps} />
       </main>
+      </SettingsContextProvider>;
     </WagmiConfig>
   );
 }
