@@ -58,7 +58,7 @@ import {
 } from "../domain/synthetics/trade/utils/validation";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "../lib/chains";
-import { contractFetcher } from "../lib/contracts";
+import { contractFetcher } from "../lib/contracts/contractFetcher";
 import { DUST_BNB } from "../lib/legacy";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";
 import {

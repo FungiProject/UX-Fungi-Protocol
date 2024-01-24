@@ -1,7 +1,7 @@
 import { sample } from "lodash";
 
-export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;  //TODO fungi
-export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;  //TODO fungi
+export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS; //TODO fungi
+export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS; //TODO fungi
 
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
@@ -35,29 +35,42 @@ export const CHAIN_NAMES_MAP = {
 };
 
 export const FALLBACK_PROVIDERS = {
-    [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
-    [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
-      ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
-      : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
-    [AVALANCHE_FUJI]: [
-      "https://endpoints.omniatech.io/v1/avax/fuji/public",
-      "https://api.avax-test.network/ext/bc/C/rpc",
-      "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
-    ],
-    [ARBITRUM_GOERLI]: ["https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"],
-  };
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS
+    ? JSON.parse(ENV_ARBITRUM_RPC_URLS)
+    : [getAlchemyHttpUrl()],
+  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
+    ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
+    : [
+        "https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b",
+      ],
+  [AVALANCHE_FUJI]: [
+    "https://endpoints.omniatech.io/v1/avax/fuji/public",
+    "https://api.avax-test.network/ext/bc/C/rpc",
+    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+  ],
+  [ARBITRUM_GOERLI]: [
+    "https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j",
+  ],
+};
 
 export function getFallbackRpcUrl(chainId: number): string | undefined {
-    return sample(FALLBACK_PROVIDERS[chainId]);
+  return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"]; //TODO fungi
 
 export function getAlchemyHttpUrl() {
-    /*if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
+  /*if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
       return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
     }*/ // TODO fungi
-    return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+  return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+}
+
+export function getAlchemyWsUrl() {
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
+    return "wss://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+  }
+  return "wss://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
 }
 
 export const RPC_PROVIDERS = {
@@ -123,7 +136,6 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE]: 3, // 3 USD
   [AVALANCHE_FUJI]: 3, // 3 USD
 };
-
 
 export const EXECUTION_FEE_CONFIG_V2: {
   [chainId: number]: {

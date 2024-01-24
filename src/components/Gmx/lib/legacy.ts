@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { expandDecimals } from "./numbers";
+import { expandDecimals, formatAmount } from "./numbers";
 import { t } from "@lingui/macro";
 import { isLocal } from "../config/env";
 
@@ -30,6 +30,51 @@ export function getRootShareApiUrl() {
   }
 
   return "https://share.gmx.io";
+}
+
+export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
+  if (
+    !tokenAInfo ||
+    !tokenAInfo.minPrice ||
+    !tokenBInfo ||
+    !tokenBInfo.maxPrice
+  ) {
+    return;
+  }
+  if (inverted) {
+    return tokenAInfo.minPrice.mul(PRECISION).div(tokenBInfo.maxPrice);
+  }
+  return tokenBInfo.maxPrice.mul(PRECISION).div(tokenAInfo.minPrice);
+}
+
+export function shouldInvertTriggerRatio(tokenA, tokenB) {
+  if (tokenB.isStable || tokenB.isUsdg) return true;
+  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice))
+    return true;
+  return false;
+}
+
+export function getExchangeRateDisplay(
+  rate,
+  tokenA,
+  tokenB,
+  opts: { omitSymbols?: boolean } = {}
+) {
+  if (!rate || !tokenA || !tokenB) return "...";
+  if (shouldInvertTriggerRatio(tokenA, tokenB)) {
+    [tokenA, tokenB] = [tokenB, tokenA];
+    rate = PRECISION.mul(PRECISION).div(rate);
+  }
+  const rateValue = formatAmount(
+    rate,
+    USD_DECIMALS,
+    tokenA.isStable || tokenA.isUsdg ? 2 : 4,
+    true
+  );
+  if (opts.omitSymbols) {
+    return rateValue;
+  }
+  return `${rateValue} ${tokenA.symbol} / ${tokenB.symbol}`;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {

@@ -1,54 +1,30 @@
-import { BigNumber } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
 
-
-//Tokens
 export type Token = {
-    name: string;
-    symbol: string;
-    assetSymbol?: string;
-    baseSymbol?: string;
-    decimals: number;
-    address: string;
-    priceDecimals?: number;
-    wrappedAddress?: string;
-    coingeckoUrl?: string;
-    coingeckoSymbol?: string;
-    explorerUrl?: string;
-    reservesUrl?: string;
-    imageUrl?: string;
-  
-    isUsdg?: boolean;
-    isNative?: boolean;
-    isWrapped?: boolean;
-    isShortable?: boolean;
-    isStable?: boolean;
-    isSynthetic?: boolean;
-    isTempHidden?: boolean;
-    isChartDisabled?: boolean;
-    isV1Available?: boolean;
-    isPlatformToken?: boolean;
-  };
+  name: string;
+  symbol: string;
+  assetSymbol?: string;
+  baseSymbol?: string;
+  decimals: number;
+  address: string;
+  priceDecimals?: number;
+  wrappedAddress?: string;
+  coingeckoUrl?: string;
+  coingeckoSymbol?: string;
+  explorerUrl?: string;
+  reservesUrl?: string;
+  imageUrl?: string;
 
-export type TokenPrices = {
-    minPrice: BigNumber;
-    maxPrice: BigNumber;
-};
-export type TokenData = Token & {
-    prices: TokenPrices;
-    balance?: BigNumber;
-    totalSupply?: BigNumber;
-  };
-
-export type TokensData = {
-    [address: string]: TokenData;
-};
-
-export type TokenBalancesData = {
-  [tokenAddress: string]: BigNumber;
-};
-
-export type TokenPricesData = {
-  [address: string]: TokenPrices;
+  isUsdg?: boolean;
+  isNative?: boolean;
+  isWrapped?: boolean;
+  isShortable?: boolean;
+  isStable?: boolean;
+  isSynthetic?: boolean;
+  isTempHidden?: boolean;
+  isChartDisabled?: boolean;
+  isV1Available?: boolean;
+  isPlatformToken?: boolean;
 };
 
 export type TokenInfo = Token & {
@@ -99,4 +75,9 @@ export type TokenInfo = Token & {
 
 export type InfoTokens = {
   [key: string]: TokenInfo;
+};
+
+export type TokenPrices = {
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
 };

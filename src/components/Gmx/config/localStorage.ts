@@ -11,6 +11,8 @@ export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY =
   "synthetics-market-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
+export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY =
+  "synthetics-collateral-edit-token";
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY =
   "synthetics-deposit-index-token";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
@@ -40,6 +42,17 @@ export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
 
 export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
+}
+
+export function getSyntheticsCollateralEditAddressKey(
+  chainId: number,
+  positionCollateralAddress?: string
+) {
+  return [
+    chainId,
+    SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY,
+    positionCollateralAddress,
+  ];
 }
 
 export function getAllowedSlippageKey(chainId: number) {
