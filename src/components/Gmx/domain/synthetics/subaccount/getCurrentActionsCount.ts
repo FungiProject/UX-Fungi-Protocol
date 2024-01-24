@@ -1,8 +1,11 @@
-import DataStore from "abis/DataStore.json";
-import { getContract } from "config/contracts";
-import { SUBACCOUNT_ORDER_ACTION, subaccountActionCountKey } from "config/dataStore";
+import DataStore from "../../../abis/DataStore.json";
+import { getContract } from "../../../config/contracts";
+import {
+  SUBACCOUNT_ORDER_ACTION,
+  subaccountActionCountKey,
+} from "../../../config/dataStore";
 import { BigNumber, Signer } from "ethers";
-import { executeMulticall } from "lib/multicall";
+import { executeMulticall } from "../../../lib/multicall";
 
 export async function getCurrentMaxActionsCount({
   accountAddress,
@@ -22,13 +25,21 @@ export async function getCurrentMaxActionsCount({
       calls: {
         currentActionsCount: {
           methodName: "getUint",
-          params: [subaccountActionCountKey(accountAddress, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+          params: [
+            subaccountActionCountKey(
+              accountAddress,
+              subaccountAddress,
+              SUBACCOUNT_ORDER_ACTION
+            ),
+          ],
         },
       },
     },
   });
   if (response) {
-    return BigNumber.from(response.data.dataStore.currentActionsCount.returnValues[0]);
+    return BigNumber.from(
+      response.data.dataStore.currentActionsCount.returnValues[0]
+    );
   }
 
   return null;

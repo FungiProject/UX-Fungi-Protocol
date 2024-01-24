@@ -1,9 +1,9 @@
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import { getContract } from "config/contracts";
-import { accountOrderListKey } from "config/dataStore";
+import DataStore from "../../../abis/DataStore.json";
+import SyntheticsReader from "../../../abis/SyntheticsReader.json";
+import { getContract } from "../../../config/contracts";
+import { accountOrderListKey } from "../../../config/dataStore";
 import { BigNumber } from "ethers";
-import { useMulticall } from "lib/multicall";
+import { useMulticall } from "../../../lib/multicall";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
@@ -12,7 +12,10 @@ type OrdersResult = {
 
 const DEFAULT_COUNT = 1000;
 
-export function useOrders(chainId: number, p: { account?: string | null }): OrdersResult {
+export function useOrders(
+  chainId: number,
+  p: { account?: string | null }
+): OrdersResult {
   const { account } = p;
 
   const { data } = useMulticall(chainId, "useOrdersData", {
@@ -38,7 +41,12 @@ export function useOrders(chainId: number, p: { account?: string | null }): Orde
         calls: {
           orders: {
             methodName: "getAccountOrders",
-            params: [getContract(chainId, "DataStore"), account, 0, DEFAULT_COUNT],
+            params: [
+              getContract(chainId, "DataStore"),
+              account,
+              0,
+              DEFAULT_COUNT,
+            ],
           },
         },
       },
@@ -60,12 +68,17 @@ export function useOrders(chainId: number, p: { account?: string | null }): Orde
             receiver: order.addresses.receiver,
             callbackContract: order.addresses.callbackContract,
             marketAddress: order.addresses.market,
-            initialCollateralTokenAddress: order.addresses.initialCollateralToken,
+            initialCollateralTokenAddress:
+              order.addresses.initialCollateralToken,
             swapPath: order.addresses.swapPath,
             sizeDeltaUsd: BigNumber.from(order.numbers.sizeDeltaUsd),
-            initialCollateralDeltaAmount: BigNumber.from(order.numbers.initialCollateralDeltaAmount),
+            initialCollateralDeltaAmount: BigNumber.from(
+              order.numbers.initialCollateralDeltaAmount
+            ),
             contractTriggerPrice: BigNumber.from(order.numbers.triggerPrice),
-            contractAcceptablePrice: BigNumber.from(order.numbers.acceptablePrice),
+            contractAcceptablePrice: BigNumber.from(
+              order.numbers.acceptablePrice
+            ),
             executionFee: BigNumber.from(order.numbers.executionFee),
             callbackGasLimit: BigNumber.from(order.numbers.callbackGasLimit),
             minOutputAmount: BigNumber.from(order.numbers.minOutputAmount),

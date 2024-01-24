@@ -19,7 +19,7 @@ import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import Perps from "../Sections/Perps";
-import GM from "../Sections/GM";
+// import GM from "../Sections/GM";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -51,9 +51,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
       case "Transaction History":
         setPage(<History />);
         break;
-      case "GM":
-        setPage(<GM />);
-        break;
+      // case "GM":
+      //   setPage(<GM />);
+      //   break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
         break;
@@ -134,7 +134,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                     : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px]"
                 }
               >
-              
                 <Image
                   width={20}
                   height={20}

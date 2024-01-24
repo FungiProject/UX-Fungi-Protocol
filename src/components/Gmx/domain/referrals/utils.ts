@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
+import { MAX_REFERRAL_CODE_LENGTH } from "../../lib/legacy";
 
 export function decodeReferralCode(hexCode?: string) {
   if (!hexCode || hexCode === ethers.constants.HashZero) return "";
@@ -9,7 +9,9 @@ export function decodeReferralCode(hexCode?: string) {
     let code = "";
     hexCode = hexCode.substring(2);
     for (let i = 0; i < 32; i++) {
-      code += String.fromCharCode(parseInt(hexCode.substring(i * 2, i * 2 + 2), 16));
+      code += String.fromCharCode(
+        parseInt(hexCode.substring(i * 2, i * 2 + 2), 16)
+      );
     }
     return code.trim();
   }

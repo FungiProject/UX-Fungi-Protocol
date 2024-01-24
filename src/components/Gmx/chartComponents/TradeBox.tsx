@@ -95,9 +95,9 @@ import {
   getSwapError,
 } from "../domain/synthetics/trade/utils/validation";
 import { BigNumber } from "ethers";
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
+import longImg from "../../../../public/img/long.svg";
+import shortImg from "../../../../public/img/short.svg";
+import swapImg from "../../../../public/img/swap.svg";
 import { useChainId } from "../lib/chains";
 import { DUST_BNB, USD_DECIMALS } from "../lib/legacy";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";

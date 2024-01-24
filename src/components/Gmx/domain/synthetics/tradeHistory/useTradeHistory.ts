@@ -1,16 +1,24 @@
 import { useMemo } from "react";
 import { gql } from "@apollo/client";
-import { getWrappedToken } from "config/tokens";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
+import { getWrappedToken } from "../../../config/tokens";
+import { MarketsInfoData } from "../../../domain/synthetics/markets";
+import {
+  TokensData,
+  parseContractPrice,
+} from "../../../domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { bigNumberify } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { bigNumberify } from "../../../lib/numbers";
+import { getByKey } from "../../../lib/objects";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
 import useInfinateSwr from "swr/infinite";
 import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
-import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
+import {
+  PositionTradeAction,
+  RawTradeAction,
+  SwapTradeAction,
+  TradeAction,
+} from "./types";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -35,7 +43,14 @@ export function useTradeHistory(
 
   const getKey = (index: number) => {
     if (chainId && client && (account || forAllAccounts)) {
-      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize];
+      return [
+        chainId,
+        "useTradeHistory",
+        account,
+        forAllAccounts,
+        index,
+        pageSize,
+      ];
     }
     return null;
   };
@@ -57,7 +72,11 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
+            ${
+              !forAllAccounts && account
+                ? `where: { account: "${account!.toLowerCase()}" }`
+                : ""
+            }
         ) {
             id
             eventName
@@ -124,8 +143,12 @@ export function useTradeHistory(
         const orderType = Number(rawAction.orderType);
 
         if (isSwapOrderType(orderType)) {
-          const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-          const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+          const initialCollateralTokenAddress = ethers.utils.getAddress(
+            rawAction.initialCollateralTokenAddress!
+          );
+          const swapPath = rawAction.swapPath!.map((address) =>
+            ethers.utils.getAddress(address)
+          );
 
           const swapPathOutputAddresses = getSwapPathOutputAddresses({
             marketsInfoData,
@@ -135,8 +158,14 @@ export function useTradeHistory(
             shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
           });
 
-          const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress)!;
-          const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress)!;
+          const initialCollateralToken = getByKey(
+            tokensData,
+            initialCollateralTokenAddress
+          )!;
+          const targetCollateralToken = getByKey(
+            tokensData,
+            swapPathOutputAddresses.outTokenAddress
+          )!;
 
           if (!initialCollateralToken || !targetCollateralToken) {
             return undefined;
@@ -149,10 +178,15 @@ export function useTradeHistory(
             swapPath,
             orderType,
             orderKey: rawAction.orderKey,
-            initialCollateralTokenAddress: rawAction.initialCollateralTokenAddress!,
-            initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
+            initialCollateralTokenAddress:
+              rawAction.initialCollateralTokenAddress!,
+            initialCollateralDeltaAmount: bigNumberify(
+              rawAction.initialCollateralDeltaAmount
+            )!,
             minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
-            executionAmountOut: rawAction.executionAmountOut ? bigNumberify(rawAction.executionAmountOut) : undefined,
+            executionAmountOut: rawAction.executionAmountOut
+              ? bigNumberify(rawAction.executionAmountOut)
+              : undefined,
             shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
             targetCollateralToken,
             initialCollateralToken,
@@ -161,11 +195,17 @@ export function useTradeHistory(
 
           return tradeAction;
         } else {
-          const marketAddress = ethers.utils.getAddress(rawAction.marketAddress!);
+          const marketAddress = ethers.utils.getAddress(
+            rawAction.marketAddress!
+          );
           const marketInfo = getByKey(marketsInfoData, marketAddress);
           const indexToken = marketInfo?.indexToken;
-          const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
-          const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
+          const initialCollateralTokenAddress = ethers.utils.getAddress(
+            rawAction.initialCollateralTokenAddress!
+          );
+          const swapPath = rawAction.swapPath!.map((address) =>
+            ethers.utils.getAddress(address)
+          );
           const swapPathOutputAddresses = getSwapPathOutputAddresses({
             marketsInfoData,
             swapPath,
@@ -173,10 +213,21 @@ export function useTradeHistory(
             wrappedNativeTokenAddress: wrappedToken.address,
             shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
           });
-          const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress);
-          const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress);
+          const initialCollateralToken = getByKey(
+            tokensData,
+            initialCollateralTokenAddress
+          );
+          const targetCollateralToken = getByKey(
+            tokensData,
+            swapPathOutputAddresses.outTokenAddress
+          );
 
-          if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
+          if (
+            !marketInfo ||
+            !indexToken ||
+            !initialCollateralToken ||
+            !targetCollateralToken
+          ) {
             return undefined;
           }
 
@@ -191,42 +242,77 @@ export function useTradeHistory(
             initialCollateralTokenAddress,
             initialCollateralToken,
             targetCollateralToken,
-            initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
+            initialCollateralDeltaAmount: bigNumberify(
+              rawAction.initialCollateralDeltaAmount
+            )!,
             sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
             triggerPrice: rawAction.triggerPrice
-              ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
+              ? parseContractPrice(
+                  bigNumberify(rawAction.triggerPrice)!,
+                  indexToken.decimals
+                )
               : undefined,
-            acceptablePrice: parseContractPrice(bigNumberify(rawAction.acceptablePrice)!, indexToken.decimals),
+            acceptablePrice: parseContractPrice(
+              bigNumberify(rawAction.acceptablePrice)!,
+              indexToken.decimals
+            ),
             executionPrice: rawAction.executionPrice
-              ? parseContractPrice(bigNumberify(rawAction.executionPrice)!, indexToken.decimals)
+              ? parseContractPrice(
+                  bigNumberify(rawAction.executionPrice)!,
+                  indexToken.decimals
+                )
               : undefined,
             minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
 
             collateralTokenPriceMax: rawAction.collateralTokenPriceMax
-              ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMax)!, initialCollateralToken.decimals)
+              ? parseContractPrice(
+                  bigNumberify(rawAction.collateralTokenPriceMax)!,
+                  initialCollateralToken.decimals
+                )
               : undefined,
 
             collateralTokenPriceMin: rawAction.collateralTokenPriceMin
-              ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
+              ? parseContractPrice(
+                  bigNumberify(rawAction.collateralTokenPriceMin)!,
+                  initialCollateralToken.decimals
+                )
               : undefined,
 
             indexTokenPriceMin: rawAction.indexTokenPriceMin
-              ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMin), indexToken.decimals)
+              ? parseContractPrice(
+                  BigNumber.from(rawAction.indexTokenPriceMin),
+                  indexToken.decimals
+                )
               : undefined,
             indexTokenPriceMax: rawAction.indexTokenPriceMax
-              ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMax), indexToken.decimals)
+              ? parseContractPrice(
+                  BigNumber.from(rawAction.indexTokenPriceMax),
+                  indexToken.decimals
+                )
               : undefined,
 
             orderType,
             orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
-            pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
+            pnlUsd: rawAction.pnlUsd
+              ? BigNumber.from(rawAction.pnlUsd)
+              : undefined,
 
-            priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
-            priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
-            positionFeeAmount: rawAction.positionFeeAmount ? BigNumber.from(rawAction.positionFeeAmount) : undefined,
-            borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigNumber.from(rawAction.borrowingFeeAmount) : undefined,
-            fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
+            priceImpactDiffUsd: rawAction.priceImpactDiffUsd
+              ? BigNumber.from(rawAction.priceImpactDiffUsd)
+              : undefined,
+            priceImpactUsd: rawAction.priceImpactUsd
+              ? BigNumber.from(rawAction.priceImpactUsd)
+              : undefined,
+            positionFeeAmount: rawAction.positionFeeAmount
+              ? BigNumber.from(rawAction.positionFeeAmount)
+              : undefined,
+            borrowingFeeAmount: rawAction.borrowingFeeAmount
+              ? BigNumber.from(rawAction.borrowingFeeAmount)
+              : undefined,
+            fundingFeeAmount: rawAction.fundingFeeAmount
+              ? BigNumber.from(rawAction.fundingFeeAmount)
+              : undefined,
 
             reason: rawAction.reason,
             reasonBytes: rawAction.reasonBytes,

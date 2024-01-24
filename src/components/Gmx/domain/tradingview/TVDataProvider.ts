@@ -1,10 +1,22 @@
-import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
-import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
-import { CHART_PERIODS } from "lib/legacy";
+import { LAST_BAR_REFRESH_INTERVAL } from "../../config/tradingview";
+import {
+  getLimitChartPricesFromStats,
+  timezoneOffset,
+} from "../../domain/prices";
+import { CHART_PERIODS } from "../../lib/legacy";
 import { Bar } from "./types";
-import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
-import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
-import { PeriodParams } from "charting_library";
+import {
+  formatTimeInBarToMs,
+  getCurrentCandleTime,
+  getMax,
+  getMin,
+} from "./utils";
+import {
+  fillBarGaps,
+  getStableCoinPrice,
+  getTokenChartPrice,
+} from "./requests";
+import { PeriodParams } from "../../charting_library";
 
 const initialState = {
   lastBar: null,
@@ -41,7 +53,13 @@ export class TVDataProvider {
   shouldResetCache = false;
 
   constructor({ resolutions }) {
-    const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;
+    const {
+      lastBar,
+      currentBar,
+      lastBarRefreshTime,
+      barsInfo,
+      chartTokenInfo,
+    } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
     this.lastBarRefreshTime = lastBarRefreshTime;
@@ -54,16 +72,35 @@ export class TVDataProvider {
     this.shouldResetCache = true;
   }
 
-  async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
-    const prices = await getLimitChartPricesFromStats(chainId, ticker, period, limit);
+  async getLimitBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    limit: number
+  ): Promise<Bar[]> {
+    const prices = await getLimitChartPricesFromStats(
+      chainId,
+      ticker,
+      period,
+      limit
+    );
     return prices;
   }
 
-  async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
+  async getTokenLastBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    limit: number
+  ): Promise<Bar[]> {
     return this.getLimitBars(chainId, ticker, period, limit);
   }
 
-  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+  async getTokenChartPrice(
+    chainId: number,
+    ticker: string,
+    period: string
+  ): Promise<Bar[]> {
     return getTokenChartPrice(chainId, ticker, period);
   }
 
@@ -74,7 +111,12 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-    if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+    if (
+      this.shouldResetCache ||
+      !barsInfo.data.length ||
+      barsInfo.ticker !== ticker ||
+      barsInfo.period !== period
+    ) {
       try {
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
@@ -99,7 +141,9 @@ export class TVDataProvider {
     const toWithOffset = to + timezoneOffset;
     const fromWithOffset = from + timezoneOffset;
 
-    const bars = barsInfo.data.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset);
+    const bars = barsInfo.data.filter(
+      (bar) => bar.time > fromWithOffset && bar.time <= toWithOffset
+    );
 
     // if no bars returned, return empty array
     if (!bars.length) {
@@ -115,7 +159,13 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-  async getBars(chainId: number, ticker: string, resolution: string, isStable: boolean, periodParams: PeriodParams) {
+  async getBars(
+    chainId: number,
+    ticker: string,
+    resolution: string,
+    isStable: boolean,
+    periodParams: PeriodParams
+  ) {
     const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
 
@@ -130,7 +180,12 @@ export class TVDataProvider {
     }
   }
 
-  async getMissingBars(chainId: number, ticker: string, period: string, from: number) {
+  async getMissingBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    from: number
+  ) {
     if (!ticker || !period || !chainId || !from) return;
     const barsInfo = this.barsInfo;
     const periodSeconds = CHART_PERIODS[period];
@@ -144,13 +199,17 @@ export class TVDataProvider {
         this.lastBar = bars[bars.length - 1];
         this.currentBar = null;
       }
-      return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time);
+      return bars
+        .filter((bar) => bar.time >= from)
+        .sort((a, b) => a.time - b.time);
     }
   }
 
   async getLastBar(chainId: number, ticker: string, period: string) {
     if (!ticker || !period || !chainId) {
-      throw new Error("Invalid input. Ticker, period, and chainId are required parameters.");
+      throw new Error(
+        "Invalid input. Ticker, period, and chainId are required parameters."
+      );
     }
 
     if (!this.chartTokenInfo) {
@@ -166,7 +225,9 @@ export class TVDataProvider {
       this.chartTokenInfo.ticker !== this.barsInfo.ticker
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      const currentPrice = this.chartTokenInfo.ticker === this.barsInfo.ticker && this.chartTokenInfo.price;
+      const currentPrice =
+        this.chartTokenInfo.ticker === this.barsInfo.ticker &&
+        this.chartTokenInfo.price;
 
       if (prices?.length && currentPrice) {
         const lastBar = prices[0];
@@ -207,7 +268,9 @@ export class TVDataProvider {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-    const currentPrice = this.chartTokenInfo?.ticker === barsInfo.ticker && this.chartTokenInfo.price;
+    const currentPrice =
+      this.chartTokenInfo?.ticker === barsInfo.ticker &&
+      this.chartTokenInfo.price;
 
     if (
       !this.chartTokenInfo?.isChartReady ||
@@ -219,7 +282,10 @@ export class TVDataProvider {
       return;
     }
 
-    if (this.currentBar?.ticker !== barsInfo.ticker || this.currentBar?.period !== barsInfo.period) {
+    if (
+      this.currentBar?.ticker !== barsInfo.ticker ||
+      this.currentBar?.period !== barsInfo.period
+    ) {
       this.currentBar = null;
     }
 
@@ -227,8 +293,18 @@ export class TVDataProvider {
       this.currentBar = {
         ...this.lastBar,
         close: currentPrice,
-        high: getMax(this.lastBar.open, this.lastBar.high, currentPrice, this.currentBar?.high),
-        low: getMin(this.lastBar.open, this.lastBar.low, currentPrice, this.currentBar?.low),
+        high: getMax(
+          this.lastBar.open,
+          this.lastBar.high,
+          currentPrice,
+          this.currentBar?.high
+        ),
+        low: getMin(
+          this.lastBar.open,
+          this.lastBar.low,
+          currentPrice,
+          this.currentBar?.low
+        ),
         ticker,
         period,
       };
@@ -248,7 +324,11 @@ export class TVDataProvider {
     }
     return this.currentBar;
   }
-  setCurrentChartToken(chartTokenInfo: { price: number; ticker: string; isChartReady: boolean }) {
+  setCurrentChartToken(chartTokenInfo: {
+    price: number;
+    ticker: string;
+    isChartReady: boolean;
+  }) {
     this.chartTokenInfo = chartTokenInfo;
   }
   get resolutions() {

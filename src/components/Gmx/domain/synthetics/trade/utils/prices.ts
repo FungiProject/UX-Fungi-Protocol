@@ -1,13 +1,31 @@
-import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
-import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
-import { OrderType } from "domain/synthetics/orders";
-import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+} from "../../../../config/factors";
+import {
+  getCappedPositionImpactUsd,
+  getPriceImpactByAcceptablePrice,
+} from "../../../../domain/synthetics/fees";
+import { MarketInfo } from "../../../../domain/synthetics/markets";
+import { OrderType } from "../../../../domain/synthetics/orders";
+import {
+  TokenPrices,
+  convertToTokenAmount,
+} from "../../../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
+import {
+  applyFactor,
+  expandDecimals,
+  getBasisPoints,
+  roundUpMagnitudeDivision,
+} from "../../../../lib/numbers";
 import { TriggerThresholdType } from "../types";
 
-export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
+export function getMarkPrice(p: {
+  prices: TokenPrices;
+  isIncrease: boolean;
+  isLong: boolean;
+}) {
   const { prices, isIncrease, isLong } = p;
 
   const shouldUseMaxPrice = getShouldUseMaxPrice(isIncrease, isLong);
@@ -43,7 +61,9 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   });
 
   if (baseAcceptablePriceValues.acceptablePriceDeltaBps.lt(0)) {
-    return baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
+    return baseAcceptablePriceValues.acceptablePriceDeltaBps
+      .abs()
+      .add(acceptablePriceImapctBuffer);
   }
 
   return BigNumber.from(acceptablePriceImapctBuffer);
@@ -68,9 +88,15 @@ export function getAcceptablePriceByPriceImpact(p: {
 
   const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
 
-  const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? priceImpactDeltaUsd.mul(-1) : priceImpactDeltaUsd;
-  const acceptablePrice = indexPrice.mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(sizeDeltaUsd);
-  const priceDelta = indexPrice.sub(acceptablePrice).mul(shouldFlipPriceImpact ? 1 : -1);
+  const priceImpactForPriceAdjustment = shouldFlipPriceImpact
+    ? priceImpactDeltaUsd.mul(-1)
+    : priceImpactDeltaUsd;
+  const acceptablePrice = indexPrice
+    .mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment))
+    .div(sizeDeltaUsd);
+  const priceDelta = indexPrice
+    .sub(acceptablePrice)
+    .mul(shouldFlipPriceImpact ? 1 : -1);
   const acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
 
   return {
@@ -88,7 +114,14 @@ export function getAcceptablePriceInfo(p: {
   sizeDeltaUsd: BigNumber;
   maxNegativePriceImpactBps?: BigNumber;
 }) {
-  const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const {
+    marketInfo,
+    isIncrease,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    maxNegativePriceImpactBps,
+  } = p;
   const { indexToken } = marketInfo;
 
   const values = {
@@ -107,7 +140,9 @@ export function getAcceptablePriceInfo(p: {
 
   // For Limit / Trigger orders
   if (maxNegativePriceImpactBps?.gt(0)) {
-    let priceDelta = indexPrice.mul(maxNegativePriceImpactBps).div(BASIS_POINTS_DIVISOR);
+    let priceDelta = indexPrice
+      .mul(maxNegativePriceImpactBps)
+      .div(BASIS_POINTS_DIVISOR);
     priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
     values.acceptablePrice = indexPrice.sub(priceDelta);
@@ -137,10 +172,15 @@ export function getAcceptablePriceInfo(p: {
   );
 
   if (!isIncrease && values.priceImpactDeltaUsd.lt(0)) {
-    const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative).mul(-1);
+    const minPriceImpactUsd = applyFactor(
+      sizeDeltaUsd,
+      marketInfo.maxPositionImpactFactorNegative
+    ).mul(-1);
 
     if (values.priceImpactDeltaUsd.lt(minPriceImpactUsd)) {
-      values.priceImpactDiffUsd = minPriceImpactUsd.sub(values.priceImpactDeltaUsd);
+      values.priceImpactDiffUsd = minPriceImpactUsd.sub(
+        values.priceImpactDeltaUsd
+      );
       values.priceImpactDeltaUsd = minPriceImpactUsd;
     }
   }
@@ -167,12 +207,18 @@ export function getAcceptablePriceInfo(p: {
   });
 
   values.acceptablePrice = acceptablePriceValues.acceptablePrice;
-  values.acceptablePriceDeltaBps = acceptablePriceValues.acceptablePriceDeltaBps;
+  values.acceptablePriceDeltaBps =
+    acceptablePriceValues.acceptablePriceDeltaBps;
 
   return values;
 }
 
-export function applySlippageToPrice(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
+export function applySlippageToPrice(
+  allowedSlippage: number,
+  price: BigNumber,
+  isIncrease: boolean,
+  isLong: boolean
+) {
   const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);
 
   const slippageBasisPoints = shouldIncreasePrice
@@ -182,7 +228,10 @@ export function applySlippageToPrice(allowedSlippage: number, price: BigNumber, 
   return price.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
 }
 
-export function applySlippageToMinOut(allowedSlippage: number, minOutputAmount: BigNumber) {
+export function applySlippageToMinOut(
+  allowedSlippage: number,
+  minOutputAmount: BigNumber
+) {
   const slippageBasisPoints = BASIS_POINTS_DIVISOR - allowedSlippage;
 
   return minOutputAmount.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);

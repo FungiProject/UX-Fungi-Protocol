@@ -1,4 +1,4 @@
-import { MarketInfo } from "domain/synthetics/markets";
+import { MarketInfo } from "../../../domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { TokenData, TokensRatio } from "../tokens";
 import { SwapPathStats, TriggerThresholdType } from "../trade";

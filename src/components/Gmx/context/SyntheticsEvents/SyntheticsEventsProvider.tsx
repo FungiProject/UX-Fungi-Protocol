@@ -1,12 +1,13 @@
 import { t } from "@lingui/macro";
 import EventEmitter from "../../abis/EventEmitter.json";
-import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { GmStatusNotification } from "../../chartComponents/GmStatusNotification";
+import { OrderStatusNotification } from "../../chartComponents/OrderStatusNotification";
+import { FeesSettlementStatusNotification } from "../../chartComponents/FeesSettlementStatusNotification";
 import { getContract } from "../../config/contracts";
 import { isDevelopment } from "../../config/env";
 import { getToken, getWrappedToken } from "../../config/tokens";
 import { WS_LOST_FOCUS_TIMEOUT } from "../../config/ui";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { useWebsocketProvider } from "../../context/WebsocketContext/WebsocketContextProvider";
 import { useMarketsInfo } from "../../domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -22,7 +23,7 @@ import { useChainId } from "../../lib/chains";
 import {
   pushErrorNotification,
   pushSuccessNotification,
-} from "../../lib/contracts";
+} from "../../lib/contracts/notifications";
 import { helperToast } from "../../lib/helperToast";
 import { formatTokenAmount, formatUsd } from "../../lib/numbers";
 import { getByKey, setByKey, updateByKey } from "../../lib/objects";
@@ -57,7 +58,6 @@ import {
 } from "./types";
 import { parseEventLogData } from "./utils";
 import useWallet from "../../lib/wallets/useWallet";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");

@@ -3,7 +3,7 @@ import SpinningLoader from "./SpinningLoader";
 import { getPriceDecimals } from "../config/tokens";
 import { Token } from "../domain/tokens";
 import { BigNumber } from "ethers";
-import gmxLogo from "img/gmx-logo-with-name.svg";
+import gmxLogo from "../../../../public/img/gmx-logo-with-name.svg";
 import { useChainId } from "../lib/chains";
 import { USD_DECIMALS, getHomeUrl } from "../lib/legacy";
 import { formatAmount, formatPercentage } from "../lib/numbers";

@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
 import useSWR from "swr";
 
 export type UserIncentiveData = {
@@ -31,10 +31,15 @@ const USER_INCENTIVE_QUERY = gql`
   }
 `;
 
-export default function useUserIncentiveData(chainId: number, account?: string) {
+export default function useUserIncentiveData(
+  chainId: number,
+  account?: string
+) {
   const graphClient = getSyntheticsGraphClient(chainId);
   const userIncentiveDataCacheKey =
-    chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
+    chainId && graphClient && account
+      ? [chainId, "useUserIncentiveData", account]
+      : null;
 
   async function fetchUserIncentiveData(): Promise<UserIncentiveData[]> {
     if (!account) {
@@ -49,7 +54,10 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
     return response.data?.distributions as UserIncentiveData[];
   }
 
-  const { data, error } = useSWR<UserIncentiveData[]>(userIncentiveDataCacheKey, { fetcher: fetchUserIncentiveData });
+  const { data, error } = useSWR<UserIncentiveData[]>(
+    userIncentiveDataCacheKey,
+    { fetcher: fetchUserIncentiveData }
+  );
 
   return { data, error };
 }

@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import searchIcon from "img/search.svg";
+import searchIcon from "../../../../public/img/search.svg";
 import { useMedia } from "react-use";
 import cx from "classnames";
 

@@ -1,6 +1,11 @@
-import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
+import {
+  SwapFeeItem,
+  getFeeItem,
+  getTotalFeeItem,
+  getTotalSwapVolumeFromSwapStats,
+} from "../../../../domain/synthetics/fees";
 import { BigNumber } from "ethers";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints } from "../../../../lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
@@ -60,7 +65,9 @@ export function getTradeFees(p: {
         tokenOutAddress: step.tokenOutAddress,
         marketAddress: step.marketAddress,
         deltaUsd: step.swapFeeUsd.mul(-1),
-        bps: !step.usdIn.eq(0) ? getBasisPoints(step.swapFeeUsd.mul(-1), step.usdIn) : BigNumber.from(0),
+        bps: !step.usdIn.eq(0)
+          ? getBasisPoints(step.swapFeeUsd.mul(-1), step.usdIn)
+          : BigNumber.from(0),
       }))
     : undefined;
 
@@ -71,19 +78,36 @@ export function getTradeFees(p: {
   const uiSwapFee = getFeeItem(uiSwapFeeUsd.mul(-1), totalSwapVolumeUsd, {
     shouldRoundUp: true,
   });
-  const uiFee = getFeeItem(uiFeeUsd.mul(-1), sizeDeltaUsd, { shouldRoundUp: true });
+  const uiFee = getFeeItem(uiFeeUsd.mul(-1), sizeDeltaUsd, {
+    shouldRoundUp: true,
+  });
 
-  const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
+  const swapProfitFee = getFeeItem(
+    swapProfitFeeUsd.mul(-1),
+    initialCollateralUsd
+  );
 
-  const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);
+  const swapPriceImpact = getFeeItem(
+    swapPriceImpactDeltaUsd,
+    initialCollateralUsd
+  );
 
-  const positionFeeBeforeDiscount = getFeeItem(positionFeeUsd.add(feeDiscountUsd).mul(-1), sizeDeltaUsd);
-  const positionFeeAfterDiscount = getFeeItem(positionFeeUsd.mul(-1), sizeDeltaUsd);
+  const positionFeeBeforeDiscount = getFeeItem(
+    positionFeeUsd.add(feeDiscountUsd).mul(-1),
+    sizeDeltaUsd
+  );
+  const positionFeeAfterDiscount = getFeeItem(
+    positionFeeUsd.mul(-1),
+    sizeDeltaUsd
+  );
 
   const borrowFee = getFeeItem(borrowingFeeUsd.mul(-1), initialCollateralUsd);
 
   const fundingFee = getFeeItem(fundingFeeUsd.mul(-1), initialCollateralUsd);
-  const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const positionPriceImpact = getFeeItem(
+    positionPriceImpactDeltaUsd,
+    sizeDeltaUsd
+  );
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),

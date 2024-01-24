@@ -1,4 +1,4 @@
-import { Token } from "domain/tokens";
+import { Token } from "../../../domain/tokens";
 import { BigNumber } from "ethers";
 
 export type ExecutionFee = {

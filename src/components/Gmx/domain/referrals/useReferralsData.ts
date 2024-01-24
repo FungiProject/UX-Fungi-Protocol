@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
-import { bigNumberify } from "lib/numbers";
+import { bigNumberify } from "../../lib/numbers";
 import { useEffect, useState } from "react";
 import { decodeReferralCode, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
-import { SUPPORTED_CHAIN_IDS } from "config/chains";
-import { getReferralsGraphClient } from "lib/subgraph";
+import { SUPPORTED_CHAIN_IDS } from "../../config/chains";
+import { getReferralsGraphClient } from "../../lib/subgraph";
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -17,10 +17,16 @@ export default function useReferralsData(account) {
       setLoading(false);
       return;
     }
-    const startOfDayTimestamp = Math.floor(Math.floor(Date.now() / 1000) / 86400) * 86400;
+    const startOfDayTimestamp =
+      Math.floor(Math.floor(Date.now() / 1000) / 86400) * 86400;
 
     const query = gql`
-      query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
+      query referralData(
+        $typeIds: [String!]!
+        $account: String!
+        $timestamp: Int!
+        $referralTotalStatsId: String!
+      ) {
         distributions(
           first: 1000
           orderBy: timestamp
@@ -131,8 +137,10 @@ export default function useReferralsData(account) {
                 acc.volume = acc.volume.add(cv.volume);
                 acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
                 acc.trades = acc.trades + cv.trades;
-                acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
-                acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
+                acc.tradedReferralsCount =
+                  acc.tradedReferralsCount + cv.tradedReferralsCount;
+                acc.registeredReferralsCount =
+                  acc.registeredReferralsCount + cv.registeredReferralsCount;
                 acc.affiliateRebates = acc.totalRebateUsd.sub(acc.discountUsd);
                 return acc;
               },
@@ -148,20 +156,26 @@ export default function useReferralsData(account) {
             );
           }
 
-          let affiliateTotalStats = res.data.affiliateTotalStats.map(prepareStatsItem);
+          let affiliateTotalStats =
+            res.data.affiliateTotalStats.map(prepareStatsItem);
           return {
             chainId,
             rebateDistributions,
             discountDistributions,
             affiliateTotalStats,
             affiliateTierInfo: res.data.affiliateTierInfo,
-            affiliateLastDayStats: res.data.affiliateLastDayStats.map(prepareStatsItem),
+            affiliateLastDayStats:
+              res.data.affiliateLastDayStats.map(prepareStatsItem),
             cumulativeStats: getCumulativeStats(affiliateTotalStats),
-            codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
+            codes: res.data.referralCodes.map((e) =>
+              decodeReferralCode(e.code)
+            ),
             referralTotalStats: res.data.referralTotalStats
               ? {
                   volume: bigNumberify(res.data.referralTotalStats.volume),
-                  discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd),
+                  discountUsd: bigNumberify(
+                    res.data.referralTotalStats.discountUsd
+                  ),
                 }
               : {
                   volume: bigNumberify(0),
@@ -174,13 +188,19 @@ export default function useReferralsData(account) {
     function updateTotalStats(accumulator, currentValue) {
       const { cumulativeStats = {}, referralTotalStats = {} } = currentValue;
 
-      accumulator.total.registeredReferralsCount += cumulativeStats.registeredReferralsCount || 0;
-      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(cumulativeStats.volume || 0);
+      accumulator.total.registeredReferralsCount +=
+        cumulativeStats.registeredReferralsCount || 0;
+      accumulator.total.affiliatesVolume =
+        accumulator.total.affiliatesVolume.add(cumulativeStats.volume || 0);
       accumulator.total.affiliateRebates = accumulator.total.affiliateRebates
         .add(cumulativeStats.totalRebateUsd || 0)
         .sub(cumulativeStats.discountUsd || 0);
-      accumulator.total.discountUsd = accumulator.total.discountUsd.add(referralTotalStats.discountUsd || 0);
-      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(referralTotalStats.volume || 0);
+      accumulator.total.discountUsd = accumulator.total.discountUsd.add(
+        referralTotalStats.discountUsd || 0
+      );
+      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(
+        referralTotalStats.volume || 0
+      );
 
       return accumulator;
     }

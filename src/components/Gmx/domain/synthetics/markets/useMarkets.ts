@@ -1,9 +1,9 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import { getContract } from "config/contracts";
-import { convertTokenAddress, getToken } from "config/tokens";
-import { isMarketEnabled } from "config/markets";
+import SyntheticsReader from "../../../abis/SyntheticsReader.json";
+import { getContract } from "../../../config/contracts";
+import { convertTokenAddress, getToken } from "../../../config/tokens";
+import { isMarketEnabled } from "../../../config/markets";
 import { ethers } from "ethers";
-import { useMulticall } from "lib/multicall";
+import { useMulticall } from "../../../lib/multicall";
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
 
@@ -34,20 +34,33 @@ export function useMarkets(chainId: number): MarketsResult {
     }),
     parseResponse: (res) => {
       return res.data.reader.markets.returnValues.reduce(
-        (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
+        (
+          acc: { marketsData: MarketsData; marketsAddresses: string[] },
+          marketValues
+        ) => {
           if (!isMarketEnabled(chainId, marketValues.marketToken)) {
             return acc;
           }
 
           try {
-            const indexToken = getToken(chainId, convertTokenAddress(chainId, marketValues.indexToken, "native"));
+            const indexToken = getToken(
+              chainId,
+              convertTokenAddress(chainId, marketValues.indexToken, "native")
+            );
             const longToken = getToken(chainId, marketValues.longToken);
             const shortToken = getToken(chainId, marketValues.shortToken);
 
-            const isSameCollaterals = marketValues.longToken === marketValues.shortToken;
-            const isSpotOnly = marketValues.indexToken === ethers.constants.AddressZero;
+            const isSameCollaterals =
+              marketValues.longToken === marketValues.shortToken;
+            const isSpotOnly =
+              marketValues.indexToken === ethers.constants.AddressZero;
 
-            const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+            const name = getMarketFullName({
+              indexToken,
+              longToken,
+              shortToken,
+              isSpotOnly,
+            });
 
             acc.marketsData[marketValues.marketToken] = {
               marketTokenAddress: marketValues.marketToken,

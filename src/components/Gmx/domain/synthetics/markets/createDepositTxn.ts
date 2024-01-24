@@ -1,13 +1,16 @@
-import { getContract } from "config/contracts";
+import { getContract } from "../../../config/contracts";
 import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingDeposit } from "context/SyntheticsEvents";
+import { callContract } from "../../../lib/contracts/callContract";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  convertTokenAddress,
+} from "../../../config/tokens";
+import { SetPendingDeposit } from "../../../context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { t } from "@lingui/macro";
 
 type Params = {
@@ -28,12 +31,24 @@ type Params = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: number, signer: Signer, p: Params) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+export async function createDepositTxn(
+  chainId: number,
+  signer: Signer,
+  p: Params
+) {
+  const contract = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    signer
+  );
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
-  const isNativeLongDeposit = p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount?.gt(0);
-  const isNativeShortDeposit = p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount?.gt(0);
+  const isNativeLongDeposit =
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS &&
+    p.longTokenAmount?.gt(0);
+  const isNativeShortDeposit =
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS &&
+    p.shortTokenAmount?.gt(0);
 
   let wntDeposit = BigNumber.from(0);
 
@@ -49,20 +64,45 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
 
   const wntAmount = p.executionFee.add(wntDeposit);
 
-  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
-  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
+  const initialLongTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialLongTokenAddress,
+    "wrapped"
+  );
+  const initialShortTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialShortTokenAddress,
+    "wrapped"
+  );
 
-  const minMarketTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
+  const minMarketTokens = applySlippageToMinOut(
+    p.allowedSlippage,
+    p.minMarketTokens
+  );
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
 
     !isNativeLongDeposit && p.longTokenAmount.gt(0)
-      ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
+      ? {
+          method: "sendTokens",
+          params: [
+            p.initialLongTokenAddress,
+            depositVaultAddress,
+            p.longTokenAmount,
+          ],
+        }
       : undefined,
 
     !isNativeShortDeposit && p.shortTokenAmount.gt(0)
-      ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
+      ? {
+          method: "sendTokens",
+          params: [
+            p.initialShortTokenAddress,
+            depositVaultAddress,
+            p.shortTokenAmount,
+          ],
+        }
       : undefined,
 
     {
@@ -80,7 +120,8 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver:
+            UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
       ],
     },
@@ -88,7 +129,9 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
 
   const encodedPayload = multicall
     .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+    .map((call) =>
+      contract.interface.encodeFunctionData(call!.method, call!.params)
+    );
 
   if (!p.skipSimulation) {
     await simulateExecuteOrderTxn(chainId, {

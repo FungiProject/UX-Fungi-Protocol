@@ -18,6 +18,10 @@ export function bigNumberify(n?: BigNumberish) {
   }
 }
 
+export function basisPointsToFloat(basisPoints: BigNumber) {
+  return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
+}
+
 export function formatDeltaUsd(
   deltaUsd?: BigNumber,
   percentage?: BigNumber,
@@ -359,4 +363,10 @@ export function getBasisPoints(
   }
 
   return result;
+}
+
+export function removeTrailingZeros(amount: string | number) {
+  const amountWithoutZeros = Number(amount);
+  if (!amountWithoutZeros) return amount;
+  return amountWithoutZeros;
 }

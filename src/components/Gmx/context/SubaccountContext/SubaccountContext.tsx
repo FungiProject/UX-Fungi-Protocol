@@ -1,36 +1,51 @@
 import { Trans } from "@lingui/macro";
-import DataStore from "abis/DataStore.json";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
-import { getContract } from "config/contracts";
+import DataStore from "../../abis/DataStore.json";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
+} from "../../config/chains";
+import { getContract } from "../../config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
   maxAllowedSubaccountActionCountKey,
   subaccountActionCountKey,
   subaccountAutoTopUpAmountKey,
   subaccountListKey,
-} from "config/dataStore";
-import { getSubaccountConfigKey } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+} from "../../config/dataStore";
+import { getSubaccountConfigKey } from "../../config/localStorage";
+import { getNativeToken, getWrappedToken } from "../../config/tokens";
 import cryptoJs from "crypto-js";
-import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
+import { useTransactionPending } from "../../domain/synthetics/common/useTransactionReceipt";
 import {
   estimateExecuteIncreaseOrderGasLimit,
   getExecutionFee,
   useGasLimits,
   useGasPrice,
-} from "domain/synthetics/fees";
-import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
-import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
-import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
+} from "../../domain/synthetics/fees";
+import { STRING_FOR_SIGNING } from "../../domain/synthetics/subaccount/constants";
+import { SubaccountSerializedConfig } from "../../domain/synthetics/subaccount/types";
+import {
+  useTokenBalances,
+  useTokensData,
+} from "../../domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMulticall } from "lib/multicall";
-import { applyFactor } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { getProvider } from "lib/rpc";
-import useWallet from "lib/wallets/useWallet";
-import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { useChainId } from "../../lib/chains";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { useMulticall } from "../../lib/multicall";
+import { applyFactor } from "../../lib/numbers";
+import { getByKey } from "../../lib/objects";
+import { getProvider } from "../../lib/rpc";
+import useWallet from "../../lib/wallets/useWallet";
+import {
+  Context,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
@@ -87,14 +102,16 @@ function getFactorByChainId(chainId: number) {
 
 export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [notificationState, setNotificationState] = useState<SubaccountNotificationState>("none");
+  const [notificationState, setNotificationState] =
+    useState<SubaccountNotificationState>("none");
 
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
-  const [config, setConfig] = useLocalStorageSerializeKey<SubaccountSerializedConfig>(
-    getSubaccountConfigKey(chainId, account),
-    null
-  );
+  const [config, setConfig] =
+    useLocalStorageSerializeKey<SubaccountSerializedConfig>(
+      getSubaccountConfigKey(chainId, account),
+      null
+    );
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -106,7 +123,10 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     if (!gasLimits || !tokensData || !gasPrice) return [null, null];
 
     const approxNetworkGasLimit = applyFactor(
-      applyFactor(gasLimits.estimatedFeeBaseGasLimit, gasLimits.estimatedFeeMultiplierFactor),
+      applyFactor(
+        gasLimits.estimatedFeeBaseGasLimit,
+        gasLimits.estimatedFeeMultiplierFactor
+      ),
       getFactorByChainId(chainId)
     )
       // createOrder is smaller than executeOrder
@@ -119,7 +139,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     });
 
     const executionFee =
-      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? BigNumber.from(0);
+      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)
+        ?.feeTokenAmount ?? BigNumber.from(0);
     return [executionFee, networkFee];
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
@@ -148,47 +169,87 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   }, [setConfig]);
 
   const [activeTx, setActiveTx] = useState<string | null>(null);
-  const [contractData, setContractData] = useState<SubaccountContext["contractData"] | null>(null);
+  const [contractData, setContractData] = useState<
+    SubaccountContext["contractData"] | null
+  >(null);
   const isTxPending = useTransactionPending(activeTx);
 
-  const { data: fetchedContractData, isLoading } = useMulticall(chainId, "useSubaccountsFromContracts", {
-    key:
-      account && config?.address ? [account, config.address, activeTx, isTxPending ? "pending" : "not-pending"] : null,
-    request: () => {
-      return {
-        dataStore: {
-          contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
-          calls: {
-            isSubaccountActive: {
-              methodName: "containsAddress",
-              params: [subaccountListKey(account!), config!.address],
-            },
-            maxAllowedActionsCount: {
-              methodName: "getUint",
-              params: [maxAllowedSubaccountActionCountKey(account!, config!.address, SUBACCOUNT_ORDER_ACTION)],
-            },
-            currentActionsCount: {
-              methodName: "getUint",
-              params: [subaccountActionCountKey(account!, config!.address, SUBACCOUNT_ORDER_ACTION)],
-            },
-            currentAutoTopUpAmount: {
-              methodName: "getUint",
-              params: [subaccountAutoTopUpAmountKey(account!, config!.address)],
+  const { data: fetchedContractData, isLoading } = useMulticall(
+    chainId,
+    "useSubaccountsFromContracts",
+    {
+      key:
+        account && config?.address
+          ? [
+              account,
+              config.address,
+              activeTx,
+              isTxPending ? "pending" : "not-pending",
+            ]
+          : null,
+      request: () => {
+        return {
+          dataStore: {
+            contractAddress: getContract(chainId, "DataStore"),
+            abi: DataStore.abi,
+            calls: {
+              isSubaccountActive: {
+                methodName: "containsAddress",
+                params: [subaccountListKey(account!), config!.address],
+              },
+              maxAllowedActionsCount: {
+                methodName: "getUint",
+                params: [
+                  maxAllowedSubaccountActionCountKey(
+                    account!,
+                    config!.address,
+                    SUBACCOUNT_ORDER_ACTION
+                  ),
+                ],
+              },
+              currentActionsCount: {
+                methodName: "getUint",
+                params: [
+                  subaccountActionCountKey(
+                    account!,
+                    config!.address,
+                    SUBACCOUNT_ORDER_ACTION
+                  ),
+                ],
+              },
+              currentAutoTopUpAmount: {
+                methodName: "getUint",
+                params: [
+                  subaccountAutoTopUpAmountKey(account!, config!.address),
+                ],
+              },
             },
           },
-        },
-      };
-    },
-    parseResponse: (res) => {
-      const isSubaccountActive = Boolean(res.data.dataStore.isSubaccountActive.returnValues[0]);
-      const maxAllowedActions = BigNumber.from(res.data.dataStore.maxAllowedActionsCount.returnValues[0]);
-      const currentActionsCount = BigNumber.from(res.data.dataStore.currentActionsCount.returnValues[0]);
-      const currentAutoTopUpAmount = BigNumber.from(res.data.dataStore.currentAutoTopUpAmount.returnValues[0]);
+        };
+      },
+      parseResponse: (res) => {
+        const isSubaccountActive = Boolean(
+          res.data.dataStore.isSubaccountActive.returnValues[0]
+        );
+        const maxAllowedActions = BigNumber.from(
+          res.data.dataStore.maxAllowedActionsCount.returnValues[0]
+        );
+        const currentActionsCount = BigNumber.from(
+          res.data.dataStore.currentActionsCount.returnValues[0]
+        );
+        const currentAutoTopUpAmount = BigNumber.from(
+          res.data.dataStore.currentAutoTopUpAmount.returnValues[0]
+        );
 
-      return { isSubaccountActive, maxAllowedActions, currentActionsCount, currentAutoTopUpAmount };
-    },
-  });
+        return {
+          isSubaccountActive,
+          maxAllowedActions,
+          currentActionsCount,
+          currentAutoTopUpAmount,
+        };
+      },
+    }
+  );
 
   useEffect(() => {
     if (isLoading) return;
@@ -231,12 +292,20 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
-export function useSubaccountSelector<Selected>(selector: (s: SubaccountContext) => Selected) {
-  return useContextSelector(context as Context<SubaccountContext>, selector) as Selected;
+export function useSubaccountSelector<Selected>(
+  selector: (s: SubaccountContext) => Selected
+) {
+  return useContextSelector(
+    context as Context<SubaccountContext>,
+    selector
+  ) as Selected;
 }
 
 export function useSubaccountModalOpen() {
-  return [useSubaccountSelector((s) => s.modalOpen), useSubaccountSelector((s) => s.setModalOpen)] as const;
+  return [
+    useSubaccountSelector((s) => s.modalOpen),
+    useSubaccountSelector((s) => s.setModalOpen),
+  ] as const;
 }
 
 export function useSubaccountGenerateSubaccount() {
@@ -252,7 +321,9 @@ export function useSubaccountAddress() {
 }
 
 function useSubaccountPrivateKey() {
-  const encryptedString = useSubaccountSelector((s) => s.subaccount?.privateKey ?? null);
+  const encryptedString = useSubaccountSelector(
+    (s) => s.subaccount?.privateKey ?? null
+  );
   const { account } = useWallet();
   return useMemo(() => {
     if (!account || !encryptedString) return null;
@@ -261,7 +332,9 @@ function useSubaccountPrivateKey() {
     // account is already another address
     // while the encryptedString is still from the previous account
     try {
-      return cryptoJs.AES.decrypt(encryptedString, account).toString(cryptoJs.enc.Utf8);
+      return cryptoJs.AES.decrypt(encryptedString, account).toString(
+        cryptoJs.enc.Utf8
+      );
     } catch (e) {
       return null;
     }
@@ -270,29 +343,45 @@ function useSubaccountPrivateKey() {
 
 export function useIsSubaccountActive() {
   const pkAvailable = useSubaccountPrivateKey() !== null;
-  return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false) && pkAvailable;
+  return (
+    useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false) &&
+    pkAvailable
+  );
 }
 
 export function useSubaccountDefaultExecutionFee() {
-  return useSubaccountSelector((s) => s.defaultExecutionFee) ?? BigNumber.from(0);
+  return (
+    useSubaccountSelector((s) => s.defaultExecutionFee) ?? BigNumber.from(0)
+  );
 }
 
 function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? BigNumber.from(0);
 }
 
-export function useSubaccount(requiredBalance: BigNumber | null, requiredActions = 1) {
+export function useSubaccount(
+  requiredBalance: BigNumber | null,
+  requiredActions = 1
+) {
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
   const { chainId } = useChainId();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
-  const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultExecutionFee);
+  const insufficientFunds = useSubaccountInsufficientFunds(
+    requiredBalance ?? defaultExecutionFee
+  );
 
   const { remaining } = useSubaccountActionCounts();
 
   return useMemo(() => {
-    if (!address || !active || !privateKey || insufficientFunds || remaining?.lt(Math.max(1, requiredActions)))
+    if (
+      !address ||
+      !active ||
+      !privateKey ||
+      insufficientFunds ||
+      remaining?.lt(Math.max(1, requiredActions))
+    )
       return null;
 
     const provider = getProvider(undefined, chainId);
@@ -305,19 +394,36 @@ export function useSubaccount(requiredBalance: BigNumber | null, requiredActions
       signer,
       wallet,
     };
-  }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
+  }, [
+    address,
+    active,
+    privateKey,
+    insufficientFunds,
+    remaining,
+    requiredActions,
+    chainId,
+  ]);
 }
 
-export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
+export function useSubaccountInsufficientFunds(
+  requiredBalance: BigNumber | undefined | null
+) {
   const { chainId } = useChainId();
   const subaccountAddress = useSubaccountAddress();
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
   const nativeToken = useMemo(() => getNativeToken(chainId), [chainId]);
-  const nativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
+  const nativeTokenBalance = getByKey(
+    subBalances.balancesData,
+    nativeToken.address
+  );
   const isSubaccountActive = useIsSubaccountActive();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();
   const networkFee = useSubaccountDefaultNetworkFee();
-  const required = (requiredBalance ?? defaultExecutionFee ?? BigNumber.from(0)).add(networkFee);
+  const required = (
+    requiredBalance ??
+    defaultExecutionFee ??
+    BigNumber.from(0)
+  ).add(networkFee);
 
   if (!isSubaccountActive) return false;
   if (!nativeTokenBalance) return false;
@@ -325,7 +431,9 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
   return required.gt(nativeTokenBalance);
 }
 
-export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
+export function useMainAccountInsufficientFunds(
+  requiredBalance: BigNumber | undefined | null
+) {
   const { chainId } = useChainId();
   const { account: address } = useWallet();
   const balances = useTokenBalances(chainId, address);
@@ -343,8 +451,12 @@ export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | und
 }
 
 export function useSubaccountActionCounts() {
-  const current = useSubaccountSelector((s) => s.contractData?.currentActionsCount ?? null);
-  const max = useSubaccountSelector((s) => s.contractData?.maxAllowedActions ?? null);
+  const current = useSubaccountSelector(
+    (s) => s.contractData?.currentActionsCount ?? null
+  );
+  const max = useSubaccountSelector(
+    (s) => s.contractData?.maxAllowedActions ?? null
+  );
   const remaining = max?.sub(current ?? 0) ?? null;
 
   return {
@@ -355,7 +467,10 @@ export function useSubaccountActionCounts() {
 }
 
 export function useSubaccountPendingTx() {
-  return [useSubaccountSelector((s) => s.activeTx), useSubaccountSelector((s) => s.setActiveTx)] as const;
+  return [
+    useSubaccountSelector((s) => s.activeTx),
+    useSubaccountSelector((s) => s.setActiveTx),
+  ] as const;
 }
 
 export function useIsLastSubaccountAction(requiredActions = 1) {
@@ -370,8 +485,10 @@ export function useSubaccountCancelOrdersDetailsMessage(
   const defaultRequiredBalance = useSubaccountDefaultExecutionFee();
   const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
-  const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);
-  const subaccountInsufficientFunds = useSubaccountInsufficientFunds(requiredBalance);
+  const mainAccountInsufficientFunds =
+    useMainAccountInsufficientFunds(requiredBalance);
+  const subaccountInsufficientFunds =
+    useSubaccountInsufficientFunds(requiredBalance);
   const [, setOpenSubaccountModal] = useSubaccountModalOpen();
   const openSubaccountModal = useCallback(() => {
     setOpenSubaccountModal(true);
@@ -401,7 +518,8 @@ export function useSubaccountCancelOrdersDetailsMessage(
     } else if (mainAccountInsufficientFunds) {
       return (
         <Trans>
-          There are insufficient funds in your Main account for One-Click Trading auto top-ups.{" "}
+          There are insufficient funds in your Main account for One-Click
+          Trading auto top-ups.{" "}
           <span onClick={openSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
@@ -411,7 +529,12 @@ export function useSubaccountCancelOrdersDetailsMessage(
     }
 
     return null;
-  }, [isLastAction, mainAccountInsufficientFunds, openSubaccountModal, subaccountInsufficientFunds]);
+  }, [
+    isLastAction,
+    mainAccountInsufficientFunds,
+    openSubaccountModal,
+    subaccountInsufficientFunds,
+  ]);
 }
 
 export function useSubaccountNotificationState() {

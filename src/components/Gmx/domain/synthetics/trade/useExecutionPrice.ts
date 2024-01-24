@@ -1,10 +1,10 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import { getContract } from "config/contracts";
+import SyntheticsReader from "../../../abis/SyntheticsReader.json";
+import { getContract } from "../../../config/contracts";
 import { BigNumber } from "ethers";
-import { useMulticall } from "lib/multicall";
+import { useMulticall } from "../../../lib/multicall";
 import { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatUsd } from "../../../lib/numbers";
 
 export function useDebugExecutionPrice(
   chainId,
@@ -18,11 +18,30 @@ export function useDebugExecutionPrice(
     isLong?: boolean;
   }
 ) {
-  const { marketInfo, sizeInUsd, sizeInTokens, sizeDeltaUsd, skip, isLong, overrideIndexTokenPrice } = p;
+  const {
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
+    sizeDeltaUsd,
+    skip,
+    isLong,
+    overrideIndexTokenPrice,
+  } = p;
 
   const key =
-    !skip && marketInfo && sizeInUsd && sizeInTokens && sizeDeltaUsd && isLong !== undefined
-      ? [marketInfo.marketTokenAddress, sizeInUsd.toString(), sizeInTokens.toString(), sizeDeltaUsd.toString(), isLong]
+    !skip &&
+    marketInfo &&
+    sizeInUsd &&
+    sizeInTokens &&
+    sizeDeltaUsd &&
+    isLong !== undefined
+      ? [
+          marketInfo.marketTokenAddress,
+          sizeInUsd.toString(),
+          sizeInTokens.toString(),
+          sizeDeltaUsd.toString(),
+          isLong,
+        ]
       : null;
 
   useMulticall(chainId, "useExecutionPrice", {
@@ -66,10 +85,17 @@ export function useDebugExecutionPrice(
       // eslint-disable-next-line no-console
       console.log("useExecutionPrice", {
         executionPrice: formatUsd(
-          parseContractPrice(BigNumber.from(returnValues.executionPrice), marketInfo!.indexToken.decimals)
+          parseContractPrice(
+            BigNumber.from(returnValues.executionPrice),
+            marketInfo!.indexToken.decimals
+          )
         ),
-        priceImpactUsd: formatDeltaUsd(BigNumber.from(returnValues.priceImpactUsd)),
-        priceImpactDiffUsd: formatUsd(BigNumber.from(returnValues.priceImpactDiffUsd)),
+        priceImpactUsd: formatDeltaUsd(
+          BigNumber.from(returnValues.priceImpactUsd)
+        ),
+        priceImpactDiffUsd: formatUsd(
+          BigNumber.from(returnValues.priceImpactDiffUsd)
+        ),
       });
     },
   });

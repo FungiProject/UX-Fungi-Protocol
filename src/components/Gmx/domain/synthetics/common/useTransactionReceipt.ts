@@ -1,4 +1,4 @@
-import useWallet from "lib/wallets/useWallet";
+import useWallet from "../../../lib/wallets/useWallet";
 import { useEffect, useState } from "react";
 
 export function useTransactionPending(hash: string | null | undefined) {

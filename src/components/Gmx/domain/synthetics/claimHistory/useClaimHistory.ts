@@ -1,17 +1,23 @@
 import { gql } from "@apollo/client";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
+import { MarketsInfoData } from "../../../domain/synthetics/markets";
+import { TokensData } from "../../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { bigNumberify } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { bigNumberify } from "../../../lib/numbers";
+import { getByKey } from "../../../lib/objects";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
-import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
-import useWallet from "lib/wallets/useWallet";
+import {
+  ClaimAction,
+  ClaimCollateralAction,
+  ClaimFundingFeeAction,
+  ClaimMarketItem,
+  ClaimType,
+} from "./types";
+import useWallet from "../../../lib/wallets/useWallet";
 import { getAddress } from "ethers/lib/utils.js";
-import { getToken } from "config/tokens";
+import { getToken } from "../../../config/tokens";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -34,7 +40,12 @@ type RawClaimAction = {
 
 export function useClaimCollateralHistory(
   chainId: number,
-  p: { marketsInfoData?: MarketsInfoData; tokensData?: TokensData; pageIndex: number; pageSize: number }
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+    pageIndex: number;
+    pageSize: number;
+  }
 ): ClaimCollateralHistoryResult {
   const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
 
@@ -42,7 +53,10 @@ export function useClaimCollateralHistory(
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = chainId && client && account ? [chainId, "useClaimHistory", account, pageIndex, pageSize] : null;
+  const key =
+    chainId && client && account
+      ? [chainId, "useClaimHistory", account, pageIndex, pageSize]
+      : null;
 
   const { data, error } = useSWR<RawClaimAction[]>(key, {
     fetcher: async () => {
@@ -103,7 +117,12 @@ export function useClaimCollateralHistory(
         case ClaimType.SettleFundingFeeCreated:
         case ClaimType.SettleFundingFeeExecuted:
         case ClaimType.SettleFundingFeeCancelled: {
-          const settleAction = createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData);
+          const settleAction = createSettleFundingFeeAction(
+            chainId,
+            eventName,
+            rawAction,
+            marketsInfoData
+          );
           return settleAction ? [...acc, settleAction] : acc;
         }
         default:
@@ -154,9 +173,11 @@ function createClaimCollateralAction(
     }
 
     if (tokenAddress === marketInfo.longTokenAddress) {
-      claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
+      claimItemsMap[marketAddress].longTokenAmount =
+        claimItemsMap[marketAddress].longTokenAmount.add(amount);
     } else {
-      claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
+      claimItemsMap[marketAddress].shortTokenAmount =
+        claimItemsMap[marketAddress].shortTokenAmount.add(amount);
     }
   }
 
@@ -179,7 +200,9 @@ function createSettleFundingFeeAction(
 
   if (!markets.length) return null;
 
-  const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
+  const tokens = rawAction.tokenAddresses
+    .map((address) => getToken(chainId, getAddress(address)))
+    .filter(Boolean);
 
   return {
     id: rawAction.id,

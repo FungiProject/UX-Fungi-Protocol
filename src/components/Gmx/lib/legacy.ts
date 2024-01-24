@@ -11,9 +11,21 @@ export const PRECISION = expandDecimals(1, 30);
 export const DUST_BNB = "2000000000000000";
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
+export const REFERRAL_CODE_QUERY_PARAM = "ref";
+export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
+}
+
+export function isHashZero(value) {
+  return value === ethers.constants.HashZero;
+}
+
+export function adjustForDecimals(amount, divDecimals, mulDecimals) {
+  return amount
+    .mul(expandDecimals(1, mulDecimals))
+    .div(expandDecimals(1, divDecimals));
 }
 
 export function getPageTitle(data) {

@@ -1,11 +1,21 @@
-import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
-import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
-import { useChainId } from "lib/chains";
+import {
+  HistoryCallback,
+  PeriodParams,
+  ResolutionString,
+  SubscribeBarsCallback,
+} from "../../charting_library";
+import {
+  getNativeToken,
+  getPriceDecimals,
+  getTokens,
+  isChartAvailabeForToken,
+} from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
-import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { SUPPORTED_RESOLUTIONS_V1 } from "../../config/tradingview";
 
 function getConfigurationData(supportedResolutions) {
   return {
@@ -41,7 +51,10 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     [chainId]
   );
 
-  const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
+  const supportedResolutions = useMemo(
+    () => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1,
+    [dataProvider]
+  );
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
@@ -55,10 +68,20 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
-        if (ticker && period && lastBarTime.current && !stableTokens.includes(ticker)) {
+        if (
+          ticker &&
+          period &&
+          lastBarTime.current &&
+          !stableTokens.includes(ticker)
+        ) {
           let data;
           try {
-            data = await tvDataProvider.current?.getMissingBars(chainId, ticker, period, lastBarTime.current);
+            data = await tvDataProvider.current?.getMissingBars(
+              chainId,
+              ticker,
+              period,
+              lastBarTime.current
+            );
           } catch (e) {
             data = [];
           }
@@ -89,14 +112,19 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     return {
       datafeed: {
         onReady: (callback) => {
-          setTimeout(() => callback(getConfigurationData(supportedResolutions)));
+          setTimeout(() =>
+            callback(getConfigurationData(supportedResolutions))
+          );
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
           if (!isChartAvailabeForToken(chainId, symbolName)) {
             symbolName = getNativeToken(chainId).symbol;
           }
 
-          const pricescale = Math.pow(10, getPriceDecimals(chainId, symbolName));
+          const pricescale = Math.pow(
+            10,
+            getPriceDecimals(chainId, symbolName)
+          );
 
           const symbolInfo = {
             name: symbolName,
@@ -133,7 +161,13 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               onErrorCallback("Invalid ticker!");
               return;
             }
-            const bars = await tvDataProvider.current?.getBars(chainId, ticker, resolution, isStable, periodParams);
+            const bars = await tvDataProvider.current?.getBars(
+              chainId,
+              ticker,
+              resolution,
+              isStable,
+              periodParams
+            );
 
             const noData = !bars || bars.length === 0;
             onHistoryCallback(bars, { noData });
@@ -159,19 +193,24 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             if (missingBarsInfo.current.bars?.length > 0) {
               missingBarsInfo.current.bars.forEach((bar: any) => {
                 onRealtimeCallback(formatTimeInBarToMs(bar));
-                missingBarsInfo.current.bars = missingBarsInfo.current.bars.filter((b: Bar) => b.time !== bar.time);
+                missingBarsInfo.current.bars =
+                  missingBarsInfo.current.bars.filter(
+                    (b: Bar) => b.time !== bar.time
+                  );
               });
             } else {
-              tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-                if (
-                  bar &&
-                  bar.ticker === tvDataProvider.current?.currentTicker &&
-                  bar.period === tvDataProvider.current?.currentPeriod
-                ) {
-                  lastBarTime.current = bar.time;
-                  onRealtimeCallback(formatTimeInBarToMs(bar));
-                }
-              });
+              tvDataProvider.current
+                ?.getLiveBar(chainId, ticker, period)
+                .then((bar) => {
+                  if (
+                    bar &&
+                    bar.ticker === tvDataProvider.current?.currentTicker &&
+                    bar.period === tvDataProvider.current?.currentPeriod
+                  ) {
+                    lastBarTime.current = bar.time;
+                    onRealtimeCallback(formatTimeInBarToMs(bar));
+                  }
+                });
             }
           };
 

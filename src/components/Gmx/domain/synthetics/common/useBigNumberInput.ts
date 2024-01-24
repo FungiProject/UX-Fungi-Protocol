@@ -1,8 +1,12 @@
 import { BigNumber } from "ethers";
-import { formatAmount } from "lib/numbers";
+import { formatAmount } from "../../../lib/numbers";
 import { useCallback, useState } from "react";
 
-function numberToString(value: BigNumber | null, decimals: number, displayDecimals: number) {
+function numberToString(
+  value: BigNumber | null,
+  decimals: number,
+  displayDecimals: number
+) {
   if (value === null) return "";
   return formatAmount(value, decimals, displayDecimals);
 }
@@ -40,9 +44,15 @@ function stringToNumber(value: string, decimals: number) {
   }
 }
 
-export function useBigNumberInput(initialValue: BigNumber | null, decimals: number, displayDecimals: number) {
+export function useBigNumberInput(
+  initialValue: BigNumber | null,
+  decimals: number,
+  displayDecimals: number
+) {
   const [value, setRawValue] = useState(initialValue);
-  const [displayValue, setRawDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
+  const [displayValue, setRawDisplayValue] = useState(() =>
+    numberToString(initialValue, decimals, displayDecimals)
+  );
 
   const setValue = useCallback(
     (newValue: BigNumber | null) => {

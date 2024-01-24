@@ -1,14 +1,14 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { getContract } from "config/contracts";
-import { convertTokenAddress } from "config/tokens";
-import { SetPendingWithdrawal } from "context/SyntheticsEvents";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
+import { getContract } from "../../../config/contracts";
+import { convertTokenAddress } from "../../../config/tokens";
+import { SetPendingWithdrawal } from "../../../context/SyntheticsEvents";
 import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
-import { isAddressZero } from "lib/legacy";
+import { callContract } from "../../../lib/contracts/callContract";
+import { isAddressZero } from "../../../lib/legacy";
 import { applySlippageToMinOut } from "../trade";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { t } from "@lingui/macro";
 
 type Params = {
@@ -29,23 +29,54 @@ type Params = {
   setPendingWithdrawal: SetPendingWithdrawal;
 };
 
-export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Params) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+export async function createWithdrawalTxn(
+  chainId: number,
+  signer: Signer,
+  p: Params
+) {
+  const contract = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    signer
+  );
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
-  const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+  const isNativeWithdrawal =
+    isAddressZero(p.initialLongTokenAddress) ||
+    isAddressZero(p.initialShortTokenAddress);
 
   const wntAmount = p.executionFee;
 
-  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
-  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
+  const initialLongTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialLongTokenAddress,
+    "wrapped"
+  );
+  const initialShortTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialShortTokenAddress,
+    "wrapped"
+  );
 
-  const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
-  const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
+  const minLongTokenAmount = applySlippageToMinOut(
+    p.allowedSlippage,
+    p.minLongTokenAmount
+  );
+  const minShortTokenAmount = applySlippageToMinOut(
+    p.allowedSlippage,
+    p.minShortTokenAmount
+  );
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
-    { method: "sendTokens", params: [p.marketTokenAddress, withdrawalVaultAddress, p.marketTokenAmount] },
+    {
+      method: "sendTokens",
+      params: [
+        p.marketTokenAddress,
+        withdrawalVaultAddress,
+        p.marketTokenAmount,
+      ],
+    },
     {
       method: "createWithdrawal",
       params: [
@@ -63,7 +94,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver:
+            UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
       ],
     },
@@ -71,7 +103,9 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
 
   const encodedPayload = multicall
     .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+    .map((call) =>
+      contract.interface.encodeFunctionData(call!.method, call!.params)
+    );
 
   if (!p.skipSimulation) {
     await simulateExecuteOrderTxn(chainId, {

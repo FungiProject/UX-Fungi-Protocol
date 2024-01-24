@@ -1,43 +1,81 @@
-import { UserReferralInfo } from "domain/referrals";
-import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
-import { Token, getIsEquivalentTokens } from "domain/tokens";
+import { UserReferralInfo } from "../../../domain/referrals";
+import {
+  MarketInfo,
+  getCappedPoolPnl,
+  getPoolUsdWithoutPnl,
+} from "../../../domain/synthetics/markets";
+import { Token, getIsEquivalentTokens } from "../../../domain/tokens";
 import { BigNumber, ethers } from "ethers";
-import { CHART_PERIODS } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
+import { CHART_PERIODS } from "../../../lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "../../../config/factors";
+import {
+  applyFactor,
+  expandDecimals,
+  formatAmount,
+  formatUsd,
+} from "../../../lib/numbers";
+import {
+  getBorrowingFeeRateUsd,
+  getFundingFeeRateUsd,
+  getPositionFee,
+  getPriceImpactForPosition,
+} from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
 import { t } from "@lingui/macro";
 
-export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
+export function getPositionKey(
+  account: string,
+  marketAddress: string,
+  collateralAddress: string,
+  isLong: boolean
+) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
 }
 
 export function parsePositionKey(positionKey: string) {
-  const [account, marketAddress, collateralAddress, isLong] = positionKey.split(":");
+  const [account, marketAddress, collateralAddress, isLong] =
+    positionKey.split(":");
 
-  return { account, marketAddress, collateralAddress, isLong: isLong === "true" };
+  return {
+    account,
+    marketAddress,
+    collateralAddress,
+    isLong: isLong === "true",
+  };
 }
 
-export function getEntryPrice(p: { sizeInUsd: BigNumber; sizeInTokens: BigNumber; indexToken: Token }) {
+export function getEntryPrice(p: {
+  sizeInUsd: BigNumber;
+  sizeInTokens: BigNumber;
+  indexToken: Token;
+}) {
   const { sizeInUsd, sizeInTokens, indexToken } = p;
 
   if (!sizeInTokens.gt(0)) {
     return undefined;
   }
 
-  return sizeInUsd.div(sizeInTokens).mul(expandDecimals(1, indexToken.decimals));
+  return sizeInUsd
+    .div(sizeInTokens)
+    .mul(expandDecimals(1, indexToken.decimals));
 }
 
-export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: BigNumber; markPrice: BigNumber }) {
+export function getPositionValueUsd(p: {
+  indexToken: Token;
+  sizeInTokens: BigNumber;
+  markPrice: BigNumber;
+}) {
   const { indexToken, sizeInTokens, markPrice } = p;
 
   return convertToUsd(sizeInTokens, indexToken.decimals, markPrice)!;
 }
 
-export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: BigNumber; pendingBorrowingFeesUsd: BigNumber }) {
+export function getPositionPendingFeesUsd(p: {
+  pendingFundingFeesUsd: BigNumber;
+  pendingBorrowingFeesUsd: BigNumber;
+}) {
   const { pendingFundingFeesUsd, pendingBorrowingFeesUsd } = p;
 
   return pendingBorrowingFeesUsd.add(pendingFundingFeesUsd);
@@ -55,7 +93,11 @@ export function getPositionNetValue(p: {
 
   const pendingFeesUsd = getPositionPendingFeesUsd(p);
 
-  return collateralUsd.sub(pendingFeesUsd).sub(closingFeeUsd).sub(uiFeeUsd).add(pnl);
+  return collateralUsd
+    .sub(pendingFeesUsd)
+    .sub(closingFeeUsd)
+    .sub(uiFeeUsd)
+    .add(pnl);
 }
 
 export function getPositionPnlUsd(p: {
@@ -67,9 +109,15 @@ export function getPositionPnlUsd(p: {
 }) {
   const { marketInfo, sizeInUsd, sizeInTokens, markPrice, isLong } = p;
 
-  const positionValueUsd = getPositionValueUsd({ indexToken: marketInfo.indexToken, sizeInTokens, markPrice });
+  const positionValueUsd = getPositionValueUsd({
+    indexToken: marketInfo.indexToken,
+    sizeInTokens,
+    markPrice,
+  });
 
-  let totalPnl = isLong ? positionValueUsd.sub(sizeInUsd) : sizeInUsd.sub(positionValueUsd);
+  let totalPnl = isLong
+    ? positionValueUsd.sub(sizeInUsd)
+    : sizeInUsd.sub(positionValueUsd);
 
   if (totalPnl.lte(0)) {
     return totalPnl;
@@ -88,7 +136,9 @@ export function getPositionPnlUsd(p: {
   const WEI_PRECISION = expandDecimals(1, 18);
 
   if (!cappedPnl.eq(poolPnl) && cappedPnl.gt(0) && poolPnl.gt(0)) {
-    totalPnl = totalPnl.mul(cappedPnl.div(WEI_PRECISION)).div(poolPnl.div(WEI_PRECISION));
+    totalPnl = totalPnl
+      .mul(cappedPnl.div(WEI_PRECISION))
+      .div(poolPnl.div(WEI_PRECISION));
   }
 
   return totalPnl;
@@ -129,18 +179,34 @@ export function getLiquidationPrice(p: {
 
   const { indexToken } = marketInfo;
 
-  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
-  const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
+  const closingFeeUsd = getPositionFee(
+    marketInfo,
+    sizeInUsd,
+    false,
+    userReferralInfo
+  ).positionFeeUsd;
+  const totalPendingFeesUsd = getPositionPendingFeesUsd({
+    pendingFundingFeesUsd,
+    pendingBorrowingFeesUsd,
+  });
   const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
-  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+  const maxNegativePriceImpactUsd = applyFactor(
+    sizeInUsd,
+    marketInfo.maxPositionImpactFactorForLiquidations
+  ).mul(-1);
 
   let priceImpactDeltaUsd: BigNumber = BigNumber.from(0);
 
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
+    priceImpactDeltaUsd = getPriceImpactForPosition(
+      marketInfo,
+      sizeInUsd.mul(-1),
+      isLong,
+      { fallbackToZero: true }
+    );
 
     if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
       priceImpactDeltaUsd = maxNegativePriceImpactUsd;
@@ -152,7 +218,10 @@ export function getLiquidationPrice(p: {
     }
   }
 
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let liquidationCollateralUsd = applyFactor(
+    sizeInUsd,
+    marketInfo.minCollateralFactor
+  );
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {
     liquidationCollateralUsd = minCollateralUsd;
   }
@@ -192,7 +261,10 @@ export function getLiquidationPrice(p: {
       return undefined;
     }
 
-    const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
+    const remainingCollateralUsd = collateralUsd
+      .add(priceImpactDeltaUsd)
+      .sub(totalPendingFeesUsd)
+      .sub(closingFeeUsd);
 
     if (isLong) {
       liquidationPrice = liquidationCollateralUsd
@@ -216,7 +288,10 @@ export function getLiquidationPrice(p: {
   return liquidationPrice;
 }
 
-export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
+export function formatLiquidationPrice(
+  liquidationPrice?: BigNumber,
+  opts: { displayDecimals?: number } = {}
+) {
   if (!liquidationPrice || liquidationPrice.lte(0)) {
     return "NA";
   }
@@ -224,8 +299,14 @@ export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { dis
   return formatUsd(liquidationPrice, { ...opts, maxThreshold: "1000000" });
 }
 
-export function formatAcceptablePrice(acceptablePrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
-  if (acceptablePrice && (acceptablePrice.eq(0) || acceptablePrice.gte(ethers.constants.MaxInt256))) {
+export function formatAcceptablePrice(
+  acceptablePrice?: BigNumber,
+  opts: { displayDecimals?: number } = {}
+) {
+  if (
+    acceptablePrice &&
+    (acceptablePrice.eq(0) || acceptablePrice.gte(ethers.constants.MaxInt256))
+  ) {
     return "NA";
   }
 
@@ -239,11 +320,22 @@ export function getLeverage(p: {
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
 }) {
-  const { pnl, sizeInUsd, collateralUsd, pendingBorrowingFeesUsd, pendingFundingFeesUsd } = p;
+  const {
+    pnl,
+    sizeInUsd,
+    collateralUsd,
+    pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+  } = p;
 
-  const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
+  const totalPendingFeesUsd = getPositionPendingFeesUsd({
+    pendingFundingFeesUsd,
+    pendingBorrowingFeesUsd,
+  });
 
-  const remainingCollateralUsd = collateralUsd.add(pnl || 0).sub(totalPendingFeesUsd);
+  const remainingCollateralUsd = collateralUsd
+    .add(pnl || 0)
+    .sub(totalPendingFeesUsd);
 
   if (remainingCollateralUsd.lte(0)) {
     return undefined;
@@ -266,16 +358,37 @@ export function getEstimatedLiquidationTimeInHours(
 
   if (isOpening || !minCollateralUsd) return;
 
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let liquidationCollateralUsd = applyFactor(
+    sizeInUsd,
+    marketInfo.minCollateralFactor
+  );
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {
     liquidationCollateralUsd = minCollateralUsd;
   }
-  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
-  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
-  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
-  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
-    fallbackToZero: true,
-  });
+  const borrowFeePerHour = getBorrowingFeeRateUsd(
+    marketInfo,
+    isLong,
+    sizeInUsd,
+    CHART_PERIODS["1h"]
+  );
+  const fundingFeePerHour = getFundingFeeRateUsd(
+    marketInfo,
+    isLong,
+    sizeInUsd,
+    CHART_PERIODS["1h"]
+  );
+  const maxNegativePriceImpactUsd = applyFactor(
+    sizeInUsd,
+    marketInfo.maxPositionImpactFactorForLiquidations
+  ).mul(-1);
+  let priceImpactDeltaUsd = getPriceImpactForPosition(
+    marketInfo,
+    sizeInUsd.mul(-1),
+    isLong,
+    {
+      fallbackToZero: true,
+    }
+  );
 
   if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
@@ -286,7 +399,9 @@ export function getEstimatedLiquidationTimeInHours(
     priceImpactDeltaUsd = BigNumber.from(0);
   }
 
-  const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
+  const totalFeesPerHour = borrowFeePerHour
+    .abs()
+    .add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
 
   if (totalFeesPerHour.eq(0)) return;
 
@@ -317,7 +432,10 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr = false) {
+export function getTriggerNameByOrderType(
+  orderType: OrderType | undefined,
+  abbr = false
+) {
   const triggerStr = abbr ? t`T` : t`Trigger`;
   const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
   const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;

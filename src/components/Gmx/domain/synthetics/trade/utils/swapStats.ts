@@ -1,16 +1,22 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { getSwapFee } from "domain/synthetics/fees";
+import { NATIVE_TOKEN_ADDRESS } from "../../../../config/tokens";
+import { getSwapFee } from "../../../../domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
   getAvailableUsdLiquidityForCollateral,
   getOppositeCollateral,
   getTokenPoolType,
-} from "domain/synthetics/markets";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+} from "../../../../domain/synthetics/markets";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+} from "../../../../domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { getByKey } from "lib/objects";
-import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
+import { getByKey } from "../../../../lib/objects";
+import {
+  applySwapImpactWithCap,
+  getPriceImpactForSwap,
+} from "../../fees/utils/priceImpact";
 import { SwapPathStats, SwapStats } from "../types";
 
 export function getSwapPathOutputAddresses(p: {
@@ -20,12 +26,19 @@ export function getSwapPathOutputAddresses(p: {
   wrappedNativeTokenAddress: string;
   shouldUnwrapNativeToken: boolean;
 }) {
-  const { marketsInfoData, initialCollateralAddress, swapPath, wrappedNativeTokenAddress, shouldUnwrapNativeToken } = p;
+  const {
+    marketsInfoData,
+    initialCollateralAddress,
+    swapPath,
+    wrappedNativeTokenAddress,
+    shouldUnwrapNativeToken,
+  } = p;
 
   if (swapPath.length === 0) {
     return {
       outTokenAddress:
-        shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress
+        shouldUnwrapNativeToken &&
+        initialCollateralAddress === wrappedNativeTokenAddress
           ? NATIVE_TOKEN_ADDRESS
           : initialCollateralAddress,
 
@@ -45,7 +58,8 @@ export function getSwapPathOutputAddresses(p: {
   }
 
   let outTokenType = getTokenPoolType(outMarket, initialCollateralAddress);
-  let outToken = outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
+  let outToken =
+    outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
 
   for (const marketAddress of marketAddresses) {
     outMarket = getByKey(marketsInfoData, marketAddress);
@@ -57,12 +71,16 @@ export function getSwapPathOutputAddresses(p: {
       };
     }
 
-    outTokenType = outMarket.longTokenAddress === outToken.address ? "short" : "long";
-    outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
+    outTokenType =
+      outMarket.longTokenAddress === outToken.address ? "short" : "long";
+    outToken =
+      outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }
 
   const outTokenAddress =
-    shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress ? NATIVE_TOKEN_ADDRESS : outToken.address;
+    shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress
+      ? NATIVE_TOKEN_ADDRESS
+      : outToken.address;
 
   return {
     outTokenAddress,
@@ -97,8 +115,12 @@ export function getMaxSwapPathLiquidity(p: {
       return BigNumber.from(0);
     }
 
-    const isTokenOutLong = getTokenPoolType(marketInfo, tokenOut.address) === "long";
-    const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
+    const isTokenOutLong =
+      getTokenPoolType(marketInfo, tokenOut.address) === "long";
+    const liquidity = getAvailableUsdLiquidityForCollateral(
+      marketInfo,
+      isTokenOutLong
+    );
 
     if (liquidity.lt(minMarketLiquidity)) {
       minMarketLiquidity = liquidity;
@@ -151,9 +173,16 @@ export function getSwapPathStats(p: {
     const marketAddress = swapPath[i];
     const marketInfo = marketsInfoData[marketAddress];
 
-    tokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)!.address;
+    tokenOutAddress = getOppositeCollateral(
+      marketInfo,
+      tokenInAddress
+    )!.address;
 
-    if (i === swapPath.length - 1 && shouldUnwrapNativeToken && tokenOutAddress === wrappedNativeTokenAddress) {
+    if (
+      i === swapPath.length - 1 &&
+      shouldUnwrapNativeToken &&
+      tokenOutAddress === wrappedNativeTokenAddress
+    ) {
       tokenOutAddress = NATIVE_TOKEN_ADDRESS;
     }
 
@@ -168,7 +197,9 @@ export function getSwapPathStats(p: {
     tokenInAddress = swapStep.tokenOutAddress;
     usdOut = swapStep.usdOut;
 
-    totalSwapPriceImpactDeltaUsd = totalSwapPriceImpactDeltaUsd.add(swapStep.priceImpactDeltaUsd);
+    totalSwapPriceImpactDeltaUsd = totalSwapPriceImpactDeltaUsd.add(
+      swapStep.priceImpactDeltaUsd
+    );
     totalSwapFeeUsd = totalSwapFeeUsd.add(swapStep.swapFeeUsd);
 
     swapSteps.push(swapStep);
@@ -178,7 +209,9 @@ export function getSwapPathStats(p: {
   const targetMarketAddress = lastStep.marketAddress;
   const amountOut = lastStep.amountOut;
 
-  const totalFeesDeltaUsd = BigNumber.from(0).sub(totalSwapFeeUsd).add(totalSwapPriceImpactDeltaUsd);
+  const totalFeesDeltaUsd = BigNumber.from(0)
+    .sub(totalSwapFeeUsd)
+    .add(totalSwapPriceImpactDeltaUsd);
 
   return {
     swapPath,
@@ -201,16 +234,26 @@ export function getSwapStats(p: {
   usdIn: BigNumber;
   shouldApplyPriceImpact: boolean;
 }): SwapStats {
-  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact } = p;
+  const {
+    marketInfo,
+    tokenInAddress,
+    tokenOutAddress,
+    usdIn,
+    shouldApplyPriceImpact,
+  } = p;
 
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
 
   const tokenIn =
-    getTokenPoolType(marketInfo, tokenInAddress) === "long" ? marketInfo.longToken : marketInfo.shortToken;
+    getTokenPoolType(marketInfo, tokenInAddress) === "long"
+      ? marketInfo.longToken
+      : marketInfo.shortToken;
 
   const tokenOut =
-    getTokenPoolType(marketInfo, tokenOutAddress) === "long" ? marketInfo.longToken : marketInfo.shortToken;
+    getTokenPoolType(marketInfo, tokenOutAddress) === "long"
+      ? marketInfo.longToken
+      : marketInfo.shortToken;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -220,7 +263,13 @@ export function getSwapStats(p: {
   let priceImpactDeltaUsd: BigNumber;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn.mul(-1));
+    priceImpactDeltaUsd = getPriceImpactForSwap(
+      marketInfo,
+      tokenIn,
+      tokenOut,
+      usdIn,
+      usdIn.mul(-1)
+    );
   } catch (e) {
     return {
       swapFeeUsd: BigNumber.from(0),
@@ -240,7 +289,11 @@ export function getSwapStats(p: {
     };
   }
 
-  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd.gt(0));
+  const swapFeeAmount = getSwapFee(
+    marketInfo,
+    amountIn,
+    priceImpactDeltaUsd.gt(0)
+  );
   const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd.gt(0));
 
   const amountInAfterFees = amountIn.sub(swapFeeAmount);
@@ -252,11 +305,27 @@ export function getSwapStats(p: {
   let cappedImpactDeltaUsd: BigNumber;
 
   if (priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
-    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
+    const positiveImpactAmount = applySwapImpactWithCap(
+      marketInfo,
+      tokenOut,
+      priceImpactDeltaUsd
+    );
+    cappedImpactDeltaUsd = convertToUsd(
+      positiveImpactAmount,
+      tokenOut.decimals,
+      priceOut
+    )!;
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
-    cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
+    const negativeImpactAmount = applySwapImpactWithCap(
+      marketInfo,
+      tokenIn,
+      priceImpactDeltaUsd
+    );
+    cappedImpactDeltaUsd = convertToUsd(
+      negativeImpactAmount,
+      tokenIn.decimals,
+      priceIn
+    )!;
   }
 
   if (shouldApplyPriceImpact) {

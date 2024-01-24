@@ -1,10 +1,18 @@
-import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { InfoTokens, Token, getMidPrice } from "domain/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "../../../config/tokens";
+import {
+  MarketInfo,
+  MarketsInfoData,
+} from "../../../domain/synthetics/markets";
+import { InfoTokens, Token, getMidPrice } from "../../../domain/tokens";
 import { BigNumber } from "ethers";
-import { getByKey } from "lib/objects";
+import { getByKey } from "../../../lib/objects";
 import { useMemo } from "react";
-import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import {
+  TokenData,
+  TokensData,
+  adaptToV1InfoTokens,
+  convertToUsd,
+} from "../tokens";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -88,8 +96,12 @@ export function useAvailableTokenOptions(
       }
     }
 
-    const sortedIndexTokensWithPoolValue = Object.keys(indexTokensWithPoolValue).sort((a, b) => {
-      return indexTokensWithPoolValue[b].gt(indexTokensWithPoolValue[a]) ? 1 : -1;
+    const sortedIndexTokensWithPoolValue = Object.keys(
+      indexTokensWithPoolValue
+    ).sort((a, b) => {
+      return indexTokensWithPoolValue[b].gt(indexTokensWithPoolValue[a])
+        ? 1
+        : -1;
     });
 
     const sortedAllMarkets = Array.from(allMarkets).sort((a, b) => {
@@ -99,13 +111,21 @@ export function useAvailableTokenOptions(
       );
     });
 
-    const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
-      return longTokensWithPoolValue[b].gt(longTokensWithPoolValue[a]) ? 1 : -1;
-    });
+    const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort(
+      (a, b) => {
+        return longTokensWithPoolValue[b].gt(longTokensWithPoolValue[a])
+          ? 1
+          : -1;
+      }
+    );
 
-    const sortedShortTokens = Object.keys(shortTokensWithPoolValue).sort((a, b) => {
-      return shortTokensWithPoolValue[b].gt(shortTokensWithPoolValue[a]) ? 1 : -1;
-    });
+    const sortedShortTokens = Object.keys(shortTokensWithPoolValue).sort(
+      (a, b) => {
+        return shortTokensWithPoolValue[b].gt(shortTokensWithPoolValue[a])
+          ? 1
+          : -1;
+      }
+    );
 
     const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);
 

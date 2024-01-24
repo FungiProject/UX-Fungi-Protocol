@@ -7,8 +7,15 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { SettingsContextProvider } from "@/components/Gmx/context/SettingsContext/SettingsContextProvider";
+import { I18nProvider } from "@lingui/react";
+import { i18n } from "@lingui/core";
+import { useRouter } from "next/router";
 
 import "@/styles/globals.css";
+import { useEffect } from "react";
+
+i18n.activate("en");
+i18n.activate("es");
 
 const { publicClient, webSocketPublicClient } = configureChains(
   [mainnet, arbitrum, polygonMumbai, polygon],
@@ -32,14 +39,28 @@ const config = createConfig({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { locale } = useRouter();
+  console.log(locale);
+  useEffect(() => {
+    async function load(locale: any) {
+      const { messages } = await import(`../locales/${locale}/messages.po`);
+
+      i18n.load(locale, messages);
+      i18n.activate(locale);
+    }
+
+    load(locale);
+  }, [locale]);
+
   return (
     <WagmiConfig config={config}>
-      <SettingsContextProvider>
+      <I18nProvider i18n={i18n}>
+        {/* <SettingsContextProvider> */}
         <main className="font-dmSans">
           <Component {...pageProps} />
         </main>
-      </SettingsContextProvider>
-      ;
+        {/* </SettingsContextProvider> */}
+      </I18nProvider>
     </WagmiConfig>
   );
 }

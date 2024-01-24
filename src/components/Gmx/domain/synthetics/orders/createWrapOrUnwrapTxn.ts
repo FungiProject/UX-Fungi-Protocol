@@ -1,9 +1,13 @@
-import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "config/tokens";
-import { callContract } from "lib/contracts";
-import WETH from "abis/WETH.json";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  getToken,
+  getWrappedToken,
+} from "../../../config/tokens";
+import { callContract } from "../../../lib/contracts/callContract";
+import WETH from "../../../abis/WETH.json";
 import { BigNumber, Signer, ethers } from "ethers";
 import { t } from "@lingui/macro";
-import { formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount } from "../../../lib/numbers";
 
 type WrapOrUnwrapParams = {
   amount: BigNumber;
@@ -11,7 +15,11 @@ type WrapOrUnwrapParams = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOrUnwrapParams) {
+export function createWrapOrUnwrapTxn(
+  chainId: number,
+  signer: Signer,
+  p: WrapOrUnwrapParams
+) {
   const wrappedToken = getWrappedToken(chainId);
   const nativeToken = getToken(chainId, NATIVE_TOKEN_ADDRESS);
 
@@ -25,7 +33,11 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
         p.amount,
         nativeToken.decimals,
         nativeToken.symbol
-      )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}`,
+      )} for ${formatTokenAmount(
+        p.amount,
+        wrappedToken.decimals,
+        wrappedToken.symbol
+      )}`,
       failMsg: t`Swap failed.`,
       setPendingTxns: p.setPendingTxns,
     });
@@ -36,7 +48,11 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
         p.amount,
         wrappedToken.decimals,
         wrappedToken.symbol
-      )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}`,
+      )} for ${formatTokenAmount(
+        p.amount,
+        nativeToken.decimals,
+        nativeToken.symbol
+      )}`,
       failMsg: t`Swap failed.`,
       setPendingTxns: p.setPendingTxns,
     });

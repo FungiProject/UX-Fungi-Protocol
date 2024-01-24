@@ -5,15 +5,19 @@ import {
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
   isMarketIndexToken,
-} from "domain/synthetics/markets";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokenData } from "domain/synthetics/tokens";
+} from "../../../domain/synthetics/markets";
+import { PositionsInfoData } from "../../../domain/synthetics/positions";
+import { TokenData } from "../../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { USD_DECIMALS } from "../../../lib/legacy";
+import { expandDecimals } from "../../../lib/numbers";
+import { getByKey } from "../../../lib/objects";
 import { useMemo } from "react";
-import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
+import {
+  OrdersInfoData,
+  PositionOrderInfo,
+  isIncreaseOrderType,
+} from "../orders";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "./utils";
 
 export type AvailableMarketsOptions = {
@@ -63,11 +67,16 @@ export function useAvailableMarketsOptions(p: {
       (market) => !market.isSpotOnly && !market.isDisabled
     );
 
-    const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
+    const availableMarkets = allMarkets.filter((market) =>
+      isMarketIndexToken(market, indexToken.address)
+    );
 
     const liquidMarkets = increaseSizeUsd
       ? availableMarkets.filter((marketInfo) => {
-          const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+          const liquidity = getAvailableUsdLiquidityForPosition(
+            marketInfo,
+            isLong
+          );
 
           return liquidity.gt(increaseSizeUsd);
         })
@@ -81,17 +90,28 @@ export function useAvailableMarketsOptions(p: {
       return result;
     }
 
-    result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
+    result.maxLiquidityMarket = getMostLiquidMarketForPosition(
+      liquidMarkets,
+      indexToken.address,
+      undefined,
+      isLong
+    );
 
     if (!hasExistingPosition) {
       const positions = Object.values(positionsInfo || {});
       const availablePosition = positions.find(
         (pos) =>
-          pos.isLong === isLong && availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+          pos.isLong === isLong &&
+          availableMarkets.some(
+            (market) => market.marketTokenAddress === pos.marketAddress
+          )
       );
 
       if (availablePosition) {
-        result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
+        result.marketWithPosition = getByKey(
+          marketsInfoData,
+          availablePosition.marketAddress
+        );
         result.collateralWithPosition = availablePosition.collateralToken;
       }
     }
@@ -102,11 +122,16 @@ export function useAvailableMarketsOptions(p: {
         (order) =>
           isIncreaseOrderType(order.orderType) &&
           order.isLong === isLong &&
-          availableMarkets.some((market) => market.marketTokenAddress === order.marketAddress)
+          availableMarkets.some(
+            (market) => market.marketTokenAddress === order.marketAddress
+          )
       ) as PositionOrderInfo;
 
       if (availableOrder) {
-        result.marketWithOrder = getByKey(marketsInfoData, availableOrder.marketAddress);
+        result.marketWithOrder = getByKey(
+          marketsInfoData,
+          availableOrder.marketAddress
+        );
         result.collateralWithOrder = availableOrder.targetCollateralToken;
       }
     }
@@ -123,14 +148,20 @@ export function useAvailableMarketsOptions(p: {
         indexToken.address,
         isLong,
         isIncrease,
-        increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
+        increaseSizeUsd.gt(0)
+          ? increaseSizeUsd
+          : expandDecimals(1000, USD_DECIMALS)
       );
 
       if (bestMarket && bestImpactDeltaUsd) {
         const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
           isIncrease: true,
           isLong,
-          indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+          indexPrice: getMarkPrice({
+            prices: indexToken.prices,
+            isLong,
+            isIncrease: true,
+          }),
           priceImpactDeltaUsd: bestImpactDeltaUsd,
           sizeDeltaUsd: increaseSizeUsd,
         });

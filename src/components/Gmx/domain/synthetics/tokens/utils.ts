@@ -1,11 +1,30 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "../../../config/tokens";
+import {
+  InfoTokens,
+  Token,
+  TokenInfo,
+  getIsEquivalentTokens,
+} from "../../../domain/tokens";
 import { BigNumber } from "ethers";
-import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { TokenData, TokenPrices, TokensAllowanceData, TokensData, TokensRatio } from "./types";
+import {
+  PRECISION,
+  USD_DECIMALS,
+  adjustForDecimals,
+} from "../../../lib/legacy";
+import { expandDecimals, formatAmount } from "../../../lib/numbers";
+import {
+  TokenData,
+  TokenPrices,
+  TokensAllowanceData,
+  TokensData,
+  TokensRatio,
+} from "./types";
 
-export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {
+export function getTokenData(
+  tokensData?: TokensData,
+  address?: string,
+  convertTo?: "wrapped" | "native"
+) {
   if (!address || !tokensData?.[address]) {
     return undefined;
   }
@@ -28,7 +47,10 @@ export function getNeedTokenApprove(
   tokenAddress: string,
   amountToSpend: BigNumber
 ): boolean {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS || !tokenAllowanceData[tokenAddress]) {
+  if (
+    tokenAddress === NATIVE_TOKEN_ADDRESS ||
+    !tokenAllowanceData[tokenAddress]
+  ) {
     return false;
   }
 
@@ -67,9 +89,10 @@ export function getTokensRatioByPrice(p: {
 }): TokensRatio {
   const { fromToken, toToken, fromPrice, toPrice } = p;
 
-  const [largestToken, smallestToken, largestPrice, smallestPrice] = fromPrice.gt(toPrice)
-    ? [fromToken, toToken, fromPrice, toPrice]
-    : [toToken, fromToken, toPrice, fromPrice];
+  const [largestToken, smallestToken, largestPrice, smallestPrice] =
+    fromPrice.gt(toPrice)
+      ? [fromToken, toToken, fromPrice, toPrice]
+      : [toToken, fromToken, toPrice, fromPrice];
 
   const ratio = largestPrice.mul(PRECISION).div(smallestPrice);
 
@@ -84,27 +107,42 @@ export function getTokensRatioByAmounts(p: {
 }): TokensRatio {
   const { fromToken, toToken, fromTokenAmount, toTokenAmount } = p;
 
-  const adjustedFromAmount = fromTokenAmount.mul(PRECISION).div(expandDecimals(1, fromToken.decimals));
-  const adjustedToAmount = toTokenAmount.mul(PRECISION).div(expandDecimals(1, toToken.decimals));
+  const adjustedFromAmount = fromTokenAmount
+    .mul(PRECISION)
+    .div(expandDecimals(1, fromToken.decimals));
+  const adjustedToAmount = toTokenAmount
+    .mul(PRECISION)
+    .div(expandDecimals(1, toToken.decimals));
 
-  const [smallestToken, largestToken, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
-    ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
-    : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+  const [smallestToken, largestToken, largestAmount, smallestAmount] =
+    adjustedFromAmount.gt(adjustedToAmount)
+      ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
+      : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 
-  const ratio = smallestAmount.gt(0) ? largestAmount.mul(PRECISION).div(smallestAmount) : BigNumber.from(0);
+  const ratio = smallestAmount.gt(0)
+    ? largestAmount.mul(PRECISION).div(smallestAmount)
+    : BigNumber.from(0);
 
   return { ratio, largestToken, smallestToken };
 }
 
-export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
+export function formatTokensRatio(
+  fromToken?: Token,
+  toToken?: Token,
+  ratio?: TokensRatio
+) {
   if (!fromToken || !toToken || !ratio) {
     return undefined;
   }
 
   const [largest, smallest] =
-    ratio.largestToken.address === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
+    ratio.largestToken.address === fromToken.address
+      ? [fromToken, toToken]
+      : [toToken, fromToken];
 
-  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
+  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${
+    largest.symbol
+  }`;
 }
 
 export function getAmountByRatio(p: {
@@ -120,9 +158,15 @@ export function getAmountByRatio(p: {
     return p.fromTokenAmount;
   }
 
-  const _ratio = shouldInvertRatio ? PRECISION.mul(PRECISION).div(ratio) : ratio;
+  const _ratio = shouldInvertRatio
+    ? PRECISION.mul(PRECISION).div(ratio)
+    : ratio;
 
-  const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
+  const adjustedDecimalsRatio = adjustForDecimals(
+    _ratio,
+    fromToken.decimals,
+    toToken.decimals
+  );
 
   return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
 }
@@ -131,11 +175,17 @@ export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }
 
-export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
+export function convertToContractPrice(
+  price: BigNumber,
+  tokenDecimals: number
+) {
   return price.div(expandDecimals(1, tokenDecimals));
 }
 
-export function convertToContractTokenPrices(prices: TokenPrices, tokenDecimals: number) {
+export function convertToContractTokenPrices(
+  prices: TokenPrices,
+  tokenDecimals: number
+) {
   return {
     min: convertToContractPrice(prices.minPrice, tokenDecimals),
     max: convertToContractPrice(prices.maxPrice, tokenDecimals),

@@ -4,7 +4,7 @@ import { useAffiliateCodes } from "../domain/referrals/hooks";
 import { Token } from "../domain/tokens";
 import { BigNumber } from "ethers";
 import { toJpeg } from "html-to-image";
-import shareBgImg from "img/position-share-bg.png";
+import shareBgImg from "../../../../public/img/position-share-bg.png";
 import downloadImage from "../lib/dowloadImage";
 import { helperToast } from "../lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "../lib/legacy";
@@ -15,7 +15,6 @@ import { FiTwitter } from "react-icons/fi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { useCopyToClipboard } from "react-use";
 import Modal from "./Modal";
-import "./PositionShare.css";
 import { PositionShareCard } from "./PositionShareCard";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();

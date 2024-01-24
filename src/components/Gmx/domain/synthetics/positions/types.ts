@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
-import { TokenData } from "domain/synthetics/tokens";
-import { PendingPositionUpdate } from "context/SyntheticsEvents";
+import { TokenData } from "../../../domain/synthetics/tokens";
+import { PendingPositionUpdate } from "../../../context/SyntheticsEvents";
 import { MarketInfo } from "../markets";
 
 export type Position = {

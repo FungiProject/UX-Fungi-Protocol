@@ -19,199 +19,219 @@ import SearchInput from "../SearchInput/SearchInput";
 import Modal from "../Modal/Modal";
 
 type TokenState = {
-    disabled?: boolean;
-    message?: string;
+  disabled?: boolean;
+  message?: string;
 };
 
 type Props = {
-    chainId: number;
-    label?: string;
-    className?: string;
-    tokenAddress: string;
-    tokens: Token[];
-    infoTokens?: InfoTokens;
-    showMintingCap?: boolean;
-    mintingCap?: BigNumber;
-    disabled?: boolean;
-    selectedTokenLabel?: ReactNode | string;
-    showBalances?: boolean;
-    showTokenImgInDropdown?: boolean;
-    showSymbolImage?: boolean;
-    showNewCaret?: boolean;
-    getTokenState?: (info: TokenInfo) => TokenState | undefined;
-    disableBodyScrollLock?: boolean;
-    onSelectToken: (token: Token) => void;
-    extendedSortSequence?: string[] | undefined;
+  chainId: number;
+  label?: string;
+  className?: string;
+  tokenAddress: string;
+  tokens: Token[];
+  infoTokens?: InfoTokens;
+  showMintingCap?: boolean;
+  mintingCap?: BigNumber;
+  disabled?: boolean;
+  selectedTokenLabel?: ReactNode | string;
+  showBalances?: boolean;
+  showTokenImgInDropdown?: boolean;
+  showSymbolImage?: boolean;
+  showNewCaret?: boolean;
+  getTokenState?: (info: TokenInfo) => TokenState | undefined;
+  disableBodyScrollLock?: boolean;
+  onSelectToken: (token: Token) => void;
+  extendedSortSequence?: string[] | undefined;
 };
 
 export default function TokenSelector(props: Props) {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
-    let tokenInfo: TokenInfo | undefined;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  let tokenInfo: TokenInfo | undefined;
 
-    try {
-        tokenInfo = getToken(props.chainId, props.tokenAddress);
-    } catch (e) {
-        // ...ignore unsupported tokens
+  try {
+    tokenInfo = getToken(props.chainId, props.tokenAddress);
+  } catch (e) {
+    // ...ignore unsupported tokens
+  }
+
+  const {
+    tokens,
+    mintingCap,
+    infoTokens,
+    showMintingCap,
+    disabled,
+    selectedTokenLabel,
+    showBalances = true,
+    showTokenImgInDropdown = false,
+    showSymbolImage = false,
+    showNewCaret = false,
+    getTokenState = () => ({ disabled: false, message: null }),
+    extendedSortSequence,
+  } = props;
+
+  const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
+
+  const onSelectToken = (token) => {
+    setIsModalVisible(false);
+    props.onSelectToken(token);
+  };
+
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword("");
+    }
+  }, [isModalVisible]);
+
+  const onSearchKeywordChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const filteredTokens = visibleTokens.filter((item) => {
+    return (
+      item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
+      item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+    );
+  });
+
+  const sortedFilteredTokens = useMemo(() => {
+    const tokensWithBalance: Token[] = [];
+    const tokensWithoutBalance: Token[] = showBalances ? [] : filteredTokens;
+
+    for (const token of filteredTokens) {
+      const info = infoTokens?.[token.address];
+      if (showBalances) {
+        if (info?.balance?.gt(0)) {
+          tokensWithBalance.push(token);
+        } else {
+          tokensWithoutBalance.push(token);
+        }
+      }
     }
 
-    const {
-        tokens,
-        mintingCap,
-        infoTokens,
-        showMintingCap,
-        disabled,
-        selectedTokenLabel,
-        showBalances = true,
-        showTokenImgInDropdown = false,
-        showSymbolImage = false,
-        showNewCaret = false,
-        getTokenState = () => ({ disabled: false, message: null }),
-        extendedSortSequence,
-    } = props;
+    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
 
-    const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
+      if (!aInfo || !bInfo) return 0;
 
-    const onSelectToken = (token) => {
-        setIsModalVisible(false);
-        props.onSelectToken(token);
-    };
-
-    useEffect(() => {
-        if (isModalVisible) {
-            setSearchKeyword("");
-        }
-    }, [isModalVisible]);
-
-    const onSearchKeywordChange = (e) => {
-        setSearchKeyword(e.target.value);
-    };
-
-    const filteredTokens = visibleTokens.filter((item) => {
-        return (
-            item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-            item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+      if (
+        aInfo?.balance &&
+        bInfo?.balance &&
+        aInfo?.maxPrice &&
+        bInfo?.maxPrice
+      ) {
+        const aBalanceUsd = convertToUsd(
+          aInfo.balance,
+          a.decimals,
+          aInfo.minPrice
         );
+        const bBalanceUsd = convertToUsd(
+          bInfo.balance,
+          b.decimals,
+          bInfo.minPrice
+        );
+
+        return bBalanceUsd?.sub(aBalanceUsd || 0).gt(0) ? 1 : -1;
+      }
+      return 0;
     });
 
-    const sortedFilteredTokens = useMemo(() => {
-        const tokensWithBalance: Token[] = [];
-        const tokensWithoutBalance: Token[] = showBalances ? [] : filteredTokens;
+    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
 
-        for (const token of filteredTokens) {
-            const info = infoTokens?.[token.address];
-            if (showBalances) {
-                if (info?.balance?.gt(0)) {
-                    tokensWithBalance.push(token);
-                } else {
-                    tokensWithoutBalance.push(token);
-                }
-            }
-        }
+      if (!aInfo || !bInfo) return 0;
 
-        const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
-            const aInfo = infoTokens?.[a.address];
-            const bInfo = infoTokens?.[b.address];
+      if (extendedSortSequence) {
+        // making sure to use the wrapped address if it exists in the extended sort sequence
+        const aAddress =
+          aInfo.wrappedAddress &&
+          extendedSortSequence.includes(aInfo.wrappedAddress)
+            ? aInfo.wrappedAddress
+            : aInfo.address;
 
-            if (!aInfo || !bInfo) return 0;
+        const bAddress =
+          bInfo.wrappedAddress &&
+          extendedSortSequence.includes(bInfo.wrappedAddress)
+            ? bInfo.wrappedAddress
+            : bInfo.address;
 
-            if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
-                const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
-                const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
+        return (
+          extendedSortSequence.indexOf(aAddress) -
+          extendedSortSequence.indexOf(bAddress)
+        );
+      }
 
-                return bBalanceUsd?.sub(aBalanceUsd || 0).gt(0) ? 1 : -1;
-            }
-            return 0;
-        });
+      return 0;
+    });
 
-        const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
-            const aInfo = infoTokens?.[a.address];
-            const bInfo = infoTokens?.[b.address];
+    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+  }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
 
-            if (!aInfo || !bInfo) return 0;
-
-            if (extendedSortSequence) {
-                // making sure to use the wrapped address if it exists in the extended sort sequence
-                const aAddress =
-                    aInfo.wrappedAddress && extendedSortSequence.includes(aInfo.wrappedAddress)
-                        ? aInfo.wrappedAddress
-                        : aInfo.address;
-
-                const bAddress =
-                    bInfo.wrappedAddress && extendedSortSequence.includes(bInfo.wrappedAddress)
-                        ? bInfo.wrappedAddress
-                        : bInfo.address;
-
-                return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
-            }
-
-            return 0;
-        });
-
-        return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-    }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
-
-    const _handleKeyDown = (e) => {
-        if (e.key === "Enter" && filteredTokens.length > 0) {
-            onSelectToken(filteredTokens[0]);
-        }
-    };
-
-    if (!tokenInfo) {
-        return null;
+  const _handleKeyDown = (e) => {
+    if (e.key === "Enter" && filteredTokens.length > 0) {
+      onSelectToken(filteredTokens[0]);
     }
+  };
 
-    return (
-        <div onClick={(event) => event.stopPropagation()}>
-            <Modal
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                label={props.label}
-                headerContent={() => (
-                    <>
-                        <div className=" text-start sm:mt-0 sm:text-left w-full">
-                            <Dialog.Title as="h3" className="text-3xl">
-                                Select Token
-                            </Dialog.Title>
-                        </div>
-                        <SearchInput
-                            className="mt-md"
-                            value={searchKeyword}
-                            setValue={onSearchKeywordChange}
-                            onKeyDown={_handleKeyDown}
-                        />
-                    </>
-                )}
-            >
-                <div className="TokenSelector-tokens">
-                    {sortedFilteredTokens.map((token, tokenIndex) => {
-                        let info = infoTokens?.[token.address] || ({} as TokenInfo);
+  if (!tokenInfo) {
+    return null;
+  }
 
-                        let mintAmount;
-                        let balance = info.balance;
-                        if (showMintingCap && mintingCap && info.usdgAmount) {
-                            mintAmount = mintingCap.sub(info.usdgAmount);
-                        }
-                        if (mintAmount && mintAmount.lt(0)) {
-                            mintAmount = bigNumberify(0);
-                        }
-                        let balanceUsd;
-                        if (balance && info.maxPrice) {
-                            balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals));
-                        }
+  return (
+    <div onClick={(event) => event.stopPropagation()}>
+      <Modal
+        isVisible={isModalVisible}
+        setIsVisible={setIsModalVisible}
+        label={props.label}
+        headerContent={() => (
+          <>
+            <div className=" text-start sm:mt-0 sm:text-left w-full">
+              <Dialog.Title as="h3" className="text-3xl">
+                Select Token
+              </Dialog.Title>
+            </div>
+            <SearchInput
+              className="mt-md"
+              value={searchKeyword}
+              setValue={onSearchKeywordChange}
+              onKeyDown={_handleKeyDown}
+            />
+          </>
+        )}
+      >
+        <div className="TokenSelector-tokens">
+          {sortedFilteredTokens.map((token, tokenIndex) => {
+            let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
-                        const tokenState = getTokenState(info) || {};
+            let mintAmount;
+            let balance = info.balance;
+            if (showMintingCap && mintingCap && info.usdgAmount) {
+              mintAmount = mintingCap.sub(info.usdgAmount);
+            }
+            if (mintAmount && mintAmount.lt(0)) {
+              mintAmount = bigNumberify(0);
+            }
+            let balanceUsd;
+            if (balance && info.maxPrice) {
+              balanceUsd = balance
+                .mul(info.maxPrice)
+                .div(expandDecimals(1, token.decimals));
+            }
 
-                        return (
-                            <div
-                                key={token.address}
-                                className={"TokenSelector-token-row"}
-                                onClick={() => !tokenState.disabled && onSelectToken(token)}
-                            >
-                                {tokenState.disabled && tokenState.message && (
-                                    <>
-                                    Disabled?
-                                    {/*<TooltipWithPortal  TODO fungi
+            const tokenState = getTokenState(info) || {};
+
+            return (
+              <div
+                key={token.address}
+                className={"TokenSelector-token-row"}
+                onClick={() => !tokenState.disabled && onSelectToken(token)}
+              >
+                {tokenState.disabled && tokenState.message && (
+                  <>
+                    Disabled?
+                    {/*<TooltipWithPortal  TODO fungi
                                         className="TokenSelector-tooltip"
                                         handle={<div className="TokenSelector-tooltip-backing" />}
                                         position={tokenIndex < filteredTokens.length / 2 ? "center-bottom" : "center-top"}
@@ -220,54 +240,95 @@ export default function TokenSelector(props: Props) {
                                         fitHandleWidth
                                         renderContent={() => tokenState.message}
                                     />*/}
-                                    </>
-                                )}
-                                <div className="Token-info">
-                                    {showTokenImgInDropdown && (
-                                        <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
-                                    )}
-                                    <div className="Token-symbol">
-                                        <div className="Token-text">{token.symbol}</div>
-                                        <span className="text-accent">{token.name}</span>
-                                    </div>
-                                </div>
-                                <div className="Token-balance">
-                                    {showBalances && balance && (
-                                        <div className="Token-text">
-                                            {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
-                                            {balance.eq(0) && "-"}
-                                        </div>
-                                    )}
-                                    <span className="text-accent">
-                                        {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
-                                        {showMintingCap && !mintAmount && <div>-</div>}
-                                        {!showMintingCap && showBalances && balanceUsd && balanceUsd.gt(0) && (
-                                            <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
-                                        )}
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    })}
+                  </>
+                )}
+                <div className="Token-info">
+                  {showTokenImgInDropdown && (
+                    <TokenIcon
+                      symbol={token.symbol}
+                      className="token-logo"
+                      displaySize={40}
+                      importSize={40}
+                    />
+                  )}
+                  <div className="Token-symbol">
+                    <div className="Token-text">{token.symbol}</div>
+                    <span className="text-accent">{token.name}</span>
+                  </div>
                 </div>
-            </Modal>
-            {selectedTokenLabel ? (
-                <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-                    {selectedTokenLabel}
-                    {!showNewCaret &&  <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>}
+                <div className="Token-balance">
+                  {showBalances && balance && (
+                    <div className="Token-text">
+                      {balance.gt(0) &&
+                        formatAmount(balance, token.decimals, 4, true)}
+                      {balance.eq(0) && "-"}
+                    </div>
+                  )}
+                  <span className="text-accent">
+                    {mintAmount && (
+                      <div>
+                        Mintable:{" "}
+                        {formatAmount(mintAmount, token.decimals, 2, true)} USDG
+                      </div>
+                    )}
+                    {showMintingCap && !mintAmount && <div>-</div>}
+                    {!showMintingCap &&
+                      showBalances &&
+                      balanceUsd &&
+                      balanceUsd.gt(0) && (
+                        <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                      )}
+                  </span>
                 </div>
-            ) : (
-                <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-                    <span className="inline-items-center">
-                        {showSymbolImage && (
-                            <TokenIcon className="mr-xs" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
-                        )}
-                        <span className="Token-symbol-text">{tokenInfo.symbol}</span>
-                    </span>
-                    {showNewCaret && <img src={""} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
-                    {!showNewCaret && <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>}
-                </div>
-            )}
+              </div>
+            );
+          })}
         </div>
-    );
+      </Modal>
+      {selectedTokenLabel ? (
+        <div
+          className="TokenSelector-box"
+          onClick={() => setIsModalVisible(true)}
+        >
+          {selectedTokenLabel}
+          {!showNewCaret && (
+            <ChevronDownIcon
+              className="-mr-1 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+          )}
+        </div>
+      ) : (
+        <div
+          className="TokenSelector-box"
+          onClick={() => setIsModalVisible(true)}
+        >
+          <span className="inline-items-center">
+            {showSymbolImage && (
+              <TokenIcon
+                className="mr-xs"
+                symbol={tokenInfo.symbol}
+                importSize={24}
+                displaySize={20}
+              />
+            )}
+            <span className="Token-symbol-text">{tokenInfo.symbol}</span>
+          </span>
+          {showNewCaret && (
+            <img
+              src={""}
+              alt="Dropdown Icon"
+              className="TokenSelector-box-caret"
+            />
+          )}
+          {!showNewCaret && (
+            <ChevronDownIcon
+              className="-mr-1 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
 }

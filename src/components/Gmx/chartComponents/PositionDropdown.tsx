@@ -1,13 +1,13 @@
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import "./PositionDropdown.css";
+
 import { HiDotsVertical } from "react-icons/hi";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiSelectMultiple } from "react-icons/bi";
 import { RiShareBoxFill } from "react-icons/ri";
-import increaseLimit from "img/ic_increaselimit_16.svg";
-import increaseMarket from "img/ic_increasemarket_16.svg";
-import triggerClose from "img/ic_triggerclose_16.svg";
+import increaseLimit from "../../../../public/img/ic_increaselimit_16.svg";
+import increaseMarket from "../../../../public/img/ic_increasemarket_16.svg";
+import triggerClose from "../../../../public/img/ic_triggerclose_16.svg";
 
 type Props = {
   handleEditCollateral?: () => void;

@@ -1,5 +1,4 @@
 import Button from "./Button";
-import "./Pagination.css";
 
 type Props = {
   page: number;

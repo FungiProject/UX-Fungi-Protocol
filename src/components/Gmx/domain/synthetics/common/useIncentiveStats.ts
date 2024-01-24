@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import { addDays, set, startOfWeek } from "date-fns";
 import { BigNumber } from "ethers";
-import { useChainId } from "lib/chains";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { useChainId } from "../../../lib/chains";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
@@ -39,17 +39,29 @@ export const useTradingIncentives = () => {
     const currentDate = new Date();
     const thisWeekWednesday = addDays(startOfWeek(currentDate), 3);
     const wednesday =
-      currentDate.valueOf() > thisWeekWednesday.valueOf() ? thisWeekWednesday : addDays(thisWeekWednesday, -7);
+      currentDate.valueOf() > thisWeekWednesday.valueOf()
+        ? thisWeekWednesday
+        : addDays(thisWeekWednesday, -7);
     const timezoneOffset = currentDate.getTimezoneOffset() * 60;
 
     return (
-      Math.floor(set(wednesday, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 }).valueOf() / 1000) -
-      timezoneOffset
+      Math.floor(
+        set(wednesday, {
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        }).valueOf() / 1000
+      ) - timezoneOffset
     );
   }, []);
 
   const { data: burnedTokens } = useSWR<BigNumber>(
-    ["trading-incentives", chainId, incentiveStats?.trading.isActive ? "on" : "off"],
+    [
+      "trading-incentives",
+      chainId,
+      incentiveStats?.trading.isActive ? "on" : "off",
+    ],
     {
       fetcher: async (): Promise<BigNumber> => {
         if (!incentiveStats?.trading.isActive) return BigNumber.from(0);
@@ -68,7 +80,11 @@ export const useTradingIncentives = () => {
           })
         ).data as RawResponse;
 
-        if (!res || !res.tradingIncentivesStat || !res.tradingIncentivesStat.eligibleFeesInArb) {
+        if (
+          !res ||
+          !res.tradingIncentivesStat ||
+          !res.tradingIncentivesStat.eligibleFeesInArb
+        ) {
           return BigNumber.from(0);
         }
 

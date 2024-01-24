@@ -1,4 +1,5 @@
 import { sample } from "lodash";
+import { BigNumber } from "ethers";
 
 export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS; //TODO fungi
 export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS; //TODO fungi
@@ -20,10 +21,20 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
+export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
+  [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
+  [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
+  [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
+} as const;
+
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
   [BSС_MAINNET]: false,
+};
+
+export const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
 };
 
 export const CHAIN_NAMES_MAP = {

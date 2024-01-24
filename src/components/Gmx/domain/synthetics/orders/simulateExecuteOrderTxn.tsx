@@ -1,16 +1,21 @@
 import { Trans, t } from "@lingui/macro";
-import CustomErrors from "abis/CustomErrors.json";
-import DataStore from "abis/DataStore.json";
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getContract } from "config/contracts";
-import { NONCE_KEY, orderKey } from "config/dataStore";
-import { convertTokenAddress } from "config/tokens";
-import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import CustomErrors from "../../../abis/CustomErrors.json";
+import DataStore from "../../../abis/DataStore.json";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
+import { ToastifyDebug } from "../../../chartComponents/ToastifyDebug";
+import { getContract } from "../../../config/contracts";
+import { NONCE_KEY, orderKey } from "../../../config/dataStore";
+import { convertTokenAddress } from "../../../config/tokens";
+import {
+  TokenPrices,
+  TokensData,
+  convertToContractPrice,
+  getTokenData,
+} from "../../../domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { getErrorMessage } from "lib/contracts/transactionErrors";
-import { helperToast } from "lib/helperToast";
-import { getProvider } from "lib/rpc";
+import { getErrorMessage } from "../../../lib/contracts/transactionErrors";
+import { helperToast } from "../../../lib/helperToast";
+import { getProvider } from "../../../lib/rpc";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -29,35 +34,50 @@ type SimulateExecuteOrderParams = {
   errorTitle?: string;
 };
 
-export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
+export async function simulateExecuteOrderTxn(
+  chainId: number,
+  p: SimulateExecuteOrderParams
+) {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const provider = getProvider(undefined, chainId);
-  const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
+  const dataStore = new ethers.Contract(
+    dataStoreAddress,
+    DataStore.abi,
+    provider
+  );
+  const exchangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    provider
+  );
 
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce.add(1);
   const nextKey = orderKey(dataStoreAddress, nextNonce);
 
-  const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
-    chainId,
-    p.tokensData,
-    p.primaryPriceOverrides,
-    p.secondaryPriceOverrides
-  );
+  const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } =
+    getSimulationPrices(
+      chainId,
+      p.tokensData,
+      p.primaryPriceOverrides,
+      p.secondaryPriceOverrides
+    );
 
   const simulationPayload = [
     ...p.createOrderMulticallPayload,
-    exchangeRouter.interface.encodeFunctionData(p.method || "simulateExecuteOrder", [
-      nextKey,
-      {
-        primaryTokens: primaryTokens,
-        primaryPrices: primaryPrices,
-        secondaryTokens: secondaryTokens,
-        secondaryPrices: secondaryPrices,
-      },
-    ]),
+    exchangeRouter.interface.encodeFunctionData(
+      p.method || "simulateExecuteOrder",
+      [
+        nextKey,
+        {
+          primaryTokens: primaryTokens,
+          primaryPrices: primaryPrices,
+          secondaryTokens: secondaryTokens,
+          secondaryPrices: secondaryPrices,
+        },
+      ]
+    ),
   ];
 
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
@@ -69,7 +89,10 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
       from: p.account,
     });
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+    const customErrors = new ethers.Contract(
+      ethers.constants.AddressZero,
+      CustomErrors.abi
+    );
 
     let msg: any = undefined;
 
@@ -164,8 +187,14 @@ function getSimulationPrices(
 
     if (primaryOverridedPrice) {
       primaryPrices.push({
-        min: convertToContractPrice(primaryOverridedPrice.minPrice, token.decimals),
-        max: convertToContractPrice(primaryOverridedPrice.maxPrice, token.decimals),
+        min: convertToContractPrice(
+          primaryOverridedPrice.minPrice,
+          token.decimals
+        ),
+        max: convertToContractPrice(
+          primaryOverridedPrice.maxPrice,
+          token.decimals
+        ),
       });
     } else {
       primaryPrices.push(currentPrice);
@@ -175,8 +204,14 @@ function getSimulationPrices(
 
     if (secondaryOverridedPrice) {
       secondaryPrices.push({
-        min: convertToContractPrice(secondaryOverridedPrice.minPrice, token.decimals),
-        max: convertToContractPrice(secondaryOverridedPrice.maxPrice, token.decimals),
+        min: convertToContractPrice(
+          secondaryOverridedPrice.minPrice,
+          token.decimals
+        ),
+        max: convertToContractPrice(
+          secondaryOverridedPrice.maxPrice,
+          token.decimals
+        ),
       });
     } else {
       secondaryPrices.push(currentPrice);

@@ -1,5 +1,5 @@
 import { BigNumber, Signer } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract } from "../../../lib/contracts/callContract";
 import { SUBACCOUNT_ORDER_ACTION } from "./constants";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 import { SubaccountParams } from "./types";
@@ -14,18 +14,38 @@ export async function initSubaccount(
   isAccountActive: boolean,
   currentActionsCount: BigNumber | null,
   setPendingTxns: (txns: any[]) => void,
-  { topUp, maxAllowedActions, maxAutoTopUpAmount, wntForAutoTopUps }: SubaccountParams
+  {
+    topUp,
+    maxAllowedActions,
+    maxAutoTopUpAmount,
+    wntForAutoTopUps,
+  }: SubaccountParams
 ) {
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);
 
   const multicall = [
-    wntForAutoTopUps && wntForAutoTopUps.gt(0) && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
-    topUp && topUp.gt(0) && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
-    !isAccountActive && { method: "addSubaccount", params: [subaccountAddress] },
+    wntForAutoTopUps &&
+      wntForAutoTopUps.gt(0) && {
+        method: "sendWnt",
+        params: [mainAccountAddress, wntForAutoTopUps],
+      },
+    topUp &&
+      topUp.gt(0) && {
+        method: "sendNativeToken",
+        params: [subaccountAddress, topUp],
+      },
+    !isAccountActive && {
+      method: "addSubaccount",
+      params: [subaccountAddress],
+    },
     maxAllowedActions &&
       maxAllowedActions.gte(0) && {
         method: "setMaxAllowedSubaccountActionCount",
-        params: [subaccountAddress, SUBACCOUNT_ORDER_ACTION, maxAllowedActions.add(currentActionsCount ?? 0)],
+        params: [
+          subaccountAddress,
+          SUBACCOUNT_ORDER_ACTION,
+          maxAllowedActions.add(currentActionsCount ?? 0),
+        ],
       },
     maxAutoTopUpAmount &&
       maxAutoTopUpAmount.gte(0) && {
@@ -40,10 +60,16 @@ export async function initSubaccount(
 
   const value = (topUp ?? ZERO).add(wntForAutoTopUps ?? ZERO);
 
-  return callContract(chainId, subaccountRouter, "multicall", [encodedPayload], {
-    value,
-    setPendingTxns,
-    hideSentMsg: true,
-    hideSuccessMsg: true,
-  });
+  return callContract(
+    chainId,
+    subaccountRouter,
+    "multicall",
+    [encodedPayload],
+    {
+      value,
+      setPendingTxns,
+      hideSentMsg: true,
+      hideSuccessMsg: true,
+    }
+  );
 }

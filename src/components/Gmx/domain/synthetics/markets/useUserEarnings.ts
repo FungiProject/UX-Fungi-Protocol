@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
-import { getSyntheticsGraphClient } from "lib/subgraph";
-import useWallet from "lib/wallets/useWallet";
+import { expandDecimals } from "../../../lib/numbers";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
+import useWallet from "../../../lib/wallets/useWallet";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { UserEarningsData } from "./types";
@@ -29,16 +29,23 @@ type RawCollectedMarketFeesInfo = {
 
 export const useUserEarnings = (chainId: number) => {
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData } = useMarketTokensData(chainId, {
+    isDeposit: true,
+  });
 
   const client = getSyntheticsGraphClient(chainId);
   const marketAddresses = useMemo(
-    () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
+    () =>
+      Object.keys(marketsInfoData || {}).filter(
+        (address) => !marketsInfoData![address].isDisabled
+      ),
     [marketsInfoData]
   );
 
   const key =
-    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("userEarnings").join(",") : null;
+    marketAddresses.length && marketTokensData && client
+      ? marketAddresses.concat("userEarnings").join(",")
+      : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
@@ -50,7 +57,8 @@ export const useUserEarnings = (chainId: number) => {
         return null;
       }
 
-      const startOfPeriod = Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
+      const startOfPeriod =
+        Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
       const createQuery = (marketAddress: string) =>
         `
         _${marketAddress}_balanceChanges: userGmTokensBalanceChanges(
@@ -112,7 +120,10 @@ export const useUserEarnings = (chainId: number) => {
         queryBody += createQuery(marketAddress);
       });
 
-      let responseOrNull: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | null = null;
+      let responseOrNull: Record<
+        string,
+        [RawCollectedMarketFeesInfo] | RawBalanceChange[]
+      > | null = null;
       try {
         responseOrNull = (
           await client!.query({
@@ -141,40 +152,74 @@ export const useUserEarnings = (chainId: number) => {
       };
 
       marketAddresses.forEach((marketAddress) => {
-        const rawBalanceChanges = response[`_${marketAddress}_balanceChanges`] as RawBalanceChange[];
-        const prevRawBalanceChange = response[`_${marketAddress}_balanceChange_before`][0] as RawBalanceChange;
-        const feesStart = response[`_${marketAddress}_fees_start`][0] as RawCollectedMarketFeesInfo;
-        const feesRecent = response[`_${marketAddress}_fees_recent`][0] as RawCollectedMarketFeesInfo;
+        const rawBalanceChanges = response[
+          `_${marketAddress}_balanceChanges`
+        ] as RawBalanceChange[];
+        const prevRawBalanceChange = response[
+          `_${marketAddress}_balanceChange_before`
+        ][0] as RawBalanceChange;
+        const feesStart = response[
+          `_${marketAddress}_fees_start`
+        ][0] as RawCollectedMarketFeesInfo;
+        const feesRecent = response[
+          `_${marketAddress}_fees_recent`
+        ][0] as RawCollectedMarketFeesInfo;
 
-        const balanceChanges = rawBalanceChanges.map(rawBalanceChangeToBalanceChange);
+        const balanceChanges = rawBalanceChanges.map(
+          rawBalanceChangeToBalanceChange
+        );
         const balanceChangesTotal = prevRawBalanceChange
-          ? [rawBalanceChangeToBalanceChange(prevRawBalanceChange), ...balanceChanges]
+          ? [
+              rawBalanceChangeToBalanceChange(prevRawBalanceChange),
+              ...balanceChanges,
+            ]
           : [...balanceChanges];
 
         const balanceChangesRecent = prevRawBalanceChange
           ? [
               rawBalanceChangeToBalanceChange({
                 ...prevRawBalanceChange,
-                cumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
+                cumulativeFeeUsdPerGmToken:
+                  feesStart.cumulativeFeeUsdPerGmToken,
               }),
               ...balanceChanges,
             ]
           : [...balanceChanges];
 
-        if (balanceChangesRecent.length === 0 || balanceChangesTotal.length === 0) return;
+        if (
+          balanceChangesRecent.length === 0 ||
+          balanceChangesTotal.length === 0
+        )
+          return;
 
-        const lastChangeTotal = balanceChangesTotal[balanceChangesTotal.length - 1];
-        const lastChangeRecent = balanceChangesRecent[balanceChangesRecent.length - 1];
+        const lastChangeTotal =
+          balanceChangesTotal[balanceChangesTotal.length - 1];
+        const lastChangeRecent =
+          balanceChangesRecent[balanceChangesRecent.length - 1];
 
-        if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
-        if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
+        if (!lastChangeTotal)
+          throw new Error("balanceChangesTotal is undefined");
+        if (!lastChangeRecent)
+          throw new Error("balanceChangesRecent is undefined");
 
-        const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
+        const latestFeeUsdPerGmToken = BigNumber.from(
+          feesRecent.cumulativeFeeUsdPerGmToken
+        );
 
-        const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
-        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
-        const recentIncome = calcRecentIncome(balanceChangesRecent).add(endOfPeriodIncomeRecent);
-        const totalIncome = lastChangeTotal.cumulativeIncome.add(endOfPeriodIncomeTotal);
+        const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(
+          lastChangeRecent,
+          latestFeeUsdPerGmToken
+        );
+        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(
+          lastChangeTotal,
+          latestFeeUsdPerGmToken
+        );
+        const recentIncome = calcRecentIncome(balanceChangesRecent).add(
+          endOfPeriodIncomeRecent
+        );
+        const totalIncome = lastChangeTotal.cumulativeIncome.add(
+          endOfPeriodIncomeTotal
+        );
 
         result.byMarketAddress[marketAddress] = {
           total: totalIncome,
@@ -192,8 +237,12 @@ export const useUserEarnings = (chainId: number) => {
           if (!balance || balance.eq(0)) return;
 
           const price = token.prices.maxPrice;
-          const expected365d = apr.mul(balance).mul(price).div(expandDecimals(1, 22));
-          result.allMarkets.expected365d = result.allMarkets.expected365d.add(expected365d);
+          const expected365d = apr
+            .mul(balance)
+            .mul(price)
+            .div(expandDecimals(1, 22));
+          result.allMarkets.expected365d =
+            result.allMarkets.expected365d.add(expected365d);
         }
       });
 
@@ -209,9 +258,13 @@ function calcEndOfPeriodIncome(
 ): BigNumber {
   if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
-  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
+  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(
+    latestBalanceChange.cumulativeFeeUsdPerGmToken
+  );
 
-  return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
+  return feeUsdPerGmTokenDelta
+    .mul(latestBalanceChange.tokensBalance)
+    .div(expandDecimals(1, 18));
 }
 
 function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
@@ -232,9 +285,13 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
   return cumulativeIncome;
 }
 
-function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
+function rawBalanceChangeToBalanceChange(
+  rawBalanceChange: RawBalanceChange
+): BalanceChange {
   return {
-    cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
+    cumulativeFeeUsdPerGmToken: BigNumber.from(
+      rawBalanceChange.cumulativeFeeUsdPerGmToken
+    ),
     cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
     tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
   };

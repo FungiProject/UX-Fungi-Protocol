@@ -1,17 +1,17 @@
 import { gql } from "@apollo/client";
-import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
-import { getTokenBySymbol } from "config/tokens";
+import { ARBITRUM, ARBITRUM_GOERLI } from "../../../config/chains";
+import { getTokenBySymbol } from "../../../config/tokens";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
-import { bigNumberify, expandDecimals } from "lib/numbers";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { bigNumberify, expandDecimals } from "../../../lib/numbers";
+import { getSyntheticsGraphClient } from "../../../lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfo } from ".";
 import { useTokensData } from "../tokens";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { getByKey } from "lib/objects";
+import { getByKey } from "../../../lib/objects";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import useIncentiveStats from "../common/useIncentiveStats";
 
@@ -33,7 +33,10 @@ type SwrResult = {
 function useMarketAddresses(chainId: number) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   return useMemo(
-    () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
+    () =>
+      Object.keys(marketsInfoData || {}).filter(
+        (address) => !marketsInfoData![address].isDisabled
+      ),
     [marketsInfoData]
   );
 }
@@ -54,16 +57,24 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
     let arbTokenPrice = BigNumber.from(0);
 
     if (arbTokenAddress && tokensData) {
-      arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
+      arbTokenPrice =
+        tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
     }
 
-    const shouldCalcBonusApr = arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI);
+    const shouldCalcBonusApr =
+      arbTokenPrice.gt(0) &&
+      (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI);
 
     return marketAddresses.reduce((acc, marketAddress) => {
-      if (!shouldCalcBonusApr || !rawIncentivesStats) return { ...acc, [marketAddress]: BigNumber.from(0) };
+      if (!shouldCalcBonusApr || !rawIncentivesStats)
+        return { ...acc, [marketAddress]: BigNumber.from(0) };
 
-      const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
-      const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
+      const arbTokensAmount = BigNumber.from(
+        rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0
+      );
+      const yearMultiplier = Math.floor(
+        (365 * 24 * 60 * 60) / rawIncentivesStats.lp.period
+      );
       const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
       let incentivesApr = BigNumber.from(0);
 
@@ -80,16 +91,27 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
         [marketAddress]: incentivesApr,
       };
     }, {} as MarketTokensAPRData);
-  }, [chainId, marketAddresses, marketsInfoData, rawIncentivesStats, tokensData]);
+  }, [
+    chainId,
+    marketAddresses,
+    marketsInfoData,
+    rawIncentivesStats,
+    tokensData,
+  ]);
 }
 
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, {
+    isDeposit: false,
+  });
   const marketAddresses = useMarketAddresses(chainId);
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr").join(",") : null;
+  const key =
+    marketAddresses.length && marketTokensData && client
+      ? marketAddresses.concat("apr").join(",")
+      : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
 
@@ -103,7 +125,9 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 where: {
                   marketAddress: "${marketAddress.toLowerCase()}"
                   period: "1h"
-                  timestampGroup_lte: ${Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000)}
+                  timestampGroup_lte: ${Math.floor(
+                    sub(new Date(), { days: daysConsidered }).valueOf() / 1000
+                  )}
                 },
                 first: 1
             ) {
@@ -124,10 +148,18 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         `;
       };
 
-      const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
+      const queryBody = marketAddresses.reduce(
+        (acc, marketAddress) => acc + marketFeesQuery(marketAddress),
+        ""
+      );
       let responseOrNull: Record<string, [RawCollectedFee]> | null = null;
       try {
-        responseOrNull = (await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" })).data;
+        responseOrNull = (
+          await client!.query({
+            query: gql(`{${queryBody}}`),
+            fetchPolicy: "no-cache",
+          })
+        ).data;
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
@@ -142,26 +174,35 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       const response = responseOrNull;
 
-      const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
-        const recentFees = response[`_${marketAddress}_recent`];
+      const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce(
+        (acc, marketAddress) => {
+          const lteStartOfPeriodFees =
+            response[`_${marketAddress}_lte_start_of_period_`];
+          const recentFees = response[`_${marketAddress}_recent`];
 
-        const x1 = bigNumberify(lteStartOfPeriodFees[0].cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
-        const x2 = bigNumberify(recentFees[0].cumulativeFeeUsdPerPoolValue);
+          const x1 =
+            bigNumberify(
+              lteStartOfPeriodFees[0].cumulativeFeeUsdPerPoolValue
+            ) ?? BigNumber.from(0);
+          const x2 = bigNumberify(recentFees[0].cumulativeFeeUsdPerPoolValue);
 
-        if (!x2) {
-          acc[marketAddress] = BigNumber.from(0);
+          if (!x2) {
+            acc[marketAddress] = BigNumber.from(0);
+            return acc;
+          }
+
+          const incomePercentageForPeriod = x2.sub(x1);
+          const yearMultiplier = Math.floor(365 / daysConsidered);
+          const apr = incomePercentageForPeriod
+            .mul(yearMultiplier)
+            .div(expandDecimals(1, 26));
+
+          acc[marketAddress] = apr;
+
           return acc;
-        }
-
-        const incomePercentageForPeriod = x2.sub(x1);
-        const yearMultiplier = Math.floor(365 / daysConsidered);
-        const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
-
-        acc[marketAddress] = apr;
-
-        return acc;
-      }, {} as MarketTokensAPRData);
+        },
+        {} as MarketTokensAPRData
+      );
 
       const avgMarketsAPR = Object.values(marketsTokensAPRData)
         .reduce((acc, apr) => {

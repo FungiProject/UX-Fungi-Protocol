@@ -1,4 +1,4 @@
-import { getTokensMap, getV2Tokens } from "config/tokens";
+import { getTokensMap, getV2Tokens } from "../../../config/tokens";
 import { useMemo } from "react";
 import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
@@ -12,7 +12,8 @@ type TokensDataResult = {
 export function useTokensData(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData } = useTokenBalances(chainId);
-  const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPrices(chainId);
+  const { pricesData, updatedAt: pricesUpdatedAt } =
+    useTokenRecentPrices(chainId);
 
   return useMemo(() => {
     const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);

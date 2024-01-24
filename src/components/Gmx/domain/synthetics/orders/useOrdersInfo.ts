@@ -1,5 +1,5 @@
-import { getWrappedToken } from "config/tokens";
-import { getByKey } from "lib/objects";
+import { getWrappedToken } from "../../../config/tokens";
+import { getByKey } from "../../../lib/objects";
 import { useMemo } from "react";
 import { MarketsInfoData } from "../markets";
 import { PositionsInfoData } from "../positions";
@@ -69,5 +69,12 @@ export function useOrdersInfo(
       ordersInfoData,
       isLoading: false,
     };
-  }, [account, marketsInfoData, ordersData, positionsInfoData, tokensData, wrappedToken]);
+  }, [
+    account,
+    marketsInfoData,
+    ordersData,
+    positionsInfoData,
+    tokensData,
+    wrappedToken,
+  ]);
 }

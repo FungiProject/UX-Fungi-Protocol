@@ -1,5 +1,5 @@
-import { MarketInfo } from "domain/synthetics/markets";
-import { OrderType } from "domain/synthetics/orders";
+import { MarketInfo } from "../../../domain/synthetics/markets";
+import { OrderType } from "../../../domain/synthetics/orders";
 import { BigNumber, Bytes } from "ethers";
 import { TokenData } from "../tokens";
 

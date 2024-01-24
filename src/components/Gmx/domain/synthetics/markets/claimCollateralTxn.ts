@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
-import { getContract } from "config/contracts";
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import { getContract } from "../../../config/contracts";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract } from "../../../lib/contracts/callContract";
 
 type Params = {
   account: string;
@@ -16,7 +16,11 @@ type Params = {
 export function claimCollateralTxn(chainId: number, signer: Signer, p: Params) {
   const { setPendingTxns, fundingFees, account } = p;
 
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const contract = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    signer
+  );
 
   return callContract(
     chainId,

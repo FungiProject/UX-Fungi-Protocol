@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { MarketInfo } from "../markets";
-import { Token } from "domain/tokens/types";
+import { Token } from "../../../domain/tokens/types";
 
 export enum ClaimType {
   ClaimPriceImpact = "ClaimPriceImpact",

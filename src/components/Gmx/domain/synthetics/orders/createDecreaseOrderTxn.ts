@@ -1,19 +1,32 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
-import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
+import { getContract } from "../../../config/contracts";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  convertTokenAddress,
+} from "../../../config/tokens";
+import {
+  SetPendingFundingFeeSettlement,
+  SetPendingOrder,
+  SetPendingPosition,
+} from "../../../context/SyntheticsEvents";
+import {
+  TokensData,
+  convertToContractPrice,
+} from "../../../domain/synthetics/tokens";
+import { Token } from "../../../domain/tokens";
 import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract } from "../../../lib/contracts/callContract";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import {
+  PriceOverrides,
+  simulateExecuteOrderTxn,
+} from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { t } from "@lingui/macro";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 const { AddressZero } = ethers.constants;
@@ -32,7 +45,10 @@ export type DecreaseOrderParams = {
   minOutputUsd: BigNumber;
   isLong: boolean;
   decreasePositionSwapType: DecreasePositionSwapType;
-  orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  orderType:
+    | OrderType.MarketDecrease
+    | OrderType.LimitDecrease
+    | OrderType.StopLossDecrease;
   executionFee: BigNumber;
   allowedSlippage: number;
   skipSimulation?: boolean;
@@ -56,11 +72,20 @@ export async function createDecreaseOrderTxn(
   callbacks: DecreaseOrderCallbacks
 ) {
   const ps = Array.isArray(params) ? params : [params];
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+  const exchangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    signer
+  );
+  const router = subaccount
+    ? getSubaccountRouterContract(chainId, subaccount.signer)
+    : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
+  const totalWntAmount = ps.reduce(
+    (acc, p) => acc.add(p.executionFee),
+    BigNumber.from(0)
+  );
   const account = ps[0].account;
   const encodedPayload = createEncodedPayload({
     router,
@@ -104,16 +129,24 @@ export async function createDecreaseOrderTxn(
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
-  const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
-    value: totalWntAmount,
-    hideSentMsg: true,
-    hideSuccessMsg: true,
-    setPendingTxns: callbacks.setPendingTxns,
-  }).then(() => {
+  const txn = await callContract(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    {
+      value: totalWntAmount,
+      hideSentMsg: true,
+      hideSuccessMsg: true,
+      setPendingTxns: callbacks.setPendingTxns,
+    }
+  ).then(() => {
     ps.forEach((p) => {
       if (isMarketOrderType(p.orderType)) {
         if (callbacks.setPendingPosition) {
-          callbacks.setPendingPosition(getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p));
+          callbacks.setPendingPosition(
+            getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
+          );
         }
       }
 
@@ -125,7 +158,9 @@ export async function createDecreaseOrderTxn(
     if (callbacks.setPendingFundingFeeSettlement) {
       callbacks.setPendingFundingFeeSettlement({
         orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
-        positions: ps.map((p) => getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)),
+        positions: ps.map((p) =>
+          getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
+        ),
       });
     }
   });
@@ -140,7 +175,11 @@ function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
   const minOutputAmount = shouldApplySlippage
     ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
     : p.minOutputUsd;
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+  const initialCollateralTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialCollateralAddress,
+    "wrapped"
+  );
 
   return {
     account: p.account,
@@ -161,7 +200,12 @@ function getPendingPositionFromParams(
   txnCreatedAtBlock: number | undefined,
   p: DecreaseOrderParams
 ) {
-  const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
+  const positionKey = getPositionKey(
+    p.account,
+    p.marketAddress,
+    p.initialCollateralAddress,
+    p.isLong
+  );
   return {
     isIncrease: false,
     positionKey,
@@ -192,12 +236,21 @@ function createEncodedPayload({
     ...ps.flatMap((p) => {
       const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
-      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+      const initialCollateralTokenAddress = convertTokenAddress(
+        chainId,
+        p.initialCollateralAddress,
+        "wrapped"
+      );
 
       const shouldApplySlippage = isMarketOrderType(p.orderType);
 
       const acceptablePrice = shouldApplySlippage
-        ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
+        ? applySlippageToPrice(
+            p.allowedSlippage,
+            p.acceptablePrice,
+            false,
+            p.isLong
+          )
         : p.acceptablePrice;
 
       const minOutputAmount = shouldApplySlippage
@@ -210,13 +263,20 @@ function createEncodedPayload({
           callbackContract: AddressZero,
           market: p.marketAddress,
           swapPath: p.swapPath,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+          uiFeeReceiver:
+            UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
         numbers: {
           sizeDeltaUsd: p.sizeDeltaUsd,
           initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-          triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-          acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
+          triggerPrice: convertToContractPrice(
+            p.triggerPrice || BigNumber.from(0),
+            p.indexToken.decimals
+          ),
+          acceptablePrice: convertToContractPrice(
+            acceptablePrice,
+            p.indexToken.decimals
+          ),
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
           minOutputAmount,
@@ -232,11 +292,17 @@ function createEncodedPayload({
         { method: "sendWnt", params: [orderVaultAddress, p.executionFee] },
         {
           method: "createOrder",
-          params: subaccount ? [mainAccountAddress, orderParams] : [orderParams],
+          params: subaccount
+            ? [mainAccountAddress, orderParams]
+            : [orderParams],
         },
       ];
     }),
   ];
 
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+  return multicall
+    .filter(Boolean)
+    .map((call) =>
+      router.interface.encodeFunctionData(call!.method, call!.params)
+    );
 }

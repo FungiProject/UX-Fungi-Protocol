@@ -1,14 +1,24 @@
-import { getServerUrl } from "config/backend";
-import { getTokenBySymbol, getWrappedToken } from "config/tokens";
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, timezoneOffset } from "domain/prices";
+import { getServerUrl } from "../../config/backend";
+import { getTokenBySymbol, getWrappedToken } from "../../config/tokens";
+import {
+  getChainlinkChartPricesFromGraph,
+  getChartPricesFromStats,
+  timezoneOffset,
+} from "../../domain/prices";
 
-import { CHART_PERIODS } from "lib/legacy";
+import { CHART_PERIODS } from "../../lib/legacy";
 
 function getCurrentBarTimestamp(periodSeconds) {
-  return Math.floor(Date.now() / (periodSeconds * 1000)) * (periodSeconds * 1000);
+  return (
+    Math.floor(Date.now() / (periodSeconds * 1000)) * (periodSeconds * 1000)
+  );
 }
 
-export const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
+export const getTokenChartPrice = async (
+  chainId: number,
+  symbol: string,
+  period: string
+) => {
   let prices;
   try {
     prices = await getChartPricesFromStats(chainId, symbol, period);
@@ -49,7 +59,8 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
 export function fillBarGaps(prices, periodSeconds) {
   if (prices.length < 2) return prices;
 
-  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000 + timezoneOffset;
+  const lastChartPeriod =
+    getCurrentBarTimestamp(periodSeconds) / 1000 + timezoneOffset;
   let lastBar = prices[prices.length - 1];
 
   if (lastBar.time !== lastChartPeriod) {
@@ -90,7 +101,11 @@ export function getStableCoinPrice(period: string, from: number, to: number) {
   const fromCandle = Math.floor(from / periodSeconds) * periodSeconds;
   const toCandle = Math.floor(to / periodSeconds) * periodSeconds;
   let priceData: any = [];
-  for (let candleTime = fromCandle; candleTime <= toCandle; candleTime += periodSeconds) {
+  for (
+    let candleTime = fromCandle;
+    candleTime <= toCandle;
+    candleTime += periodSeconds
+  ) {
     priceData.push({
       time: candleTime,
       open: 1,

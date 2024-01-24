@@ -1,7 +1,11 @@
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  convertTokenAddress,
+  getWrappedToken,
+} from "../../../config/tokens";
+import { MarketsInfoData } from "../../../domain/synthetics/markets";
 import { BigNumber } from "ethers";
-import { useChainId } from "lib/chains";
+import { useChainId } from "../../../lib/chains";
 import { useCallback, useMemo } from "react";
 import { FindSwapPath } from "./types";
 import {
@@ -29,12 +33,20 @@ export function useSwapRoutes(p: {
 
   const wrappedToken = getWrappedToken(chainId);
 
-  const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
-  const isUnwrap = fromTokenAddress === wrappedToken.address && toTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const isWrap =
+    fromTokenAddress === NATIVE_TOKEN_ADDRESS &&
+    toTokenAddress === wrappedToken.address;
+  const isUnwrap =
+    fromTokenAddress === wrappedToken.address &&
+    toTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isSameToken = fromTokenAddress === toTokenAddress;
 
-  const wrappedFromAddress = fromTokenAddress ? convertTokenAddress(chainId, fromTokenAddress, "wrapped") : undefined;
-  const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
+  const wrappedFromAddress = fromTokenAddress
+    ? convertTokenAddress(chainId, fromTokenAddress, "wrapped")
+    : undefined;
+  const wrappedToAddress = toTokenAddress
+    ? convertTokenAddress(chainId, toTokenAddress, "wrapped")
+    : undefined;
 
   const { graph, estimator } = useMemo(() => {
     if (!marketsInfoData) {
@@ -48,18 +60,39 @@ export function useSwapRoutes(p: {
   }, [marketsInfoData]);
 
   const allRoutes = useMemo(() => {
-    if (!marketsInfoData || !graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
+    if (
+      !marketsInfoData ||
+      !graph ||
+      !wrappedFromAddress ||
+      !wrappedToAddress ||
+      isWrap ||
+      isUnwrap ||
+      isSameToken
+    ) {
       return undefined;
     }
 
-    const paths = findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)
+    const paths = findAllPaths(
+      marketsInfoData,
+      graph,
+      wrappedFromAddress,
+      wrappedToAddress
+    )
       ?.sort((a, b) => {
         return b.liquidity.sub(a.liquidity).gt(0) ? 1 : -1;
       })
       .slice(0, 5);
 
     return paths;
-  }, [graph, isSameToken, isUnwrap, isWrap, marketsInfoData, wrappedFromAddress, wrappedToAddress]);
+  }, [
+    graph,
+    isSameToken,
+    isUnwrap,
+    isWrap,
+    marketsInfoData,
+    wrappedFromAddress,
+    wrappedToAddress,
+  ]);
 
   const { maxLiquidity, maxLiquidityPath } = useMemo(() => {
     let maxLiquidity = BigNumber.from(0);
@@ -87,7 +120,12 @@ export function useSwapRoutes(p: {
 
   const findSwapPath = useCallback(
     (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => {
-      if (!allRoutes?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
+      if (
+        !allRoutes?.length ||
+        !estimator ||
+        !marketsInfoData ||
+        !fromTokenAddress
+      ) {
         return undefined;
       }
 
@@ -119,7 +157,14 @@ export function useSwapRoutes(p: {
 
       return swapPathStats;
     },
-    [allRoutes, estimator, fromTokenAddress, marketsInfoData, toTokenAddress, wrappedToken.address]
+    [
+      allRoutes,
+      estimator,
+      fromTokenAddress,
+      marketsInfoData,
+      toTokenAddress,
+      wrappedToken.address,
+    ]
   );
 
   return {

@@ -1,19 +1,32 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
-import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
-import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
+import ExchangeRouter from "../../../abis/ExchangeRouter.json";
+import { getContract } from "../../../config/contracts";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  convertTokenAddress,
+} from "../../../config/tokens";
+import {
+  SetPendingOrder,
+  SetPendingPosition,
+} from "../../../context/SyntheticsEvents";
+import {
+  TokenData,
+  TokensData,
+  convertToContractPrice,
+} from "../../../domain/synthetics/tokens";
 import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { callContract } from "../../../lib/contracts/callContract";
+import {
+  PriceOverrides,
+  simulateExecuteOrderTxn,
+} from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 
 const { AddressZero } = ethers.constants;
 
@@ -51,12 +64,24 @@ export async function createIncreaseOrderTxn(
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
 
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+  const exchangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    signer
+  );
+  const router = subaccount
+    ? getSubaccountRouterContract(chainId, subaccount.signer)
+    : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntCollateralAmount = isNativePayment
+    ? p.initialCollateralAmount
+    : BigNumber.from(0);
   const totalWntAmount = wntCollateralAmount.add(p.executionFee);
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+  const initialCollateralTokenAddress = convertTokenAddress(
+    chainId,
+    p.initialCollateralAddress,
+    "wrapped"
+  );
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
@@ -108,14 +133,25 @@ export async function createIncreaseOrderTxn(
 
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
-  const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
-    value: totalWntAmount,
-    hideSentMsg: true,
-    hideSuccessMsg: true,
-    setPendingTxns: p.setPendingTxns,
-  }).then(() => {
+  const txn = await callContract(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    {
+      value: totalWntAmount,
+      hideSentMsg: true,
+      hideSuccessMsg: true,
+      setPendingTxns: p.setPendingTxns,
+    }
+  ).then(() => {
     if (isMarketOrderType(p.orderType)) {
-      const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
+      const positionKey = getPositionKey(
+        p.account,
+        p.marketAddress,
+        p.targetCollateralAddress,
+        p.isLong
+      );
 
       p.setPendingPosition({
         isIncrease: true,
@@ -177,15 +213,28 @@ async function createEncodedPayload({
     { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
 
     !isNativePayment && !subaccount
-      ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
+      ? {
+          method: "sendTokens",
+          params: [
+            p.initialCollateralAddress,
+            orderVaultAddress,
+            p.initialCollateralAmount,
+          ],
+        }
       : undefined,
 
     {
       method: "createOrder",
-      params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
+      params: subaccount
+        ? [await signer.getAddress(), orderParams]
+        : [orderParams],
     },
   ];
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+  return multicall
+    .filter(Boolean)
+    .map((call) =>
+      router.interface.encodeFunctionData(call!.method, call!.params)
+    );
 }
 
 function createOrderParams({
@@ -212,9 +261,17 @@ function createOrderParams({
     },
     numbers: {
       sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: subaccount ? p.initialCollateralAmount : BigNumber.from(0),
-      triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-      acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
+      initialCollateralDeltaAmount: subaccount
+        ? p.initialCollateralAmount
+        : BigNumber.from(0),
+      triggerPrice: convertToContractPrice(
+        p.triggerPrice || BigNumber.from(0),
+        p.indexToken.decimals
+      ),
+      acceptablePrice: convertToContractPrice(
+        acceptablePrice,
+        p.indexToken.decimals
+      ),
       executionFee: p.executionFee,
       callbackGasLimit: BigNumber.from(0),
       minOutputAmount: BigNumber.from(0),

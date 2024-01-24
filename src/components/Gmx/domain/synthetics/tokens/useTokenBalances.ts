@@ -1,17 +1,20 @@
-import Multicall from "abis/Multicall.json";
-import Token from "abis/Token.json";
-import { getContract } from "config/contracts";
-import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { useMulticall } from "lib/multicall";
+import Multicall from "../../../abis/Multicall.json";
+import Token from "../../../abis/Token.json";
+import { getContract } from "../../../config/contracts";
+import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "../../../config/tokens";
+import { useMulticall } from "../../../lib/multicall";
 import { TokenBalancesData } from "./types";
 import { BigNumber } from "ethers";
-import useWallet from "lib/wallets/useWallet";
+import useWallet from "../../../lib/wallets/useWallet";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
-export function useTokenBalances(chainId: number, overrideAccount?: string | undefined): BalancesDataResult {
+export function useTokenBalances(
+  chainId: number,
+  overrideAccount?: string | undefined
+): BalancesDataResult {
   const { account: currentAccount } = useWallet();
   const account = overrideAccount ?? currentAccount;
 
@@ -51,11 +54,16 @@ export function useTokenBalances(chainId: number, overrideAccount?: string | und
         return acc;
       }, {}),
     parseResponse: (res) =>
-      Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = BigNumber.from(res.data[tokenAddress].balance.returnValues[0]);
+      Object.keys(res.data).reduce(
+        (tokenBalances: TokenBalancesData, tokenAddress) => {
+          tokenBalances[tokenAddress] = BigNumber.from(
+            res.data[tokenAddress].balance.returnValues[0]
+          );
 
-        return tokenBalances;
-      }, {} as TokenBalancesData),
+          return tokenBalances;
+        },
+        {} as TokenBalancesData
+      ),
   });
 
   return {

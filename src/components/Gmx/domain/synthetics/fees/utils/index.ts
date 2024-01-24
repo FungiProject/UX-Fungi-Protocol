@@ -1,15 +1,19 @@
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
-import { MarketInfo } from "domain/synthetics/markets";
+import { HIGH_PRICE_IMPACT_BPS } from "../../../../config/factors";
+import { MarketInfo } from "../../../../domain/synthetics/markets";
 import { BigNumber } from "ethers";
-import { PRECISION } from "lib/legacy";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { PRECISION } from "../../../../lib/legacy";
+import { applyFactor, getBasisPoints } from "../../../../lib/numbers";
 import { FeeItem } from "../types";
-import { SwapStats } from "domain/synthetics/trade";
+import { SwapStats } from "../../../../domain/synthetics/trade";
 
 export * from "./executionFee";
 export * from "./priceImpact";
 
-export function getSwapFee(marketInfo: MarketInfo, swapAmount: BigNumber, forPositiveImpact: boolean) {
+export function getSwapFee(
+  marketInfo: MarketInfo,
+  swapAmount: BigNumber,
+  forPositiveImpact: boolean
+) {
   const factor = forPositiveImpact
     ? marketInfo.swapFeeFactorForPositiveImpact
     : marketInfo.swapFeeFactorForNegativeImpact;
@@ -21,7 +25,9 @@ export function getPositionFee(
   marketInfo: MarketInfo,
   sizeDeltaUsd: BigNumber,
   forPositiveImpact: boolean,
-  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined,
+  referralInfo:
+    | { totalRebateFactor: BigNumber; discountFactor: BigNumber }
+    | undefined,
   uiFeeFactor?: BigNumber
 ) {
   const factor = forPositiveImpact
@@ -32,10 +38,17 @@ export function getPositionFee(
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || BigNumber.from(0));
 
   if (!referralInfo) {
-    return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
+    return {
+      positionFeeUsd,
+      discountUsd: BigNumber.from(0),
+      totalRebateUsd: BigNumber.from(0),
+    };
   }
 
-  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
+  const totalRebateUsd = applyFactor(
+    positionFeeUsd,
+    referralInfo.totalRebateFactor
+  );
   const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
 
   positionFeeUsd = positionFeeUsd.sub(discountUsd);
@@ -48,8 +61,17 @@ export function getPositionFee(
   };
 }
 
-export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
-  const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
+export function getFundingFactorPerPeriod(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  periodInSeconds: number
+) {
+  const {
+    fundingFactorPerSecond,
+    longsPayShorts,
+    longInterestUsd,
+    shortInterestUsd,
+  } = marketInfo;
 
   const isLargerSide = isLong ? longsPayShorts : !longsPayShorts;
 
@@ -58,8 +80,12 @@ export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolea
   if (isLargerSide) {
     factorPerSecond = fundingFactorPerSecond.mul(-1);
   } else {
-    const largerInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
-    const smallerInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
+    const largerInterestUsd = longsPayShorts
+      ? longInterestUsd
+      : shortInterestUsd;
+    const smallerInterestUsd = longsPayShorts
+      ? shortInterestUsd
+      : longInterestUsd;
 
     const ratio = smallerInterestUsd.gt(0)
       ? largerInterestUsd.mul(PRECISION).div(smallerInterestUsd)
@@ -82,7 +108,11 @@ export function getFundingFeeRateUsd(
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getBorrowingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+export function getBorrowingFactorPerPeriod(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  periodInSeconds: number
+) {
   const factorPerSecond = isLong
     ? marketInfo.borrowingFactorPerSecondForLongs
     : marketInfo.borrowingFactorPerSecondForShorts;
@@ -96,14 +126,27 @@ export function getBorrowingFeeRateUsd(
   sizeInUsd: BigNumber,
   periodInSeconds: number
 ) {
-  const factor = getBorrowingFactorPerPeriod(marketInfo, isLong, periodInSeconds);
+  const factor = getBorrowingFactorPerPeriod(
+    marketInfo,
+    isLong,
+    periodInSeconds
+  );
 
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImpact?: FeeItem) {
-  const totalPriceImpact = getTotalFeeItem([positionPriceImpact, swapPriceImpact]);
-  return totalPriceImpact.deltaUsd.lt(0) && totalPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
+export function getIsHighPriceImpact(
+  positionPriceImpact?: FeeItem,
+  swapPriceImpact?: FeeItem
+) {
+  const totalPriceImpact = getTotalFeeItem([
+    positionPriceImpact,
+    swapPriceImpact,
+  ]);
+  return (
+    totalPriceImpact.deltaUsd.lt(0) &&
+    totalPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS)
+  );
 }
 
 export function getFeeItem(
@@ -116,7 +159,9 @@ export function getFeeItem(
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : BigNumber.from(0),
+    bps: basis?.gt(0)
+      ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp)
+      : BigNumber.from(0),
   };
 }
 

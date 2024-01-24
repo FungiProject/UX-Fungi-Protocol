@@ -1,12 +1,29 @@
 import { t } from "@lingui/macro";
-import { Token } from "domain/tokens";
+import { Token } from "../../../domain/tokens";
 import { BigNumber } from "ethers";
-import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
-import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
+import {
+  formatPercentage,
+  formatTokenAmount,
+  formatUsd,
+} from "../../../lib/numbers";
+import { getByKey } from "../../../lib/objects";
+import {
+  getFeeItem,
+  getIsHighPriceImpact,
+  getPriceImpactByAcceptablePrice,
+} from "../fees";
+import {
+  MarketsInfoData,
+  getAvailableUsdLiquidityForPosition,
+} from "../markets";
 import { PositionsInfoData, parsePositionKey } from "../positions";
-import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
+import {
+  TokensData,
+  convertToTokenAmount,
+  convertToUsd,
+  getTokensRatioByAmounts,
+  parseContractPrice,
+} from "../tokens";
 import {
   getAcceptablePriceInfo,
   getMaxSwapPathLiquidity,
@@ -14,14 +31,29 @@ import {
   getSwapPathStats,
   getTriggerThresholdType,
 } from "../trade";
-import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import {
+  Order,
+  OrderError,
+  OrderInfo,
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+} from "./types";
 
 export function isVisibleOrder(orderType: OrderType) {
-  return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
+  return (
+    isLimitOrderType(orderType) ||
+    isTriggerDecreaseOrderType(orderType) ||
+    isLimitSwapOrderType(orderType)
+  );
 }
 
-export function isOrderForPosition(order: OrderInfo, positionKey: string): order is PositionOrderInfo {
-  const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(positionKey);
+export function isOrderForPosition(
+  order: OrderInfo,
+  positionKey: string
+): order is PositionOrderInfo {
+  const { account, marketAddress, collateralAddress, isLong } =
+    parsePositionKey(positionKey);
 
   let isMatch =
     !isSwapOrderType(order.orderType) &&
@@ -31,16 +63,22 @@ export function isOrderForPosition(order: OrderInfo, positionKey: string): order
 
   // For limit orders, we need to check the target collateral token
   if (isLimitOrderType(order.orderType)) {
-    isMatch = isMatch && order.targetCollateralToken.address === collateralAddress;
+    isMatch =
+      isMatch && order.targetCollateralToken.address === collateralAddress;
   } else if (isTriggerDecreaseOrderType(order.orderType)) {
-    isMatch = isMatch && order.initialCollateralTokenAddress === collateralAddress;
+    isMatch =
+      isMatch && order.initialCollateralTokenAddress === collateralAddress;
   }
 
   return isMatch;
 }
 
 export function isMarketOrderType(orderType: OrderType) {
-  return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);
+  return [
+    OrderType.MarketDecrease,
+    OrderType.MarketIncrease,
+    OrderType.MarketSwap,
+  ].includes(orderType);
 }
 
 export function isLimitOrderType(orderType: OrderType) {
@@ -48,15 +86,23 @@ export function isLimitOrderType(orderType: OrderType) {
 }
 
 export function isTriggerDecreaseOrderType(orderType: OrderType) {
-  return [OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
+  return [OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(
+    orderType
+  );
 }
 
 export function isDecreaseOrderType(orderType: OrderType) {
-  return [OrderType.MarketDecrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
+  return [
+    OrderType.MarketDecrease,
+    OrderType.LimitDecrease,
+    OrderType.StopLossDecrease,
+  ].includes(orderType);
 }
 
 export function isIncreaseOrderType(orderType: OrderType) {
-  return [OrderType.MarketIncrease, OrderType.LimitIncrease].includes(orderType);
+  return [OrderType.MarketIncrease, OrderType.LimitIncrease].includes(
+    orderType
+  );
 }
 
 export function isSwapOrderType(orderType: OrderType) {
@@ -77,7 +123,12 @@ export function getSwapOrderTitle(p: {
   initialCollateralAmount: BigNumber;
   minOutputAmount: BigNumber;
 }) {
-  const { initialCollateralToken, initialCollateralAmount, targetCollateralToken, minOutputAmount } = p;
+  const {
+    initialCollateralToken,
+    initialCollateralAmount,
+    targetCollateralToken,
+    minOutputAmount,
+  } = p;
 
   const fromTokenText = formatTokenAmount(
     initialCollateralAmount,
@@ -85,7 +136,11 @@ export function getSwapOrderTitle(p: {
     initialCollateralToken.symbol
   );
 
-  const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, targetCollateralToken.symbol);
+  const toTokenText = formatTokenAmount(
+    minOutputAmount,
+    targetCollateralToken.decimals,
+    targetCollateralToken.symbol
+  );
 
   return t`Swap ${fromTokenText} for ${toTokenText}`;
 }
@@ -101,7 +156,9 @@ export function getPositionOrderTitle(p: {
   const longShortText = isLong ? t`Long` : t`Short`;
   const tokenText = `${indexToken.symbol} ${longShortText}`;
   const sizeText = formatUsd(sizeDeltaUsd);
-  const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
+  const increaseOrDecreaseText = isIncreaseOrderType(orderType)
+    ? t`Increase`
+    : t`Decrease`;
 
   return t`${increaseOrDecreaseText} ${tokenText} by ${sizeText}`;
 }
@@ -127,10 +184,19 @@ export function getOrderInfo(p: {
   wrappedNativeToken: Token;
   order: Order;
 }) {
-  const { marketsInfoData, positionsInfoData, tokensData, wrappedNativeToken, order } = p;
+  const {
+    marketsInfoData,
+    positionsInfoData,
+    tokensData,
+    wrappedNativeToken,
+    order,
+  } = p;
 
   if (isSwapOrderType(order.orderType)) {
-    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+    const initialCollateralToken = getByKey(
+      tokensData,
+      order.initialCollateralTokenAddress
+    );
 
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
@@ -172,7 +238,9 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    const toAmount = order.minOutputAmount.sub(priceImpactAmount || 0).add(swapFeeAmount || 0);
+    const toAmount = order.minOutputAmount
+      .sub(priceImpactAmount || 0)
+      .add(swapFeeAmount || 0);
 
     const triggerRatio = getTokensRatioByAmounts({
       fromToken: initialCollateralToken,
@@ -211,7 +279,10 @@ export function getOrderInfo(p: {
   } else {
     const marketInfo = getByKey(marketsInfoData, order.marketAddress);
     const indexToken = marketInfo?.indexToken;
-    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+    const initialCollateralToken = getByKey(
+      tokensData,
+      order.initialCollateralTokenAddress
+    );
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
       swapPath: order.swapPath,
@@ -221,7 +292,12 @@ export function getOrderInfo(p: {
     });
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
 
-    if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
+    if (
+      !marketInfo ||
+      !indexToken ||
+      !initialCollateralToken ||
+      !targetCollateralToken
+    ) {
       return undefined;
     }
 
@@ -232,8 +308,14 @@ export function getOrderInfo(p: {
       sizeDeltaUsd: order.sizeDeltaUsd,
     });
 
-    const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
-    const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
+    const acceptablePrice = parseContractPrice(
+      order.contractAcceptablePrice,
+      indexToken.decimals
+    );
+    const triggerPrice = parseContractPrice(
+      order.contractTriggerPrice,
+      indexToken.decimals
+    );
 
     const swapPathStats = getSwapPathStats({
       marketsInfoData,
@@ -249,7 +331,10 @@ export function getOrderInfo(p: {
       shouldApplyPriceImpact: true,
     });
 
-    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+    const triggerThresholdType = getTriggerThresholdType(
+      order.orderType,
+      order.isLong
+    );
 
     const orderInfo: PositionOrderInfo = {
       ...order,
@@ -326,43 +411,66 @@ export function getOrderErrors(p: {
 
   const positionOrder = order as PositionOrderInfo;
 
-  const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
+  const position = Object.values(positionsInfoData || {}).find((pos) =>
+    isOrderForPosition(positionOrder, pos.key)
+  );
 
-  if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType)) {
-    const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
-      marketInfo: positionOrder.marketInfo,
-      isIncrease: isIncreaseOrderType(positionOrder.orderType),
-      isLong: positionOrder.isLong,
-      indexPrice: positionOrder.triggerPrice,
-      sizeDeltaUsd: positionOrder.sizeDeltaUsd,
-    });
+  if (
+    [OrderType.LimitDecrease, OrderType.LimitIncrease].includes(
+      positionOrder.orderType
+    )
+  ) {
+    const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } =
+      getAcceptablePriceInfo({
+        marketInfo: positionOrder.marketInfo,
+        isIncrease: isIncreaseOrderType(positionOrder.orderType),
+        isLong: positionOrder.isLong,
+        indexPrice: positionOrder.triggerPrice,
+        sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+      });
 
-    const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
-      sizeDeltaUsd: positionOrder.sizeDeltaUsd,
-      isIncrease: isIncreaseOrderType(positionOrder.orderType),
-      isLong: positionOrder.isLong,
-      indexPrice: positionOrder.triggerPrice,
-      acceptablePrice: positionOrder.acceptablePrice,
-    });
+    const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } =
+      getPriceImpactByAcceptablePrice({
+        sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+        isIncrease: isIncreaseOrderType(positionOrder.orderType),
+        isLong: positionOrder.isLong,
+        indexPrice: positionOrder.triggerPrice,
+        acceptablePrice: positionOrder.acceptablePrice,
+      });
 
-    if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
-      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
-      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+    if (
+      currentAcceptablePriceDeltaBps.lt(0) &&
+      currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)
+    ) {
+      const priceText =
+        positionOrder.orderType === OrderType.LimitIncrease
+          ? t`Limit Price`
+          : t`Trigger Price`;
+      const suggestionType =
+        positionOrder.orderType === OrderType.LimitIncrease
+          ? t`Limit`
+          : t`Take-Profit`;
 
       errors.push({
         msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact ${formatPercentage(
           currentAcceptablePriceDeltaBps,
           { signed: true }
-        )} is higher than its Acceptable Price Impact ${formatPercentage(orderAcceptablePriceDeltaBps, {
-          signed: true,
-        })}. Consider canceling and creating a new ${suggestionType} Order.`,
+        )} is higher than its Acceptable Price Impact ${formatPercentage(
+          orderAcceptablePriceDeltaBps,
+          {
+            signed: true,
+          }
+        )}. Consider canceling and creating a new ${suggestionType} Order.`,
         level: "warning",
       });
     }
   }
 
   if (positionOrder.orderType === OrderType.LimitIncrease) {
-    const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
+    const currentLiquidity = getAvailableUsdLiquidityForPosition(
+      positionOrder.marketInfo,
+      positionOrder.isLong
+    );
 
     if (currentLiquidity.lt(positionOrder.sizeDeltaUsd)) {
       errors.push({
@@ -395,7 +503,8 @@ export function getOrderErrors(p: {
 
   if (!position) {
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
-      (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
+      (pos) =>
+        pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
 
     const longText = sameMarketPosition?.isLong ? t`Long` : t`Short`;

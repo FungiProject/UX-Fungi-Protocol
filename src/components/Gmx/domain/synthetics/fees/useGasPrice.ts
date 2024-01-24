@@ -1,10 +1,13 @@
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  EXECUTION_FEE_CONFIG_V2,
+  GAS_PRICE_ADJUSTMENT_MAP,
+} from "../../../config/chains";
+import { BASIS_POINTS_DIVISOR } from "../../../config/factors";
+import { useSettings } from "../../../context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
-import { bigNumberify } from "lib/numbers";
-import { getProvider } from "lib/rpc";
-import useWallet from "lib/wallets/useWallet";
+import { bigNumberify } from "../../../lib/numbers";
+import { getProvider } from "../../../lib/rpc";
+import useWallet from "../../../lib/wallets/useWallet";
 import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
@@ -14,7 +17,12 @@ export function useGasPrice(chainId: number) {
   const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(
-    ["gasPrice", chainId, executionFeeConfig.shouldUseMaxPriorityFeePerGas, settings.executionFeeBufferBps],
+    [
+      "gasPrice",
+      chainId,
+      executionFeeConfig.shouldUseMaxPriorityFeePerGas,
+      settings.executionFeeBufferBps,
+    ],
     {
       fetcher: () => {
         return new Promise<BigNumber | undefined>(async (resolve, reject) => {
@@ -39,10 +47,13 @@ export function useGasPrice(chainId: number) {
             }
 
             if (settings.executionFeeBufferBps) {
-              const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
+              const buffer = gasPrice
+                .mul(settings.executionFeeBufferBps)
+                .div(BASIS_POINTS_DIVISOR);
               gasPrice = gasPrice.add(buffer);
             }
-            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+            const premium =
+              GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
             resolve(gasPrice.add(premium));
           } catch (e) {

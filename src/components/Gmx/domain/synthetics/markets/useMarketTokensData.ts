@@ -1,24 +1,30 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import TokenAbi from "abis/Token.json";
-import { getExplorerUrl } from "config/chains";
-import { getContract } from "config/contracts";
-import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
-import { getTokenBySymbol } from "config/tokens";
-import { TokensData, useTokensData } from "domain/synthetics/tokens";
+import SyntheticsReader from "../../../abis/SyntheticsReader.json";
+import TokenAbi from "../../../abis/Token.json";
+import { getExplorerUrl } from "../../../config/chains";
+import { getContract } from "../../../config/contracts";
+import {
+  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
+  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+} from "../../../config/dataStore";
+import { getTokenBySymbol } from "../../../config/tokens";
+import { TokensData, useTokensData } from "../../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { USD_DECIMALS } from "lib/legacy";
-import { useMulticall } from "lib/multicall";
-import { expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { USD_DECIMALS } from "../../../lib/legacy";
+import { useMulticall } from "../../../lib/multicall";
+import { expandDecimals } from "../../../lib/numbers";
+import { getByKey } from "../../../lib/objects";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
-import useWallet from "lib/wallets/useWallet";
+import useWallet from "../../../lib/wallets/useWallet";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
 };
 
-export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+export function useMarketTokensData(
+  chainId: number,
+  p: { isDeposit: boolean }
+): MarketTokensDataResult {
   const { isDeposit } = p;
   const { account } = useWallet();
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
@@ -27,7 +33,9 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
   const isDataLoaded = tokensData && marketsAddresses?.length;
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-"), pricesUpdatedAt] : undefined,
+    key: isDataLoaded
+      ? [account, marketsAddresses.join("-"), pricesUpdatedAt]
+      : undefined,
 
     // Refresh on every prices update
     refreshInterval: null,
@@ -47,7 +55,9 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
             indexToken: market.indexTokenAddress,
           };
 
-          const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
+          const pnlFactorType = isDeposit
+            ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY
+            : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
 
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -101,39 +111,46 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
         return requests;
       }, {}),
     parseResponse: (res) =>
-      marketsAddresses!.reduce((marketTokensMap: TokensData, marketAddress: string) => {
-        const pricesErrors = res.errors[`${marketAddress}-prices`];
-        const tokenDataErrors = res.errors[`${marketAddress}-tokenData`];
+      marketsAddresses!.reduce(
+        (marketTokensMap: TokensData, marketAddress: string) => {
+          const pricesErrors = res.errors[`${marketAddress}-prices`];
+          const tokenDataErrors = res.errors[`${marketAddress}-tokenData`];
 
-        const pricesData = res.data[`${marketAddress}-prices`];
-        const tokenData = res.data[`${marketAddress}-tokenData`];
+          const pricesData = res.data[`${marketAddress}-prices`];
+          const tokenData = res.data[`${marketAddress}-tokenData`];
 
-        if (pricesErrors || tokenDataErrors || !pricesData || !tokenData) {
+          if (pricesErrors || tokenDataErrors || !pricesData || !tokenData) {
+            return marketTokensMap;
+          }
+
+          const tokenConfig = getTokenBySymbol(chainId, "GM");
+
+          const minPrice = BigNumber.from(pricesData?.minPrice.returnValues[0]);
+          const maxPrice = BigNumber.from(pricesData?.maxPrice.returnValues[0]);
+
+          marketTokensMap[marketAddress] = {
+            ...tokenConfig,
+            address: marketAddress,
+            prices: {
+              minPrice: minPrice?.gt(0)
+                ? minPrice
+                : expandDecimals(1, USD_DECIMALS),
+              maxPrice: maxPrice?.gt(0)
+                ? maxPrice
+                : expandDecimals(1, USD_DECIMALS),
+            },
+            totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
+            balance:
+              account && tokenData.balance?.returnValues
+                ? BigNumber.from(tokenData?.balance?.returnValues[0])
+                : undefined,
+            explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
+          };
+
           return marketTokensMap;
-        }
-
-        const tokenConfig = getTokenBySymbol(chainId, "GM");
-
-        const minPrice = BigNumber.from(pricesData?.minPrice.returnValues[0]);
-        const maxPrice = BigNumber.from(pricesData?.maxPrice.returnValues[0]);
-
-        marketTokensMap[marketAddress] = {
-          ...tokenConfig,
-          address: marketAddress,
-          prices: {
-            minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
-            maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
-          },
-          totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
-          balance:
-            account && tokenData.balance?.returnValues
-              ? BigNumber.from(tokenData?.balance?.returnValues[0])
-              : undefined,
-          explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
-        };
-
-        return marketTokensMap;
-      }, {} as TokensData),
+        },
+        {} as TokensData
+      ),
   });
 
   return {
