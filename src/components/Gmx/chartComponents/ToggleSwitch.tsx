@@ -1,4 +1,3 @@
-import "./ToggleSwitch.scss";
 import { ReactNode } from "react";
 import cx from "classnames";
 

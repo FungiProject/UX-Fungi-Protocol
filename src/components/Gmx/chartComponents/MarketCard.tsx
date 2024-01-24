@@ -28,7 +28,6 @@ import {
   getFundingFactorPerPeriod,
 } from "../domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
-import "./MarketCard.scss";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "../lib/utils";
 
 export type Props = {

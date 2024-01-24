@@ -19,7 +19,6 @@ import {
   roundToTwoDecimals,
 } from "../lib/numbers";
 import { ReactNode, useMemo } from "react";
-import "./TradeFeesRow.scss";
 import TooltipWithPortal from "./TooltipWithPortal";
 import { useSettings } from "../context/SettingsContext/SettingsContextProvider";
 

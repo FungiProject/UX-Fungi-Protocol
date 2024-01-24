@@ -41,7 +41,6 @@ import { useChainId } from "../lib/chains";
 import { CHART_PERIODS } from "../lib/legacy";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
-import "./PositionItem.scss";
 import { Fragment } from "react";
 import { getPositiveOrNegativeClass } from "../lib/utils";
 

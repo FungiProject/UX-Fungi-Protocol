@@ -6,7 +6,6 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "./Modal";
 
 import dropDownIcon from "img/DROP_DOWN.svg";
-import "./TokenSelector.scss";
 import TooltipWithPortal from "./TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "../lib/numbers";
 import { getToken } from "../config/tokens";

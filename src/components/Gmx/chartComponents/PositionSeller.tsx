@@ -87,7 +87,6 @@ import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "./AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "./HighPriceImpactWarning";
 import { TradeFeesRow } from "./TradeFeesRow";
-import "./PositionSeller.scss";
 
 export type Props = {
   position?: PositionInfo;

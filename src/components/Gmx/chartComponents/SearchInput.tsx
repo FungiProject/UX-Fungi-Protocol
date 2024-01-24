@@ -1,4 +1,3 @@
-import "./SearchInput.scss";
 import { t } from "@lingui/macro";
 import searchIcon from "img/search.svg";
 import { useMedia } from "react-use";

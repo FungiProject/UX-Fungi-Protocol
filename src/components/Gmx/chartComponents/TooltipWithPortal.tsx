@@ -1,7 +1,6 @@
 import React, { MouseEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
-import "./Tooltip.scss";
 import { IS_TOUCH } from "../config/env";
 import Portal from "./Portal";
 import { TooltipPosition } from "./Tooltip";

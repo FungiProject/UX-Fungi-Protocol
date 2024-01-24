@@ -14,7 +14,6 @@ import { ReactNode, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import Modal from "./Modal";
 import TooltipWithPortal from "./TooltipWithPortal";
-import "./MarketSelector.scss";
 import SearchInput from "./SearchInput";
 
 type Props = {

@@ -35,10 +35,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={config}>
       <SettingsContextProvider>
-      <main className="font-dmSans">
-        <Component {...pageProps} />
-      </main>
-      </SettingsContextProvider>;
+        <main className="font-dmSans">
+          <Component {...pageProps} />
+        </main>
+      </SettingsContextProvider>
+      ;
     </WagmiConfig>
   );
 }

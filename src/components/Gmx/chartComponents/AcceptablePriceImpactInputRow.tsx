@@ -6,7 +6,6 @@ import { TradeFees } from "../domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "../lib/numbers";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
   defaultAcceptablePriceImpactBps: BigNumber | undefined;

@@ -9,7 +9,6 @@ import { TokensData } from "../domain/synthetics/tokens";
 import useWallet from "../lib/wallets/useWallet";
 import { ClaimableCard } from "./ClaimableCard";
 
-import "./Claims.scss";
 import { useMedia } from "react-use";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 import { PositionsInfoData } from "../domain/synthetics/positions";

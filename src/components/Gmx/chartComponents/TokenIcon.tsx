@@ -1,6 +1,5 @@
 import { importImage } from "../lib/legacy";
 import cx from "classnames";
-import "./TokenIcon.scss";
 
 function getIconUrlPath(symbol, size: 24 | 40) {
   if (!symbol || !size) return;

@@ -5,7 +5,6 @@ import { isAddressZero } from "../lib/legacy";
 import { useState } from "react";
 import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
-import "./ApproveTokenButton.scss";
 import useWallet from "../lib/wallets/useWallet";
 
 type Props = {

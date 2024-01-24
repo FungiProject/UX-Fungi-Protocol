@@ -13,6 +13,7 @@ export const ARBITRUM_GOERLI: number = 421613;
 
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",

@@ -27,7 +27,6 @@ import { CHART_PERIODS, USD_DECIMALS } from "../lib/legacy";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "../lib/numbers";
 import { useEffect, useMemo, useState } from "react";
-import "./TVChart.scss";
 import { TradeFlags } from "../domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "../domain/synthetics/trade";
 import {

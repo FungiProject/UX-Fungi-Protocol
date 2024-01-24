@@ -10,7 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-import "./PercentageInput.scss";
 
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 

@@ -19,7 +19,6 @@ import { useChainId } from "../lib/chains";
 import { formatDateTime } from "../lib/dates";
 import { formatTokenAmount } from "../lib/numbers";
 import { Fragment, useMemo } from "react";
-import "./ClaimHistoryRow.scss";
 
 type ClaimHistoryRowProps = {
   claimAction: ClaimAction;

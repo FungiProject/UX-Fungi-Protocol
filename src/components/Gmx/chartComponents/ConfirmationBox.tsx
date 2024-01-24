@@ -100,7 +100,6 @@ import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "./AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "./HighPriceImpactWarning";
 import { TradeFeesRow } from "./TradeFeesRow";
-import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;

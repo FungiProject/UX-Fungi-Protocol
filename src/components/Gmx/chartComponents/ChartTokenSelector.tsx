@@ -3,7 +3,6 @@ import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import groupBy from "lodash/groupBy";
 import { FaChevronDown } from "react-icons/fa";
-import "./ChartTokenSelector.scss";
 import { Token } from "../domain/tokens";
 import SearchInput from "./SearchInput";
 import TokenIcon from "./TokenIcon";

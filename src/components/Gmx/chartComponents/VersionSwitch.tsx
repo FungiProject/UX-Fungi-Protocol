@@ -1,5 +1,4 @@
 import cx from "classnames";
-import "./VersionSwitch.scss";
 import { useChainId } from "../lib/chains";
 import { getIsSyntheticsSupported, getIsV1Supported } from "../config/features";
 

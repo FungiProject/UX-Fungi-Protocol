@@ -25,7 +25,6 @@ import { TokensData } from "../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "../lib/chains";
 import useWallet from "../lib/wallets/useWallet";
-import "./SettleAccruedFundingFeeModal.scss";
 import { useSubaccount } from "../context/SubaccountContext/SubaccountContext";
 import { SubaccountNavigationButton } from "./SubaccountNavigationButton";
 

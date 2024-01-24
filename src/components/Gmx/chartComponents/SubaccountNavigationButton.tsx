@@ -15,7 +15,6 @@ import { BigNumber } from "ethers";
 import { useChainId } from "../lib/chains";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
-import "./SubaccountNavigationButton.scss";
 import {
   ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
   ONE_CLICK_TRADING_OFFER_HIDDEN,

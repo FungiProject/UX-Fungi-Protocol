@@ -63,7 +63,6 @@ import { getByKey } from "../lib/objects";
 import Button from "./Button";
 import useWallet from "../lib/wallets/useWallet";
 import { useSubaccount } from "../context/SubaccountContext/SubaccountContext";
-import "./OrderEditor.scss";
 
 type Props = {
   positionsData?: PositionsInfoData;

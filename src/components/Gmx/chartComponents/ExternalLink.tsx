@@ -1,6 +1,5 @@
 import React from "react";
 import cx from "classnames";
-import "./ExternalLink.scss";
 
 type Props = {
   href: string;

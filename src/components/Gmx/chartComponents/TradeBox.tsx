@@ -119,7 +119,6 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useLatest, usePrevious } from "react-use";
 
-import "./TradeBox.scss";
 import useUiFeeFactor from "../domain/synthetics/fees/utils/useUiFeeFactor";
 import { museNeverExist } from "../lib/types";
 

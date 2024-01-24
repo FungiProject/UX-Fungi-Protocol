@@ -1,4 +1,3 @@
-import "./BuyInputSection.scss";
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";

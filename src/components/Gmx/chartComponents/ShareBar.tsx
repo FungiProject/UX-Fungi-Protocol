@@ -1,7 +1,6 @@
 import { BigNumberish } from "ethers";
 import cx from "classnames";
 import { bigNumberify } from "../lib/numbers";
-import "./ShareBar.scss";
 
 export type Props = {
   share?: BigNumberish;

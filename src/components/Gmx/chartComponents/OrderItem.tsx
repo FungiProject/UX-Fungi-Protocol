@@ -34,7 +34,6 @@ import {
   getExchangeRateDisplay,
 } from "../lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "../lib/numbers";
-import "./OrderItem.scss";
 import { getByKey } from "../lib/objects";
 import { useMemo } from "react";
 

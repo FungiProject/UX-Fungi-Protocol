@@ -2,10 +2,15 @@ import { ethers } from "ethers";
 import { expandDecimals, formatAmount } from "./numbers";
 import { t } from "@lingui/macro";
 import { isLocal } from "../config/env";
+import { getContract } from "../config/contracts";
+import { CHAIN_ID } from "../config/chains";
 
+export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const USD_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, 30);
 export const DUST_BNB = "2000000000000000";
+export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
+export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;

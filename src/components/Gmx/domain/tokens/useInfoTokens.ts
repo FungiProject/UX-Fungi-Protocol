@@ -3,7 +3,7 @@ import { getServerUrl } from "../../config/backend";
 import { getContract } from "../../config/contracts";
 import { getV1Tokens, getWhitelistedV1Tokens } from "../../config/tokens";
 import { BigNumber, Signer } from "ethers";
-import { contractFetcher } from "../../lib/contracts";
+import { contractFetcher } from "../../lib/contracts/contractFetcher";
 import {
   DEFAULT_MAX_USDG_AMOUNT,
   MAX_PRICE_DEVIATION_BASIS_POINTS,

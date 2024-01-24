@@ -76,7 +76,6 @@ import useWallet from "../lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "./TradeFeesRow";
-import "./PositionEditor.scss";
 import { SubaccountNavigationButton } from "./SubaccountNavigationButton";
 
 export type Props = {

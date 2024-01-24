@@ -17,7 +17,6 @@ import { claimCollateralTxn } from "../domain/synthetics/markets/claimCollateral
 
 import Button from "./Button";
 import { useState } from "react";
-import "./ClaimModal.scss";
 import useWallet from "../lib/wallets/useWallet";
 
 type Props = {
