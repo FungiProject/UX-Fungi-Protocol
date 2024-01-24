@@ -15,7 +15,7 @@ import {
   ChartData,
   IChartingLibraryWidget,
   IPositionLineAdapter,
-} from "../../charting_library";
+} from "../charting_library";
 import { SaveLoadAdapter } from "../SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "../constants";
 

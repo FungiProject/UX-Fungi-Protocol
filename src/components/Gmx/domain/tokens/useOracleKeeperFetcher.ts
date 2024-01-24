@@ -1,10 +1,13 @@
-import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "../../config/oracleKeeper";
+import {
+  getOracleKeeperNextIndex,
+  getOracleKeeperUrl,
+} from "../../config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "../../config/tokens";
 import { useSettings } from "../../context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "../prices";
 import { Bar } from "../../domain/tradingview/types";
 import { buildUrl } from "../../lib/buildUrl";
-import { useLocalStorageSerializeKey } from "../../lib/localstorage";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { useMemo } from "react";
 
 export type TickersResponse = {
@@ -65,10 +68,14 @@ function parseOracleCandle(rawCandle: number[]): Bar {
 let fallbackThrottleTimerId: any;
 
 export function useOracleKeeperFetcher(chainId: number) {
-  const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
+  const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } =
+    useSettings();
   const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
-  const [forceIncentivesActive] = useLocalStorageSerializeKey("forceIncentivesActive", false);
+  const [forceIncentivesActive] = useLocalStorageSerializeKey(
+    "forceIncentivesActive",
+    false
+  );
 
   return useMemo(() => {
     const switchOracleKeeper = () => {
@@ -85,7 +92,9 @@ export function useOracleKeeperFetcher(chainId: number) {
       }
 
       // eslint-disable-next-line no-console
-      console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
+      console.log(
+        `switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`
+      );
 
       setOracleKeeperInstancesConfig((old) => {
         return { ...old, [chainId]: nextIndex };
@@ -133,13 +142,26 @@ export function useOracleKeeperFetcher(chainId: number) {
         });
     }
 
-    async function fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<Bar[]> {
+    async function fetchOracleCandles(
+      tokenSymbol: string,
+      period: string,
+      limit: number
+    ): Promise<Bar[]> {
       tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
 
-      return fetch(buildUrl(oracleKeeperUrl!, "/prices/candles", { tokenSymbol, period, limit }))
+      return fetch(
+        buildUrl(oracleKeeperUrl!, "/prices/candles", {
+          tokenSymbol,
+          period,
+          limit,
+        })
+      )
         .then((res) => res.json())
         .then((res) => {
-          if (!Array.isArray(res.candles) || (res.candles.length === 0 && limit > 0)) {
+          if (
+            !Array.isArray(res.candles) ||
+            (res.candles.length === 0 && limit > 0)
+          ) {
             throw new Error("Invalid candles response");
           }
 
@@ -175,5 +197,11 @@ export function useOracleKeeperFetcher(chainId: number) {
       fetchOracleCandles,
       fetchIncentivesRewards,
     };
-  }, [chainId, forceIncentivesActive, oracleKeeperIndex, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
+  }, [
+    chainId,
+    forceIncentivesActive,
+    oracleKeeperIndex,
+    oracleKeeperUrl,
+    setOracleKeeperInstancesConfig,
+  ]);
 }

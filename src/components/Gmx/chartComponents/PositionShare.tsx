@@ -5,7 +5,7 @@ import { Token } from "../domain/tokens";
 import { BigNumber } from "ethers";
 import { toJpeg } from "html-to-image";
 import shareBgImg from "img/position-share-bg.png";
-import downloadImage from "../lib/downloadImage";
+import downloadImage from "../lib/dowloadImage";
 import { helperToast } from "../lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "../lib/legacy";
 import useLoadImage from "../lib/useLoadImage";

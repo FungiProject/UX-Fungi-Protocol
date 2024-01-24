@@ -19,7 +19,7 @@ import { formatDateTime } from "../lib/dates";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
-import { formatPositionMessage, formatSwapMessage } from "../utils/utils";
+import { formatPositionMessage, formatSwapMessage } from "../utils";
 import { t } from "@lingui/macro";
 import TooltipWithPortal from "./TooltipWithPortal";
 

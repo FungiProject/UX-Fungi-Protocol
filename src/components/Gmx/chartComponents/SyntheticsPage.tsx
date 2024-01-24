@@ -663,7 +663,6 @@ export function SyntheticsPage(p: Props) {
           setIsSettling(false);
         }, [])}
       />
-      <Footer />
     </div>
   );
 }
