@@ -38,7 +38,6 @@ export class TVDataProvider {
   lastBar: Bar | null;
   currentBar: Bar | null;
   lastBarRefreshTime: number;
-  getCurrentPrice: (symbol: string) => number | undefined;
   supportedResolutions: { [key: number]: string };
   barsInfo: {
     period: string;

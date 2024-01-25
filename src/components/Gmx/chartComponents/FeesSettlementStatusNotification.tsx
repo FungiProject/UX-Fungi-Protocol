@@ -1,4 +1,4 @@
-import { Trans, plural, t } from "@lingui/macro";
+// import { Trans, plural, t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "./TransactionStatus";
 import {
@@ -118,14 +118,11 @@ export function FeesSettlementStatusNotification({
 
     const orderStatus = orderStatusByOrder.get(order);
 
-    let text = t`Sending settle request`;
+    let text = `Sending settle request`;
     let status: TransactionStatusType = "loading";
 
     if (orderStatus?.createdTxnHash) {
-      text = t`Settle request for ${plural(orders.length, {
-        one: "# position",
-        other: "# positions",
-      })} sent`;
+      text = `Settle request for # position sent`;
       status = "success";
     }
     return (
@@ -158,16 +155,16 @@ export function FeesSettlementStatusNotification({
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
           const positionName = (
-            <Trans>
-              <span>{order.isLong ? t`Long` : t`Short`}</span>{" "}
+            <span>
+              <span>{order.isLong ? `Long` : `Short`}</span>
               <div className="inline-flex">
                 <span>{indexName}</span>
                 <span className="subtext gm-toast">[{poolName}]</span>
               </div>
-            </Trans>
+            </span>
           );
 
-          let text = <Trans>{positionName} Fees settling</Trans>;
+          let text = <span>{positionName} Fees settling</span>;
           let status: TransactionStatusType = "muted";
           let txnHash: string | undefined;
 
@@ -176,13 +173,13 @@ export function FeesSettlementStatusNotification({
           }
 
           if (orderStatus?.executedTxnHash) {
-            text = <Trans>{positionName} Fees settled</Trans>;
+            text = <span>{positionName} Fees settled</span>;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = <Trans>{positionName} Failed to settle</Trans>;
+            text = <span>{positionName} Failed to settle</span>;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }
@@ -205,9 +202,7 @@ export function FeesSettlementStatusNotification({
   return (
     <div className={"StatusNotification"}>
       <div className="StatusNotification-content">
-        <div className="StatusNotification-title">
-          <Trans>Settling Positions' Fees</Trans>
-        </div>
+        <div className="StatusNotification-title">Settling Positions' Fees</div>
 
         <div className="StatusNotification-items">
           {creationStatus}

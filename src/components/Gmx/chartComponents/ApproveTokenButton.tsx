@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import { getWrappedToken } from "../config/tokens";
 import { approveTokens } from "../domain/tokens";
 import { isAddressZero } from "../lib/legacy";
@@ -44,9 +44,7 @@ export function ApproveTokenButton(p: Props) {
 
   return (
     <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
-      <span className="text-warning">
-        <Trans>Allow {p.tokenSymbol} to be spent</Trans>
-      </span>
+      <span className="text-warning">Allow {p.tokenSymbol} to be spent</span>
 
       <div className="ApproveTokenButton-checkbox">
         {isLoading ? (

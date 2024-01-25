@@ -1,5 +1,5 @@
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 
 import { HiDotsVertical } from "react-icons/hi";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -39,9 +39,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketSelect}>
                 <BiSelectMultiple fontSize={16} />
-                <p>
-                  <Trans>Select Market</Trans>
-                </p>
+                <p>Select Market</p>
               </div>
             </Menu.Item>
           )}
@@ -49,9 +47,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleEditCollateral}>
                 <AiOutlineEdit fontSize={16} />
-                <p>
-                  <Trans>Edit Collateral</Trans>
-                </p>
+                <p>Edit Collateral</p>
               </div>
             </Menu.Item>
           )}
@@ -59,9 +55,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
                 <img src={increaseMarket} alt="Increase Limit" height={16} />
-                <p>
-                  <Trans>Increase Size (Market)</Trans>
-                </p>
+                <p>Increase Size (Market)</p>
               </div>
             </Menu.Item>
           )}
@@ -69,9 +63,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
                 <img src={increaseLimit} alt="Increase Limit" height={16} />
-                <p>
-                  <Trans>Increase Size (Limit)</Trans>
-                </p>
+                <p>Increase Size (Limit)</p>
               </div>
             </Menu.Item>
           )}
@@ -79,9 +71,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
                 <img src={triggerClose} alt="Increase Limit" height={16} />
-                <p>
-                  <Trans>Set TP/SL</Trans>
-                </p>
+                <p>Set TP/SL</p>
               </div>
             </Menu.Item>
           )}
@@ -89,9 +79,7 @@ export default function PositionDropdown({
             <Menu.Item>
               <div className="menu-item" onClick={handleShare}>
                 <RiShareBoxFill fontSize={16} />
-                <p>
-                  <Trans>Share Position</Trans>
-                </p>
+                <p>Share Position</p>
               </div>
             </Menu.Item>
           )}

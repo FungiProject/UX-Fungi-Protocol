@@ -23,7 +23,7 @@ import {
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 
 export function getPositionKey(
   account: string,
@@ -436,9 +436,9 @@ export function getTriggerNameByOrderType(
   orderType: OrderType | undefined,
   abbr = false
 ) {
-  const triggerStr = abbr ? t`T` : t`Trigger`;
-  const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
-  const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;
+  const triggerStr = abbr ? `T` : `Trigger`;
+  const takeProfitStr = abbr ? `TP` : `Take-Profit`;
+  const stopLossStr = abbr ? `SL` : `Stop-Loss`;
 
   if (orderType === OrderType.LimitDecrease) {
     return takeProfitStr;

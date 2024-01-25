@@ -1,5 +1,5 @@
 import CustomErrors from "./abis/CustomErrors.json";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "./chartComponents/StatsTooltipRow";
 import {
@@ -54,23 +54,23 @@ export function getOrderActionText(tradeAction: TradeAction) {
   let actionText = "";
 
   if (tradeAction.eventName === TradeActionType.OrderCreated) {
-    actionText = t`Create`;
+    actionText = `Create`;
   }
 
   if (tradeAction.eventName === TradeActionType.OrderCancelled) {
-    actionText = t`Cancel`;
+    actionText = `Cancel`;
   }
 
   if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-    actionText = t`Execute`;
+    actionText = `Execute`;
   }
 
   if (tradeAction.eventName === TradeActionType.OrderUpdated) {
-    actionText = t`Update`;
+    actionText = `Update`;
   }
 
   if (tradeAction.eventName === TradeActionType.OrderFrozen) {
-    actionText = t`Freeze`;
+    actionText = `Freeze`;
   }
 
   return actionText;
@@ -87,8 +87,8 @@ export const formatPositionMessage = (
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
 
   const isIncrease = isIncreaseOrderType(tradeAction.orderType);
-  const increaseText = isIncrease ? t`Increase` : t`Decrease`;
-  const longText = tradeAction.isLong ? t`Long` : t`Short`;
+  const increaseText = isIncrease ? `Increase` : `Decrease`;
+  const longText = tradeAction.isLong ? `Long` : `Short`;
   const positionText = `${longText} ${indexToken.symbol}`;
   const sizeDeltaText = `${isIncrease ? "+" : "-"}${formatUsd(sizeDeltaUsd)}`;
 
@@ -110,7 +110,7 @@ export const formatPositionMessage = (
         : getTriggerNameByOrderType(tradeAction.orderType);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-        const executeOrderStr = t`Execute ${orderTypeName} Order: ${positionText} ${sizeDeltaText},`;
+        const executeOrderStr = `Execute ${orderTypeName} Order: ${positionText} ${sizeDeltaText},`;
         return [
           {
             text: `${executeOrderStr} `,
@@ -118,11 +118,11 @@ export const formatPositionMessage = (
           {
             text: [
               tokenPrice
-                ? t`Triggered at: ${formatUsd(tokenPrice, {
+                ? `Triggered at: ${formatUsd(tokenPrice, {
                     displayDecimals: priceDecimals,
                   })}`
                 : undefined,
-              t`Execution Price: ${formatUsd(executionPrice, {
+              `Execution Price: ${formatUsd(executionPrice, {
                 displayDecimals: priceDecimals,
               })}`,
             ]
@@ -138,13 +138,13 @@ export const formatPositionMessage = (
         ? "Execution Failed"
         : `${actionText} ${orderTypeName} Order`;
 
-      const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(
+      const triggerPriceStr = `Trigger Price: ${pricePrefix} ${formatUsd(
         triggerPrice,
         {
           displayDecimals: priceDecimals,
         }
       )}`;
-      const acceptablePriceStr = t`Acceptable Price: ${formatAcceptablePrice(
+      const acceptablePriceStr = `Acceptable Price: ${formatAcceptablePrice(
         tradeAction.acceptablePrice,
         {
           displayDecimals: priceDecimals,
@@ -163,7 +163,7 @@ export const formatPositionMessage = (
 
         return [
           {
-            text: t`${orderTypeName} Order Execution Failed`,
+            text: `${orderTypeName} Order Execution Failed`,
             isError: true,
             ...getExecutionFailedTooltipProps(tradeAction),
           },
@@ -188,18 +188,18 @@ export const formatPositionMessage = (
     case OrderType.MarketIncrease:
     case OrderType.MarketSwap: {
       let actionText = {
-        [TradeActionType.OrderCreated]: t`Request`,
+        [TradeActionType.OrderCreated]: `Request`,
         [TradeActionType.OrderExecuted]: "",
-        [TradeActionType.OrderCancelled]: t`Cancel`,
-        [TradeActionType.OrderUpdated]: t`Update`,
-        [TradeActionType.OrderFrozen]: t`Freeze`,
+        [TradeActionType.OrderCancelled]: `Cancel`,
+        [TradeActionType.OrderUpdated]: `Update`,
+        [TradeActionType.OrderFrozen]: `Freeze`,
       }[tradeAction.eventName!];
 
       if (sizeDeltaUsd?.gt(0)) {
         const pricePrefix =
           tradeAction.eventName === TradeActionType.OrderExecuted
-            ? t`Execution Price`
-            : t`Acceptable Price`;
+            ? `Execution Price`
+            : `Acceptable Price`;
         const price =
           tradeAction.eventName === TradeActionType.OrderExecuted
             ? tradeAction.executionPrice
@@ -208,7 +208,7 @@ export const formatPositionMessage = (
           displayDecimals: priceDecimals,
         });
         const priceStr = `${pricePrefix}: ${formattedPrice}`;
-        const marketStr = t`Market`;
+        const marketStr = `Market`;
 
         return [
           {
@@ -234,13 +234,13 @@ export const formatPositionMessage = (
         if (isIncrease) {
           return [
             {
-              text: t`${actionText} Deposit ${collateralText} into ${positionText}`,
+              text: `${actionText} Deposit ${collateralText} into ${positionText}`,
             },
           ];
         } else {
           return [
             {
-              text: t`${actionText} Withdraw ${collateralText} from ${positionText}`,
+              text: `${actionText} Withdraw ${collateralText} from ${positionText}`,
             },
           ];
         }
@@ -248,7 +248,7 @@ export const formatPositionMessage = (
     }
 
     case OrderType.Liquidation: {
-      const executionPriceStr = t`Execution Price`;
+      const executionPriceStr = `Execution Price`;
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
         const executionPrice = tradeAction.executionPrice;
@@ -259,7 +259,7 @@ export const formatPositionMessage = (
         return [
           {
             text: "Liquidated",
-            tooltipTitle: t`This position was liquidated as the max leverage of ${maxLeverageText} was exceeded.`,
+            tooltipTitle: `This position was liquidated as the max leverage of ${maxLeverageText} was exceeded.`,
             tooltipRows: getLiquidationTooltipProps(
               tradeAction,
               minCollateralUsd
@@ -338,20 +338,20 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction): string => {
       : "0";
 
     return tradeAction.eventName === TradeActionType.OrderFrozen
-      ? t`${orderTypeName} Swap Execution Failed: ${fromText} for ${toText}, Price: ${ratioText}`
-      : t`${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}, Price: ${ratioText}`;
+      ? `${orderTypeName} Swap Execution Failed: ${fromText} for ${toText}, Price: ${ratioText}`
+      : `${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}, Price: ${ratioText}`;
   }
 
   const actionText =
     tradeAction.eventName === TradeActionType.OrderCreated
-      ? t`Request`
+      ? `Request`
       : getOrderActionText(tradeAction);
 
-  return t`${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}`;
+  return `${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}`;
 };
 
 function getSwapOrderTypeName(tradeAction: SwapTradeAction) {
-  return tradeAction.orderType === OrderType.MarketSwap ? t`Market` : t`Limit`;
+  return tradeAction.orderType === OrderType.MarketSwap ? `Market` : `Limit`;
 }
 
 function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
@@ -402,7 +402,7 @@ function getLiquidationTooltipProps(
 
   return [
     {
-      label: t`Mark Price`,
+      label: `Mark Price`,
       showDollar: false,
       value: formatUsd(getTokenPriceByTradeAction(tradeAction), {
         displayDecimals: tradeAction.indexToken.priceDecimals,
@@ -410,7 +410,7 @@ function getLiquidationTooltipProps(
       key: "mark-price",
     },
     {
-      label: t`Initial collateral`,
+      label: `Initial collateral`,
       showDollar: false,
       value: formatTokenAmountWithUsd(
         initialCollateralDeltaAmount,
@@ -421,41 +421,41 @@ function getLiquidationTooltipProps(
       key: "initial-collateral",
     },
     {
-      label: t`Min required collateral`,
+      label: `Min required collateral`,
       showDollar: false,
       value: formatUsd(minCollateralUsd),
       key: "min-collateral",
     },
     {
-      label: t`Borrow Fee`,
+      label: `Borrow Fee`,
       showDollar: false,
       value: formatUsd(borrowingFeeUsd?.mul(-1)),
       className: "text-red",
       key: "borrow-fee",
     },
     {
-      label: t`Funding Fee`,
+      label: `Funding Fee`,
       showDollar: false,
       value: formatUsd(fundingFeeUsd?.mul(-1)),
       className: "text-red",
       key: "funding-fee",
     },
     {
-      label: t`Position Fee`,
+      label: `Position Fee`,
       showDollar: false,
       value: formatUsd(positionFeeUsd?.mul(-1)),
       className: "text-red",
       key: "position-fee",
     },
     {
-      label: t`Price Impact`,
+      label: `Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(priceImpactUsd),
       className: priceImpactUsd?.gt(0) ? "text-green" : "text-red",
       key: "price-impact",
     },
     {
-      label: t`PnL After Fees`,
+      label: `PnL After Fees`,
       showDollar: false,
       value: formatUsd(pnlUsd),
       className: pnlUsd?.gt(0) ? "text-green" : "text-red",
@@ -493,7 +493,7 @@ function getExecutionFailedTooltipProps(
     tooltipTitleRed: true,
     tooltipRows: [
       tokenPrice && {
-        label: t`Mark Price`,
+        label: `Mark Price`,
         showDollar: false,
         value: formatUsd(tokenPrice, {
           displayDecimals: tradeAction.indexToken.priceDecimals,
@@ -512,7 +512,7 @@ function getExecutionPriceTooltipRows(
 
   return [
     {
-      label: t`Order trigger price`,
+      label: `Order trigger price`,
       showDollar: false,
       value: formatUsd(triggerPrice, { displayDecimals: priceDecimals }),
       key: "trigger-price",
@@ -520,7 +520,7 @@ function getExecutionPriceTooltipRows(
     tradeAction.orderType === OrderType.StopLossDecrease
       ? undefined
       : {
-          label: t`Acceptable Price`,
+          label: `Acceptable Price`,
           showDollar: false,
           value: formatAcceptablePrice(tradeAction.acceptablePrice, {
             displayDecimals: priceDecimals,
@@ -529,7 +529,7 @@ function getExecutionPriceTooltipRows(
         },
 
     tradeAction.priceImpactUsd && {
-      label: t`Price Impact`,
+      label: `Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(tradeAction.priceImpactUsd),
       className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
@@ -551,7 +551,7 @@ function getMarketTooltipRows(
       key: "mark-price",
     },
     tradeAction.priceImpactUsd && {
-      label: t`Actual Price Impact`,
+      label: `Actual Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(tradeAction.priceImpactUsd),
       className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
@@ -565,18 +565,18 @@ function getMarketTooltipRows(
 function getErrorTooltipTitle(errorName: string) {
   switch (errorName) {
     case "OrderNotFulfillableAtAcceptablePrice": {
-      return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
+      return `The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
     }
 
     case "InsufficientReserveForOpenInterest": {
-      return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
+      return `Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
     }
 
     case "InsufficientSwapOutputAmount": {
-      return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
+      return `Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
     }
 
     default:
-      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+      return `Reason: ${words(errorName).join(" ").toLowerCase()}`;
   }
 }

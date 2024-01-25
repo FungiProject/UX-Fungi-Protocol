@@ -1,66 +1,82 @@
 // Next
 import type { AppProps } from "next/app";
 // Wagmi
-import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { mainnet, arbitrum, polygonMumbai, polygon } from "wagmi/chains";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import {
+  connectorsForWallets,
+  darkTheme,
+  RainbowKitProvider,
+  Theme,
+  WalletList,
+} from "@rainbow-me/rainbowkit";
+import {
+  safeWallet,
+  rabbyWallet,
+  injectedWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { arbitrum, arbitrumGoerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { SettingsContextProvider } from "@/components/Gmx/context/SettingsContext/SettingsContextProvider";
-import { I18nProvider } from "@lingui/react";
-import { i18n } from "@lingui/core";
-import { useRouter } from "next/router";
-
+import merge from "lodash/merge";
 import "@/styles/globals.css";
-import { useEffect } from "react";
+import { SubaccountContextProvider } from "@/components/Gmx/context/SubaccountContext/SubaccountContext";
+import { SyntheticsEventsProvider } from "@/components/Gmx/context/SyntheticsEvents";
 
-i18n.activate("en");
-i18n.activate("es");
+const walletTheme = merge(darkTheme(), {
+  colors: {
+    modalBackground: "#16182e",
+    accentColor: "#9da5f2",
+    menuItemBackground: "#808aff14",
+  },
+  radii: {
+    modal: "4px",
+    menuButton: "4px",
+  },
+} as Theme);
 
-const { publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, arbitrum, polygonMumbai, polygon],
-  [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API as string }),
-    publicProvider(),
-  ]
+const { chains, provider } = configureChains(
+  [arbitrum, arbitrumGoerli],
+  [publicProvider()]
 );
 
-const config = createConfig({
+const recommendedWalletList: WalletList = [
+  {
+    groupName: "Recommended",
+    wallets: [
+      injectedWallet({ chains }),
+      safeWallet({ chains }),
+      rabbyWallet({ chains }),
+    ],
+  },
+];
+
+const connectors = connectorsForWallets([...recommendedWalletList]);
+
+const config = createClient({
   autoConnect: true,
-  publicClient,
-  webSocketPublicClient,
-  connectors: [
-    new InjectedConnector({
-      options: {
-        shimDisconnect: false,
-      },
-    }),
-  ],
+  connectors,
+  provider,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { locale } = useRouter();
-  console.log(locale);
-  useEffect(() => {
-    async function load(locale: any) {
-      const { messages } = await import(`../locales/${locale}/messages.po`);
-
-      i18n.load(locale, messages);
-      i18n.activate(locale);
-    }
-
-    load(locale);
-  }, [locale]);
-
   return (
-    <WagmiConfig config={config}>
-      <I18nProvider i18n={i18n}>
-        {/* <SettingsContextProvider> */}
-        <main className="font-dmSans">
-          <Component {...pageProps} />
-        </main>
-        {/* </SettingsContextProvider> */}
-      </I18nProvider>
+    <WagmiConfig client={config}>
+      {" "}
+      <RainbowKitProvider
+        theme={walletTheme}
+        chains={chains}
+        modalSize="compact"
+      >
+        <SettingsContextProvider>
+          <SubaccountContextProvider>
+            <SyntheticsEventsProvider>
+              <main className="font-dmSans">
+                <Component {...pageProps} />
+              </main>
+            </SyntheticsEventsProvider>
+          </SubaccountContextProvider>
+        </SettingsContextProvider>{" "}
+      </RainbowKitProvider>
     </WagmiConfig>
   );
 }

@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import Checkbox from "./Checkbox";
 import Tooltip from "./Tooltip";
 import {
@@ -32,7 +32,7 @@ export const SettleAccruedFundingFeeRow = ({
   const label = (
     <div key={position.key} className="items-top">
       <span className="ClaimSettleModal-row-text">
-        {position.isLong ? t`Long` : t`Short`} {indexName}
+        {position.isLong ? `Long` : `Short`} {indexName}
       </span>{" "}
       <span className="subtext">[{poolName}]</span>
     </div>

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import Button from "./Button";
@@ -136,8 +136,8 @@ export function PositionSeller(p: Props) {
   const prevIsVisible = usePrevious(isVisible);
 
   const ORDER_OPTION_LABELS = {
-    [OrderOption.Market]: t`Market`,
-    [OrderOption.Trigger]: t`TP/SL`,
+    [OrderOption.Market]: `Market`,
+    [OrderOption.Trigger]: `TP/SL`,
   };
 
   const [orderOption, setOrderOption] = useState<OrderOption>(
@@ -456,7 +456,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isSubmitting) {
-      return t`Creating Order...`;
+      return `Creating Order...`;
     }
   }, [
     account,
@@ -593,7 +593,7 @@ export function PositionSeller(p: Props) {
   const triggerPriceRow = (
     <ExchangeInfoRow
       className="SwapBox-info-row"
-      label={t`Trigger Price`}
+      label={`Trigger Price`}
       isTop
       value={`${decreaseAmounts?.triggerThresholdType || ""} ${
         formatUsd(decreaseAmounts?.triggerPrice, {
@@ -608,12 +608,12 @@ export function PositionSeller(p: Props) {
       <ExchangeInfoRow
         label={
           <TooltipWithPortal
-            handle={t`Allowed Slippage`}
+            handle={`Allowed Slippage`}
             position="left-top"
             renderContent={() => {
               return (
                 <div className="text-white">
-                  <Trans>
+                  <div>
                     You can edit the default Allowed Slippage in the settings
                     menu on the top right of the page.
                     <br />
@@ -623,7 +623,7 @@ export function PositionSeller(p: Props) {
                       signed: false,
                     })}
                     , may result in failed orders if prices are volatile.
-                  </Trans>
+                  </div>
                 </div>
               );
             }}
@@ -634,7 +634,7 @@ export function PositionSeller(p: Props) {
           onChange={setAllowedSlippage}
           defaultValue={allowedSlippage}
           highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-          highValueWarningText={t`Slippage is too high`}
+          highValueWarningText={`Slippage is too high`}
         />
       </ExchangeInfoRow>
     </div>
@@ -642,7 +642,7 @@ export function PositionSeller(p: Props) {
 
   const markPriceRow = (
     <ExchangeInfoRow
-      label={t`Mark Price`}
+      label={`Mark Price`}
       isTop
       value={
         formatUsd(markPrice, {
@@ -654,7 +654,7 @@ export function PositionSeller(p: Props) {
 
   const entryPriceRow = (
     <ExchangeInfoRow
-      label={t`Entry Price`}
+      label={`Entry Price`}
       value={
         formatUsd(position?.entryPrice, {
           displayDecimals: indexPriceDecimals,
@@ -685,7 +685,7 @@ export function PositionSeller(p: Props) {
 
   const acceptablePriceRow = (
     <ExchangeInfoRow
-      label={t`Acceptable Price`}
+      label={`Acceptable Price`}
       value={
         decreaseAmounts?.sizeDeltaUsd.gt(0)
           ? formatAcceptablePrice(acceptablePrice, {
@@ -699,7 +699,7 @@ export function PositionSeller(p: Props) {
   const liqPriceRow = position && (
     <ExchangeInfoRow
       className="SwapBox-info-row"
-      label={t`Liq. Price`}
+      label={`Liq. Price`}
       value={
         <ValueTransition
           from={
@@ -724,7 +724,7 @@ export function PositionSeller(p: Props) {
   const sizeRow = (
     <ExchangeInfoRow
       isTop={!isTrigger}
-      label={t`Size`}
+      label={`Size`}
       value={
         <ValueTransition
           from={formatUsd(position?.sizeInUsd)!}
@@ -738,7 +738,7 @@ export function PositionSeller(p: Props) {
     position &&
     (isTrigger ? (
       <ExchangeInfoRow
-        label={t`PnL`}
+        label={`PnL`}
         value={
           <ValueTransition
             from={
@@ -766,7 +766,7 @@ export function PositionSeller(p: Props) {
       />
     ) : (
       <ExchangeInfoRow
-        label={t`PnL`}
+        label={`PnL`}
         value={
           <ValueTransition
             from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
@@ -782,7 +782,7 @@ export function PositionSeller(p: Props) {
   const receiveTokenRow = isTrigger ? (
     <ExchangeInfoRow
       className="SwapBox-info-row"
-      label={t`Receive`}
+      label={`Receive`}
       value={formatTokenAmountWithUsd(
         decreaseAmounts?.receiveTokenAmount,
         decreaseAmounts?.receiveUsd,
@@ -793,12 +793,12 @@ export function PositionSeller(p: Props) {
   ) : (
     <ExchangeInfoRow
       isTop
-      label={t`Receive`}
+      label={`Receive`}
       className="Exchange-info-row PositionSeller-receive-row "
       value={
         receiveToken && (
           <TokenSelector
-            label={t`Receive`}
+            label={`Receive`}
             className={cx("PositionSeller-token-selector", {
               warning: isNotEnoughReceiveTokenLiquidity,
             })}
@@ -842,10 +842,10 @@ export function PositionSeller(p: Props) {
         isVisible={isVisible}
         setIsVisible={p.onClose}
         label={
-          <Trans>
-            Close {p.position?.isLong ? t`Long` : t`Short`}{" "}
+          <span>
+            Close {p.position?.isLong ? `Long` : `Short`}{" "}
             {p.position?.indexToken?.symbol}
-          </Trans>
+          </span>
         }
         allowContentTouchMove
       >
@@ -865,8 +865,8 @@ export function PositionSeller(p: Props) {
           <>
             <div className="relative">
               <BuyInputSection
-                topLeftLabel={t`Close`}
-                topRightLabel={t`Max`}
+                topLeftLabel={`Close`}
+                topRightLabel={`Max`}
                 topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) =>
@@ -895,8 +895,8 @@ export function PositionSeller(p: Props) {
             </div>
             {isTrigger && (
               <BuyInputSection
-                topLeftLabel={t`Price`}
-                topRightLabel={t`Mark`}
+                topLeftLabel={`Price`}
+                topRightLabel={`Mark`}
                 topRightValue={formatUsd(markPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
@@ -925,12 +925,12 @@ export function PositionSeller(p: Props) {
                   setIsChecked={setKeepLeverage}
                 >
                   <span className="text-gray font-sm">
-                    <Trans>
+                    <span>
                       Keep leverage at{" "}
                       {position?.leverage
                         ? formatLeverage(position.leverage)
                         : "..."}
-                    </Trans>
+                    </span>
                   </span>
                 </ToggleSwitch>
               </div>
@@ -959,18 +959,16 @@ export function PositionSeller(p: Props) {
                   <Tooltip
                     handle={
                       <span className="Exchange-info-label">
-                        <Trans>
-                          Collateral ({position.collateralToken?.symbol})
-                        </Trans>
+                        Collateral ({position.collateralToken?.symbol})
                       </span>
                     }
                     position="left-top"
                     renderContent={() => {
                       return (
-                        <Trans>
+                        <span>
                           Initial Collateral (Collateral excluding Borrow and
                           Funding Fee).
-                        </Trans>
+                        </span>
                       );
                     }}
                   />
@@ -984,7 +982,7 @@ export function PositionSeller(p: Props) {
               </div>
               {!keepLeverage && (
                 <ExchangeInfoRow
-                  label={t`Leverage`}
+                  label={`Leverage`}
                   value={
                     decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
                       "-"
@@ -1027,10 +1025,10 @@ export function PositionSeller(p: Props) {
               >
                 {error ||
                   (isTrigger
-                    ? t`Create ${getTriggerNameByOrderType(
+                    ? `Create ${getTriggerNameByOrderType(
                         decreaseAmounts?.triggerOrderType
                       )} Order`
-                    : t`Close`)}
+                    : `Close`)}
               </Button>
             </div>
           </>

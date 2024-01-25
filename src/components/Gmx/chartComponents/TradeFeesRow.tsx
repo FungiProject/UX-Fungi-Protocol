@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import ExternalLink from "./ExternalLink";
@@ -63,7 +63,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionPriceImpact",
           label: (
             <>
-              <div className="text-white">{t`Position Price Impact`}:</div>
+              <div className="text-white">{`Position Price Impact`}:</div>
               <div>
                 ({formatPercentage(p.positionPriceImpact.bps.abs())} of position
                 size)
@@ -82,7 +82,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-white">{t`Swap Price Impact`}:</div>
+              <div className="text-white">{`Swap Price Impact`}:</div>
               <div>
                 ({formatPercentage(p.swapPriceImpact.bps.abs())} of swap amount)
               </div>
@@ -101,7 +101,7 @@ export function TradeFeesRow(p: Props) {
         label: (
           <>
             <div className="text-white">
-              {t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
+              {`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
                 getToken(chainId, swap.tokenOutAddress).symbol
               }`}
               :
@@ -118,7 +118,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapProfitFee",
           label: (
             <>
-              <div className="text-white">{t`Swap Profit Fee`}:</div>
+              <div className="text-white">{`Swap Profit Fee`}:</div>
               <div>
                 ({formatPercentage(p.swapProfitFee.bps.abs())} of collateral)
               </div>
@@ -131,7 +131,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
+    const feesTypeName = p.feesType === "increase" ? `Open Fee` : `Close Fee`;
     const positionFeeRow = p.positionFee?.deltaUsd.abs().gt(0)
       ? {
           id: "positionFee",
@@ -153,7 +153,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-white">{t`UI Fee`}:</div>
+              <div className="text-white">{`UI Fee`}:</div>
               <div>
                 ({formatPercentage(p.uiFee.bps.abs())} of{" "}
                 {p.feesType === "swap" ? "swap amount" : "position size"})
@@ -171,7 +171,7 @@ export function TradeFeesRow(p: Props) {
           label: (
             <>
               <div className="text-white">
-                {p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:
+                {p.feesType === "swap" ? `UI Fee` : `Swap UI Fee`}:
               </div>
               <div>
                 ({formatPercentage(p.uiSwapFee.bps.abs())} of swap amount)
@@ -186,11 +186,7 @@ export function TradeFeesRow(p: Props) {
     const feeDiscountRow = p.feeDiscountUsd?.gt(0)
       ? {
           id: "feeDiscount",
-          label: (
-            <div className="text-white">
-              <Trans>Referral Discount</Trans>:
-            </div>
-          ),
+          label: <div className="text-white">Referral Discount</div>,
           value: formatDeltaUsd(p.feeDiscountUsd),
           className: "text-green",
         }
@@ -201,7 +197,7 @@ export function TradeFeesRow(p: Props) {
           id: "borrowFee",
           label: (
             <>
-              <div className="text-white">{t`Borrow Fee`}:</div>
+              <div className="text-white">{`Borrow Fee`}:</div>
               <div>
                 ({formatPercentage(p.borrowFee.bps.abs())} of collateral)
               </div>
@@ -217,7 +213,7 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFee",
           label: (
             <>
-              <div className="text-white">{t`Funding Fee`}:</div>
+              <div className="text-white">{`Funding Fee`}:</div>
               <div>
                 ({formatPercentage(p.fundingFee.bps.abs())} of collateral)
               </div>
@@ -231,7 +227,7 @@ export function TradeFeesRow(p: Props) {
     const borrowFeeRateRow = p.borrowFeeRateStr
       ? {
           id: "borrowFeeRate",
-          label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
+          label: <div className="text-white">{`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
           className: p.borrowFeeRateStr?.startsWith("-")
             ? "text-red"
@@ -242,7 +238,7 @@ export function TradeFeesRow(p: Props) {
     const fundingFeeRateRow = p.fundingFeeRateStr
       ? {
           id: "fundingFeeRate",
-          label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
+          label: <div className="text-white">{`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
           className: p.fundingFeeRateStr?.startsWith("-")
             ? "text-red"
@@ -255,12 +251,10 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Max Bonus Rebate`}:</div>
+                <div className="text-white">{`Max Bonus Rebate`}:</div>
                 <div>
-                  <Trans>
-                    (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}
-                    % of {feesTypeName})
-                  </Trans>
+                  (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}%
+                  of {feesTypeName})
                 </div>
               </>
             ),
@@ -277,7 +271,7 @@ export function TradeFeesRow(p: Props) {
 
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
-          label: <div className="text-white">{t`Max Execution Fee`}:</div>,
+          label: <div className="text-white">{`Max Execution Fee`}:</div>,
           value: formatTokenAmountWithUsd(
             p.executionFee.feeTokenAmount.mul(-1),
             p.executionFee.feeUsd.mul(-1),
@@ -384,10 +378,10 @@ export function TradeFeesRow(p: Props) {
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       return p.feesType === "edit"
-        ? t`Fees (Rebated)`
-        : t`Fees (Rebated) and Price Impact`;
+        ? `Fees (Rebated)`
+        : `Fees (Rebated) and Price Impact`;
     } else {
-      return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+      return p.feesType === "edit" ? `Fees` : `Fees and Price Impact`;
     }
   }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
@@ -397,7 +391,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return (
-      <Trans>
+      <div>
         The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
         <ExternalLink
           href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
@@ -406,7 +400,7 @@ export function TradeFeesRow(p: Props) {
           Read more
         </ExternalLink>
         .
-      </Trans>
+      </div>
     );
   }, [rebateIsApplicable, tradingIncentives]);
 
@@ -434,11 +428,11 @@ export function TradeFeesRow(p: Props) {
                 </span>
               )}
               <div className="text-white">
-                <Trans>
+                <span>
                   The Max Execution Fee is overestimated by{" "}
                   {maxExecutionFeeText}%. Upon execution, the excess Execution
                   Fee is sent back to your account.
-                </Trans>
+                </span>
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">
                   Read more
                 </ExternalLink>

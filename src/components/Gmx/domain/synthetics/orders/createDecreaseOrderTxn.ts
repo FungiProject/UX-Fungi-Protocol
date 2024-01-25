@@ -25,7 +25,7 @@ import {
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
@@ -121,7 +121,7 @@ export async function createDecreaseOrderTxn(
         createOrderMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         tokensData: p.tokensData,
-        errorTitle: t`Order error.`,
+        errorTitle: `Order error.`,
       });
     }
   });

@@ -25,6 +25,7 @@ export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
 export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN =
   "one-click-trading-native-token-warn-hidden";
+export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 
 export function getSyntheticsDepositMarketKey(chainId: number) {
   return [chainId, SYNTHETICS_DEPOSIT_MARKET_KEY];

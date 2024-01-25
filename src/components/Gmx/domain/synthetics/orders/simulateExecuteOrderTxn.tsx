@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import CustomErrors from "../../../abis/CustomErrors.json";
 import DataStore from "../../../abis/DataStore.json";
 import ExchangeRouter from "../../../abis/ExchangeRouter.json";
@@ -80,7 +80,7 @@ export async function simulateExecuteOrderTxn(
     ),
   ];
 
-  const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+  const errorTitle = p.errorTitle || `Execute order simulation failed.`;
 
   try {
     await exchangeRouter.callStatic.multicall(simulationPayload, {
@@ -133,7 +133,7 @@ export async function simulateExecuteOrderTxn(
     if (!msg) {
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          <span>Execute order simulation failed.</span>
           <br />
           <ToastifyDebug>Unknown Error</ToastifyDebug>
         </div>

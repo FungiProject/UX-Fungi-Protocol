@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { getTotalAccruedFundingUsd } from "../domain/synthetics/markets";
 import { PositionsInfoData } from "../domain/synthetics/positions";
 import { CSSProperties, useMemo } from "react";
@@ -10,9 +10,9 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = t`Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the "Settle" button, or after the Position is increased, decreased or closed.`;
-const buttonText = t`Settle`;
-const title = t`Accrued`;
+const tooltipText = `Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the "Settle" button, or after the Position is increased, decreased or closed.`;
+const buttonText = `Settle`;
+const title = `Accrued`;
 
 export function SettleAccruedCard({
   onSettleClick,

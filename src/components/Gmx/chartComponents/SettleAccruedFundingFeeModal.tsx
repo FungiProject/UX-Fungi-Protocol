@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+// import { t, Trans } from "@lingui/macro";
 import Modal from "./Modal";
 import { formatDeltaUsd, formatUsd } from "../lib/numbers";
 import Button from "./Button";
@@ -97,9 +97,9 @@ export function SettleAccruedFundingFeeModal({
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
-    if (isSubmitting) return [t`Settling...`, true];
-    if (positionKeys.length === 0) return [t`Select Positions`, true];
-    return [t`Settle`, false];
+    if (isSubmitting) return [`Settling...`, true];
+    if (positionKeys.length === 0) return [`Select Positions`, true];
+    return [`Settle`, false];
   }, [isSubmitting, positionKeys.length]);
 
   const handleRowCheckboxChange = useCallback(
@@ -180,11 +180,7 @@ export function SettleAccruedFundingFeeModal({
   ]);
 
   const renderTooltipContent = useCallback(
-    () => (
-      <span className="text-white">
-        <Trans>Accrued Funding Fee.</Trans>
-      </span>
-    ),
+    () => <span className="text-white">Accrued Funding Fee.</span>,
     []
   );
 
@@ -193,7 +189,7 @@ export function SettleAccruedFundingFeeModal({
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
       setIsVisible={onClose}
-      label={t`Confirm Settle`}
+      label={`Confirm Settle`}
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">Settle {totalStr}</div>
@@ -207,23 +203,19 @@ export function SettleAccruedFundingFeeModal({
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-alert">
-            <Trans>
-              Consider selecting only Positions where the accrued Funding Fees
-              exceed the gas spent to Settle, which is around{" "}
-              {formatUsd(feeUsd)} per each selected Position.
-            </Trans>
+            Consider selecting only Positions where the accrued Funding Fees
+            exceed the gas spent to Settle, which is around {formatUsd(feeUsd)}{" "}
+            per each selected Position.
           </div>
 
           <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
-            <div className="ClaimSettleModal-header-left">
-              <Trans>POSITION</Trans>
-            </div>
+            <div className="ClaimSettleModal-header-left">POSITION</div>
             <div className="ClaimSettleModal-header-right">
               <Tooltip
                 className="ClaimSettleModal-tooltip"
                 position="right-top"
-                handle={<Trans>FUNDING FEE</Trans>}
+                handle={<span>FUNDING FEE</span>}
                 renderContent={renderTooltipContent}
               />
             </div>

@@ -179,27 +179,28 @@ export default function TVChartContainer({
         setTradePageVersion
       ),
     };
-    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
-    tvWidgetRef.current!.onChartReady(function () {
-      setChartReady(true);
-      tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": "#16182e",
-        "paneProperties.backgroundType": "solid",
-      });
-      tvWidgetRef.current
-        ?.activeChart()
-        .onIntervalChanged()
-        .subscribe(null, (interval) => {
-          if (supportedResolutions[interval]) {
-            const period = supportedResolutions[interval];
-            setPeriod(period);
-          }
-        });
 
-      tvWidgetRef.current?.activeChart().dataReady(() => {
-        setChartDataLoading(false);
-      });
-    });
+    // tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+    // tvWidgetRef.current!.onChartReady(function () {
+    //   setChartReady(true);
+    //   tvWidgetRef.current!.applyOverrides({
+    //     "paneProperties.background": "#16182e",
+    //     "paneProperties.backgroundType": "solid",
+    //   });
+    //   tvWidgetRef.current
+    //     ?.activeChart()
+    //     .onIntervalChanged()
+    //     .subscribe(null, (interval) => {
+    //       if (supportedResolutions[interval]) {
+    //         const period = supportedResolutions[interval];
+    //         setPeriod(period);
+    //       }
+    //     });
+
+    //   tvWidgetRef.current?.activeChart().dataReady(() => {
+    //     setChartDataLoading(false);
+    //   });
+    // });
 
     dataProvider?.resetCache();
 

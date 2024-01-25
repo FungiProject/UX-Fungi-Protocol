@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import Checkbox from "./Checkbox";
 import { PriceImpactWarningState } from "../domain/synthetics/trade/usePriceImpactWarningState";
 
@@ -28,7 +28,7 @@ export function HighPriceImpactWarning({
           setIsChecked={priceImpactWarinigState.setIsHighPositionImpactAccepted}
         >
           <span className="text-warning font-sm">
-            <Trans>Acknowledge high Price Impact</Trans>
+            Acknowledge high Price Impact
           </span>
         </Checkbox>
       )}
@@ -40,7 +40,7 @@ export function HighPriceImpactWarning({
           setIsChecked={priceImpactWarinigState.setIsHighSwapImpactAccepted}
         >
           <span className="text-warning font-sm">
-            <Trans>Acknowledge high Swap Price Impact</Trans>
+            Acknowledge high Swap Price Impact
           </span>
         </Checkbox>
       )}

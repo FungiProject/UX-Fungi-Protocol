@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
@@ -201,7 +201,7 @@ export function OrderItem(p: Props) {
           return (
             <>
               <StatsTooltipRow
-                label={t`Market`}
+                label={`Market`}
                 value={
                   <div className="items-center">
                     <span>{indexName && indexName}</span>
@@ -213,14 +213,14 @@ export function OrderItem(p: Props) {
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={t`Collateral`}
+                label={`Collateral`}
                 value={getCollateralText()}
                 showDollar={false}
               />
 
               {isCollateralSwap && (
                 <div className="OrderItem-tooltip-row">
-                  <Trans>
+                  <div>
                     {formatTokenAmount(
                       p.order.initialCollateralDeltaAmount,
                       p.order.initialCollateralToken.decimals,
@@ -228,7 +228,7 @@ export function OrderItem(p: Props) {
                     )}{" "}
                     will be swapped to {p.order.targetCollateralToken.symbol} on
                     order execution.
-                  </Trans>
+                  </div>
                 </div>
               )}
 
@@ -336,11 +336,11 @@ export function OrderItem(p: Props) {
         </span>
       );
 
-      const longShortText = isLong ? t`Long` : t`Short`;
+      const longShortText = isLong ? `Long` : `Short`;
       const sizeText = formatUsd(sizeDeltaUsd);
       const increaseOrDecreaseText = isIncreaseOrderType(orderType)
-        ? t`Increase`
-        : t`Decrease`;
+        ? `Increase`
+        : `Decrease`;
 
       return (
         <span>
@@ -370,7 +370,7 @@ export function OrderItem(p: Props) {
               position="right-bottom"
               handle={swapRatioText}
               renderContent={() =>
-                t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
+                `You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
               }
             />
           ) : (
@@ -391,7 +391,7 @@ export function OrderItem(p: Props) {
           renderContent={() => (
             <>
               <StatsTooltipRow
-                label={t`Acceptable Price`}
+                label={`Acceptable Price`}
                 value={
                   positionOrder.orderType === OrderType.StopLossDecrease
                     ? "NA"
@@ -442,7 +442,7 @@ export function OrderItem(p: Props) {
           position="right-bottom"
           renderContent={() => {
             return (
-              <Trans>
+              <div>
                 <p>
                   The order will be executed when the oracle price is{" "}
                   {positionOrder.triggerThresholdType}{" "}
@@ -457,7 +457,7 @@ export function OrderItem(p: Props) {
                   reports are produced or if the price impact exceeds your
                   acceptable price.
                 </p>
-              </Trans>
+              </div>
             );
           }}
         />
@@ -481,7 +481,7 @@ export function OrderItem(p: Props) {
         <td className="Exchange-list-item-type">
           {isDecreaseOrderType(p.order.orderType)
             ? getTriggerNameByOrderType(positionOrder.orderType)
-            : t`Limit`}
+            : `Limit`}
         </td>
         <td className="Order-list-item-text">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
@@ -494,7 +494,7 @@ export function OrderItem(p: Props) {
                   className="Exchange-list-action"
                   onClick={p.onEditOrder}
                 >
-                  <Trans>Edit</Trans>
+                  Edit
                 </button>
               </td>
             )}
@@ -505,7 +505,7 @@ export function OrderItem(p: Props) {
                   onClick={p.onCancelOrder}
                   disabled={p.isCanceling}
                 >
-                  <Trans>Cancel</Trans>
+                  Cancel
                 </button>
               </td>
             )}
@@ -529,26 +529,20 @@ export function OrderItem(p: Props) {
               </div>
             )}
             <div className="App-card-row">
-              <div className="label">
-                <Trans>Order Type</Trans>
-              </div>
+              <div className="label">Order Type</div>
               <div>
                 {isDecreaseOrderType(p.order.orderType)
                   ? getTriggerNameByOrderType(positionOrder.orderType)
-                  : t`Limit`}
+                  : `Limit`}
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">
-                <Trans>Trigger Price</Trans>
-              </div>
+              <div className="label">Trigger Price</div>
               <div>{renderTriggerPrice()}</div>
             </div>
 
             <div className="App-card-row">
-              <div className="label">
-                <Trans>Mark Price</Trans>
-              </div>
+              <div className="label">Mark Price</div>
               <div>{renderMarkPrice()}</div>
             </div>
           </div>
@@ -563,7 +557,7 @@ export function OrderItem(p: Props) {
                   className="mr-md mt-md"
                   onClick={p.onEditOrder}
                 >
-                  <Trans>Edit</Trans>
+                  Edit
                 </Button>
               )}
 
@@ -573,7 +567,7 @@ export function OrderItem(p: Props) {
                   className="mt-md"
                   onClick={p.onCancelOrder}
                 >
-                  <Trans>Cancel</Trans>
+                  Cancel
                 </Button>
               )}
             </div>

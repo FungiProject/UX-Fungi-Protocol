@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Token from "../abis/Token.json";
 import { ApproveTokenButton } from "./ApproveTokenButton";
@@ -373,13 +373,13 @@ export function PositionEditor(p: Props) {
     }
 
     if (needCollateralApproval) {
-      return t`Pending ${
+      return `Pending ${
         collateralToken?.assetSymbol ?? collateralToken?.symbol
       } approval`;
     }
 
     if (isSubmitting) {
-      return t`Creating Order...`;
+      return `Creating Order...`;
     }
   }, [
     account,
@@ -528,8 +528,8 @@ export function PositionEditor(p: Props) {
   );
 
   const operationLabels = {
-    [Operation.Deposit]: t`Deposit`,
-    [Operation.Withdraw]: t`Withdraw`,
+    [Operation.Deposit]: `Deposit`,
+    [Operation.Withdraw]: `Withdraw`,
   };
 
   return (
@@ -539,10 +539,10 @@ export function PositionEditor(p: Props) {
         isVisible={position}
         setIsVisible={onClose}
         label={
-          <Trans>
-            Edit {position?.isLong ? t`Long` : t`Short`}{" "}
+          <span>
+            Edit {position?.isLong ? `Long` : `Short`}{" "}
             {position?.indexToken?.symbol}
-          </Trans>
+          </span>
         }
         allowContentTouchMove
       >
@@ -564,7 +564,7 @@ export function PositionEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={operationLabels[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
-              topRightLabel={t`Max`}
+              topRightLabel={`Max`}
               topRightValue={
                 isDeposit
                   ? formatTokenAmount(
@@ -657,7 +657,7 @@ export function PositionEditor(p: Props) {
 
             <div className="PositionEditor-info-box">
               <ExchangeInfoRow
-                label={t`Leverage`}
+                label={`Leverage`}
                 value={
                   <ValueTransition
                     from={formatLeverage(position?.leverage)}
@@ -668,20 +668,20 @@ export function PositionEditor(p: Props) {
 
               <ExchangeInfoRow
                 isTop
-                label={t`Entry Price`}
+                label={`Entry Price`}
                 value={formatUsd(position.entryPrice, {
                   displayDecimals: indexPriceDecimals,
                 })}
               />
               <ExchangeInfoRow
-                label={t`Mark Price`}
+                label={`Mark Price`}
                 value={formatUsd(position.markPrice, {
                   displayDecimals: indexPriceDecimals,
                 })}
               />
 
               <ExchangeInfoRow
-                label={t`Liq. Price`}
+                label={`Liq. Price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, {
@@ -700,7 +700,7 @@ export function PositionEditor(p: Props) {
 
               <ExchangeInfoRow
                 isTop
-                label={t`Size`}
+                label={`Size`}
                 value={formatUsd(position.sizeInUsd)}
               />
 
@@ -709,18 +709,16 @@ export function PositionEditor(p: Props) {
                   <Tooltip
                     handle={
                       <span className="Exchange-info-label">
-                        <Trans>
-                          Collateral ({position?.collateralToken?.symbol})
-                        </Trans>
+                        Collateral ({position?.collateralToken?.symbol})
                       </span>
                     }
                     position="left-top"
                     renderContent={() => {
                       return (
-                        <Trans>
+                        <span>
                           Initial Collateral (Collateral excluding Borrow and
                           Funding Fee).
-                        </Trans>
+                        </span>
                       );
                     }}
                   />
@@ -746,7 +744,7 @@ export function PositionEditor(p: Props) {
 
               {!isDeposit && (
                 <ExchangeInfoRow
-                  label={t`Receive`}
+                  label={`Receive`}
                   value={formatTokenAmountWithUsd(
                     receiveAmount,
                     receiveUsd,

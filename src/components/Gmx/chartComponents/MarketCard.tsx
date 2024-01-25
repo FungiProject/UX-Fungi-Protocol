@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "./ExternalLink";
 import StatsTooltipRow from "./StatsTooltipRow";
 import Tooltip from "./Tooltip";
@@ -46,7 +46,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     ? indexToken?.prices?.minPrice
     : indexToken?.prices?.maxPrice;
 
-  const longShortText = isLong ? t`Long` : t`Short`;
+  const longShortText = isLong ? `Long` : `Short`;
 
   const {
     liquidity,
@@ -99,26 +99,26 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
     const isLongPositive = fundingRateLong?.gt(0);
     const long = (
-      <Trans>
-        Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+      <div>
+        Long positions {isLongPositive ? `receive` : `pay`} a Funding Fee of{" "}
         <span className={getPositiveOrNegativeClass(fundingRateLong)}>
           {getPlusOrMinusSymbol(fundingRateLong)}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
         per hour.
-      </Trans>
+      </div>
     );
 
     const isShortPositive = fundingRateShort?.gt(0);
     const short = (
-      <Trans>
-        Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+      <div>
+        Short positions {isShortPositive ? `receive` : `pay`} a Funding Fee of{" "}
         <span className={getPositiveOrNegativeClass(fundingRateShort)}>
           {getPlusOrMinusSymbol(fundingRateShort)}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}
         per hour.
-      </Trans>
+      </div>
     );
 
     const [currentFeeElement, oppositeFeeElement] = isLong
@@ -135,14 +135,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           <span>
             <br />
             <br />
-            <Trans>
+            <div>
               This market uses an Adaptive Funding Rate. The Funding Rate will
               adjust over time depending on the ratio of longs and shorts.{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">
                 Read more
               </ExternalLink>
               .
-            </Trans>
+            </div>
           </span>
         )}
       </div>
@@ -157,7 +157,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       <div className="App-card-divider" />
       <div>
         <ExchangeInfoRow
-          label={t`Market`}
+          label={`Market`}
           value={
             <div className="items-top">
               <span>{indexName && indexName}</span>
@@ -166,7 +166,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           }
         />
         <ExchangeInfoRow
-          label={t`Entry Price`}
+          label={`Entry Price`}
           value={
             <Tooltip
               handle={
@@ -175,7 +175,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               }
               position="right-bottom"
               renderContent={() => (
-                <Trans>
+                <div>
                   The position will be opened at a reference price of{" "}
                   {formatUsd(entryPrice, { displayDecimals: priceDecimals })},
                   not accounting for price impact, with a max slippage of{" "}
@@ -193,14 +193,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">
                     More Info
                   </ExternalLink>
-                </Trans>
+                </div>
               )}
             />
           }
         />
 
         <ExchangeInfoRow
-          label={t`Exit Price`}
+          label={`Exit Price`}
           value={
             <Tooltip
               handle={
@@ -210,7 +210,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               }
               position="right-bottom"
               renderContent={() => (
-                <Trans>
+                <div>
                   If you have an existing position, the position will be closed
                   at a reference price of {formatUsd(entryPrice)}, not
                   accounting for price impact.
@@ -222,14 +222,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">
                     More Info
                   </ExternalLink>
-                </Trans>
+                </div>
               )}
             />
           }
         />
 
         <ExchangeInfoRow
-          label={t`Borrow Fee`}
+          label={`Borrow Fee`}
           value={
             borrowingRate
               ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h`
@@ -238,7 +238,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Funding Fee`}
+          label={`Funding Fee`}
           value={
             <Tooltip
               className="al-swap"
@@ -258,7 +258,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Available Liquidity`}
+          label={`Available Liquidity`}
           value={
             <Tooltip
               className="al-swap"
@@ -267,7 +267,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
-                    label={t`${longShortText} ${indexToken?.symbol} Reserve`}
+                    label={`${longShortText} ${indexToken?.symbol} Reserve`}
                     value={`${formatUsd(reservedUsd, {
                       displayDecimals: 0,
                     })} / ${formatUsd(maxReservedUsd, {
@@ -276,7 +276,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                     showDollar={false}
                   />
                   <StatsTooltipRow
-                    label={t`${longShortText} ${indexToken?.symbol} Open Interest`}
+                    label={`${longShortText} ${indexToken?.symbol} Open Interest`}
                     value={`${formatUsd(currentOpenInterest, {
                       displayDecimals: 0,
                     })} / ${formatUsd(maxOpenInterest, {
@@ -284,21 +284,16 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                     })}`}
                     showDollar={false}
                   />
-
                   <br />
                   {isLong && (
                     <>
-                      <Trans>
-                        Reserve considers the PnL of Open Positions, while Open
-                        Interest does not.
-                      </Trans>{" "}
+                      Reserve considers the PnL of Open Positions, while Open
+                      Interest does not.
                     </>
                   )}
-                  <Trans>
-                    The Available Liquidity will be the lesser of the difference
-                    between the maximum value and the current value for the
-                    Reserve and Open Interest.
-                  </Trans>
+                  The Available Liquidity will be the lesser of the difference
+                  between the maximum value and the current value for the
+                  Reserve and Open Interest.
                 </div>
               )}
             />
@@ -306,7 +301,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Open Interest Balance`}
+          label={`Open Interest Balance`}
           value={
             <div className="MarketCard-pool-balance">
               <Tooltip
@@ -327,7 +322,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                     {marketInfo && totalInterestUsd && (
                       <>
                         <StatsTooltipRow
-                          label={t`Long Open Interest`}
+                          label={`Long Open Interest`}
                           value={
                             <span>
                               {formatUsd(marketInfo.longInterestUsd, {
@@ -347,7 +342,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                         />
                         <br />
                         <StatsTooltipRow
-                          label={t`Short Open Interest`}
+                          label={`Short Open Interest`}
                           value={
                             <span>
                               {formatUsd(marketInfo.shortInterestUsd, {

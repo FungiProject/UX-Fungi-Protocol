@@ -12,7 +12,7 @@ import {
   formatAmount,
   removeTrailingZeros,
 } from "../lib/numbers";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { getRootUrl } from "../lib/url";
 import { BASIS_POINTS_DIVISOR } from "../config/factors";
 
@@ -175,11 +175,11 @@ export function getCodeError(value) {
   if (!trimmedValue) return "";
 
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
-    return t`The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
+    return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
   if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
-    return t`Only letters, numbers and underscores are allowed.`;
+    return `Only letters, numbers and underscores are allowed.`;
   }
   return "";
 }

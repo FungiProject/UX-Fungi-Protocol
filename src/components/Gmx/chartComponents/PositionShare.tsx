@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import Button from "./Button";
 import { useAffiliateCodes } from "../domain/referrals/hooks";
 import { Token } from "../domain/tokens";
@@ -92,7 +92,7 @@ function PositionShare({
         } catch {
           setUploadedImageInfo(null);
           setUploadedImageError(
-            t`Image generation error, please refresh and try again.`
+            `Image generation error, please refresh and try again.`
           );
         }
       }
@@ -112,7 +112,7 @@ function PositionShare({
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url as string);
-    helperToast.success(t`Link copied to clipboard.`);
+    helperToast.success(`Link copied to clipboard.`);
   }
 
   return (
@@ -120,7 +120,7 @@ function PositionShare({
       className="position-share-modal"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share Position`}
+      label={`Share Position`}
     >
       <PositionShareCard
         entryPrice={entryPrice}
@@ -146,7 +146,7 @@ function PositionShare({
           onClick={handleCopy}
         >
           <BiCopy className="icon" />
-          <Trans>Copy</Trans>
+          <span>Copy</span>
         </Button>
         <Button
           variant="secondary"
@@ -155,7 +155,7 @@ function PositionShare({
           onClick={handleDownload}
         >
           <RiFileDownloadLine className="icon" />
-          <Trans>Download</Trans>
+          <span>Download</span>
         </Button>
         <Button
           newTab
@@ -165,7 +165,7 @@ function PositionShare({
           to={tweetLink}
         >
           <FiTwitter className="icon" />
-          <Trans>Tweet</Trans>
+          <span>Tweet</span>
         </Button>
       </div>
     </Modal>

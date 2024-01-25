@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import { useChainId } from "../lib/chains";
 import { useCallback, useState } from "react";
 import { useClaimCollateralHistory } from "../domain/synthetics/claimHistory";
@@ -58,9 +58,7 @@ export function Claims({
   return (
     <div className="TradeHistory">
       {account && isLoading && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>Loading...</Trans>
-        </div>
+        <div className="TradeHistoryRow App-box">Loading...</div>
       )}
       <div
         className={cx("flex", "w-full", {
@@ -82,11 +80,7 @@ export function Claims({
           />
         )}
       </div>
-      {isEmpty && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>No claims yet</Trans>
-        </div>
-      )}
+      {isEmpty && <div className="TradeHistoryRow App-box">No claims yet</div>}
       {claimActions?.map((claimAction) => (
         <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
       ))}
@@ -97,7 +91,7 @@ export function Claims({
               className="App-button-option App-card-option"
               onClick={() => setPageIndex((old) => old - 1)}
             >
-              <Trans>Prev</Trans>
+              Prev
             </button>
           )}
           {claimActions && claimActions.length >= PAGE_SIZE && (
@@ -105,7 +99,7 @@ export function Claims({
               className="App-button-option App-card-option"
               onClick={() => setPageIndex((old) => old + 1)}
             >
-              <Trans>Next</Trans>
+              Next
             </button>
           )}
         </div>

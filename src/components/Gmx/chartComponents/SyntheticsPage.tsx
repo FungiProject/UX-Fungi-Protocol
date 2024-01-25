@@ -1,4 +1,4 @@
-import { Plural, Trans, t } from "@lingui/macro";
+// import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Checkbox from "./Checkbox";
 import { ClaimModal } from "./ClaimModal";
@@ -45,6 +45,7 @@ import { useSelectedTradeOption } from "../domain/synthetics/trade/useSelectedTr
 import { getMidPrice } from "../domain/tokens";
 import { helperToast } from "../lib/helperToast";
 import useWallet from "../lib/wallets/useWallet";
+import PageContainer from "@/components/Container/PageContainer";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -340,14 +341,14 @@ export function SyntheticsPage(p: Props) {
       position?.marketInfo && getMarketPoolName(position?.marketInfo);
     setActivePosition(getByKey(positionsInfoData, key), tradeMode);
     const message = (
-      <Trans>
+      <div>
         {position?.isLong ? "Long" : "Short"}{" "}
         <div className="inline-flex">
           <span>{indexName}</span>
           <span className="subtext gm-toast">[{poolName}]</span>
         </div>{" "}
         <span>market selected</span>.
-      </Trans>
+      </div>
     );
     helperToast.success(message);
   }
@@ -361,16 +362,12 @@ export function SyntheticsPage(p: Props) {
 
   function renderOrdersTabTitle() {
     if (!ordersCount) {
-      return (
-        <div>
-          <Trans>Orders</Trans>
-        </div>
-      );
+      return <div>Orders</div>;
     }
 
     return (
       <div>
-        <Trans>Orders</Trans>{" "}
+        Orders{" "}
         <span
           className={cx({
             negative: ordersErrorsCount > 0,
@@ -384,241 +381,243 @@ export function SyntheticsPage(p: Props) {
   }
 
   return (
-    <div className="Exchange page-layout">
-      <Helmet>
+    <div className="Exchange page-layout overflow-auto">
+      <PageContainer
+        main={
+          <div className="Exchange-left">
+            <TVChart
+              tokensData={tokensData}
+              savedShouldShowPositionLines={savedShouldShowPositionLines}
+              ordersInfo={ordersInfoData}
+              positionsInfo={positionsInfoData}
+              chartTokenAddress={chartToken?.address}
+              availableTokens={availableChartTokens}
+              onSelectChartTokenAddress={setToTokenAddress}
+              tradeFlags={tradeFlags}
+              currentTradeType={tradeType}
+              tradePageVersion={tradePageVersion}
+              setTradePageVersion={setTradePageVersion}
+              avaialbleTokenOptions={availableTokensOptions}
+              marketsInfoData={marketsInfoData}
+            />
+
+            <div className="Exchange-lists large">
+              <div className="Exchange-list-tab-container">
+                <Tab
+                  options={Object.keys(ListSection)}
+                  optionLabels={{
+                    [ListSection.Positions]: `Positions${
+                      positionsCount ? ` (${positionsCount})` : ""
+                    }`,
+                    [ListSection.Orders]: renderOrdersTabTitle(),
+                    [ListSection.Trades]: `Trades`,
+                    [ListSection.Claims]: hasClaimables
+                      ? `Claims (1)`
+                      : `Claims`,
+                  }}
+                  option={listSection}
+                  onChange={(section) => setListSection(section)}
+                  type="inline"
+                  className="Exchange-list-tabs"
+                />
+                <div className="align-right Exchange-should-show-position-lines">
+                  {selectedOrdersKeysArr.length > 0 && (
+                    <button
+                      className="muted font-base cancel-order-btn"
+                      disabled={isCancelOrdersProcessig}
+                      type="button"
+                      onClick={onCancelOrdersClick}
+                    >
+                      Cancel order
+                    </button>
+                  )}
+                  <Checkbox
+                    isChecked={savedShouldShowPositionLines}
+                    setIsChecked={setSavedShouldShowPositionLines}
+                    className={cx("muted chart-positions", {
+                      active: savedShouldShowPositionLines,
+                    })}
+                  >
+                    <span>Chart positions</span>
+                  </Checkbox>
+                </div>
+              </div>
+
+              {listSection === ListSection.Positions && (
+                <PositionList
+                  positionsData={positionsInfoData}
+                  ordersData={ordersInfoData}
+                  isLoading={isPositionsLoading}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  onOrdersClick={() => setListSection(ListSection.Orders)}
+                  onSettlePositionFeesClick={handleSettlePositionFeesClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  onClosePositionClick={setClosingPositionKey}
+                  onEditCollateralClick={setEditingPositionKey}
+                  showPnlAfterFees={showPnlAfterFees}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  currentMarketAddress={marketAddress}
+                  currentCollateralAddress={collateralAddress}
+                  currentTradeType={tradeType}
+                  openSettings={openSettings}
+                />
+              )}
+              {listSection === ListSection.Orders && (
+                <OrderList
+                  marketsInfoData={marketsInfoData}
+                  tokensData={tokensData}
+                  positionsData={positionsInfoData}
+                  ordersData={ordersInfoData}
+                  selectedOrdersKeys={selectedOrdersKeys}
+                  setSelectedOrdersKeys={setSelectedOrdersKeys}
+                  isLoading={isOrdersLoading}
+                  setPendingTxns={setPendingTxns}
+                />
+              )}
+              {listSection === ListSection.Trades && (
+                <TradeHistory
+                  account={account}
+                  marketsInfoData={marketsInfoData}
+                  tokensData={tokensData}
+                  shouldShowPaginationButtons
+                />
+              )}
+              {listSection === ListSection.Claims && (
+                <Claims
+                  marketsInfoData={marketsInfoData}
+                  positionsInfoData={positionsInfoData}
+                  tokensData={tokensData}
+                  shouldShowPaginationButtons
+                  setIsClaiming={setIsClaiming}
+                  setIsSettling={setIsSettling}
+                />
+              )}
+            </div>
+          </div>
+        }
+        secondary={
+          <div className="Exchange-content">
+            <div className="Exchange-right">
+              <div className="Exchange-swap-box">
+                <TradeBox
+                  tradeMode={tradeMode}
+                  tradeType={tradeType}
+                  availableTradeModes={avaialbleTradeModes}
+                  tradeFlags={tradeFlags}
+                  isWrapOrUnwrap={isWrapOrUnwrap}
+                  fromTokenAddress={fromTokenAddress}
+                  fromToken={fromToken}
+                  toTokenAddress={toTokenAddress}
+                  toToken={toToken}
+                  marketAddress={marketAddress}
+                  marketInfo={marketInfo}
+                  collateralAddress={collateralAddress}
+                  collateralToken={collateralToken}
+                  avaialbleTokenOptions={availableTokensOptions}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  existingPosition={selectedPosition}
+                  existingOrder={existingOrder}
+                  shouldDisableValidation={shouldDisableValidation}
+                  allowedSlippage={allowedSlippage!}
+                  isHigherSlippageAllowed={isHigherSlippageAllowed}
+                  tokensData={tokensData}
+                  ordersInfo={ordersInfoData}
+                  positionsInfo={positionsInfoData}
+                  marketsInfoData={marketsInfoData}
+                  setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+                  onSelectMarketAddress={setMarketAddress}
+                  onSelectCollateralAddress={setCollateralAddress}
+                  onSelectFromTokenAddress={setFromTokenAddress}
+                  onSelectToTokenAddress={setToTokenAddress}
+                  onSelectTradeMode={setTradeMode}
+                  onSelectTradeType={setTradeType}
+                  setPendingTxns={setPendingTxns}
+                  switchTokenAddresses={switchTokenAddresses}
+                />
+              </div>
+            </div>
+
+            <div className="Exchange-lists small">
+              <div className="Exchange-list-tab-container">
+                <Tab
+                  options={Object.keys(ListSection)}
+                  optionLabels={{
+                    [ListSection.Positions]: `Positions${
+                      positionsCount ? ` (${positionsCount})` : ""
+                    }`,
+                    [ListSection.Orders]: renderOrdersTabTitle(),
+                    [ListSection.Trades]: `Trades`,
+                    [ListSection.Claims]: hasClaimables
+                      ? `Claims (1)`
+                      : `Claims`,
+                  }}
+                  option={listSection}
+                  onChange={(section) => setListSection(section)}
+                  type="inline"
+                  className="Exchange-list-tabs"
+                />
+              </div>
+              {listSection === ListSection.Positions && (
+                <PositionList
+                  positionsData={positionsInfoData}
+                  ordersData={ordersInfoData}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  isLoading={isPositionsLoading}
+                  onOrdersClick={() => setListSection(ListSection.Orders)}
+                  onSelectPositionClick={onSelectPositionClick}
+                  onClosePositionClick={setClosingPositionKey}
+                  onEditCollateralClick={setEditingPositionKey}
+                  onSettlePositionFeesClick={handleSettlePositionFeesClick}
+                  showPnlAfterFees={showPnlAfterFees}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  currentMarketAddress={marketAddress}
+                  currentCollateralAddress={collateralAddress}
+                  currentTradeType={tradeType}
+                  openSettings={openSettings}
+                />
+              )}
+              {listSection === ListSection.Orders && (
+                <OrderList
+                  marketsInfoData={marketsInfoData}
+                  tokensData={tokensData}
+                  positionsData={positionsInfoData}
+                  ordersData={ordersInfoData}
+                  isLoading={isOrdersLoading}
+                  selectedOrdersKeys={selectedOrdersKeys}
+                  setSelectedOrdersKeys={setSelectedOrdersKeys}
+                  setPendingTxns={setPendingTxns}
+                />
+              )}
+              {listSection === ListSection.Trades && (
+                <TradeHistory
+                  account={account}
+                  marketsInfoData={marketsInfoData}
+                  tokensData={tokensData}
+                  shouldShowPaginationButtons
+                />
+              )}
+              {listSection === ListSection.Claims && (
+                <Claims
+                  marketsInfoData={marketsInfoData}
+                  positionsInfoData={positionsInfoData}
+                  tokensData={tokensData}
+                  shouldShowPaginationButtons
+                  setIsClaiming={setIsClaiming}
+                  setIsSettling={setIsSettling}
+                />
+              )}
+            </div>
+          </div>
+        }
+      />
+
+      {/* <Helmet>
         <style type="text/css">{`
             :root {
               --main-bg-color: #08091b;                   
              {
          `}</style>
       </Helmet>
-      <div className="Exchange-content">
-        <div className="Exchange-left">
-          <TVChart
-            tokensData={tokensData}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
-            ordersInfo={ordersInfoData}
-            positionsInfo={positionsInfoData}
-            chartTokenAddress={chartToken?.address}
-            availableTokens={availableChartTokens}
-            onSelectChartTokenAddress={setToTokenAddress}
-            tradeFlags={tradeFlags}
-            currentTradeType={tradeType}
-            tradePageVersion={tradePageVersion}
-            setTradePageVersion={setTradePageVersion}
-            avaialbleTokenOptions={availableTokensOptions}
-            marketsInfoData={marketsInfoData}
-          />
-
-          <div className="Exchange-lists large">
-            <div className="Exchange-list-tab-container">
-              <Tab
-                options={Object.keys(ListSection)}
-                optionLabels={{
-                  [ListSection.Positions]: t`Positions${
-                    positionsCount ? ` (${positionsCount})` : ""
-                  }`,
-                  [ListSection.Orders]: renderOrdersTabTitle(),
-                  [ListSection.Trades]: t`Trades`,
-                  [ListSection.Claims]: hasClaimables
-                    ? t`Claims (1)`
-                    : t`Claims`,
-                }}
-                option={listSection}
-                onChange={(section) => setListSection(section)}
-                type="inline"
-                className="Exchange-list-tabs"
-              />
-              <div className="align-right Exchange-should-show-position-lines">
-                {selectedOrdersKeysArr.length > 0 && (
-                  <button
-                    className="muted font-base cancel-order-btn"
-                    disabled={isCancelOrdersProcessig}
-                    type="button"
-                    onClick={onCancelOrdersClick}
-                  >
-                    <Plural
-                      value={selectedOrdersKeysArr.length}
-                      one="Cancel order"
-                      other="Cancel # orders"
-                    />
-                  </button>
-                )}
-                <Checkbox
-                  isChecked={savedShouldShowPositionLines}
-                  setIsChecked={setSavedShouldShowPositionLines}
-                  className={cx("muted chart-positions", {
-                    active: savedShouldShowPositionLines,
-                  })}
-                >
-                  <span>
-                    <Trans>Chart positions</Trans>
-                  </span>
-                </Checkbox>
-              </div>
-            </div>
-
-            {listSection === ListSection.Positions && (
-              <PositionList
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
-                isLoading={isPositionsLoading}
-                savedIsPnlInLeverage={savedIsPnlInLeverage}
-                onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSettlePositionFeesClick={handleSettlePositionFeesClick}
-                onSelectPositionClick={onSelectPositionClick}
-                onClosePositionClick={setClosingPositionKey}
-                onEditCollateralClick={setEditingPositionKey}
-                showPnlAfterFees={showPnlAfterFees}
-                savedShowPnlAfterFees={savedShowPnlAfterFees}
-                currentMarketAddress={marketAddress}
-                currentCollateralAddress={collateralAddress}
-                currentTradeType={tradeType}
-                openSettings={openSettings}
-              />
-            )}
-            {listSection === ListSection.Orders && (
-              <OrderList
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
-                selectedOrdersKeys={selectedOrdersKeys}
-                setSelectedOrdersKeys={setSelectedOrdersKeys}
-                isLoading={isOrdersLoading}
-                setPendingTxns={setPendingTxns}
-              />
-            )}
-            {listSection === ListSection.Trades && (
-              <TradeHistory
-                account={account}
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-              />
-            )}
-            {listSection === ListSection.Claims && (
-              <Claims
-                marketsInfoData={marketsInfoData}
-                positionsInfoData={positionsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-                setIsClaiming={setIsClaiming}
-                setIsSettling={setIsSettling}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="Exchange-right">
-          <div className="Exchange-swap-box">
-            <TradeBox
-              tradeMode={tradeMode}
-              tradeType={tradeType}
-              availableTradeModes={avaialbleTradeModes}
-              tradeFlags={tradeFlags}
-              isWrapOrUnwrap={isWrapOrUnwrap}
-              fromTokenAddress={fromTokenAddress}
-              fromToken={fromToken}
-              toTokenAddress={toTokenAddress}
-              toToken={toToken}
-              marketAddress={marketAddress}
-              marketInfo={marketInfo}
-              collateralAddress={collateralAddress}
-              collateralToken={collateralToken}
-              avaialbleTokenOptions={availableTokensOptions}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
-              existingPosition={selectedPosition}
-              existingOrder={existingOrder}
-              shouldDisableValidation={shouldDisableValidation}
-              allowedSlippage={allowedSlippage!}
-              isHigherSlippageAllowed={isHigherSlippageAllowed}
-              tokensData={tokensData}
-              ordersInfo={ordersInfoData}
-              positionsInfo={positionsInfoData}
-              marketsInfoData={marketsInfoData}
-              setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              onSelectMarketAddress={setMarketAddress}
-              onSelectCollateralAddress={setCollateralAddress}
-              onSelectFromTokenAddress={setFromTokenAddress}
-              onSelectToTokenAddress={setToTokenAddress}
-              onSelectTradeMode={setTradeMode}
-              onSelectTradeType={setTradeType}
-              setPendingTxns={setPendingTxns}
-              switchTokenAddresses={switchTokenAddresses}
-            />
-          </div>
-        </div>
-
-        <div className="Exchange-lists small">
-          <div className="Exchange-list-tab-container">
-            <Tab
-              options={Object.keys(ListSection)}
-              optionLabels={{
-                [ListSection.Positions]: t`Positions${
-                  positionsCount ? ` (${positionsCount})` : ""
-                }`,
-                [ListSection.Orders]: renderOrdersTabTitle(),
-                [ListSection.Trades]: t`Trades`,
-                [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
-              }}
-              option={listSection}
-              onChange={(section) => setListSection(section)}
-              type="inline"
-              className="Exchange-list-tabs"
-            />
-          </div>
-          {listSection === ListSection.Positions && (
-            <PositionList
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
-              isLoading={isPositionsLoading}
-              onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={onSelectPositionClick}
-              onClosePositionClick={setClosingPositionKey}
-              onEditCollateralClick={setEditingPositionKey}
-              onSettlePositionFeesClick={handleSettlePositionFeesClick}
-              showPnlAfterFees={showPnlAfterFees}
-              savedShowPnlAfterFees={savedShowPnlAfterFees}
-              currentMarketAddress={marketAddress}
-              currentCollateralAddress={collateralAddress}
-              currentTradeType={tradeType}
-              openSettings={openSettings}
-            />
-          )}
-          {listSection === ListSection.Orders && (
-            <OrderList
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
-              isLoading={isOrdersLoading}
-              selectedOrdersKeys={selectedOrdersKeys}
-              setSelectedOrdersKeys={setSelectedOrdersKeys}
-              setPendingTxns={setPendingTxns}
-            />
-          )}
-          {listSection === ListSection.Trades && (
-            <TradeHistory
-              account={account}
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-            />
-          )}
-          {listSection === ListSection.Claims && (
-            <Claims
-              marketsInfoData={marketsInfoData}
-              positionsInfoData={positionsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-              setIsClaiming={setIsClaiming}
-              setIsSettling={setIsSettling}
-            />
-          )}
-        </div>
-      </div>
 
       <PositionSeller
         position={closingPosition!}
@@ -662,7 +661,7 @@ export function SyntheticsPage(p: Props) {
           setGettingPendingFeePositionKeys([]);
           setIsSettling(false);
         }, [])}
-      />
+      /> */}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import PercentageInput from "./PercentageInput";
 import { HIGH_POSITION_IMPACT_BPS } from "../config/factors";
@@ -68,40 +68,34 @@ function AcceptablePriceImpactInputRowImpl({
   }
 
   const recommendedHandle = (
-    <Trans>
-      <span
-        className="AcceptablePriceImpactInputRow-handle"
-        onClick={handleRecommendedValueClick}
-      >
-        Set Recommended Impact:{" "}
-        {formatPercentage(BigNumber.from(defaultValue).mul(-1), {
-          signed: true,
-        })}
-      </span>
+    <span
+      className="AcceptablePriceImpactInputRow-handle"
+      onClick={handleRecommendedValueClick}
+    >
+      Set Recommended Impact:{" "}
+      {formatPercentage(BigNumber.from(defaultValue).mul(-1), {
+        signed: true,
+      })}
       .
-    </Trans>
+    </span>
   );
 
   const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0) ? (
     <p>
-      <Trans>
-        The current Price Impact is{" "}
-        {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
-        Consider using -0.30% Acceptable Price Impact so the order is more
-        likely to be processed.
-      </Trans>
+      The current Price Impact is{" "}
+      {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
+      Consider using -0.30% Acceptable Price Impact so the order is more likely
+      to be processed.
       <br />
       <br />
       {recommendedHandle}
     </p>
   ) : (
     <p>
-      <Trans>
-        The Current Price Impact is{" "}
-        {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
-        Consider adding a buffer of 0.30% to it so the order is more likely to
-        be processed.
-      </Trans>
+      The Current Price Impact is{" "}
+      {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
+      Consider adding a buffer of 0.30% to it so the order is more likely to be
+      processed.
       <br />
       <br />
       {recommendedHandle}
@@ -110,10 +104,8 @@ function AcceptablePriceImpactInputRowImpl({
 
   const highValueWarningText = (
     <p>
-      <Trans>
-        You have set a high Acceptable Price Impact. The current Price Impact is{" "}
-        {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
-      </Trans>
+      You have set a high Acceptable Price Impact. The current Price Impact is{" "}
+      {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
       <br />
       <br />
       {recommendedHandle}
@@ -121,7 +113,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   const content = notAvailable ? (
-    t`NA`
+    `NA`
   ) : (
     <PercentageInput
       key={key}
@@ -138,7 +130,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+    <ExchangeInfoRow label={`Acceptable Price Impact`}>
       {content}
     </ExchangeInfoRow>
   );

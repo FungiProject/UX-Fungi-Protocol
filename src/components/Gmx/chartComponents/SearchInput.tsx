@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import searchIcon from "../../../../public/img/search.svg";
 import { useMedia } from "react-use";
 import cx from "classnames";
@@ -24,7 +24,7 @@ export default function SearchInput({
     <div className={classNames}>
       <input
         type="text"
-        placeholder={placeholder ?? t`Search Token`}
+        placeholder={placeholder ?? `Search Token`}
         value={value}
         onChange={setValue}
         onKeyDown={onKeyDown}

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import Modal from "./Modal";
 import {
   MarketInfo,
@@ -153,33 +153,27 @@ export function ClaimModal(p: Props) {
       className="Confirmation-box ClaimableModal"
       isVisible={p.isVisible}
       setIsVisible={onClose}
-      label={t`Confirm Claim`}
+      label={`Confirm Claim`}
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>
-            Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
-          </Trans>
+          Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
         </div>
       </div>
       <div className="App-card-divider ClaimModal-divider" />
       <div className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="items-top">
-              <Trans>MARKET</Trans>
-            </div>
+            <div className="items-top">MARKET</div>
           </div>
         </div>
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
             className="ClaimSettleModal-tooltip-text-grey"
             position="right-top"
-            handle={t`FUNDING FEE`}
+            handle={`FUNDING FEE`}
             renderContent={() => (
-              <Trans>
-                <span className="text-white">Claimable Funding Fee.</span>
-              </Trans>
+              <span className="text-white">Claimable Funding Fee.</span>
             )}
           />
         </div>
@@ -193,7 +187,7 @@ export function ClaimModal(p: Props) {
         onClick={onSubmit}
         disabled={isSubmitting}
       >
-        {isSubmitting ? t`Claiming...` : t`Claim`}
+        {isSubmitting ? `Claiming...` : `Claim`}
       </Button>
     </Modal>
   );

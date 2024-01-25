@@ -13,7 +13,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
@@ -79,7 +79,7 @@ export async function createSwapOrderTxn(
       createOrderMulticallPayload: simulationEncodedPayload,
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
-      errorTitle: t`Order error.`,
+      errorTitle: `Order error.`,
     });
   }
 

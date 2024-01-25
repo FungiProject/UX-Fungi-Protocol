@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import StatsTooltipRow from "./StatsTooltipRow";
@@ -51,14 +51,12 @@ export function SwapCard(p: Props) {
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
-      <div className="App-card-title">
-        <Trans>Swap</Trans>
-      </div>
+      <div className="App-card-title">Swap</div>
       <div className="App-card-divider" />
 
       <div>
         <ExchangeInfoRow
-          label={t`${fromToken?.symbol} Price`}
+          label={`${fromToken?.symbol} Price`}
           value={
             formatUsd(fromToken?.prices?.minPrice, {
               displayDecimals: fromToken?.priceDecimals,
@@ -67,7 +65,7 @@ export function SwapCard(p: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`${toToken?.symbol} Price`}
+          label={`${toToken?.symbol} Price`}
           value={
             formatUsd(toToken?.prices?.maxPrice, {
               displayDecimals: toToken?.priceDecimals,
@@ -76,7 +74,7 @@ export function SwapCard(p: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Available Liquidity`}
+          label={`Available Liquidity`}
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}
@@ -85,7 +83,7 @@ export function SwapCard(p: Props) {
                 <div>
                   <StatsTooltipRow
                     className="al-swap"
-                    label={t`Max ${toToken?.symbol} out`}
+                    label={`Max ${toToken?.symbol} out`}
                     value={[
                       formatTokenAmount(
                         maxLiquidityAmount,
@@ -106,7 +104,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <ExchangeInfoRow label={t`Price`} value={ratioStr} />
+        <ExchangeInfoRow label={`Price`} value={ratioStr} />
       </div>
     </div>
   );

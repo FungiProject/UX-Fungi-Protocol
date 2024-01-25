@@ -22,6 +22,10 @@ export function basisPointsToFloat(basisPoints: BigNumber) {
   return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
 }
 
+export function roundUpDivision(a: BigNumber, b: BigNumber) {
+  return a.add(b).sub(1).div(b);
+}
+
 export function formatDeltaUsd(
   deltaUsd?: BigNumber,
   percentage?: BigNumber,

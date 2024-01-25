@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import { useTradeHistory } from "../domain/synthetics/tradeHistory";
 import { useChainId } from "../lib/chains";
 import { TradeHistoryRow } from "./TradeHistoryRow";
@@ -70,16 +70,8 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistory">
-      {isLoading && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>Loading...</Trans>
-        </div>
-      )}
-      {isEmpty && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>No trades yet</Trans>
-        </div>
-      )}
+      {isLoading && <div className="TradeHistoryRow App-box">Loading...</div>}
+      {isEmpty && <div className="TradeHistoryRow App-box">No trades yet</div>}
       {!isLoading &&
         currentPageData?.map((tradeAction) => (
           <TradeHistoryRow

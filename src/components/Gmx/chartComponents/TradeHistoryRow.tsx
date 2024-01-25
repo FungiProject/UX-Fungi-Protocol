@@ -19,7 +19,7 @@ import { formatDateTime } from "../lib/dates";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { formatPositionMessage, formatSwapMessage } from "../utils";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import TooltipWithPortal from "./TooltipWithPortal";
 
 type Props = {
@@ -119,7 +119,7 @@ function getPositionOrderMessage(
         renderContent={() => (
           <StatsTooltipRow
             showDollar={false}
-            label={t`Market`}
+            label={`Market`}
             value={renderMarketName(tradeAction.marketInfo)}
           />
         )}

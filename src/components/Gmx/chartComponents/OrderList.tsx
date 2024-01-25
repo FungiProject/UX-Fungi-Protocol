@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import Checkbox from "./Checkbox";
 import { MarketsInfoData } from "../domain/synthetics/markets";
 import {
@@ -93,7 +93,7 @@ export function OrderList(p: Props) {
     <>
       {orders.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
-          {p.isLoading ? t`Loading...` : t`No open orders`}
+          {p.isLoading ? `Loading...` : `No open orders`}
         </div>
       )}
       <div className="Exchange-list Orders small">
@@ -132,30 +132,22 @@ export function OrderList(p: Props) {
             )}
 
             <th>
-              <div>
-                <Trans>Type</Trans>
-              </div>
+              <div>Type</div>
             </th>
             <th>
-              <div>
-                <Trans>Order</Trans>
-              </div>
+              <div>Order</div>
             </th>
             <th>
-              <div>
-                <Trans>Trigger Price</Trans>
-              </div>
+              <div>Trigger Price</div>
             </th>
             <th>
-              <div>
-                <Trans>Mark Price</Trans>
-              </div>
+              <div>Mark Price</div>
             </th>
           </tr>
           {orders.length === 0 && (
             <tr>
               <td colSpan={5}>
-                {p.isLoading ? t`Loading...` : t`No open orders`}
+                {p.isLoading ? `Loading...` : `No open orders`}
               </td>
             </tr>
           )}

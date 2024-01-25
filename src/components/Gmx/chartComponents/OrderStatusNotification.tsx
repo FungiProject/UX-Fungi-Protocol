@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "./TransactionStatus";
 import { getWrappedToken } from "../config/tokens";
@@ -97,7 +97,7 @@ export function OrderStatusNotification({
 
   const title = useMemo(() => {
     if (!orderData) {
-      return t`Unknown order`;
+      return `Unknown order`;
     }
 
     if (isSwapOrderType(orderData.orderType)) {
@@ -109,10 +109,10 @@ export function OrderStatusNotification({
       } = orderData;
 
       const orderTypeText = isLimitSwapOrderType(orderData.orderType)
-        ? t`Limit Swap`
-        : t`Swap`;
+        ? `Limit Swap`
+        : `Swap`;
 
-      return t`${orderTypeText} ${formatTokenAmount(
+      return `${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
         initialCollateralToken?.decimals,
         initialCollateralToken?.symbol
@@ -131,7 +131,7 @@ export function OrderStatusNotification({
         initialCollateralToken,
       } = orderData;
 
-      const longShortText = isLong ? t`Long` : t`Short`;
+      const longShortText = isLong ? `Long` : `Short`;
       const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
 
       if (sizeDeltaUsd.eq(0)) {
@@ -140,13 +140,13 @@ export function OrderStatusNotification({
           : initialCollateralToken?.symbol;
 
         if (isIncreaseOrderType(orderType)) {
-          return t`Depositing ${formatTokenAmount(
+          return `Depositing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
             symbol
           )} to ${positionText}`;
         } else {
-          return t`Withdrawing ${formatTokenAmount(
+          return `Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
             symbol
@@ -157,17 +157,17 @@ export function OrderStatusNotification({
 
         if (isMarketOrderType(orderType)) {
           orderTypeText = isIncreaseOrderType(orderType)
-            ? t`Increasing`
-            : t`Decreasing`;
+            ? `Increasing`
+            : `Decreasing`;
         } else {
           orderTypeText = isLimitOrderType(orderType)
-            ? t`Limit order for`
-            : t`Trigger order for`;
+            ? `Limit order for`
+            : `Trigger order for`;
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
 
-        return t`${orderTypeText} ${
+        return `${orderTypeText} ${
           marketInfo?.indexToken?.symbol
         } ${longShortText}: ${sign}${formatUsd(sizeDeltaUsd)}`;
       }
@@ -175,12 +175,12 @@ export function OrderStatusNotification({
   }, [orderData]);
 
   const creationStatus = useMemo(() => {
-    let text = t`Sending order request`;
+    let text = `Sending order request`;
     let status: TransactionStatusType = "loading";
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
-      text = t`Order request sent`;
+      text = `Order request sent`;
     }
 
     return (
@@ -197,7 +197,7 @@ export function OrderStatusNotification({
       return null;
     }
 
-    let text = t`Fulfilling order request`;
+    let text = `Fulfilling order request`;
     let status: TransactionStatusType = "muted";
     let txnHash: string | undefined;
 
@@ -206,13 +206,13 @@ export function OrderStatusNotification({
     }
 
     if (orderStatus?.executedTxnHash) {
-      text = t`Order executed`;
+      text = `Order executed`;
       status = "success";
       txnHash = orderStatus?.executedTxnHash;
     }
 
     if (orderStatus?.cancelledTxnHash) {
-      text = t`Order cancelled`;
+      text = `Order cancelled`;
       status = "error";
       txnHash = orderStatus?.cancelledTxnHash;
     }

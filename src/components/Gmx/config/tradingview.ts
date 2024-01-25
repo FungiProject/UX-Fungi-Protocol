@@ -13,3 +13,4 @@ export const SUPPORTED_RESOLUTIONS_V2 = {
   240: "4h",
   "1D": "1d",
 };
+export const LAST_BAR_REFRESH_INTERVAL = 5000; // 5 seconds

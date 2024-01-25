@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import TVChartContainer, { ChartLine } from "./TVChartContainer";
 import { VersionSwitch } from "./VersionSwitch";
@@ -128,10 +128,10 @@ export function TVChart({
           positionOrder.indexToken.symbol
         );
 
-        const longOrShortText = order.isLong ? t`Long` : t`Short`;
+        const longOrShortText = order.isLong ? `Long` : `Short`;
         const orderTypeText = isIncreaseOrderType(order.orderType)
-          ? t`Inc.`
-          : t`Dec.`;
+          ? `Inc.`
+          : `Dec.`;
         const tokenSymbol = getTokenData(
           tokensData,
           positionOrder.marketInfo.indexTokenAddress,
@@ -160,7 +160,7 @@ export function TVChart({
             "wrapped"
           ) === convertTokenAddress(chainId, chartTokenAddress, "wrapped")
         ) {
-          const longOrShortText = position.isLong ? t`Long` : t`Short`;
+          const longOrShortText = position.isLong ? `Long` : `Short`;
           const tokenSymbol = getTokenData(
             tokensData,
             position.marketInfo?.indexTokenAddress,
@@ -173,14 +173,14 @@ export function TVChart({
           );
 
           acc.push({
-            title: t`Open ${longOrShortText} ${tokenSymbol}`,
+            title: `Open ${longOrShortText} ${tokenSymbol}`,
             price: parseFloat(
               formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal)
             ),
           });
           if (liquidationPrice && liquidationPrice !== "NA") {
             acc.push({
-              title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
+              title: `Liq. ${longOrShortText} ${tokenSymbol}`,
               price: parseFloat(liquidationPrice),
             });
           }
@@ -209,14 +209,14 @@ export function TVChart({
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
         helperToast.success(
-          <Trans>
-            <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
+          <div>
+            <span>{nextTradeType === TradeType.Long ? `Long` : `Short`}</span>{" "}
             <div className="inline-flex">
               <span>{indexName}</span>
               <span className="subtext gm-toast">[{poolName}]</span>
             </div>{" "}
             <span>market selected</span>
-          </Trans>
+          </div>
         );
       }
     }

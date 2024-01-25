@@ -1,6 +1,6 @@
 import { isDevelopment } from "../config/env";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useRouter } from "next/router";
 import useIsWindowVisible from "./useIsWindowVisible";
 
 export function useHasLostFocus(p: {
@@ -12,7 +12,7 @@ export function useHasLostFocus(p: {
   const { whiteListedPages, checkIsTabFocused, timeout, debugId } = p;
 
   const isWindowVisible = useIsWindowVisible();
-  const location = useLocation();
+  const router = useRouter();
 
   const isFocused = useMemo(() => {
     const checks: boolean[] = [];
@@ -22,11 +22,11 @@ export function useHasLostFocus(p: {
     }
 
     if (whiteListedPages?.length) {
-      checks.push(whiteListedPages.includes(location.pathname));
+      checks.push(whiteListedPages.includes(router.asPath));
     }
 
     return checks.every(Boolean);
-  }, [checkIsTabFocused, isWindowVisible, location.pathname, whiteListedPages]);
+  }, [checkIsTabFocused, isWindowVisible, router.asPath, whiteListedPages]);
 
   const [hasLostFocus, setHasLostFocus] = useState(!isFocused);
 

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import DataStore from "../../abis/DataStore.json";
 import {
   ARBITRUM,
@@ -497,34 +497,34 @@ export function useSubaccountCancelOrdersDetailsMessage(
   return useMemo(() => {
     if (isLastAction) {
       return (
-        <Trans>
+        <div>
           Max Action Count Reached.{" "}
           <span onClick={openSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to update.
-        </Trans>
+        </div>
       );
     } else if (subaccountInsufficientFunds) {
       return (
-        <Trans>
+        <div>
           There are insufficient funds in your Subaccount for One-Click Trading.{" "}
           <span onClick={openSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to top-up.
-        </Trans>
+        </div>
       );
     } else if (mainAccountInsufficientFunds) {
       return (
-        <Trans>
+        <div>
           There are insufficient funds in your Main account for One-Click
           Trading auto top-ups.{" "}
           <span onClick={openSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to convert.
-        </Trans>
+        </div>
       );
     }
 

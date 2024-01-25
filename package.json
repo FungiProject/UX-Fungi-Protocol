@@ -6,17 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "extract": "lingui extract",
-    "compile": "lingui compile",
-    "i18n": "lingui extract && lingui compile"
+    "lint": "next lint"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
-    "@babel/core": "^7.23.7",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
-    "@lingui/react": "^4.7.0",
     "@rainbow-me/rainbowkit": "0.12.18",
     "@types/lodash": "4.14.198",
     "@types/react-router-dom": "5.3.3",
@@ -45,13 +40,10 @@
     "use-context-selector": "1.4.1",
     "sass": "1.55.0",
     "swr": "2.2.1",
-    "viem": "^1.19.11",
-    "wagmi": "^1.4.5"
+    "viem": "1.1.4",
+    "wagmi": "0.12.19"
   },
   "devDependencies": {
-    "@lingui/cli": "3.13.3",
-    "@lingui/loader": "3.13.3",
-    "@lingui/macro": "3.13.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

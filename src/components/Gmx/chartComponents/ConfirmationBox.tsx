@@ -1,4 +1,4 @@
-import { Plural, Trans, t } from "@lingui/macro";
+// import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ApproveTokenButton } from "./ApproveTokenButton";
 import Button from "./Button";
@@ -339,17 +339,17 @@ export function ConfirmationBox(p: Props) {
   const title = useMemo(() => {
     if (isMarket) {
       if (isSwap) {
-        return t`Confirm Swap`;
+        return `Confirm Swap`;
       }
 
-      return isLong ? t`Confirm Long` : t`Confirm Short`;
+      return isLong ? `Confirm Long` : `Confirm Short`;
     }
 
     if (isLimit) {
-      return t`Confirm Limit Order`;
+      return `Confirm Limit Order`;
     }
 
-    return t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
+    return `Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
   }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
   const priceImpactWarningState = usePriceImpactWarningState({
@@ -385,7 +385,7 @@ export function ConfirmationBox(p: Props) {
 
     if (isSubmitting) {
       return {
-        text: t`Creating Order...`,
+        text: `Creating Order...`,
         disabled: true,
       };
     }
@@ -399,9 +399,7 @@ export function ConfirmationBox(p: Props) {
 
     if (needPayTokenApproval) {
       return {
-        text: t`Pending ${
-          fromToken?.assetSymbol ?? fromToken?.symbol
-        } approval`,
+        text: `Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`,
         disabled: true,
       };
     }
@@ -412,7 +410,7 @@ export function ConfirmationBox(p: Props) {
       !isTriggerWarningAccepted
     ) {
       return {
-        text: t`Accept confirmation of trigger orders`,
+        text: `Accept confirmation of trigger orders`,
         disabled: true,
       };
     }
@@ -421,14 +419,14 @@ export function ConfirmationBox(p: Props) {
 
     if (isMarket) {
       if (isSwap) {
-        text = t`Swap`;
+        text = `Swap`;
       } else {
-        text = isLong ? t`Long` : t`Short`;
+        text = isLong ? `Long` : `Short`;
       }
     } else if (isLimit) {
-      text = t`Confirm Limit Order`;
+      text = `Confirm Limit Order`;
     } else {
-      text = t`Confirm ${getTriggerNameByOrderType(
+      text = `Confirm ${getTriggerNameByOrderType(
         fixedTriggerOrderType
       )} Order`;
     }
@@ -510,7 +508,7 @@ export function ConfirmationBox(p: Props) {
       !signer ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -543,7 +541,7 @@ export function ConfirmationBox(p: Props) {
       !signer ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -587,7 +585,7 @@ export function ConfirmationBox(p: Props) {
       !signer ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -680,7 +678,7 @@ export function ConfirmationBox(p: Props) {
         <>
           <div className="Confirmation-box-main">
             <div>
-              <Trans>Pay</Trans>{" "}
+              Pay
               {formatTokenAmountWithUsd(
                 swapAmounts?.amountIn,
                 swapAmounts?.usdIn,
@@ -690,7 +688,7 @@ export function ConfirmationBox(p: Props) {
             </div>
             <div className="Confirmation-box-main-icon"></div>
             <div>
-              <Trans>Receive</Trans>{" "}
+              Receive
               {formatTokenAmountWithUsd(
                 swapAmounts?.amountOut,
                 swapAmounts?.usdOut,
@@ -709,7 +707,7 @@ export function ConfirmationBox(p: Props) {
         <>
           <div className="Confirmation-box-main">
             <span>
-              <Trans>Pay</Trans>{" "}
+              Pay
               {formatTokenAmountWithUsd(
                 increaseAmounts?.initialCollateralAmount,
                 increaseAmounts?.initialCollateralUsd,
@@ -719,7 +717,7 @@ export function ConfirmationBox(p: Props) {
             </span>
             <div className="Confirmation-box-main-icon"></div>
             <div>
-              {isLong ? t`Long` : t`Short`}{" "}
+              {isLong ? `Long` : `Short`}{" "}
               {formatTokenAmountWithUsd(
                 increaseAmounts?.sizeDeltaInTokens,
                 increaseAmounts?.sizeDeltaUsd,
@@ -736,8 +734,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <>
         <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-          <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol}{" "}
-          {isLong ? t`Long` : t`Short`}
+          Decrease&nbsp;{indexToken?.symbol} {isLong ? `Long` : `Short`}
         </div>
         {renderSubaccountNavigationButton()}
       </>
@@ -748,22 +745,22 @@ export function ConfirmationBox(p: Props) {
     return (
       <li key={order.key} className="font-sm">
         <p>
-          {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`}{" "}
+          {isLimitOrderType(order.orderType) ? `Increase` : `Decrease`}{" "}
           {order.indexToken?.symbol} {formatUsd(order.sizeDeltaUsd)}{" "}
-          {order.isLong ? t`Long` : t`Short`} &nbsp;
+          {order.isLong ? `Long` : `Short`} &nbsp;
           {order.triggerThresholdType}
           {formatUsd(order.triggerPrice, {
             displayDecimals: toToken?.priceDecimals,
           })}{" "}
         </p>
         <button type="button" onClick={() => onCancelOrderClick(order.key)}>
-          <Trans>Cancel</Trans>
+          Cancel
         </button>
       </li>
     );
   }
 
-  const longShortText = isLong ? t`Long` : t`Short`;
+  const longShortText = isLong ? `Long` : `Short`;
 
   function renderDifferentTokensWarning() {
     if (!isPosition || !fromToken || !toToken) {
@@ -781,11 +778,9 @@ export function ConfirmationBox(p: Props) {
     ) {
       return (
         <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as Collateral, the
-            Liquidation Price will vary based on the price of{" "}
-            {collateralTokenSymbol}.
-          </Trans>
+          You have selected {collateralTokenSymbol} as Collateral, the
+          Liquidation Price will vary based on the price of{" "}
+          {collateralTokenSymbol}.
         </div>
       );
     }
@@ -797,13 +792,11 @@ export function ConfirmationBox(p: Props) {
     ) {
       return (
         <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as collateral, the
-            Liquidation Price is higher compared to using a stablecoin as
-            collateral since the worth of the collateral will change with its
-            price. If required, you can change the collateral type using the
-            Collateral In option in the trade box.
-          </Trans>
+          You have selected {collateralTokenSymbol} as collateral, the
+          Liquidation Price is higher compared to using a stablecoin as
+          collateral since the worth of the collateral will change with its
+          price. If required, you can change the collateral type using the
+          Collateral In option in the trade box.
         </div>
       );
     }
@@ -815,10 +808,8 @@ export function ConfirmationBox(p: Props) {
     ) {
       return (
         <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as collateral to short{" "}
-            {indexTokenSymbol}.
-          </Trans>
+          You have selected {collateralTokenSymbol} as collateral to short{" "}
+          {indexTokenSymbol}.
         </div>
       );
     }
@@ -860,22 +851,18 @@ export function ConfirmationBox(p: Props) {
     if (isMarket) {
       return (
         <div className="Confirmation-box-warning">
-          <Trans>
-            You have an existing position with{" "}
-            {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
-            action will not apply for that position.
-          </Trans>
+          You have an existing position with{" "}
+          {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
+          action will not apply for that position.
         </div>
       );
     }
 
     return (
       <div className="Confirmation-box-warning">
-        <Trans>
-          You have an existing position with{" "}
-          {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
-          Order will not be valid for that Position.
-        </Trans>
+        You have an existing position with{" "}
+        {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
+        Order will not be valid for that Position.
       </div>
     );
   }
@@ -892,14 +879,12 @@ export function ConfirmationBox(p: Props) {
 
       return (
         <div className="Confirmation-box-info">
-          <Trans>
-            You have an active Limit Order to Increase {longShortText}{" "}
-            {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice, {
-              displayDecimals: toToken.priceDecimals,
-            })}
-            .
-          </Trans>
+          You have an active Limit Order to Increase {longShortText}{" "}
+          {order.indexToken?.symbol} {sizeText} at price{" "}
+          {formatUsd(order.triggerPrice, {
+            displayDecimals: toToken.priceDecimals,
+          })}
+          .
         </div>
       );
     } else {
@@ -907,16 +892,14 @@ export function ConfirmationBox(p: Props) {
         <div>
           <div className="Confirmation-box-info">
             <span>
-              <Trans>
-                You have multiple existing Increase {longShortText}{" "}
-                {toToken.symbol} limit orders{" "}
-              </Trans>
+              You have multiple existing Increase {longShortText}{" "}
+              {toToken.symbol} limit orders{" "}
             </span>
             <span
               onClick={() => setIsLimitOrdersVisible((p) => !p)}
               className="view-orders"
             >
-              ({isLimitOrdersVisible ? t`hide` : t`view`})
+              ({isLimitOrdersVisible ? `hide` : `view`})
             </span>
           </div>
           {isLimitOrdersVisible && (
@@ -934,15 +917,12 @@ export function ConfirmationBox(p: Props) {
       return;
     }
 
-    const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
     return (
       <>
         <div className="Confirmation-box-warning">
-          <Plural
-            value={existingTriggerOrderLength}
-            one="You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue."
-            other="You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue."
-          />
+          You have an active trigger order that might execute immediately after
+          you open this position. Please cancel the order or accept the
+          confirmation to continue.
         </div>
         <ul className="order-list">
           {decreaseOrdersThatWillBeExecuted.map(renderOrderItem)}
@@ -960,15 +940,9 @@ export function ConfirmationBox(p: Props) {
       return;
     }
 
-    const existingTriggerOrderLength = existingTriggerOrders.length;
-
     return (
       <div className="Confirmation-box-info">
-        <Plural
-          value={existingTriggerOrderLength}
-          one="You have an active trigger order that could impact this position."
-          other="You have # active trigger orders that could impact this position."
-        />
+        You have an active trigger order that could impact this position.
       </div>
     );
   }
@@ -996,8 +970,8 @@ export function ConfirmationBox(p: Props) {
         .lt(swapAmounts.usdOut);
 
       tooltipContent = isLiquidityRisk
-        ? t`There may not be sufficient liquidity to execute your order when the Min. Receive are met.`
-        : t`The order will only execute if the Min. Receive is met and there is sufficient liquidity.`;
+        ? `There may not be sufficient liquidity to execute your order when the Min. Receive are met.`
+        : `The order will only execute if the Min. Receive is met and there is sufficient liquidity.`;
     }
 
     if (isIncrease && increaseAmounts) {
@@ -1009,12 +983,12 @@ export function ConfirmationBox(p: Props) {
         .lt(increaseAmounts.sizeDeltaUsd);
 
       tooltipContent = isLiquidityRisk
-        ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
-        : t`The order will only execute if the price conditions are met and there is sufficient liquidity.`;
+        ? `There may not be sufficient liquidity to execute your order when the price conditions are met.`
+        : `The order will only execute if the price conditions are met and there is sufficient liquidity.`;
     }
 
     return (
-      <ExchangeInfoRow label={t`Available Liquidity`}>
+      <ExchangeInfoRow label={`Available Liquidity`}>
         <Tooltip
           position="right-bottom"
           handleClassName={isLiquidityRisk ? "negative" : ""}
@@ -1041,10 +1015,8 @@ export function ConfirmationBox(p: Props) {
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          <Trans>
-            The spread is {`>`} 1%, please ensure the trade details are
-            acceptable before comfirming
-          </Trans>
+          The spread is {`>`} 1%, please ensure the trade details are acceptable
+          before comfirming
         </div>
       );
     }
@@ -1053,10 +1025,8 @@ export function ConfirmationBox(p: Props) {
   function renderLimitPriceWarning() {
     return (
       <div className="Confirmation-box-info">
-        <Trans>
-          Limit Order Price will vary based on Fees and Price Impact to
-          guarantee the Min. Receive amount.
-        </Trans>
+        Limit Order Price will vary based on Fees and Price Impact to guarantee
+        the Min. Receive amount.
       </div>
     );
   }
@@ -1065,12 +1035,9 @@ export function ConfirmationBox(p: Props) {
     if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          <Trans>
-            Transacting with a depegged stable coin is subject to spreads
-            reflecting the worse of current market price or $1.00, with
-            transactions involving multiple stablecoins may have multiple
-            spreads.
-          </Trans>
+          Transacting with a depegged stable coin is subject to spreads
+          reflecting the worse of current market price or $1.00, with
+          transactions involving multiple stablecoins may have multiple spreads.
         </div>
       );
     }
@@ -1081,22 +1048,20 @@ export function ConfirmationBox(p: Props) {
       <ExchangeInfoRow
         label={
           <TooltipWithPortal
-            handle={t`Allowed Slippage`}
+            handle={`Allowed Slippage`}
             position="left-top"
             renderContent={() => {
               return (
                 <div className="text-white">
-                  <Trans>
-                    You can edit the default Allowed Slippage in the settings
-                    menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than{" "}
-                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), {
-                      signed: false,
-                    })}
-                    , may result in failed orders if prices are volatile.
-                  </Trans>
+                  You can edit the default Allowed Slippage in the settings menu
+                  on the top right of the page.
+                  <br />
+                  <br />
+                  Note that a low allowed slippage, e.g. less than{" "}
+                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), {
+                    signed: false,
+                  })}
+                  , may result in failed orders if prices are volatile.
                 </div>
               );
             }}
@@ -1107,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
           onChange={setSlippage}
           defaultValue={defaultSlippage}
           highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-          highValueWarningText={t`Slippage is too high`}
+          highValueWarningText={`Slippage is too high`}
         />
       </ExchangeInfoRow>
     );
@@ -1142,7 +1107,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <>
         <ExchangeInfoRow
-          label={t`Leverage`}
+          label={`Leverage`}
           value={
             emptyValue ? (
               "-"
@@ -1208,7 +1173,7 @@ export function ConfirmationBox(p: Props) {
             renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow
-              label={t`Collateral Spread`}
+              label={`Collateral Spread`}
               isWarning={swapSpreadInfo.isHigh}
               isTop={true}
             >
@@ -1224,7 +1189,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Entry Price`}
+            label={`Entry Price`}
             value={
               <ValueTransition
                 from={formatUsd(p.existingPosition?.entryPrice, {
@@ -1240,7 +1205,7 @@ export function ConfirmationBox(p: Props) {
           {isLimit && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
-              label={t`Limit Price`}
+              label={`Limit Price`}
               value={
                 formatUsd(triggerPrice, {
                   displayDecimals: toTokenPriceDecimals,
@@ -1251,7 +1216,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Acceptable Price`}
+            label={`Acceptable Price`}
             value={
               formatAcceptablePrice(acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
@@ -1262,7 +1227,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Mark Price`}
+            label={`Mark Price`}
             value={
               formatUsd(markPrice, {
                 displayDecimals: toTokenPriceDecimals,
@@ -1272,7 +1237,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Liq. Price`}
+            label={`Liq. Price`}
             value={
               <ValueTransition
                 from={
@@ -1299,22 +1264,20 @@ export function ConfirmationBox(p: Props) {
                 <Tooltip
                   handle={
                     <span className="Exchange-info-label">
-                      <Trans>Collateral ({collateralToken?.symbol})</Trans>
+                      Collateral ({collateralToken?.symbol})
                     </span>
                   }
                   position="left-top"
                   renderContent={() => {
                     return (
                       <div>
-                        <Trans>
-                          {fromToken?.symbol} will be swapped to{" "}
-                          {collateralToken?.symbol} on order execution.{" "}
-                        </Trans>{" "}
+                        {fromToken?.symbol} will be swapped to{" "}
+                        {collateralToken?.symbol} on order execution.{" "}
                         {isLimit && (
-                          <Trans>
+                          <span>
                             Collateral value may differ due to different Price
                             Impact at the time of execution.
-                          </Trans>
+                          </span>
                         )}
                       </div>
                     );
@@ -1322,7 +1285,7 @@ export function ConfirmationBox(p: Props) {
                 />
               ) : (
                 <span className="Exchange-info-label">
-                  <Trans>Collateral ({collateralToken?.symbol})</Trans>
+                  Collateral ({collateralToken?.symbol})
                 </span>
               )}
             </div>
@@ -1333,13 +1296,11 @@ export function ConfirmationBox(p: Props) {
                 renderContent={() => {
                   return (
                     <>
-                      <Trans>
-                        Your position's collateral after deducting fees.
-                      </Trans>
+                      Your position's collateral after deducting fees.
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label={t`Pay Amount`}
+                        label={`Pay Amount`}
                         value={
                           formatUsd(increaseAmounts?.initialCollateralUsd) ||
                           "-"
@@ -1347,7 +1308,7 @@ export function ConfirmationBox(p: Props) {
                         showDollar={false}
                       />
                       <StatsTooltipRow
-                        label={t`Fees`}
+                        label={`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd &&
                           !fees.payTotalFees.deltaUsd.eq(0)
@@ -1361,7 +1322,7 @@ export function ConfirmationBox(p: Props) {
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
-                        label={t`Collateral`}
+                        label={`Collateral`}
                         value={
                           formatUsd(increaseAmounts?.collateralDeltaUsd) || "-"
                         }
@@ -1399,7 +1360,7 @@ export function ConfirmationBox(p: Props) {
                 setIsChecked={setIsTriggerWarningAccepted}
               >
                 <span className="text-warning font-sm">
-                  <Trans>I am aware of the trigger orders</Trans>
+                  I am aware of the trigger orders
                 </span>
               </Checkbox>
             </div>
@@ -1417,10 +1378,7 @@ export function ConfirmationBox(p: Props) {
           {renderSwapSpreadWarining()}
           {isLimit && renderLimitPriceWarning()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
-            <ExchangeInfoRow
-              label={t`Spread`}
-              isWarning={swapSpreadInfo.isHigh}
-            >
+            <ExchangeInfoRow label={`Spread`} isWarning={swapSpreadInfo.isHigh}>
               {formatAmount(
                 swapSpreadInfo.spread.mul(100),
                 USD_DECIMALS,
@@ -1433,28 +1391,28 @@ export function ConfirmationBox(p: Props) {
           {isLimit && renderAvailableLiquidity()}
           {isMarket &&
             renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-          <ExchangeInfoRow label={t`Mark Price`} isTop>
+          <ExchangeInfoRow label={`Mark Price`} isTop>
             {formatTokensRatio(fromToken, toToken, markRatio)}
           </ExchangeInfoRow>
           {isLimit && (
-            <ExchangeInfoRow label={t`Limit Price`}>
+            <ExchangeInfoRow label={`Limit Price`}>
               <Tooltip
                 position="right-bottom"
                 handle={formatTokensRatio(fromToken, toToken, triggerRatio)}
                 renderContent={() =>
-                  t`Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`
+                  `Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`
                 }
               />
             </ExchangeInfoRow>
           )}
 
-          <ExchangeInfoRow label={t`${fromToken?.symbol} Price`}>
+          <ExchangeInfoRow label={`${fromToken?.symbol} Price`}>
             {formatUsd(swapAmounts?.priceIn, {
               displayDecimals: fromToken?.priceDecimals,
             })}
           </ExchangeInfoRow>
 
-          <ExchangeInfoRow label={t`${toToken?.symbol} Price`}>
+          <ExchangeInfoRow label={`${toToken?.symbol} Price`}>
             {formatUsd(swapAmounts?.priceOut, {
               displayDecimals: toToken?.priceDecimals,
             })}
@@ -1469,7 +1427,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <ExchangeInfoRow label={t`Min. Receive`} isTop>
+          <ExchangeInfoRow label={`Min. Receive`} isTop>
             {isMarket && swapAmounts?.minOutputAmount
               ? formatTokenAmount(
                   applySlippageToMinOut(
@@ -1506,15 +1464,13 @@ export function ConfirmationBox(p: Props) {
               setIsChecked={setKeepLeverage}
             >
               <span className="muted font-sm">
-                <Trans>
-                  Keep leverage at {formatLeverage(existingPosition.leverage)}{" "}
-                </Trans>
+                Keep leverage at {formatLeverage(existingPosition.leverage)}{" "}
               </span>
             </Checkbox>
           )}
 
           <ExchangeInfoRow
-            label={t`Trigger Price`}
+            label={`Trigger Price`}
             value={
               triggerPrice
                 ? `${fixedTriggerThresholdType} ${formatUsd(triggerPrice, {
@@ -1526,7 +1482,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             isTop
-            label={t`Mark Price`}
+            label={`Mark Price`}
             value={
               p.markPrice
                 ? formatUsd(p.markPrice, {
@@ -1538,7 +1494,7 @@ export function ConfirmationBox(p: Props) {
 
           {existingPosition && (
             <ExchangeInfoRow
-              label={t`Entry Price`}
+              label={`Entry Price`}
               value={
                 formatUsd(existingPosition?.entryPrice, {
                   displayDecimals: indexToken?.priceDecimals,
@@ -1548,7 +1504,7 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow
-            label={t`Execution Price`}
+            label={`Execution Price`}
             value={
               executionPriceUsd
                 ? formatUsd(executionPriceUsd, {
@@ -1564,7 +1520,7 @@ export function ConfirmationBox(p: Props) {
                 {renderAcceptablePriceImpactInput()}
                 <ExchangeInfoRow
                   className="SwapBox-info-row"
-                  label={t`Acceptable Price`}
+                  label={`Acceptable Price`}
                   value={
                     formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
                       displayDecimals: toTokenPriceDecimals,
@@ -1576,7 +1532,7 @@ export function ConfirmationBox(p: Props) {
 
           {p.existingPosition && (
             <ExchangeInfoRow
-              label={t`Liq. Price`}
+              label={`Liq. Price`}
               value={
                 nextPositionValues?.nextSizeUsd?.gt(0) ? (
                   <ValueTransition
@@ -1597,7 +1553,7 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow
-            label={p.existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
+            label={p.existingPosition?.sizeInUsd ? `Size` : `Decrease size`}
             isTop
             value={
               p.existingPosition?.sizeInUsd ? (
@@ -1615,14 +1571,14 @@ export function ConfirmationBox(p: Props) {
 
           {!p.existingPosition && (
             <ExchangeInfoRow
-              label={t`Collateral`}
+              label={`Collateral`}
               value={collateralToken?.symbol}
             />
           )}
 
           {p.existingPosition && (
             <ExchangeInfoRow
-              label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
+              label={`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
               value={
                 <ValueTransition
                   from={formatUsd(existingPosition?.remainingCollateralUsd)!}
@@ -1641,7 +1597,7 @@ export function ConfirmationBox(p: Props) {
             )}
           {existingPosition && (
             <ExchangeInfoRow
-              label={t`PnL`}
+              label={`PnL`}
               value={
                 <ValueTransition
                   from={
@@ -1676,7 +1632,7 @@ export function ConfirmationBox(p: Props) {
 
           {existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
-              label={t`Receive`}
+              label={`Receive`}
               value={formatTokenAmountWithUsd(
                 decreaseAmounts.receiveTokenAmount,
                 decreaseAmounts.receiveUsd,

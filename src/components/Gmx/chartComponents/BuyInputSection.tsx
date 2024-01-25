@@ -1,6 +1,6 @@
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import { INPUT_LABEL_SEPARATOR, PERCENTAGE_SUGGESTIONS } from "../config/ui";
 import NumberInput from "./NumberInput";
 
@@ -128,7 +128,7 @@ export default function BuyInputSection(props: Props) {
                 className="Exchange-swap-max"
                 onClick={onClickMax}
               >
-                <Trans>MAX</Trans>
+                MAX
               </button>
             )}
           </div>

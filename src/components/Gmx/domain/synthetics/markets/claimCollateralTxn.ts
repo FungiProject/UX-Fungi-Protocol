@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { getContract } from "../../../config/contracts";
 import ExchangeRouter from "../../../abis/ExchangeRouter.json";
 import { Signer, ethers } from "ethers";
@@ -28,9 +28,9 @@ export function claimCollateralTxn(chainId: number, signer: Signer, p: Params) {
     "claimFundingFees",
     [fundingFees.marketAddresses, fundingFees.tokenAddresses, account],
     {
-      sentMsg: t`Funding Claimed`,
-      successMsg: t`Success claimings`,
-      failMsg: t`Claiming failed`,
+      sentMsg: `Funding Claimed`,
+      successMsg: `Success claimings`,
+      failMsg: `Claiming failed`,
       hideSuccessMsg: true,
       setPendingTxns,
     }

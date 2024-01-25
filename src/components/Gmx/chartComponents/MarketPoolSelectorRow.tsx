@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { PoolSelector } from "./PoolSelector";
 import Tooltip from "./Tooltip";
@@ -65,13 +65,11 @@ export function MarketPoolSelectorRow(p: Props) {
     if (isNoSufficientLiquidityInAnyMarket) {
       return (
         <div className="MarketSelector-tooltip-row">
-          <Trans>
-            Insufficient liquidity in any {indexToken?.symbol}/USD market pools
-            for your order.
-          </Trans>
+          Insufficient liquidity in any {indexToken?.symbol}/USD market pools
+          for your order.
           <br />
           <br />
-          <Trans>V2 is newly live, and liquidity may be low initially.</Trans>
+          V2 is newly live, and liquidity may be low initially.
         </div>
       );
     }
@@ -83,7 +81,7 @@ export function MarketPoolSelectorRow(p: Props) {
     ) {
       return (
         <div className="MarketSelector-tooltip-row">
-          <Trans>
+          <div>
             Insufficient liquidity in{" "}
             {selectedMarket ? getMarketPoolName(selectedMarket) : "..."} market
             pool. <br />
@@ -95,7 +93,7 @@ export function MarketPoolSelectorRow(p: Props) {
             >
               Switch to {getMarketPoolName(maxLiquidityMarket)} market pool.
             </div>
-          </Trans>
+          </div>
         </div>
       );
     }
@@ -107,7 +105,7 @@ export function MarketPoolSelectorRow(p: Props) {
     ) {
       return (
         <div className="MarketSelector-tooltip-row">
-          <Trans>
+          <div>
             You have an existing position in the{" "}
             {getMarketPoolName(marketWithPosition)} market pool.{" "}
             <div
@@ -118,7 +116,7 @@ export function MarketPoolSelectorRow(p: Props) {
             >
               Switch to {getMarketPoolName(marketWithPosition)} market pool.
             </div>{" "}
-          </Trans>
+          </div>
         </div>
       );
     }
@@ -131,7 +129,7 @@ export function MarketPoolSelectorRow(p: Props) {
     ) {
       return (
         <div className="MarketSelector-tooltip-row">
-          <Trans>
+          <div>
             You have an existing order in the{" "}
             {getMarketPoolName(marketWithOrder)} market pool.{" "}
             <div
@@ -142,7 +140,7 @@ export function MarketPoolSelectorRow(p: Props) {
             >
               Switch to {getMarketPoolName(marketWithOrder)} market pool.
             </div>{" "}
-          </Trans>
+          </div>
         </div>
       );
     }
@@ -156,7 +154,7 @@ export function MarketPoolSelectorRow(p: Props) {
     ) {
       return (
         <div className="MarketSelector-tooltip-row">
-          <Trans>
+          <div>
             You can get a{" "}
             {formatPercentage(currentPriceImpactBps?.sub(minPriceImpactBps))}{" "}
             better execution price in the{" "}
@@ -169,7 +167,7 @@ export function MarketPoolSelectorRow(p: Props) {
             >
               Switch to {getMarketPoolName(minPriceImpactMarket)} market pool.
             </div>
-          </Trans>
+          </div>
         </div>
       );
     }
@@ -198,7 +196,7 @@ export function MarketPoolSelectorRow(p: Props) {
       label={
         message ? (
           <Tooltip
-            handle={t`Pool`}
+            handle={`Pool`}
             position="left-bottom"
             className="MarketSelector-tooltip"
             renderContent={() => (
@@ -206,13 +204,13 @@ export function MarketPoolSelectorRow(p: Props) {
             )}
           />
         ) : (
-          t`Pool`
+          `Pool`
         )
       }
       value={
         <>
           <PoolSelector
-            label={t`Pool`}
+            label={`Pool`}
             className="SwapBox-info-dropdown"
             selectedIndexName={indexName}
             selectedMarketAddress={selectedMarket?.marketTokenAddress}

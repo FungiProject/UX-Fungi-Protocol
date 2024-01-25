@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import ExternalLink from "../../chartComponents/ExternalLink";
 import { getExplorerUrl } from "../../config/chains";
 import { ethers } from "ethers";
@@ -23,10 +23,7 @@ export function pushSuccessNotification(
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.success(
     <div>
-      {message}{" "}
-      <ExternalLink href={txUrl}>
-        <Trans>View</Trans>
-      </ExternalLink>
+      {message} <ExternalLink href={txUrl}>View</ExternalLink>
     </div>
   );
 }
@@ -47,10 +44,7 @@ export function pushErrorNotification(
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.error(
     <div>
-      {message}{" "}
-      <ExternalLink href={txUrl}>
-        <Trans>View</Trans>
-      </ExternalLink>
+      {message} <ExternalLink href={txUrl}>View</ExternalLink>
     </div>
   );
 }

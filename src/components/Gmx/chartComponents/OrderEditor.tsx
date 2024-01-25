@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "./BuyInputSection";
 import Modal from "./Modal";
@@ -259,16 +259,16 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSubmitting) {
-      return t`Updating Order...`;
+      return `Updating Order...`;
     }
 
     if (isSwapOrderType(p.order.orderType)) {
       if (!triggerRatio?.ratio?.gt(0) || !minOutputAmount.gt(0)) {
-        return t`Enter a ratio`;
+        return `Enter a ratio`;
       }
 
       if (minOutputAmount.eq(p.order.minOutputAmount)) {
-        return t`Enter a new ratio`;
+        return `Enter a new ratio`;
       }
 
       if (
@@ -276,7 +276,7 @@ export function OrderEditor(p: Props) {
         !isRatioInverted &&
         markRatio?.ratio.lt(triggerRatio.ratio)
       ) {
-        return t`Price above Mark Price`;
+        return `Price above Mark Price`;
       }
 
       if (
@@ -284,7 +284,7 @@ export function OrderEditor(p: Props) {
         isRatioInverted &&
         markRatio?.ratio.gt(triggerRatio.ratio)
       ) {
-        return t`Price below Mark Price`;
+        return `Price below Mark Price`;
       }
 
       return;
@@ -293,46 +293,46 @@ export function OrderEditor(p: Props) {
     const positionOrder = p.order as PositionOrderInfo;
 
     if (!markPrice) {
-      return t`Loading...`;
+      return `Loading...`;
     }
 
     if (!sizeDeltaUsd?.gt(0)) {
-      return t`Enter an amount`;
+      return `Enter an amount`;
     }
 
     if (!triggerPrice?.gt(0)) {
-      return t`Enter a price`;
+      return `Enter a price`;
     }
 
     if (
       sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) &&
       triggerPrice?.eq(positionOrder.triggerPrice!)
     ) {
-      return t`Enter new amount or price`;
+      return `Enter new amount or price`;
     }
 
     if (isLimitOrderType(p.order.orderType)) {
       if (p.order.isLong) {
         if (triggerPrice?.gte(markPrice)) {
-          return t`Price above Mark Price`;
+          return `Price above Mark Price`;
         }
       } else {
         if (triggerPrice?.lte(markPrice)) {
-          return t`Price below Mark Price`;
+          return `Price below Mark Price`;
         }
       }
     }
 
     if (isTriggerDecreaseOrderType(p.order.orderType)) {
       if (!markPrice) {
-        return t`Loading...`;
+        return `Loading...`;
       }
 
       if (
         sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) &&
         triggerPrice?.eq(positionOrder.triggerPrice || 0)
       ) {
-        return t`Enter a new size or price`;
+        return `Enter a new size or price`;
       }
 
       if (existingPosition?.liquidationPrice) {
@@ -340,14 +340,14 @@ export function OrderEditor(p: Props) {
           existingPosition.isLong &&
           triggerPrice?.lte(existingPosition?.liquidationPrice)
         ) {
-          return t`Price below Liq. Price`;
+          return `Price below Liq. Price`;
         }
 
         if (
           !existingPosition.isLong &&
           triggerPrice?.gte(existingPosition?.liquidationPrice)
         ) {
-          return t`Price above Liq. Price`;
+          return `Price above Liq. Price`;
         }
       }
 
@@ -356,28 +356,28 @@ export function OrderEditor(p: Props) {
           p.order.orderType === OrderType.LimitDecrease &&
           triggerPrice?.lte(markPrice)
         ) {
-          return t`Price below Mark Price`;
+          return `Price below Mark Price`;
         }
 
         if (
           p.order.orderType === OrderType.StopLossDecrease &&
           triggerPrice?.gte(markPrice)
         ) {
-          return t`Price above Mark Price`;
+          return `Price above Mark Price`;
         }
       } else {
         if (
           p.order.orderType === OrderType.LimitDecrease &&
           triggerPrice?.gte(markPrice)
         ) {
-          return t`Price above Mark Price`;
+          return `Price above Mark Price`;
         }
 
         if (
           p.order.orderType === OrderType.StopLossDecrease &&
           triggerPrice?.lte(markPrice)
         ) {
-          return t`Price below Mark Price`;
+          return `Price below Mark Price`;
         }
       }
     }
@@ -399,7 +399,7 @@ export function OrderEditor(p: Props) {
 
     const orderTypeName =
       p.order.orderType === OrderType.LimitIncrease
-        ? t`Limit`
+        ? `Limit`
         : getTriggerNameByOrderType(p.order.orderType);
 
     return {
@@ -469,16 +469,14 @@ export function OrderEditor(p: Props) {
         className="PositionSeller-modal"
         isVisible={true}
         setIsVisible={p.onClose}
-        label={<Trans>Edit {p.order.title}</Trans>}
+        label={<span>Edit {p.order.title}</span>}
         allowContentTouchMove
       >
         {!isSwapOrderType(p.order.orderType) && (
           <>
             <BuyInputSection
               topLeftLabel={
-                isTriggerDecreaseOrderType(p.order.orderType)
-                  ? t`Close`
-                  : t`Size`
+                isTriggerDecreaseOrderType(p.order.orderType) ? `Close` : `Size`
               }
               inputValue={sizeInputValue}
               onInputValueChange={(e) => setSizeInputValue(e.target.value)}
@@ -487,8 +485,8 @@ export function OrderEditor(p: Props) {
             </BuyInputSection>
 
             <BuyInputSection
-              topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
+              topLeftLabel={`Price`}
+              topRightLabel={`Mark`}
               topRightValue={formatUsd(markPrice, {
                 displayDecimals: indexPriceDecimals,
               })}
@@ -511,7 +509,7 @@ export function OrderEditor(p: Props) {
           <>
             {triggerRatio && (
               <BuyInputSection
-                topLeftLabel={t`Price`}
+                topLeftLabel={`Price`}
                 topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                 onClickTopRightLabel={() => {
                   setTriggerRatioInputValue(
@@ -533,7 +531,7 @@ export function OrderEditor(p: Props) {
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <ExchangeInfoRow
-                label={t`Acceptable Price`}
+                label={`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
                   displayDecimals: indexPriceDecimals,
                 })}
@@ -541,7 +539,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <ExchangeInfoRow
-                  label={t`Liq. Price`}
+                  label={`Liq. Price`}
                   value={formatLiquidationPrice(
                     existingPosition.liquidationPrice,
                     {
@@ -556,7 +554,7 @@ export function OrderEditor(p: Props) {
           {isSwapOrderType(p.order.orderType) && (
             <>
               <ExchangeInfoRow
-                label={t`Swap Price Impact`}
+                label={`Swap Price Impact`}
                 value={
                   <span
                     className={cx({
@@ -574,12 +572,12 @@ export function OrderEditor(p: Props) {
               />
 
               <ExchangeInfoRow
-                label={t`Swap Fees`}
+                label={`Swap Fees`}
                 value={formatUsd(p.order.swapPathStats?.totalSwapFeeUsd)}
               />
 
               <ExchangeInfoRow
-                label={t`Min. Receive`}
+                label={`Min. Receive`}
                 value={formatTokenAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,
@@ -590,7 +588,7 @@ export function OrderEditor(p: Props) {
           )}
 
           {executionFee?.feeTokenAmount.gt(0) && (
-            <ExchangeInfoRow label={t`Max Execution Fee`}>
+            <ExchangeInfoRow label={`Max Execution Fee`}>
               {formatTokenAmount(
                 executionFee?.feeTokenAmount,
                 executionFee?.feeToken.decimals,

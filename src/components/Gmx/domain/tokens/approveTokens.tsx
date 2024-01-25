@@ -4,7 +4,7 @@ import { getChainName, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "../../chartComponents/ExternalLink";
-import { t, Trans } from "@lingui/macro";
+// import { t, Trans } from "@lingui/macro";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import Tooltip from "./Tooltip";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd } from "../lib/numbers";
@@ -29,9 +29,7 @@ export function ClaimableCardUI({
       <div className="Claims-row">
         <div className="Claims-col Claims-col-title">{title}</div>
         <div className="Claims-col">
-          <span className="muted">
-            <Trans>Funding fees</Trans>
-          </span>
+          <span className="muted">Funding fees</span>
           <span>
             <Tooltip
               handle={totalUsd}

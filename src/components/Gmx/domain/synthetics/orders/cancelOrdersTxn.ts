@@ -1,4 +1,4 @@
-import { plural, t } from "@lingui/macro";
+// import { plural, t } from "@lingui/macro";
 import ExchangeRouter from "../../../abis/ExchangeRouter.json";
 import { getContract } from "../../../config/contracts";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
@@ -34,15 +34,12 @@ export async function cancelOrdersTxn(
 
   const count = p.orderKeys.length;
 
-  const ordersText = plural(count, {
-    one: "Order",
-    other: "# Orders",
-  });
+  const ordersText = "Order";
 
   return callContract(chainId, router, "multicall", [multicall], {
-    sentMsg: t`Cancelling ${ordersText}`,
-    successMsg: t`${ordersText} cancelled`,
-    failMsg: t`Failed to cancel ${ordersText}`,
+    sentMsg: `Cancelling ${ordersText}`,
+    successMsg: `${ordersText} cancelled`,
+    failMsg: `Failed to cancel ${ordersText}`,
     setPendingTxns: p.setPendingTxns,
     detailsMsg: p.detailsMsg,
   });

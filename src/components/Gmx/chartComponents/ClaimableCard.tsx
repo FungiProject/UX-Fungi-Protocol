@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import {
   MarketsInfoData,
   getTotalClaimableFundingUsd,
@@ -12,9 +12,9 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = t`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
-const buttonText = t`Claim`;
-const title = t`Claimable`;
+const tooltipText = `Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
+const buttonText = `Claim`;
+const title = `Claimable`;
 
 export function ClaimableCard({ marketsInfoData, onClaimClick, style }: Props) {
   const markets = Object.values(marketsInfoData ?? {});

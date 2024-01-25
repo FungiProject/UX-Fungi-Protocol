@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import ExternalLink from "./ExternalLink";
 import { NavigationButton } from "./NavigationButton";
 import TooltipWithPortal from "./TooltipWithPortal";
@@ -79,11 +79,11 @@ export const SubaccountNavigationButton = memo(
     const renderTooltipContent = useCallback(() => {
       return (
         <div onClick={(e) => e.stopPropagation()}>
-          <Trans>
+          <span>
             Reduce wallet signing popups with One-Click Trading. This option is
             also available through the Wallet menu in the top right.{" "}
             <ExternalLink href={SUBACCOUNT_DOCS_URL}>More Info</ExternalLink>.
-          </Trans>
+          </span>
         </div>
       );
     }, []);
@@ -96,25 +96,25 @@ export const SubaccountNavigationButton = memo(
       clickable = false;
       onCloseClick = handleCloseNativeTokenWarningClick;
       content = (
-        <Trans>
+        <span>
           One-Click Trading is not available using network's native token{" "}
           {nativeToken.symbol}. Consider using {wrappedToken.symbol} as Pay
           token instead.
-        </Trans>
+        </span>
       );
     } else if (shouldShowAllowedActionsWarning) {
       content = (
-        <Trans>
+        <span>
           The previously authorized maximum number of Actions has been reached
           for One-Click Trading. Click here to re-authorize.
-        </Trans>
+        </span>
       );
     } else if (shouldShowInsufficientFundsButton) {
       content = (
-        <Trans>
+        <span>
           There are insufficient funds in your Subaccount for One-Click Trading.
           Click here to top-up.
-        </Trans>
+        </span>
       );
     } else if (shouldShowOfferButton) {
       onCloseClick = handleCloseOfferClick;
@@ -122,7 +122,7 @@ export const SubaccountNavigationButton = memo(
         <TooltipWithPortal
           shouldHandleStopPropagation={isTouchDevice()}
           position="left-bottom"
-          handle={<Trans>Enable One-Click Trading</Trans>}
+          handle={<span>Enable One-Click Trading</span>}
           renderContent={renderTooltipContent}
         />
       );

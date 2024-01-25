@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { getChainName, getHighExecutionFee } from "../../../../config/chains";
 import { NATIVE_TOKEN_ADDRESS } from "../../../../config/tokens";
 import {
@@ -41,7 +41,7 @@ export function getExecutionFee(
   );
 
   const warning = isFeeHigh
-    ? t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
+    ? `The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
         chainId
       )} network.`
     : undefined;

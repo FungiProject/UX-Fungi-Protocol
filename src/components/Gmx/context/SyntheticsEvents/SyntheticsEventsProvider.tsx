@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import EventEmitter from "../../abis/EventEmitter.json";
 import { GmStatusNotification } from "../../chartComponents/GmStatusNotification";
 import { OrderStatusNotification } from "../../chartComponents/OrderStatusNotification";
@@ -381,17 +381,17 @@ export function SyntheticsEventsProvider({
           return;
         }
 
-        const longShortText = data.isLong ? t`Long` : t`Short`;
+        const longShortText = data.isLong ? `Long` : `Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
         if (data.sizeDeltaUsd.eq(0)) {
-          text = t`Deposited ${formatTokenAmount(
+          text = `Deposited ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
             collateralToken.symbol
           )} into ${positionText}`;
         } else {
-          text = t`Increased ${positionText}, +${formatUsd(data.sizeDeltaUsd)}`;
+          text = `Increased ${positionText}, +${formatUsd(data.sizeDeltaUsd)}`;
         }
 
         pushSuccessNotification(chainId, text, {
@@ -448,20 +448,20 @@ export function SyntheticsEventsProvider({
           return;
         }
 
-        const longShortText = data.isLong ? t`Long` : t`Short`;
+        const longShortText = data.isLong ? `Long` : `Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
         if (data.sizeDeltaUsd.eq(0)) {
-          text = t`Withdrew ${formatTokenAmount(
+          text = `Withdrew ${formatTokenAmount(
             data.collateralDeltaAmount,
             collateralToken.decimals,
             collateralToken.symbol
           )} from ${positionText}`;
         } else {
           const orderTypeLabel = isLiquidationOrderType(data.orderType)
-            ? t`Liquidated`
-            : t`Decreased`;
-          text = t`${orderTypeLabel} ${positionText}, -${formatUsd(
+            ? `Liquidated`
+            : `Decreased`;
+          text = `${orderTypeLabel} ${positionText}, -${formatUsd(
             data.sizeDeltaUsd
           )}`;
         }

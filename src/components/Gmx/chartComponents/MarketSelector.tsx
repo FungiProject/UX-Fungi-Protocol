@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import cx from "classnames";
 import {
   MarketInfo,
@@ -144,7 +144,7 @@ export function MarketSelector({
             className="mt-md"
             value={searchKeyword}
             setValue={(e) => setSearchKeyword(e.target.value)}
-            placeholder={t`Search Market`}
+            placeholder={`Search Market`}
             onKeyDown={_handleKeyDown}
           />
         )}

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+// import { Trans } from "@lingui/macro";
 import SpinningLoader from "./SpinningLoader";
 import { getPriceDecimals } from "../config/tokens";
 import { Token } from "../domain/tokens";
@@ -111,9 +111,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
           <div className="image-overlay-wrapper">
             <div className="image-overlay">
               <SpinningLoader />
-              <p className="loading-text">
-                <Trans>Generating shareable image...</Trans>
-              </p>
+              <p className="loading-text">Generating shareable image...</p>
             </div>
           </div>
         )}

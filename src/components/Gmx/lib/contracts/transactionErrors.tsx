@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "../../chartComponents/ExternalLink";
 import { ToastifyDebug } from "../../chartComponents/ToastifyDebug";
 import { getChainName } from "../../config/chains";
@@ -99,7 +99,7 @@ export function getErrorMessage(
   switch (type) {
     case NOT_ENOUGH_FUNDS:
       failMsg = (
-        <Trans>
+        <div>
           There is not enough {nativeToken.symbol} in your account on{" "}
           {getChainName(chainId)} to send this transaction.
           <br />
@@ -107,12 +107,12 @@ export function getErrorMessage(
           <Link to="/buy_gmx#bridge">
             Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
-        </Trans>
+        </div>
       );
       break;
     case NETWORK_CHANGED:
       failMsg = (
-        <Trans>
+        <div>
           <div>Your wallet is not connected to {getChainName(chainId)}.</div>
           <br />
           <div
@@ -121,14 +121,14 @@ export function getErrorMessage(
           >
             Switch to {getChainName(chainId)}
           </div>
-        </Trans>
+        </div>
       );
       break;
     case USER_DENIED:
-      failMsg = t`Transaction was cancelled.`;
+      failMsg = `Transaction was cancelled.`;
       break;
     case SLIPPAGE:
-      failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
+      failMsg = `The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
       break;
     case RPC_ERROR: {
       autoCloseToast = false;
@@ -138,7 +138,7 @@ export function getErrorMessage(
 
       failMsg = (
         <div>
-          <Trans>
+          <div>
             Transaction failed due to RPC error.
             <br />
             <br />
@@ -146,7 +146,7 @@ export function getErrorMessage(
             <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">
               More info
             </ExternalLink>
-          </Trans>
+          </div>
           <br />
           {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
         </div>
@@ -158,7 +158,7 @@ export function getErrorMessage(
 
       failMsg = (
         <div>
-          {txnMessage || t`Transaction failed`}
+          {txnMessage || `Transaction failed`}
           <br />
           {message && <ToastifyDebug>{message}</ToastifyDebug>}
         </div>

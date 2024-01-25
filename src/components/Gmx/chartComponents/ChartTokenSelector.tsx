@@ -6,7 +6,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { Token } from "../domain/tokens";
 import SearchInput from "./SearchInput";
 import TokenIcon from "./TokenIcon";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { TradeFlags } from "../domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "../domain/synthetics/trade";
 import { getAvailableUsdLiquidityForPosition } from "../domain/synthetics/markets";
@@ -246,8 +246,8 @@ export default function ChartTokenSelector(props: Props) {
                       <thead className="table-head">
                         <tr>
                           <th>Market</th>
-                          <th>{!isSwap && t`LONG LIQ.`}</th>
-                          <th>{!isSwap && t`SHORT LIQ.`}</th>
+                          <th>{!isSwap && `LONG LIQ.`}</th>
+                          <th>{!isSwap && `SHORT LIQ.`}</th>
                         </tr>
                       </thead>
                     )}

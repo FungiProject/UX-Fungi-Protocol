@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { expandDecimals, formatAmount } from "./numbers";
-import { t } from "@lingui/macro";
+// import { t } from "@lingui/macro";
 import { isLocal } from "../config/env";
 import { getContract } from "../config/contracts";
 import { CHAIN_ID } from "../config/chains";
@@ -13,6 +13,7 @@ export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
+export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
@@ -29,7 +30,7 @@ export function adjustForDecimals(amount, divDecimals, mulDecimals) {
 }
 
 export function getPageTitle(data) {
-  const title = t`Decentralized Perpetual Exchange | GMX`;
+  const title = `Decentralized Perpetual Exchange | GMX`;
   return `${data} | ${title}`;
 }
 
