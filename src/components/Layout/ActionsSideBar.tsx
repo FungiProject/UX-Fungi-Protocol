@@ -144,7 +144,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                       : link.imageDesactive
                   }
                   aria-hidden="true"
-                  className="mr-3"
+                  className="mr-3 "
                 />
                 {link.name}
               </button>

@@ -1,11 +1,16 @@
 // Images
-import HomeActive from "../public/NetworkNavBar.svg";
-import HomeDesactive from "../public/AssetsNavBar.svg";
-import IntegrationsNavBar from "../public/IntegrationsNavBar.svg";
-import PortfolioNavBar from "../public/PortfolioNavBar.svg";
-import Planet from "../public/Planet.svg";
-import Coins from "../public/Coins.svg";
-import DefaultImage from "../public/DefaultImage.svg";
+import HomeActive from "../public/HomeActive.svg";
+import HomeDesactive from "../public/HomeDesactive.svg";
+import SpotActive from "../public/SpotActive.svg";
+import SpotDesactive from "../public/SpotDesactive.svg";
+import YieldActive from "../public/YieldActive.svg";
+import YieldDesactive from "../public/YieldDesactive.svg";
+import PerpsActive from "../public/PerpsActive.svg";
+import PerpsDesactive from "../public/PerpsDesactive.svg";
+import CreditActive from "../public/CreditActive.svg";
+import CreditDesactive from "../public/CreditDesactive.svg";
+import NFTActive from "../public/NFTActive.svg";
+import NFTDesactive from "../public/NFTDesactive.svg";
 // Arbitrum Tokens
 import Chainlink from "../public/ArbitrumTokens/Chainlink.jpeg";
 import Polygon from "../public/MainnetTokens/Polygon.svg";
@@ -65,90 +70,38 @@ export const navigation = [
   {
     name: "Spot",
     href: "/spot",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
+    imageActive: SpotActive.src,
+    imageDesactive: SpotDesactive.src,
   },
   {
     name: "Perps",
     href: "/perpetuals",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
+    imageActive: PerpsActive.src,
+    imageDesactive: PerpsDesactive.src,
   },
   {
     name: "Credit",
     href: "/credit",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
+    imageActive: CreditActive.src,
+    imageDesactive: CreditDesactive.src,
   },
   {
     name: "Yield",
     href: "/yield",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
+    imageActive: YieldActive.src,
+    imageDesactive: YieldDesactive.src,
   },
   {
     name: "NFTs",
     href: "/nfts",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
+    imageActive: NFTActive.src,
+    imageDesactive: NFTDesactive.src,
   },
   {
     name: "GM",
     href: "/gm",
     imageActive: HomeActive.src,
     imageDesactive: HomeDesactive.src,
-  },
-];
-
-export const integrations = [
-  {
-    protocolImage: Uniswap.src,
-    title: "Uniswap V2",
-    description:
-      "Swap, earn, and build on the leading decentralized crypto trading protocol.",
-    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
-    status: true,
-  },
-  {
-    protocolImage: Uniswap.src,
-    title: "Uniswap V3",
-    description:
-      "Swap, earn, and build on the leading decentralized crypto trading protocol.",
-    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
-    status: true,
-  },
-  {
-    protocolImage: GMX.src,
-    title: "GMX",
-    description:
-      "Decentralized exchange (DEX) for trading perpetual cryptocurrency futures.",
-    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
-    status: false,
-  },
-  {
-    protocolImage: AAVE.src,
-    title: "AAVE",
-    description:
-      "Decentralized liquidity protocol where users can participate as depositors or borrowers.",
-    networks: [Mainnet.src, Arbitrum.src, Polygon.src],
-    status: false,
-  },
-];
-
-export const homeCards = [
-  {
-    title: "Funds",
-    amount: 0,
-    imageHeight: 75,
-    imageWidth: 75,
-    imageSrc: Planet.src,
-  },
-  {
-    title: "AUM",
-    amount: 0,
-    imageHeight: 70,
-    imageWidth: 70,
-    imageSrc: Coins.src,
   },
 ];
 
