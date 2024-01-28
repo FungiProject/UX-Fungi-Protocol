@@ -95,9 +95,9 @@ import {
   getSwapError,
 } from "../domain/synthetics/trade/utils/validation";
 import { BigNumber } from "ethers";
-import longImg from "../../../../public/img/long.svg";
-import shortImg from "../../../../public/img/short.svg";
-import swapImg from "../../../../public/img/swap.svg";
+import longImg from "../../../../public/long.svg";
+import shortImg from "../../../../public/short.svg";
+import swapImg from "../../../../public/swap.svg";
 import { useChainId } from "../lib/chains";
 import { DUST_BNB, USD_DECIMALS } from "../lib/legacy";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";
@@ -159,9 +159,9 @@ export type Props = {
 };
 
 const tradeTypeIcons = {
-  [TradeType.Long]: longImg,
-  [TradeType.Short]: shortImg,
-  [TradeType.Swap]: swapImg,
+  [TradeType.Long]: longImg.src,
+  [TradeType.Short]: shortImg.src,
+  [TradeType.Swap]: swapImg.src,
 };
 
 export function TradeBox(p: Props) {
@@ -1815,88 +1815,84 @@ export function TradeBox(p: Props) {
   );
 
   return (
-    <>
-      <div>
-        <div className={`App-box SwapBox`}>
-          <Tab
-            icons={tradeTypeIcons}
-            options={Object.values(TradeType)}
-            optionLabels={tradeTypeLabels}
-            option={tradeType}
-            onChange={onSelectTradeType}
-            className="SwapBox-option-tabs"
-          />
+    <div className="px-[32px] pt-[24px]">
+      <Tab
+        icons={tradeTypeIcons}
+        options={Object.values(TradeType)}
+        optionLabels={tradeTypeLabels}
+        option={tradeType}
+        onChange={onSelectTradeType}
+        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
+      />
 
-          <Tab
-            options={availableTradeModes}
-            optionLabels={tradeModeLabels}
-            className="SwapBox-asset-options-tabs"
-            type="inline"
-            option={tradeMode}
-            onChange={onSelectTradeMode}
-          />
+      <Tab
+        options={availableTradeModes}
+        optionLabels={tradeModeLabels}
+        type="inline"
+        option={tradeMode}
+        className="w-full rounded-full grid grid-cols-3 bg-white items-center text-center text-sm mb-4 font-semibold"
+        onChange={onSelectTradeMode}
+        isSpan={true}
+      />
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
-          >
-            {(isSwap || isIncrease) && renderTokenInputs()}
-            {isTrigger && renderDecreaseSizeInput()}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
+        {(isSwap || isIncrease) && renderTokenInputs()}
+        {isTrigger && renderDecreaseSizeInput()}
 
-            {isSwap && isLimit && renderTriggerRatioInput()}
-            {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+        {isSwap && isLimit && renderTriggerRatioInput()}
+        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-            <div className="SwapBox-info-section">
-              {isPosition && (
-                <>
-                  {renderPositionControls()}
-                  <div className="App-card-divider" />
-                </>
+        <div className="SwapBox-info-section">
+          {isPosition && (
+            <>
+              {renderPositionControls()} <div className="App-card-divider" />
+            </>
+          )}
+
+          {isIncrease && renderIncreaseOrderInfo()}
+          {isTrigger && renderTriggerOrderInfo()}
+
+          <div className="App-card-divider" />
+
+          {feesType && (
+            <TradeFeesRow
+              {...fees}
+              executionFee={executionFee}
+              feesType={feesType}
+            />
+          )}
+
+          {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={`Receive`}
+              value={formatTokenAmountWithUsd(
+                decreaseAmounts.receiveTokenAmount,
+                decreaseAmounts.receiveUsd,
+                collateralToken?.symbol,
+                collateralToken?.decimals
               )}
+            />
+          )}
 
-              {isIncrease && renderIncreaseOrderInfo()}
-              {isTrigger && renderTriggerOrderInfo()}
-
+          {priceImpactWarningState.shouldShowWarning && (
+            <>
               <div className="App-card-divider" />
-
-              {feesType && (
-                <TradeFeesRow
-                  {...fees}
-                  executionFee={executionFee}
-                  feesType={feesType}
-                />
-              )}
-
-              {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
-                <ExchangeInfoRow
-                  className="SwapBox-info-row"
-                  label={`Receive`}
-                  value={formatTokenAmountWithUsd(
-                    decreaseAmounts.receiveTokenAmount,
-                    decreaseAmounts.receiveUsd,
-                    collateralToken?.symbol,
-                    collateralToken?.decimals
-                  )}
-                />
-              )}
-
-              {priceImpactWarningState.shouldShowWarning && (
-                <>
-                  <div className="App-card-divider" />
-                  <HighPriceImpactWarning
-                    priceImpactWarinigState={priceImpactWarningState}
-                    className="PositionEditor-allow-higher-slippage"
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="Exchange-swap-button-container">{button}</div>
-          </form>
+              <HighPriceImpactWarning
+                priceImpactWarinigState={priceImpactWarningState}
+                className="PositionEditor-allow-higher-slippage"
+              />
+            </>
+          )}
         </div>
-      </div>
+
+        <div className="Exchange-swap-button-container">{button}</div>
+      </form>
 
       {isSwap && (
         <SwapCard
@@ -1914,7 +1910,6 @@ export function TradeBox(p: Props) {
           />
         )}
       </div>
-
       <ConfirmationBox
         isVisible={stage === "confirmation"}
         tradeFlags={tradeFlags}
@@ -1961,6 +1956,6 @@ export function TradeBox(p: Props) {
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
       />
-    </>
+    </div>
   );
 }

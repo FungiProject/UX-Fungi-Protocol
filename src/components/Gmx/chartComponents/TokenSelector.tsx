@@ -178,7 +178,7 @@ export default function TokenSelector(props: Props) {
 
   return (
     <div
-      className={cx("TokenSelector", { disabled }, props.className)}
+      className={props.className}
       onClick={(event) => event.stopPropagation()}
     >
       <Modal
@@ -291,7 +291,7 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div
-          className="TokenSelector-box"
+          className="flex justify-between items-center"
           onClick={() => setIsModalVisible(true)}
         >
           <span className="inline-items-center">

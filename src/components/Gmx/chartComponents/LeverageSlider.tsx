@@ -26,7 +26,7 @@ type Props = {
 export function LeverageSlider(p: Props) {
   return (
     <div
-      className={cx("LeverageSlider", {
+      className={cx("mb-10 LeverageSlider", {
         positive: p.isPositive,
         negative: !p.isPositive,
       })}

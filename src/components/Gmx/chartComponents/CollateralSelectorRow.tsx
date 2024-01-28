@@ -157,7 +157,7 @@ export function CollateralSelectorRow(p: Props) {
         availableCollaterals && (
           <TokenSelector
             label={`Collateral In`}
-            className="GlpSwap-from-token SwapBox-info-dropdown"
+            className="border-1 rounded-full px-[12px] py-1 w-[125px]"
             chainId={chainId}
             tokenAddress={selectedCollateralAddress}
             onSelectToken={(token) => {

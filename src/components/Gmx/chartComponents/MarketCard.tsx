@@ -151,7 +151,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
-      <div className="App-card-title">
+      <div className="">
         {longShortText}&nbsp;{indexToken?.symbol}
       </div>
       <div className="App-card-divider" />

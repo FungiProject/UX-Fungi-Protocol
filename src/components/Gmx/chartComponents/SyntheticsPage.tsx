@@ -496,7 +496,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         }
         secondary={
-          <div className="Exchange-content">
+          <div className="h-[690px] overflow-auto">
             <div className="Exchange-right">
               <div className="Exchange-swap-box">
                 <TradeBox

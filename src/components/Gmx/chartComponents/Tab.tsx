@@ -11,6 +11,7 @@ export default function Tab(props) {
     className,
     optionLabels,
     icons,
+    isSpan,
   } = props;
   const onClick = (opt) => {
     if (setOption) {
@@ -22,18 +23,24 @@ export default function Tab(props) {
   };
 
   return (
-    <div className={cx("Tab", type, className)}>
+    <div className={className}>
       {options.map((opt) => {
         const label =
           optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
           <div
-            className={cx("Tab-option", "muted", { active: opt === option })}
+            className={
+              opt === option
+                ? `${
+                    !isSpan ? "bg-black text-white" : "text-black"
+                  }  rounded-full p-[5px] flex items-center justify-center`
+                : "bg-white flex items-center justify-center text-gray-500"
+            }
             onClick={() => onClick(opt)}
             key={opt}
           >
             {icons && icons[opt] && (
-              <img className="Tab-option-icon" src={icons[opt]} alt={option} />
+              <img src={icons[opt]} alt={option} className="mr-4" />
             )}
             {label}
           </div>
