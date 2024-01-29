@@ -151,10 +151,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
-      <div className="">
+      <div className="font-medium text-2xl">
         {longShortText}&nbsp;{indexToken?.symbol}
-      </div>
-      <div className="App-card-divider" />
+      </div>{" "}
+      <div className="App-card-divider border-b-1 pb-2 " />
       <div>
         <ExchangeInfoRow
           label={`Market`}
@@ -164,6 +164,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>
           }
+          className="mt-[32px]"
         />
         <ExchangeInfoRow
           label={`Entry Price`}

@@ -1268,6 +1268,7 @@ export function TradeBox(p: Props) {
           showMaxButton={isNotMatchAvailableBalance}
           onClickMax={onMaxClick}
         >
+          {" "}
           {fromTokenAddress && (
             <TokenSelector
               label={`Pay`}
@@ -1488,17 +1489,14 @@ export function TradeBox(p: Props) {
               className="Exchange-leverage-slider-settings"
               isChecked={isLeverageEnabled ?? false}
               setIsChecked={setIsLeverageEnabled}
-            >
-              <span className="muted">Leverage slider</span>
-            </ToggleSwitch>
-
+            ></ToggleSwitch>
             {isLeverageEnabled && (
               <LeverageSlider
                 value={leverageOption}
                 onChange={setLeverageOption}
                 isPositive={isLong}
               />
-            )}
+            )}{" "}
           </>
         )}
         {isTrigger && (
@@ -1526,7 +1524,6 @@ export function TradeBox(p: Props) {
             }
           />
         )}
-
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
           indexToken={toToken}
@@ -1537,7 +1534,6 @@ export function TradeBox(p: Props) {
           currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
           onSelectMarketAddress={onSelectMarketAddress}
         />
-
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           selectedCollateralAddress={collateralAddress}
@@ -1547,8 +1543,7 @@ export function TradeBox(p: Props) {
           hasExistingPosition={Boolean(existingPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
-        />
-
+        />{" "}
         {isTrigger && existingPosition?.leverage && (
           <Checkbox
             asRow
@@ -1662,7 +1657,7 @@ export function TradeBox(p: Props) {
     return (
       <>
         <ExchangeInfoRow
-          className="SwapBox-info-row"
+          className="my-[24px]"
           label={`Trigger Price`}
           value={`${decreaseAmounts?.triggerThresholdType || ""} ${
             formatUsd(decreaseAmounts?.triggerPrice, {
@@ -1672,7 +1667,7 @@ export function TradeBox(p: Props) {
         />
 
         <ExchangeInfoRow
-          className="SwapBox-info-row"
+          className="my-[24px]"
           label={`Execution Price`}
           value={
             executionPriceUsd
@@ -1685,7 +1680,7 @@ export function TradeBox(p: Props) {
 
         {existingPosition && (
           <ExchangeInfoRow
-            className="SwapBox-info-row"
+            className="my-[24px]"
             label={`Liq. Price`}
             value={
               <ValueTransition
@@ -1824,7 +1819,6 @@ export function TradeBox(p: Props) {
         onChange={onSelectTradeType}
         className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
       />
-
       <Tab
         options={availableTradeModes}
         optionLabels={tradeModeLabels}
@@ -1841,32 +1835,22 @@ export function TradeBox(p: Props) {
           onSubmit();
         }}
       >
-        {(isSwap || isIncrease) && renderTokenInputs()}
+        {(isSwap || isIncrease) && renderTokenInputs()}{" "}
         {isTrigger && renderDecreaseSizeInput()}
-
-        {isSwap && isLimit && renderTriggerRatioInput()}
-        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
-
+        {isSwap && isLimit && renderTriggerRatioInput()}{" "}
+        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}{" "}
         <div className="SwapBox-info-section">
-          {isPosition && (
-            <>
-              {renderPositionControls()} <div className="App-card-divider" />
-            </>
-          )}
-
+          {isPosition && <>{renderPositionControls()}</>}{" "}
+          <div className="border-b-1 border-gray-200 my-[30px]" />
           {isIncrease && renderIncreaseOrderInfo()}
-          {isTrigger && renderTriggerOrderInfo()}
-
-          <div className="App-card-divider" />
-
+          {isTrigger && renderTriggerOrderInfo()}{" "}
           {feesType && (
             <TradeFeesRow
               {...fees}
               executionFee={executionFee}
               feesType={feesType}
             />
-          )}
-
+          )}{" "}
           {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
@@ -1879,7 +1863,6 @@ export function TradeBox(p: Props) {
               )}
             />
           )}
-
           {priceImpactWarningState.shouldShowWarning && (
             <>
               <div className="App-card-divider" />
@@ -1890,8 +1873,8 @@ export function TradeBox(p: Props) {
             </>
           )}
         </div>
-
-        <div className="Exchange-swap-button-container">{button}</div>
+        <div className="Exchange-swap-button-container mt-[24px]">{button}</div>
+        <div className="border-b-1 border-gray-200 my-[30px]" />
       </form>
 
       {isSwap && (

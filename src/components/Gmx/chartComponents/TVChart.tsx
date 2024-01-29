@@ -248,7 +248,7 @@ export function TVChart({
     <div className="ExchangeChart tv">
       <div className="ExchangeChart-header">
         <div className="ExchangeChart-info">
-          <div className="ExchangeChart-top-inner">
+          <div className="flex justify-between mx-6 my-[20px] w-10/12">
             <ChartTokenSelector
               chainId={chainId}
               selectedToken={selectedTokenOption}
@@ -259,30 +259,23 @@ export function TVChart({
               avaialbleTokenOptions={avaialbleTokenOptions}
               positionsInfo={positionsInfo}
             />
-            <div className="Chart-min-max-price">
-              <div className="ExchangeChart-main-price">
+            <div className="items-center flex">
+              <div>
                 {formatUsd(chartToken?.prices?.maxPrice, {
-                  displayDecimals: chartToken?.priceDecimals,
-                }) || "..."}
-              </div>
-              <div className="ExchangeChart-info-label">
-                {formatUsd(chartToken?.prices?.minPrice, {
                   displayDecimals: chartToken?.priceDecimals,
                 }) || "..."}
               </div>
             </div>
 
-            <div className="Chart-24h-change">
+            <div className="Chart-24h-change text-center">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div
-                className={cx({
-                  positive:
-                    dayPriceDelta?.deltaPercentage &&
-                    dayPriceDelta?.deltaPercentage > 0,
-                  negative:
-                    dayPriceDelta?.deltaPercentage &&
-                    dayPriceDelta?.deltaPercentage < 0,
-                })}
+                className={`${
+                  dayPriceDelta?.deltaPercentage &&
+                  dayPriceDelta?.deltaPercentage > 0
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
               >
                 {dayPriceDelta?.deltaPercentageStr || "-"}
               </div>
@@ -309,12 +302,12 @@ export function TVChart({
             </div>
           </div>
         </div>
-        <div className="ExchangeChart-info VersionSwitch-wrapper">
+        {/* <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch
             currentVersion={tradePageVersion}
             setCurrentVersion={setTradePageVersion}
           />
-        </div>
+        </div> */}
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
         {chartToken && (

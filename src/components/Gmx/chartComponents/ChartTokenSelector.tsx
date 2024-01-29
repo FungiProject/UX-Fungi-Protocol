@@ -192,14 +192,14 @@ export default function ChartTokenSelector(props: Props) {
           <>
             <Popover.Button as="div">
               <button
-                className={cx("chart-token-selector", {
+                className={cx("flex items-center chart-token-selector", {
                   "chart-token-label--active": open,
                 })}
               >
                 {selectedToken && (
-                  <span className="chart-token-selector--current inline-items-center">
+                  <span className="chart-token-selector--current inline-items-center flex items-center">
                     <TokenIcon
-                      className="chart-token-current-icon"
+                      className="chart-token-current-icon ml-2"
                       symbol={selectedToken.symbol}
                       displaySize={20}
                       importSize={24}
@@ -207,7 +207,7 @@ export default function ChartTokenSelector(props: Props) {
                     {selectedToken.symbol} {"/ USD"}
                   </span>
                 )}
-                <FaChevronDown fontSize={14} />
+                <FaChevronDown fontSize={14} className="ml-2" />
               </button>
             </Popover.Button>
             <div className="chart-token-menu">

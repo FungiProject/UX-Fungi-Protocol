@@ -192,7 +192,7 @@ export function MarketPoolSelectorRow(p: Props) {
 
   return (
     <ExchangeInfoRow
-      className="SwapBox-info-row"
+      className="py-[21px]"
       label={
         message ? (
           <Tooltip

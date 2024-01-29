@@ -48,11 +48,11 @@ export function PositionList(p: Props) {
 
   return (
     <div>
-      {positions.length === 0 && (
+      {/* {positions.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
           {p.isLoading ? `Loading...` : `No open positions`}
         </div>
-      )}
+      )} */}
       <div className="Exchange-list small">
         {!p.isLoading &&
           positions.map((position) => (
@@ -88,35 +88,35 @@ export function PositionList(p: Props) {
           ))}
       </div>
 
-      <table className="Exchange-list large App-box">
+      <table className="w-full">
         <tbody>
-          <tr className="Exchange-list-header">
+          <tr className="border-b-1 h-14">
             <th>
-              <span>Position</span>
+              <span className="ml-6 mr-14">Position</span>
             </th>
             <th>
-              <span>Net Value</span>
+              <span className="mr-14">Net Value</span>
             </th>
             <th>
-              <span>Size</span>
+              <span className="mr-14">Size</span>
             </th>
             <th>
-              <span>Collateral</span>
+              <span className="mr-14">Collateral</span>
             </th>
             <th>
-              <span>Entry Price</span>
+              <span className="mr-14">Entry Price</span>
             </th>
             <th>
-              <span>Mark Price</span>
+              <span className="mr-14">Mark Price</span>
             </th>
             <th>
-              <span>Liq. Price</span>
+              <span className="mr-14">Liq. Price</span>
             </th>
           </tr>
           {positions.length === 0 && (
             <tr>
               <td colSpan={15}>
-                <div className="Exchange-empty-positions-list-note">
+                <div className="Exchange-empty-positions-list-note ml-6 mt-[24px]">
                   {p.isLoading ? `Loading...` : `No open positions`}
                 </div>
               </td>

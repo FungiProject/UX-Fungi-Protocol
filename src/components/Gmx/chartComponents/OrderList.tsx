@@ -91,11 +91,11 @@ export function OrderList(p: Props) {
 
   return (
     <>
-      {orders.length === 0 && (
+      {/* {orders.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
           {p.isLoading ? `Loading...` : `No open orders`}
         </div>
-      )}
+      )} */}
       <div className="Exchange-list Orders small">
         {!p.isLoading &&
           orders.map((order) => {
@@ -117,9 +117,9 @@ export function OrderList(p: Props) {
           })}
       </div>
 
-      <table className="Exchange-list Orders large App-box">
+      <table className="w-full">
         <tbody>
-          <tr className="Exchange-list-header">
+          <tr className="border-b-1 h-14">
             {!p.hideActions && orders.length > 0 && (
               <th>
                 <div className="checkbox-inline ">
@@ -132,21 +132,21 @@ export function OrderList(p: Props) {
             )}
 
             <th>
-              <div>Type</div>
+              <div className="ml-6 mr-14">Type</div>
             </th>
             <th>
-              <div>Order</div>
+              <div className="mr-14">Order</div>
             </th>
             <th>
-              <div>Trigger Price</div>
+              <div className="mr-14">Trigger Price</div>
             </th>
             <th>
-              <div>Mark Price</div>
+              <div className="mr-14">Mark Price</div>
             </th>
           </tr>
           {orders.length === 0 && (
             <tr>
-              <td colSpan={5}>
+              <td colSpan={5} className="ml-6 mt-[24px]">
                 {p.isLoading ? `Loading...` : `No open orders`}
               </td>
             </tr>

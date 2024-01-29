@@ -418,9 +418,9 @@ export function SyntheticsPage(p: Props) {
                   option={listSection}
                   onChange={(section) => setListSection(section)}
                   type="inline"
-                  className="Exchange-list-tabs"
+                  className="h-[40px] p-[4px] ml-6 w-2/4 rounded-full grid grid-cols-4 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
                 />
-                <div className="align-right Exchange-should-show-position-lines">
+                {/* <div className="align-right Exchange-should-show-position-lines">
                   {selectedOrdersKeysArr.length > 0 && (
                     <button
                       className="muted font-base cancel-order-btn"
@@ -440,7 +440,7 @@ export function SyntheticsPage(p: Props) {
                   >
                     <span>Chart positions</span>
                   </Checkbox>
-                </div>
+                </div> */}
               </div>
 
               {listSection === ListSection.Positions && (
@@ -537,7 +537,7 @@ export function SyntheticsPage(p: Props) {
               </div>
             </div>
 
-            <div className="Exchange-lists small">
+            {/* <div className="Exchange-lists small">
               <div className="Exchange-list-tab-container">
                 <Tab
                   options={Object.keys(ListSection)}
@@ -606,7 +606,7 @@ export function SyntheticsPage(p: Props) {
                   setIsSettling={setIsSettling}
                 />
               )}
-            </div>
+            </div> */}
           </div>
         }
       />
