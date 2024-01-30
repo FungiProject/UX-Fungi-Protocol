@@ -73,6 +73,9 @@ import { getCommonError } from "../../domain/synthetics/trade/utils/validation";
 import { PoolSelector } from "../MarketSelector/PoolSelector";
 import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import ExchangeInfoRow from "../../chartComponents/ExchangeInfoRow";
+import { GmFees } from "../GmFees/GmFees";
+import Button from "../../chartComponents/Button";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -109,6 +112,21 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 
   return [Mode.Pair];
 };
+
+function showMarketToast(market) {
+  if (!market) return;
+  const indexName = getMarketIndexName(market);
+  const poolName = getMarketPoolName(market);
+  helperToast.success(
+    <div>
+      <div className="inline-flex">
+        GM:&nbsp;<span>{indexName}</span>
+        <span className="subtext gm-toast">[{poolName}]</span>
+      </div>{" "}
+      <span>selected in order form</span>
+    </div>
+  );
+}
 
 export function GmSwapBox(p: Props) {
   const {
@@ -964,10 +982,10 @@ export function GmSwapBox(p: Props) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          //submitState.onSubmit(); //TODO fungi
+          submitState.onSubmit();
         }}
       >
-        <div className={`flex flex-col${isWithdrawal?'-reverse':''}`}>
+        <div className={`flex ${isWithdrawal?'flex-col-reverse':'flex-col'}`}>
           <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-2">
             <BuyInputSection
               topLeftLabel={isDeposit ? `Pay` : `Receive`}
@@ -1191,11 +1209,57 @@ export function GmSwapBox(p: Props) {
                 onSelectMarket={(marketInfo) => {
                   setIndexName(getMarketIndexName(marketInfo));
                   onMarketChange(marketInfo.marketTokenAddress);
-                  //showMarketToast(marketInfo);
+                  showMarketToast(marketInfo);
                 }}
               />
             </BuyInputSection>
           </div>
+
+          <div className="GmSwapBox-info-section">
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={`Pool`}
+            value={
+              <PoolSelector
+                label={`Pool`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={markets}
+                marketTokensData={marketTokensData}
+                marketsInfoData={marketsInfoData}
+                isSideMenu
+                showBalances
+                onSelectMarket={(marketInfo) => {
+                  onMarketChange(marketInfo.marketTokenAddress);
+                  showMarketToast(marketInfo);
+                }}
+              />
+            }
+          />
+
+          <div className="App-card-divider" />
+
+          <GmFees
+            isDeposit={isDeposit}
+            totalFees={fees?.totalFees}
+            swapFee={fees?.swapFee}
+            swapPriceImpact={fees?.swapPriceImpact}
+            executionFee={executionFee}
+            uiFee={fees?.uiFee}
+          />
+        </div>
+
+        </div>
+        <div className="Exchange-swap-button-container">
+          <Button
+            className="w-full"
+            variant="primary-action"
+            onClick={submitState.onSubmit}
+            disabled={submitState.isDisabled}
+          >
+            {submitState.text}
+          </Button>
         </div>
       </form>
     </div>
