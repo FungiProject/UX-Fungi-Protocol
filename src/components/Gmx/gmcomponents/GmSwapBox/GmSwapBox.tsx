@@ -125,101 +125,42 @@ export function GmSwapBox(p: Props) {
   const queryParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const { openConnectModal } = useConnectModal();
+
+  const marketAddress = p.selectedMarketAddress;
+
   const { chainId } = useChainId();
   const { account } = useWallet();
-  const marketAddress = p.selectedMarketAddress;
-  const marketInfo = getByKey(marketsInfoData, marketAddress);
-  const availableModes = getAvailableModes(operation, marketInfo);
+
+  const uiFeeFactor = useUiFeeFactor(chainId);
+
+  const { gasLimits } = useGasLimits(chainId);
+  const { gasPrice } = useGasPrice(chainId);
+
+  //const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+
+  const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
+  const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, depositMarketTokensData);
+
   const operationLabels = {
     [Operation.Deposit]: `Buy GM`,
     [Operation.Withdrawal]: `Sell GM`,
+  };
+
+  const modeLabels = {
+    [Mode.Single]: `Single`,
+    [Mode.Pair]: `Pair`,
   };
 
   const isDeposit = operation === Operation.Deposit;
   const isWithdrawal = operation === Operation.Withdrawal;
   const isSingle = mode === Mode.Single;
   const isPair = mode === Mode.Pair;
-  const [focusedInput, setFocusedInput] = useState<
-    "longCollateral" | "shortCollateral" | "market"
-  >("market");
-  const { infoTokens } = useAvailableTokenOptions(chainId, {
-    marketsInfoData,
-    tokensData,
-  });
-  const modeLabels = {
-    [Mode.Single]: `Single`,
-    [Mode.Pair]: `Pair`,
-  };
 
-  const [indexName, setIndexName] = useLocalStorageSerializeKey<
-    string | undefined
-  >(getSyntheticsDepositIndexTokenKey(chainId), undefined);
-
-  const onOperationChange = useCallback(
-    (operation: Operation) => {
-      resetInputs();
-      setOperation(operation);
-    },
-    [setOperation]
-  );
-
-  const tokenOptions: Token[] = (function getTokenOptions() {
-    const { longToken, shortToken } = marketInfo || {};
-
-    if (!longToken || !shortToken) return [];
-
-    const result = [longToken];
-
-    if (longToken.address !== shortToken.address) {
-      result.push(shortToken);
-    }
-
-    const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!;
-
-    if (result.some((token) => token.isWrapped) && nativeToken) {
-      result.unshift(nativeToken);
-    }
-
-    return result;
-  })();
-
-  function onFocusedCollateralInputChange(tokenAddress: string) {
-    if (!marketInfo) {
-      return;
-    }
-
-    if (marketInfo?.isSameCollaterals) {
-      setFocusedInput("shortCollateral");
-      return;
-    }
-
-    if (getTokenPoolType(marketInfo, tokenAddress) === "long") {
-      setFocusedInput("longCollateral");
-    } else {
-      setFocusedInput("shortCollateral");
-    }
-  }
-
-  
-  //const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(
-    chainId,
-    { isDeposit: true }
-  );
-  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(
-    chainId,
-    { isDeposit: false }
-  );
-
-  const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] =
-    useState(false);
-  const { marketsInfo: sortedMarketsInfoByIndexToken } =
-    useSortedMarketsWithIndexToken(marketsInfoData, depositMarketTokensData);
-
-  const marketTokensData = isDeposit
-    ? depositMarketTokensData
-    : withdrawalMarketTokensData;
+  const marketTokensData = isDeposit ? depositMarketTokensData : withdrawalMarketTokensData;
   const markets = useMemo(
     () =>
       Object.values(marketsInfoData || {}).filter(
@@ -227,11 +168,14 @@ export function GmSwapBox(p: Props) {
       ),
     [marketsInfoData]
   );
+  const marketInfo = getByKey(marketsInfoData, marketAddress);
+  const availableModes = getAvailableModes(operation, marketInfo);
 
-  const uiFeeFactor = useUiFeeFactor(chainId);
-
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
+  const [indexName, setIndexName] = useLocalStorageSerializeKey<string | undefined>(getSyntheticsDepositIndexTokenKey(chainId), undefined);
+  const { infoTokens } = useAvailableTokenOptions(chainId, {
+    marketsInfoData,
+    tokensData,
+  });
 
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<
     string | undefined
@@ -348,6 +292,26 @@ export function GmSwapBox(p: Props) {
     setSecondTokenInputValue,
   ]);
 
+  const tokenOptions: Token[] = (function getTokenOptions() {
+    const { longToken, shortToken } = marketInfo || {};
+
+    if (!longToken || !shortToken) return [];
+
+    const result = [longToken];
+
+    if (longToken.address !== shortToken.address) {
+      result.push(shortToken);
+    }
+
+    const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!;
+
+    if (result.some((token) => token.isWrapped) && nativeToken) {
+      result.unshift(nativeToken);
+    }
+
+    return result;
+  })();
+
   const [marketTokenInputValue, setMarketTokenInputValue] =
     useSafeState<string>();
   const marketToken = getTokenData(
@@ -447,6 +411,7 @@ export function GmSwapBox(p: Props) {
 
   const amounts = isDeposit ? depositAmounts : withdrawalAmounts;
 
+
   const { fees, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData || !amounts) {
       return {};
@@ -497,6 +462,7 @@ export function GmSwapBox(p: Props) {
       executionFee,
     };
   }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData]);
+
 
   const isHighPriceImpact =
     fees?.swapPriceImpact?.deltaUsd.lt(0) &&
@@ -576,6 +542,23 @@ export function GmSwapBox(p: Props) {
     shouldDisableValidation,
   ]);
 
+  function onFocusedCollateralInputChange(tokenAddress: string) {
+    if (!marketInfo) {
+      return;
+    }
+
+    if (marketInfo?.isSameCollaterals) {
+      setFocusedInput("shortCollateral");
+      return;
+    }
+
+    if (getTokenPoolType(marketInfo, tokenAddress) === "long") {
+      setFocusedInput("longCollateral");
+    } else {
+      setFocusedInput("shortCollateral");
+    }
+  }
+
   const resetInputs = useCallback(() => {
     setFirstTokenInputValue("");
     setSecondTokenInputValue("");
@@ -593,6 +576,14 @@ export function GmSwapBox(p: Props) {
       operation === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit
     );
   }, [operation, resetInputs, setOperation]);
+
+  const onOperationChange = useCallback(
+    (operation: Operation) => {
+      resetInputs();
+      setOperation(operation);
+    },
+    [setOperation]
+  );
 
   const onMarketChange = useCallback(
     (marketAddress: string) => {
@@ -858,13 +849,13 @@ export function GmSwapBox(p: Props) {
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
           helperToast.success(
-              <div>
+            <div>
               <div className="inline-flex">
                 GM:&nbsp;<span>{indexName}</span>
                 <span className="subtext gm-toast">[{poolName}]</span>
               </div>{" "}
               <span>selected in order form</span>
-              </div>
+            </div>
           );
         }
 
@@ -976,7 +967,7 @@ export function GmSwapBox(p: Props) {
           //submitState.onSubmit(); //TODO fungi
         }}
       >
-        <div className="">
+        <div className={`flex flex-col${isWithdrawal?'-reverse':''}`}>
           <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-2">
             <BuyInputSection
               topLeftLabel={isDeposit ? `Pay` : `Receive`}

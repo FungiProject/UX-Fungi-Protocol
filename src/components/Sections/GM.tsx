@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // Components
 import PageContainer from "../Container/PageContainer";
 import { MarketStats } from "../Gmx/gmcomponents/MarketStats";
@@ -27,43 +27,38 @@ export default function GM() {
   const searchParams = useSearchParams();
   const market = searchParams.get("market");
   const { chainId } = useChainId();
+  
+  const gmSwapBoxRef = useRef<HTMLDivElement>(null);
+  function buySellActionHandler() {
+    gmSwapBoxRef?.current?.scrollIntoView();
+    window.scrollBy(0, -25); // add some offset
+  }
+  
   const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
-  const [operation, setOperation] = useState<Operation>(Operation.Deposit); //TODO fungi
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } =
-    useMarketTokensAPR(chainId);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(
-    chainId,
-    { isDeposit: true }
-  );
-  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(
-    chainId,
-    { isDeposit: false }
-  );
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId,{ isDeposit: true });
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId,{ isDeposit: false });
+        
+  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
+  const [operation, setOperation] = useState<Operation>(Operation.Deposit);
+  let [mode, setMode] = useState<Mode>(Mode.Single);
+  if (operation === Operation.Withdrawal) {
+    mode = Mode.Pair;
+  }
+
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<
     string | undefined
   >(getSyntheticsDepositMarketKey(chainId), undefined);
+  
+  const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
+
   const marketToken = getTokenData(
     operation === Operation.Deposit
       ? depositMarketTokensData
       : withdrawalMarketTokensData,
     selectedMarketKey
   );
-  const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
-  //const [marketInfo, setMarketInfo] = useState(getByKey(marketsInfoData, "0x47c031236e19d024b42f8AE6780E44A573170703"));
-  //let marketInfo = getByKey(marketsInfoData, "0x47c031236e19d024b42f8AE6780E44A573170703")
-  let [mode, setMode] = useState<Mode>(Mode.Single);
-
-  useEffect(() => {
-    let currentMarket = market; //TODO fungi
-    if (!currentMarket) {
-      currentMarket = "0x47c031236e19d024b42f8AE6780E44A573170703";
-    }
-    console.log(currentMarket);
-    setSelectedMarketKey(currentMarket);
-    //setMarketInfo(getByKey(marketsInfoData, currentMarket))
-  }, [market]);
 
   return (
     <main>
