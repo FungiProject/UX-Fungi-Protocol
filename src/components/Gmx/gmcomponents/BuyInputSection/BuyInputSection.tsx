@@ -110,7 +110,7 @@ export default function BuyInputSection(props: Props) {
             {!staticInput && (
               <NumberInput
                 value={inputValue}
-                className="Exchange-swap-input"
+                className="outline-none placeholder:text-black"
                 inputRef={inputRef}
                 onValueChange={onUserInput}
                 onFocus={handleOnFocus}

@@ -210,6 +210,7 @@ export default function ChartTokenSelector(props: Props) {
                 <FaChevronDown fontSize={14} className="ml-2" />
               </button>
             </Popover.Button>
+
             <div className="chart-token-menu">
               <Popover.Panel
                 as="div"

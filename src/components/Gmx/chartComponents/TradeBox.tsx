@@ -1461,7 +1461,7 @@ export function TradeBox(p: Props) {
 
   function renderTriggerRatioInput() {
     return (
-      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
         <BuyInputSection
           topLeftLabel={`Price`}
           topRightLabel={`Mark`}
@@ -1477,16 +1477,17 @@ export function TradeBox(p: Props) {
           }}
         >
           {markRatio && (
-            <>
+            <div className="flex">
               <TokenWithIcon
                 symbol={markRatio.smallestToken.symbol}
                 displaySize={20}
-              />
+              />{" "}
+              <span className="mx-2">per</span>
               <TokenWithIcon
                 symbol={markRatio.largestToken.symbol}
                 displaySize={20}
               />
-            </>
+            </div>
           )}
         </BuyInputSection>
       </div>
