@@ -11,14 +11,14 @@ import {
   getMarketPoolName,
   getMintableMarketTokens,
   getSellableMarketToken,
-} from "../../domain/markets";
-import { TokensData } from "../../domain/tokens";
-import useSortedMarketsWithIndexToken from "../../domain/trade/useSortedMarketsWithIndexToken";
+} from "../../domain/synthetics/markets";
+import { TokensData } from "../../domain/synthetics/tokens";
+import useSortedMarketsWithIndexToken from "../../domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getByKey } from "../../lib/objects";
 import { formatTokenAmount, formatUsd } from "../../lib/numbers";
 import TokenIcon from "../TokenIcon";
 import { useHistory } from "react-router-dom";
-//import { AprInfo } from "components/AprInfo/AprInfo";
+import { AprInfo } from "../AprInfo/AprInfo";
 import { getNormalizedTokenSymbol } from "../../config/tokens";
 import { useRouter } from 'next/router'
 import { useSearchParams } from "next/navigation";
@@ -39,7 +39,7 @@ export default function MarketTokenSelector(props: Props) {
   const history = useHistory();
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);
   const poolName = currentMarketInfo && getMarketPoolName(currentMarketInfo);
-  
+
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -86,7 +86,7 @@ export default function MarketTokenSelector(props: Props) {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
       params.set(name, value)
- 
+
       return params.toString()
     },
     [searchParams]
@@ -116,28 +116,27 @@ export default function MarketTokenSelector(props: Props) {
           <div>
             <Popover.Button as="div">
               <button className={''}>
-                <div className="inline-flex">
+                <div className="inline-flex items-center">
                   <span className="flex items-stretch">
                     {currentMarketInfo && (
                       <>
                         <TokenIcon
-                          className="chart-token-current-icon"
+                          className=""
                           symbol={iconName}
                           displaySize={30}
                           importSize={40}
                         />
-                        <div className="Market-index-name">
-                          <div className="items-center">
+                        <div className="ml-2">
+                          <div>
                             <span>GM{indexName && `: ${indexName}`}</span>
-                            <span className="text-xs">{poolName && `[${poolName}]`}</span>
+                            <span className="text-xs ml-1">{poolName && `[${poolName}]`}</span>
                           </div>
-                          <div className="text-xs">GMX Market Tokens</div>
+                          <div className="text-left text-xs"><span>GMX Market Tokens</span></div>
                         </div>
                       </>
                     )}
                   </span>
-                  <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
-
+                  <ChevronDownIcon className="ml-2 h-5 w-5 text-black-400" aria-hidden="true" />
                 </div>
               </button>
             </Popover.Button>
@@ -156,15 +155,15 @@ export default function MarketTokenSelector(props: Props) {
                   placeholder="Search Market"
                 />*/}
                 <div className="divider" />
-                <div className="chart-token-list">
+                <div>
                   <table>
                     {sortedMarketsByIndexToken.length > 0 && (
-                      <thead className="table-head">
+                      <thead className="text-left">
                         <tr>
                           <th>MARKET</th>
-                          <th>BUYABLE</th>
-                          <th>SELLABLE</th>
-                          <th>APR</th>
+                          <th className="pl-3">BUYABLE</th>
+                          <th className="pl-3">SELLABLE</th>
+                          <th className="pl-6">APR</th>
                         </tr>
                       </thead>
                     )}
@@ -190,39 +189,40 @@ export default function MarketTokenSelector(props: Props) {
                               key={market.address}
                               onClick={() => handleSelectToken(market.address)}
                             >
-                              <td className="token-item">
+                              <td className="py-2">
                                 <span className="inline-items-center">
                                   {marketInfo && (
-                                    <>
+                                    <div className="flex">
                                       <TokenIcon
                                         className="ChartToken-list-icon"
                                         symbol={iconName}
                                         displaySize={16}
                                         importSize={40}
                                       />
-                                      <div className="items-center">
+                                      <div className="items-center ml-3">
                                         <span>{indexName && indexName}</span>
-                                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                                        <span className="ml-1 text-xs">{poolName && `[${poolName}]`}</span>
                                       </div>
-                                    </>
+                                    </div>
                                   )}
                                 </span>
                               </td>
-                              <td>
+                              <td className="pl-3">
                                 {formatUsd(mintableInfo?.mintableUsd, {
                                   displayDecimals: 0,
                                   fallbackToZero: true,
                                 })}
                               </td>
-                              <td>
+                              <td className="pl-3">
                                 {formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
                                   displayDecimals: 0,
                                   useCommas: true,
                                 })}
                               </td>
-                              <td>
-                                {/*<AprInfo apr={apr} incentiveApr={incentiveApr} showTooltip={false} />*/}
+                              <td className="pl-6">
+                                {<AprInfo apr={apr} incentiveApr={incentiveApr} showTooltip={false} />}
                               </td>
+                          
                             </Popover.Button>
                           );
                         }

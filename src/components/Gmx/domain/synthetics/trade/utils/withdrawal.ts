@@ -1,7 +1,7 @@
-import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
-import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "../..//markets";
+import { TokenData, convertToTokenAmount, convertToUsd } from "../..//tokens";
 import { BigNumber } from "ethers";
-import { applyFactor } from "lib/numbers";
+import { applyFactor } from "../../../../lib/numbers";
 import { WitdhrawalAmounts } from "../types";
 
 export function getWithdrawalAmounts(p: {

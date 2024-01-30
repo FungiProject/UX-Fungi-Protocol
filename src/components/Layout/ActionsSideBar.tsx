@@ -19,7 +19,7 @@ import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import { SyntheticsPage } from "../Gmx/chartComponents/SyntheticsPage";
-// import GM from "../Sections/GM";
+import GM from "../Sections/GM";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -51,9 +51,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
       case "Transaction History":
         setPage(<History />);
         break;
-      // case "GM":
-      //   setPage(<GM />);
-      //   break;
+      case "Yield":
+         setPage(<GM />);
+         break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
         break;

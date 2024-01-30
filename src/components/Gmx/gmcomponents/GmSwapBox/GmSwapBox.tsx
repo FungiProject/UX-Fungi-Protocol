@@ -6,14 +6,14 @@ import {
   getMarketPoolName,
   useMarketTokensData,
   getAvailableUsdLiquidityForCollateral,
-} from "../../domain/markets";
+} from "../../domain/synthetics/markets";
 import {
   TokensData,
   convertToUsd,
   getTokenData,
   Token,
   TokenData,
-} from "../../domain/tokens";
+} from "../../domain/synthetics/tokens";
 import {
   Dispatch,
   SetStateAction,
@@ -22,9 +22,11 @@ import {
   useState,
   useMemo,
 } from "react";
-import Tab from "../Tab/Tab";
+import GmxTab from "../Tab/Tab";
+import Tab from "../../chartComponents/Tab";
 import styles from "./GmSwapBox.module.scss";
 import { getByKey } from "../../lib/objects";
+import { helperToast } from "../../lib/helperToast";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import {
   formatUsd,
@@ -46,15 +48,15 @@ import useIsMetamaskMobile from "../../lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "../../config/ui";
 import TokenSelector from "../TokenSelector/TokenSelector";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "../../config/tokens";
-import { useAvailableTokenOptions } from "../../domain/trade/useAvailableTokenOptions";
+import { useAvailableTokenOptions } from "../../domain/synthetics/trade/useAvailableTokenOptions";
 import TokenWithIcon from "../TokenIcon/TokenWithIcon";
 import { useSearchParams } from "next/navigation";
-import { getGmSwapError } from "../../domain/trade/utils/validation";
+import { getGmSwapError } from "../../domain/synthetics/trade/utils/validation";
 import useWallet from "../../lib/wallets/useWallet";
-import useSortedMarketsWithIndexToken from "../../domain/trade/useSortedMarketsWithIndexToken";
-import { getDepositAmounts } from "../../domain/trade/utils/deposit";
-import { getWithdrawalAmounts } from "../../domain/trade/utils/withdrawal";
-import { GmSwapFees } from "../../domain/trade";
+import useSortedMarketsWithIndexToken from "../../domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { getDepositAmounts } from "../../domain/synthetics/trade/utils/deposit";
+import { getWithdrawalAmounts } from "../../domain/synthetics/trade/utils/withdrawal";
+import { GmSwapFees } from "../../domain/synthetics/trade";
 import {
   getFeeItem,
   getTotalFeeItem,
@@ -64,11 +66,13 @@ import {
   FeeItem,
   useGasLimits,
   useGasPrice,
-} from "../../domain/fees";
+} from "../../domain/synthetics/fees";
 import { HIGH_PRICE_IMPACT_BPS } from "../../config/factors";
-import useUiFeeFactor from "../../domain/fees/utils/useUiFeeFactor";
-import { getCommonError } from "../../domain/trade/utils/validation";
+import useUiFeeFactor from "../../domain/synthetics/fees/utils/useUiFeeFactor";
+import { getCommonError } from "../../domain/synthetics/trade/utils/validation";
 import { PoolSelector } from "../MarketSelector/PoolSelector";
+import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -119,8 +123,9 @@ export function GmSwapBox(p: Props) {
   } = p;
 
   const queryParams = useSearchParams();
-  const { chainId } = useChainId();
   const isMetamaskMobile = useIsMetamaskMobile();
+  const { openConnectModal } = useConnectModal();
+  const { chainId } = useChainId();
   const { account } = useWallet();
   const marketAddress = p.selectedMarketAddress;
   const marketInfo = getByKey(marketsInfoData, marketAddress);
@@ -152,7 +157,7 @@ export function GmSwapBox(p: Props) {
 
   const onOperationChange = useCallback(
     (operation: Operation) => {
-      //resetInputs(); //TODO fungi
+      resetInputs();
       setOperation(operation);
     },
     [setOperation]
@@ -195,7 +200,7 @@ export function GmSwapBox(p: Props) {
     }
   }
 
-  //const { openConnectModal } = useConnectModal();
+  
   //const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(
     chainId,
@@ -449,8 +454,8 @@ export function GmSwapBox(p: Props) {
 
     const basisUsd = isDeposit
       ? BigNumber.from(0)
-          .add(amounts?.longTokenUsd || 0)
-          .add(amounts?.shortTokenUsd || 0)
+        .add(amounts?.longTokenUsd || 0)
+        .add(amounts?.shortTokenUsd || 0)
       : amounts?.marketTokenUsd || BigNumber.from(0);
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
@@ -474,9 +479,9 @@ export function GmSwapBox(p: Props) {
 
     const gasLimit = isDeposit
       ? estimateExecuteDepositGasLimit(gasLimits, {
-          initialLongTokenAmount: amounts.longTokenAmount,
-          initialShortTokenAmount: amounts.shortTokenAmount,
-        })
+        initialLongTokenAmount: amounts.longTokenAmount,
+        initialShortTokenAmount: amounts.shortTokenAmount,
+      })
       : estimateExecuteWithdrawalGasLimit(gasLimits, {});
 
     const executionFee = getExecutionFee(
@@ -617,9 +622,9 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0)
                 ? formatAmountFree(
-                    amounts.marketTokenAmount,
-                    marketToken.decimals
-                  )
+                  amounts.marketTokenAmount,
+                  marketToken.decimals
+                )
                 : ""
             );
           }
@@ -635,9 +640,9 @@ export function GmSwapBox(p: Props) {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.longTokenAmount,
-                      longToken.decimals
-                    )
+                    amounts.longTokenAmount,
+                    longToken.decimals
+                  )
                   : ""
               );
             }
@@ -645,9 +650,9 @@ export function GmSwapBox(p: Props) {
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.shortTokenAmount,
-                      shortToken.decimals
-                    )
+                    amounts.shortTokenAmount,
+                    shortToken.decimals
+                  )
                   : ""
               );
             }
@@ -669,34 +674,34 @@ export function GmSwapBox(p: Props) {
               setFirstTokenInputValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.longTokenAmount,
-                      longToken!.decimals
-                    )
+                    amounts.longTokenAmount,
+                    longToken!.decimals
+                  )
                   : ""
               );
               setSecondTokenInputValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.shortTokenAmount,
-                      shortToken!.decimals
-                    )
+                    amounts.shortTokenAmount,
+                    shortToken!.decimals
+                  )
                   : ""
               );
             } else {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.longTokenAmount,
-                      longToken!.decimals
-                    )
+                    amounts.longTokenAmount,
+                    longToken!.decimals
+                  )
                   : ""
               );
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                      amounts.shortTokenAmount,
-                      shortToken!.decimals
-                    )
+                    amounts.shortTokenAmount,
+                    shortToken!.decimals
+                  )
                   : ""
               );
             }
@@ -726,9 +731,9 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0)
                 ? formatAmountFree(
-                    amounts.marketTokenAmount,
-                    marketToken.decimals
-                  )
+                  amounts.marketTokenAmount,
+                  marketToken.decimals
+                )
                 : ""
             );
 
@@ -737,18 +742,18 @@ export function GmSwapBox(p: Props) {
                 setFirstTokenInputValue(
                   amounts.longTokenAmount.gt(0)
                     ? formatAmountFree(
-                        amounts.longTokenAmount,
-                        longToken!.decimals
-                      )
+                      amounts.longTokenAmount,
+                      longToken!.decimals
+                    )
                     : ""
                 );
               } else {
                 longTokenInputState?.setValue(
                   amounts.longTokenAmount.gt(0)
                     ? formatAmountFree(
-                        amounts.longTokenAmount,
-                        longToken!.decimals
-                      )
+                      amounts.longTokenAmount,
+                      longToken!.decimals
+                    )
                     : ""
                 );
               }
@@ -758,18 +763,18 @@ export function GmSwapBox(p: Props) {
                 setSecondTokenInputValue(
                   amounts.shortTokenAmount.gt(0)
                     ? formatAmountFree(
-                        amounts.shortTokenAmount,
-                        shortToken!.decimals
-                      )
+                      amounts.shortTokenAmount,
+                      shortToken!.decimals
+                    )
                     : ""
                 );
               } else {
                 shortTokenInputState?.setValue(
                   amounts.shortTokenAmount.gt(0)
                     ? formatAmountFree(
-                        amounts.shortTokenAmount,
-                        shortToken!.decimals
-                      )
+                      amounts.shortTokenAmount,
+                      shortToken!.decimals
+                    )
                     : ""
                 );
               }
@@ -852,15 +857,15 @@ export function GmSwapBox(p: Props) {
           onSelectMarket(marketInfo?.marketTokenAddress);
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
-          /*helperToast.success(
-            <Trans>
+          helperToast.success(
+              <div>
               <div className="inline-flex">
                 GM:&nbsp;<span>{indexName}</span>
                 <span className="subtext gm-toast">[{poolName}]</span>
               </div>{" "}
               <span>selected in order form</span>
-            </Trans>
-          );*/
+              </div>
+          );
         }
 
         if (queryParams.get("scroll") === "1") {
@@ -873,7 +878,6 @@ export function GmSwapBox(p: Props) {
       }*/
     },
     [
-      history,
       marketsInfoData,
       onSelectMarket,
       queryParams,
@@ -921,7 +925,7 @@ export function GmSwapBox(p: Props) {
           !secondTokenAddress ||
           !tokenOptions.find((token) => token.address === secondTokenAddress) ||
           convertTokenAddress(chainId, firstTokenAddress, "wrapped") ===
-            convertTokenAddress(chainId, secondTokenAddress, "wrapped")
+          convertTokenAddress(chainId, secondTokenAddress, "wrapped")
         ) {
           const secondToken = tokenOptions.find((token) => {
             return (
@@ -949,18 +953,18 @@ export function GmSwapBox(p: Props) {
   );
 
   return (
-    <>
+    <div className="mx-5">
       <Tab
         options={Object.values(Operation)}
         optionLabels={operationLabels}
         option={operation}
         onChange={onOperationChange}
-        className={`Exchange-swap-option-tabs`}
+        className={`h-[40px] p-[4px] mt-4 rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-sm mb-2 font-semibold`}
       />
-      <Tab
+      <GmxTab
         options={availableModes}
         optionLabels={modeLabels}
-        className="GmSwapBox-asset-options-tabs"
+        className="ml-2 mt-2"
         type="inline"
         option={mode}
         onChange={setMode}
@@ -972,231 +976,237 @@ export function GmSwapBox(p: Props) {
           //submitState.onSubmit(); //TODO fungi
         }}
       >
-        <div className={"GmSwapBox-form-layout"}>
-          <BuyInputSection
-            topLeftLabel={isDeposit ? `Pay` : `Receive`}
-            topLeftValue={formatUsd(firstTokenUsd)}
-            topRightLabel={`Balance`}
-            topRightValue={formatTokenAmount(
-              firstToken?.balance,
-              firstToken?.decimals,
-              "",
-              {
-                useCommas: true,
-              }
-            )}
-            preventFocusOnLabelClick="right"
-            {...(isDeposit && {
-              onClickTopRightLabel: () => {
-                if (firstToken?.balance) {
-                  const maxAvailableAmount = firstToken.isNative
-                    ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                    : firstToken.balance;
-                  setFirstTokenInputValue(
-                    formatAmountFree(maxAvailableAmount, firstToken.decimals)
-                  );
-                  onFocusedCollateralInputChange(firstToken.address);
-                }
-              },
-            })}
-            showMaxButton={
-              isDeposit &&
-              firstToken?.balance?.gt(0) &&
-              !firstTokenAmount?.eq(firstToken.balance)
-            }
-            inputValue={firstTokenInputValue}
-            onInputValueChange={(e) => {
-              if (firstToken) {
-                setFirstTokenInputValue(e.target.value);
-                onFocusedCollateralInputChange(firstToken.address);
-              }
-            }}
-            onClickMax={() => {
-              if (firstToken?.balance) {
-                const maxAvailableAmount = firstToken.isNative
-                  ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                  : firstToken.balance;
-
-                const formattedMaxAvailableAmount = formatAmountFree(
-                  maxAvailableAmount,
-                  firstToken.decimals
-                );
-                const finalAmount = isMetamaskMobile
-                  ? limitDecimals(
-                      formattedMaxAvailableAmount,
-                      MAX_METAMASK_MOBILE_DECIMALS
-                    )
-                  : formattedMaxAvailableAmount;
-
-                setFirstTokenInputValue(finalAmount);
-                onFocusedCollateralInputChange(firstToken.address);
-              }
-            }}
-          >
-            {firstTokenAddress && isSingle ? (
-              <TokenSelector
-                label={`Pay`}
-                chainId={chainId}
-                tokenAddress={firstTokenAddress}
-                onSelectToken={(token) => setFirstTokenAddress(token.address)}
-                tokens={tokenOptions}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-              />
-            ) : (
-              <div className="selected-token">
-                <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
-              </div>
-            )}
-          </BuyInputSection>
-
-          {isPair && secondTokenAddress && (
+        <div className="">
+          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-2">
             <BuyInputSection
               topLeftLabel={isDeposit ? `Pay` : `Receive`}
-              topLeftValue={formatUsd(secondTokenUsd)}
+              topLeftValue={formatUsd(firstTokenUsd)}
               topRightLabel={`Balance`}
               topRightValue={formatTokenAmount(
-                secondToken?.balance,
-                secondToken?.decimals,
+                firstToken?.balance,
+                firstToken?.decimals,
                 "",
                 {
                   useCommas: true,
                 }
               )}
               preventFocusOnLabelClick="right"
-              inputValue={secondTokenInputValue}
-              showMaxButton={
-                isDeposit &&
-                secondToken?.balance?.gt(0) &&
-                !secondTokenAmount?.eq(secondToken.balance)
-              }
-              onInputValueChange={(e) => {
-                if (secondToken) {
-                  setSecondTokenInputValue(e.target.value);
-                  onFocusedCollateralInputChange(secondToken.address);
-                }
-              }}
               {...(isDeposit && {
                 onClickTopRightLabel: () => {
+                  if (firstToken?.balance) {
+                    const maxAvailableAmount = firstToken.isNative
+                      ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                      : firstToken.balance;
+                    setFirstTokenInputValue(
+                      formatAmountFree(maxAvailableAmount, firstToken.decimals)
+                    );
+                    onFocusedCollateralInputChange(firstToken.address);
+                  }
+                },
+              })}
+              showMaxButton={
+                isDeposit &&
+                firstToken?.balance?.gt(0) &&
+                !firstTokenAmount?.eq(firstToken.balance)
+              }
+              inputValue={firstTokenInputValue}
+              onInputValueChange={(e) => {
+                if (firstToken) {
+                  setFirstTokenInputValue(e.target.value);
+                  onFocusedCollateralInputChange(firstToken.address);
+                }
+              }}
+              onClickMax={() => {
+                if (firstToken?.balance) {
+                  const maxAvailableAmount = firstToken.isNative
+                    ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                    : firstToken.balance;
+
+                  const formattedMaxAvailableAmount = formatAmountFree(
+                    maxAvailableAmount,
+                    firstToken.decimals
+                  );
+                  const finalAmount = isMetamaskMobile
+                    ? limitDecimals(
+                      formattedMaxAvailableAmount,
+                      MAX_METAMASK_MOBILE_DECIMALS
+                    )
+                    : formattedMaxAvailableAmount;
+
+                  setFirstTokenInputValue(finalAmount);
+                  onFocusedCollateralInputChange(firstToken.address);
+                }
+              }}
+            >
+              {firstTokenAddress && isSingle ? (
+                <TokenSelector
+                  label={`Pay`}
+                  chainId={chainId}
+                  tokenAddress={firstTokenAddress}
+                  onSelectToken={(token) => setFirstTokenAddress(token.address)}
+                  tokens={tokenOptions}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showTokenImgInDropdown={true}
+                />
+              ) : (
+                <div className="selected-token">
+                  <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
+                </div>
+              )}
+            </BuyInputSection>
+          </div>
+
+          {isPair && secondTokenAddress && (
+            <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
+              <BuyInputSection
+                topLeftLabel={isDeposit ? `Pay` : `Receive`}
+                topLeftValue={formatUsd(secondTokenUsd)}
+                topRightLabel={`Balance`}
+                topRightValue={formatTokenAmount(
+                  secondToken?.balance,
+                  secondToken?.decimals,
+                  "",
+                  {
+                    useCommas: true,
+                  }
+                )}
+                preventFocusOnLabelClick="right"
+                inputValue={secondTokenInputValue}
+                showMaxButton={
+                  isDeposit &&
+                  secondToken?.balance?.gt(0) &&
+                  !secondTokenAmount?.eq(secondToken.balance)
+                }
+                onInputValueChange={(e) => {
+                  if (secondToken) {
+                    setSecondTokenInputValue(e.target.value);
+                    onFocusedCollateralInputChange(secondToken.address);
+                  }
+                }}
+                {...(isDeposit && {
+                  onClickTopRightLabel: () => {
+                    if (secondToken?.balance) {
+                      const maxAvailableAmount = secondToken.isNative
+                        ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                        : secondToken.balance;
+                      setSecondTokenInputValue(
+                        formatAmountFree(maxAvailableAmount, secondToken.decimals)
+                      );
+                      onFocusedCollateralInputChange(secondToken.address);
+                    }
+                  },
+                })}
+                onClickMax={() => {
                   if (secondToken?.balance) {
                     const maxAvailableAmount = secondToken.isNative
                       ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
                       : secondToken.balance;
-                    setSecondTokenInputValue(
-                      formatAmountFree(maxAvailableAmount, secondToken.decimals)
+
+                    const formattedMaxAvailableAmount = formatAmountFree(
+                      maxAvailableAmount,
+                      secondToken.decimals
                     );
+                    const finalAmount = isMetamaskMobile
+                      ? limitDecimals(
+                        formattedMaxAvailableAmount,
+                        MAX_METAMASK_MOBILE_DECIMALS
+                      )
+                      : formattedMaxAvailableAmount;
+                    setSecondTokenInputValue(finalAmount);
                     onFocusedCollateralInputChange(secondToken.address);
+                  }
+                }}
+              >
+                <div className="selected-token">
+                  <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+                </div>
+              </BuyInputSection>
+            </div>
+          )}
+
+          <div className="AppOrder-ball-container" onClick={onSwitchSide}>
+            <div className="flex items-center justify-center">
+              <ArrowsUpDownIcon className="h-7 w-7 my-3" />
+            </div>
+          </div>
+
+          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+            <BuyInputSection
+              topLeftLabel={isWithdrawal ? `Pay` : `Receive`}
+              topLeftValue={
+                marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""
+              }
+              topRightLabel={`Balance`}
+              topRightValue={formatTokenAmount(
+                marketToken?.balance,
+                marketToken?.decimals,
+                "",
+                {
+                  useCommas: true,
+                }
+              )}
+              preventFocusOnLabelClick="right"
+              showMaxButton={
+                isWithdrawal &&
+                marketToken?.balance?.gt(0) &&
+                !marketTokenAmount?.eq(marketToken.balance)
+              }
+              inputValue={marketTokenInputValue}
+              onInputValueChange={(e) => {
+                setMarketTokenInputValue(e.target.value);
+                setFocusedInput("market");
+              }}
+              {...(isWithdrawal && {
+                onClickTopRightLabel: () => {
+                  if (marketToken?.balance) {
+                    setMarketTokenInputValue(
+                      formatAmountFree(marketToken.balance, marketToken.decimals)
+                    );
+                    setFocusedInput("market");
                   }
                 },
               })}
               onClickMax={() => {
-                if (secondToken?.balance) {
-                  const maxAvailableAmount = secondToken.isNative
-                    ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                    : secondToken.balance;
-
-                  const formattedMaxAvailableAmount = formatAmountFree(
-                    maxAvailableAmount,
-                    secondToken.decimals
-                  );
-                  const finalAmount = isMetamaskMobile
-                    ? limitDecimals(
-                        formattedMaxAvailableAmount,
-                        MAX_METAMASK_MOBILE_DECIMALS
-                      )
-                    : formattedMaxAvailableAmount;
-                  setSecondTokenInputValue(finalAmount);
-                  onFocusedCollateralInputChange(secondToken.address);
-                }
-              }}
-            >
-              <div className="selected-token">
-                <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
-              </div>
-            </BuyInputSection>
-          )}
-
-          <div className="AppOrder-ball-container" onClick={onSwitchSide}>
-            <div className="AppOrder-ball">
-              {/*<IoMdSwap className="Exchange-swap-ball-icon" />*/}
-            </div>
-          </div>
-
-          <BuyInputSection
-            topLeftLabel={isWithdrawal ? `Pay` : `Receive`}
-            topLeftValue={
-              marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""
-            }
-            topRightLabel={`Balance`}
-            topRightValue={formatTokenAmount(
-              marketToken?.balance,
-              marketToken?.decimals,
-              "",
-              {
-                useCommas: true,
-              }
-            )}
-            preventFocusOnLabelClick="right"
-            showMaxButton={
-              isWithdrawal &&
-              marketToken?.balance?.gt(0) &&
-              !marketTokenAmount?.eq(marketToken.balance)
-            }
-            inputValue={marketTokenInputValue}
-            onInputValueChange={(e) => {
-              setMarketTokenInputValue(e.target.value);
-              setFocusedInput("market");
-            }}
-            {...(isWithdrawal && {
-              onClickTopRightLabel: () => {
                 if (marketToken?.balance) {
-                  setMarketTokenInputValue(
-                    formatAmountFree(marketToken.balance, marketToken.decimals)
+                  const formattedGMBalance = formatAmountFree(
+                    marketToken.balance,
+                    marketToken.decimals
                   );
-                  setFocusedInput("market");
-                }
-              },
-            })}
-            onClickMax={() => {
-              if (marketToken?.balance) {
-                const formattedGMBalance = formatAmountFree(
-                  marketToken.balance,
-                  marketToken.decimals
-                );
-                const finalGMBalance = isMetamaskMobile
-                  ? limitDecimals(
+                  const finalGMBalance = isMetamaskMobile
+                    ? limitDecimals(
                       formattedGMBalance,
                       MAX_METAMASK_MOBILE_DECIMALS
                     )
-                  : formattedGMBalance;
-                setMarketTokenInputValue(finalGMBalance);
-                setFocusedInput("market");
-              }
-            }}
-          >
-            <PoolSelector
-              label={`Pool`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={indexName}
-              selectedMarketAddress={marketAddress}
-              markets={sortedMarketsInfoByIndexToken}
-              marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
-              isSideMenu
-              showBalances
-              showAllPools
-              showIndexIcon
-              onSelectMarket={(marketInfo) => {
-                setIndexName(getMarketIndexName(marketInfo));
-                onMarketChange(marketInfo.marketTokenAddress);
-                //showMarketToast(marketInfo);
+                    : formattedGMBalance;
+                  setMarketTokenInputValue(finalGMBalance);
+                  setFocusedInput("market");
+                }
               }}
-            />
-          </BuyInputSection>
+            >
+              <PoolSelector
+                label={`Pool`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={sortedMarketsInfoByIndexToken}
+                marketTokensData={marketTokensData}
+                marketsInfoData={marketsInfoData}
+                isSideMenu
+                showBalances
+                showAllPools
+                showIndexIcon
+                onSelectMarket={(marketInfo) => {
+                  setIndexName(getMarketIndexName(marketInfo));
+                  onMarketChange(marketInfo.marketTokenAddress);
+                  //showMarketToast(marketInfo);
+                }}
+              />
+            </BuyInputSection>
+          </div>
         </div>
       </form>
-    </>
+    </div>
   );
 }

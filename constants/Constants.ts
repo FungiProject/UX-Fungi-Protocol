@@ -96,13 +96,7 @@ export const navigation = [
     href: "/nfts",
     imageActive: NFTActive.src,
     imageDesactive: NFTDesactive.src,
-  },
-  {
-    name: "GM",
-    href: "/gm",
-    imageActive: HomeActive.src,
-    imageDesactive: HomeDesactive.src,
-  },
+  }
 ];
 
 export const networks = [

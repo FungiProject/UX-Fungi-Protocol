@@ -1,5 +1,5 @@
-import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "../../domain/markets";
-import { TokensData, convertToUsd } from "../../domain/tokens";
+import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "../../domain/synthetics/markets";
+import { TokensData, convertToUsd } from "../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "../../lib/numbers";
 import { getByKey } from "../../lib/objects";
@@ -128,7 +128,7 @@ export function PoolSelector({
 
     if (filteredOptions?.length > 1) {
       return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div className="flex" onClick={() => setIsModalVisible(true)}>
           {name ? name : "..."}
           <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
         </div>
@@ -240,10 +240,10 @@ export function PoolSelector({
       </Modal>
 
       {marketInfo && (
-        <div className="inline-items-center">
+        <div className="flex">
           {showIndexIcon && (
             <TokenIcon
-              className="mr-xs"
+              className="mr-2"
               symbol={
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

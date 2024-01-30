@@ -3,12 +3,9 @@ import React, { useEffect, useState } from "react";
 // Components
 import PageContainer from "../Container/PageContainer";
 import { MarketStats } from "../Gmx/gmcomponents/MarketStats";
-import {
-  useMarketTokensData,
-  useMarketTokensAPR,
-  useMarketsInfo,
-} from "../Gmx/domain/markets";
-import { getTokenData } from "../Gmx/domain/tokens";
+import { useMarketTokensData, useMarketsInfo, } from "../Gmx/domain/synthetics/markets";
+import { useMarketTokensAPR } from "../Gmx/domain/synthetics/markets/useMarketTokensAPR";
+import { getTokenData } from "../Gmx/domain/synthetics/tokens";
 import { getByKey } from "../Gmx/lib/objects";
 import { useLocalStorageSerializeKey } from "../Gmx/lib/localStorage";
 import { getSyntheticsDepositMarketKey } from "../Gmx/config/localStorage";

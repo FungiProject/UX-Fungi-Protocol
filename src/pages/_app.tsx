@@ -60,6 +60,7 @@ const config = createClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
+    <main>
     <WagmiConfig client={config}>
       {" "}
       <RainbowKitProvider
@@ -78,5 +79,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </SettingsContextProvider>{" "}
       </RainbowKitProvider>
     </WagmiConfig>
+    <script async src="/charting_library/charting_library.standalone.js"></script>
+    </main>
   );
 }

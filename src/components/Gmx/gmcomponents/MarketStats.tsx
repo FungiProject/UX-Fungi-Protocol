@@ -1,12 +1,12 @@
-import { TokenData, TokensData, convertToUsd, convertToTokenAmount } from "../domain/tokens";
-import { MarketsInfoData, MarketInfo, MarketTokensAPRData, getMintableMarketTokens, getSellableMarketToken, getPoolUsdWithoutPnl } from "../domain/markets";
+import { TokenData, TokensData, convertToUsd, convertToTokenAmount } from "../domain/synthetics/tokens";
+import { MarketsInfoData, MarketInfo, MarketTokensAPRData, getMintableMarketTokens, getSellableMarketToken, getPoolUsdWithoutPnl } from "../domain/synthetics/markets";
 import MarketTokenSelector from "./MarketTokenSelector/MarketTokenSelector"
 import { CardRow } from "./CardRow";
-import { getMarketIndexName, getMarketPoolName } from "../domain/markets";
+import { getMarketIndexName, getMarketPoolName } from "../domain/synthetics/markets";
 import { formatUsd, formatTokenAmountWithUsd, formatTokenAmount } from "../lib/numbers";
 import { BigNumber } from "ethers";
 import { getByKey } from "../lib/objects";
-import { AprInfo } from "./AprInfo";
+import { AprInfo } from "./AprInfo/AprInfo";
 import Tooltip from "./Tooltip/Tooltip";
 import { getBridgingOptionsForToken } from "../config/bridging";
 import { useChainId } from "../lib/chains";
@@ -63,7 +63,7 @@ export function MarketStats(p: Props) {
 
     return (
         <>
-            <div>
+            <div className="ml-4 mt-3">
                 <MarketTokenSelector
                     marketTokensData={marketTokensData}
                     marketsInfoData={marketsInfoData}
@@ -72,7 +72,7 @@ export function MarketStats(p: Props) {
                     currentMarketInfo={marketInfo}
                 />
             </div>
-            <div>
+            <div className="ml-6 mt-6">
                 <CardRow
                     label={`Market`}
                     value={

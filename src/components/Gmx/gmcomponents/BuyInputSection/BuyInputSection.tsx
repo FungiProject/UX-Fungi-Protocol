@@ -75,10 +75,10 @@ export default function BuyInputSection(props: Props) {
   }
 
   return (
-    <div>
-      <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
-        <div className="buy-input-top-row">
-          <div data-label="left" className="text-gray">
+    <div className="flex-1">
+      <div className="flex-1" onClick={handleBoxClick}>
+        <div className="flex justify-between">
+          <div data-label="left" className="text-sm text-black/70">
             {topLeftLabel}
             {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
           </div>
@@ -87,7 +87,7 @@ export default function BuyInputSection(props: Props) {
             className={"align-right"}
             onClick={onClickTopRightLabel}
           >
-            <span className="text-gray">{topRightLabel}</span>
+            <span className="text-sm text-black/70">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
                 {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;{topRightValue}
@@ -95,8 +95,8 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
         </div>
-        <div className="Exchange-swap-section-bottom">
-          <div className="Exchange-swap-input-container">
+        <div className="flex-1 flex justify-between">
+          <div className="flex justify-between">
             {!staticInput && (
               <NumberInput
                 value={inputValue}

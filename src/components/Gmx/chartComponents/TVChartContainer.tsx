@@ -217,7 +217,7 @@ export default function TVChartContainer({
   }, [chainId, dataProvider]);
 
   return (
-    <div className="ExchangeChart-error">
+    <div className="ExchangeChart-error h-96 bg-gray-200 flex justify-center items-center">
       {chartDataLoading && <Loader />}
       <div
         style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}

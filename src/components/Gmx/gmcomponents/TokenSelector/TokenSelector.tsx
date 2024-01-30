@@ -300,13 +300,13 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div
-          className="TokenSelector-box"
+          className="flex"
           onClick={() => setIsModalVisible(true)}
         >
-          <span className="inline-items-center">
+          <span className="flex">
             {showSymbolImage && (
               <TokenIcon
-                className="mr-xs"
+                className="mr-3"
                 symbol={tokenInfo.symbol}
                 importSize={24}
                 displaySize={20}
