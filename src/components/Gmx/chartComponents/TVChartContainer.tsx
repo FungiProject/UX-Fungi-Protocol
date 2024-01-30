@@ -180,27 +180,27 @@ export default function TVChartContainer({
       ),
     };
 
-    // tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
-    // tvWidgetRef.current!.onChartReady(function () {
-    //   setChartReady(true);
-    //   tvWidgetRef.current!.applyOverrides({
-    //     "paneProperties.background": "#16182e",
-    //     "paneProperties.backgroundType": "solid",
-    //   });
-    //   tvWidgetRef.current
-    //     ?.activeChart()
-    //     .onIntervalChanged()
-    //     .subscribe(null, (interval) => {
-    //       if (supportedResolutions[interval]) {
-    //         const period = supportedResolutions[interval];
-    //         setPeriod(period);
-    //       }
-    //     });
+    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+    tvWidgetRef.current!.onChartReady(function () {
+      setChartReady(true);
+      tvWidgetRef.current!.applyOverrides({
+        "paneProperties.background": "#16182e",
+        "paneProperties.backgroundType": "solid",
+      });
+      tvWidgetRef.current
+        ?.activeChart()
+        .onIntervalChanged()
+        .subscribe(null, (interval) => {
+          if (supportedResolutions[interval]) {
+            const period = supportedResolutions[interval];
+            setPeriod(period);
+          }
+        });
 
-    //   tvWidgetRef.current?.activeChart().dataReady(() => {
-    //     setChartDataLoading(false);
-    //   });
-    // });
+      tvWidgetRef.current?.activeChart().dataReady(() => {
+        setChartDataLoading(false);
+      });
+    });
 
     dataProvider?.resetCache();
 
@@ -217,12 +217,16 @@ export default function TVChartContainer({
   }, [chainId, dataProvider]);
 
   return (
-    <div className="ExchangeChart-error h-96 bg-gray-200 flex justify-center items-center">
+    <div
+      className={`h-96 mb-8 ${
+        chartDataLoading ? "bg-gray-200" : "bg-[#16182e]"
+      } flex justify-center items-center`}
+    >
       {chartDataLoading && <Loader />}
       <div
         style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
         ref={chartContainerRef}
-        className="TVChartContainer ExchangeChart-bottom-content"
+        className="TVChartContainer ExchangeChart-bottom-content h-96 w-full "
       />
     </div>
   );
