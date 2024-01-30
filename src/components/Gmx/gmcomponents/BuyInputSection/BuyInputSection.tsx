@@ -41,7 +41,8 @@ export default function BuyInputSection(props: Props) {
     onPercentChange,
     preventFocusOnLabelClick,
   } = props;
-  const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
+  const [isPercentSelectorVisible, setIsPercentSelectorVisible] =
+    useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function handleOnFocus() {
@@ -61,9 +62,17 @@ export default function BuyInputSection(props: Props) {
   function handleBoxClick(event: React.MouseEvent<HTMLDivElement>) {
     const target = event.target as HTMLElement;
     const labelElement = target.closest("[data-label]");
-    const labelClicked = labelElement ? labelElement.getAttribute("data-label") : null;
+    const labelClicked = labelElement
+      ? labelElement.getAttribute("data-label")
+      : null;
 
-    if (!(preventFocusOnLabelClick === labelClicked || preventFocusOnLabelClick === "both") && inputRef.current) {
+    if (
+      !(
+        preventFocusOnLabelClick === labelClicked ||
+        preventFocusOnLabelClick === "both"
+      ) &&
+      inputRef.current
+    ) {
       inputRef.current.focus();
     }
   }
@@ -84,13 +93,14 @@ export default function BuyInputSection(props: Props) {
           </div>
           <div
             data-label="right"
-            className={"align-right"}
+            className={"align-right mb-2"}
             onClick={onClickTopRightLabel}
           >
             <span className="text-sm text-black/70">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
-                {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;{topRightValue}
+                {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;
+                {topRightValue}
               </span>
             )}
           </div>
@@ -108,9 +118,15 @@ export default function BuyInputSection(props: Props) {
                 placeholder="0.0"
               />
             )}
-            {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
+            {staticInput && (
+              <div className="InputSection-static-input">{inputValue}</div>
+            )}
             {showMaxButton && (
-              <button type="button" className="Exchange-swap-max" onClick={onClickMax}>
+              <button
+                type="button"
+                className="Exchange-swap-max"
+                onClick={onClickMax}
+              >
                 <span>MAX</span>
               </button>
             )}

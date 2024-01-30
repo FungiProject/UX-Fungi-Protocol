@@ -5,7 +5,7 @@ import groupBy from "lodash/groupBy";
 import { FaChevronDown } from "react-icons/fa";
 import { Token } from "../domain/tokens";
 import SearchInput from "./SearchInput";
-import TokenIcon from "./TokenIcon";
+import TokenIcon from "../gmcomponents/TokenIcon";
 // import { t } from "@lingui/macro";
 import { TradeFlags } from "../domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "../domain/synthetics/trade";
@@ -185,7 +185,7 @@ export default function ChartTokenSelector(props: Props) {
   }
 
   return (
-    <Popover className="Synths-ChartTokenSelector">
+    <Popover className="Sflex items-center">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
@@ -197,11 +197,11 @@ export default function ChartTokenSelector(props: Props) {
                 })}
               >
                 {selectedToken && (
-                  <span className="chart-token-selector--current inline-items-center flex items-center">
+                  <span className="flex items-center">
                     <TokenIcon
-                      className="chart-token-current-icon ml-2"
+                      className="chart-token-current-icon mx-2"
                       symbol={selectedToken.symbol}
-                      displaySize={20}
+                      displaySize={32}
                       importSize={24}
                     />
                     {selectedToken.symbol} {"/ USD"}
@@ -275,7 +275,7 @@ export default function ChartTokenSelector(props: Props) {
                             >
                               <span className="inline-items-center">
                                 <TokenIcon
-                                  className="ChartToken-list-icon"
+                                  className="ChartToken-list-icon mx-2"
                                   symbol={token.symbol}
                                   displaySize={16}
                                   importSize={24}

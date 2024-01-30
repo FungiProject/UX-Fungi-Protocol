@@ -1,7 +1,7 @@
 // import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "./Button";
-import BuyInputSection from "./BuyInputSection";
+import BuyInputSection from "../gmcomponents/BuyInputSection/BuyInputSection";
 import Checkbox from "./Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { LeverageSlider } from "./LeverageSlider";
@@ -9,8 +9,8 @@ import { MarketSelector } from "./MarketSelector";
 import { ConfirmationBox } from "./ConfirmationBox";
 import Tab from "./Tab";
 import ToggleSwitch from "./ToggleSwitch";
-import TokenWithIcon from "./TokenWithIcon";
-import TokenSelector from "./TokenSelector";
+import TokenWithIcon from "../gmcomponents/TokenIcon/TokenWithIcon";
+import TokenSelector from "../gmcomponents/TokenSelector/TokenSelector";
 import { ValueTransition } from "./ValueTransition";
 import Tooltip from "./Tooltip";
 import { MarketCard } from "./MarketCard";
@@ -121,6 +121,7 @@ import { useLatest, usePrevious } from "react-use";
 
 import useUiFeeFactor from "../domain/synthetics/fees/utils/useUiFeeFactor";
 import { museNeverExist } from "../lib/types";
+import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 
 export type Props = {
   tradeType: TradeType;
@@ -1241,142 +1242,149 @@ export function TradeBox(p: Props) {
   function renderTokenInputs() {
     return (
       <>
-        <BuyInputSection
-          topLeftLabel={`Pay`}
-          topLeftValue={
-            fromUsd?.gt(0)
-              ? formatUsd(
-                  isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd
-                )
-              : ""
-          }
-          topRightLabel={`Balance`}
-          topRightValue={formatTokenAmount(
-            fromToken?.balance,
-            fromToken?.decimals,
-            "",
-            {
-              useCommas: true,
-            }
-          )}
-          onClickTopRightLabel={onMaxClick}
-          inputValue={fromTokenInputValue}
-          onInputValueChange={(e) => {
-            setFocusedInput("from");
-            setFromTokenInputValue(e.target.value, true);
-          }}
-          showMaxButton={isNotMatchAvailableBalance}
-          onClickMax={onMaxClick}
-        >
-          {" "}
-          {fromTokenAddress && (
-            <TokenSelector
-              label={`Pay`}
-              chainId={chainId}
-              tokenAddress={fromTokenAddress}
-              onSelectToken={(token) => onSelectFromTokenAddress(token.address)}
-              tokens={swapTokens}
-              infoTokens={infoTokens}
-              className="GlpSwap-from-token"
-              showSymbolImage={true}
-              showTokenImgInDropdown={true}
-              extendedSortSequence={sortedLongAndShortTokens}
-            />
-          )}
-        </BuyInputSection>
-
-        <div className="Exchange-swap-ball-container">
-          <button
-            type="button"
-            className="Exchange-swap-ball"
-            onClick={onSwitchTokens}
-          >
-            <IoMdSwap className="Exchange-swap-ball-icon" />
-          </button>
-        </div>
-
-        {isSwap && (
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
           <BuyInputSection
-            topLeftLabel={`Receive`}
+            topLeftLabel={`Pay`}
             topLeftValue={
-              swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""
+              fromUsd?.gt(0)
+                ? formatUsd(
+                    isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd
+                  )
+                : ""
             }
             topRightLabel={`Balance`}
             topRightValue={formatTokenAmount(
-              toToken?.balance,
-              toToken?.decimals,
+              fromToken?.balance,
+              fromToken?.decimals,
               "",
               {
                 useCommas: true,
               }
             )}
-            inputValue={toTokenInputValue}
+            onClickTopRightLabel={onMaxClick}
+            inputValue={fromTokenInputValue}
             onInputValueChange={(e) => {
-              setFocusedInput("to");
-              setToTokenInputValue(e.target.value, true);
+              setFocusedInput("from");
+              setFromTokenInputValue(e.target.value, true);
             }}
-            showMaxButton={false}
-            preventFocusOnLabelClick="right"
+            showMaxButton={isNotMatchAvailableBalance}
+            onClickMax={onMaxClick}
           >
-            {toTokenAddress && (
+            {" "}
+            {fromTokenAddress && (
               <TokenSelector
-                label={`Receive`}
+                label={`Pay`}
                 chainId={chainId}
-                tokenAddress={toTokenAddress}
-                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
+                tokenAddress={fromTokenAddress}
+                onSelectToken={(token) =>
+                  onSelectFromTokenAddress(token.address)
+                }
                 tokens={swapTokens}
                 infoTokens={infoTokens}
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
-                showBalances={true}
                 showTokenImgInDropdown={true}
                 extendedSortSequence={sortedLongAndShortTokens}
               />
             )}
           </BuyInputSection>
+        </div>
+        <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
+          <div className="flex items-center justify-center">
+            <ArrowsUpDownIcon className="h-7 w-7 my-3" />
+          </div>
+        </div>
+
+        {isSwap && (
+          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+            <BuyInputSection
+              topLeftLabel={`Receive`}
+              topLeftValue={
+                swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""
+              }
+              topRightLabel={`Balance`}
+              topRightValue={formatTokenAmount(
+                toToken?.balance,
+                toToken?.decimals,
+                "",
+                {
+                  useCommas: true,
+                }
+              )}
+              inputValue={toTokenInputValue}
+              onInputValueChange={(e) => {
+                setFocusedInput("to");
+                setToTokenInputValue(e.target.value, true);
+              }}
+              showMaxButton={false}
+              preventFocusOnLabelClick="right"
+            >
+              {toTokenAddress && (
+                <TokenSelector
+                  label={`Receive`}
+                  chainId={chainId}
+                  tokenAddress={toTokenAddress}
+                  onSelectToken={(token) =>
+                    onSelectToTokenAddress(token.address)
+                  }
+                  tokens={swapTokens}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showBalances={true}
+                  showTokenImgInDropdown={true}
+                  extendedSortSequence={sortedLongAndShortTokens}
+                />
+              )}
+            </BuyInputSection>{" "}
+          </div>
         )}
 
         {isIncrease && (
-          <BuyInputSection
-            topLeftLabel={tradeTypeLabels[tradeType!]}
-            topLeftValue={
-              increaseAmounts?.sizeDeltaUsd.gt(0)
-                ? formatUsd(increaseAmounts?.sizeDeltaUsd, {
-                    fallbackToZero: true,
-                  })
-                : ""
-            }
-            topRightLabel={`Leverage`}
-            topRightValue={
-              formatLeverage(
-                isLeverageEnabled
-                  ? leverage
-                  : increaseAmounts?.estimatedLeverage
-              ) || "-"
-            }
-            inputValue={toTokenInputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput("to");
-              setToTokenInputValue(e.target.value, true);
-            }}
-            showMaxButton={false}
-          >
-            {toTokenAddress && (
-              <TokenSelector
-                label={tradeTypeLabels[tradeType!]}
-                chainId={chainId}
-                tokenAddress={toTokenAddress}
-                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
-                tokens={indexTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showBalances={false}
-                showTokenImgInDropdown={true}
-                extendedSortSequence={sortedIndexTokensWithPoolValue}
-              />
-            )}
-          </BuyInputSection>
+          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+            <BuyInputSection
+              topLeftLabel={tradeTypeLabels[tradeType!]}
+              topLeftValue={
+                increaseAmounts?.sizeDeltaUsd.gt(0)
+                  ? formatUsd(increaseAmounts?.sizeDeltaUsd, {
+                      fallbackToZero: true,
+                    })
+                  : ""
+              }
+              topRightLabel={`Leverage`}
+              topRightValue={
+                formatLeverage(
+                  isLeverageEnabled
+                    ? leverage
+                    : increaseAmounts?.estimatedLeverage
+                ) || "-"
+              }
+              inputValue={toTokenInputValue}
+              onInputValueChange={(e) => {
+                setFocusedInput("to");
+                setToTokenInputValue(e.target.value, true);
+              }}
+              showMaxButton={false}
+            >
+              {toTokenAddress && (
+                <TokenSelector
+                  label={tradeTypeLabels[tradeType!]}
+                  chainId={chainId}
+                  tokenAddress={toTokenAddress}
+                  onSelectToken={(token) =>
+                    onSelectToTokenAddress(token.address)
+                  }
+                  tokens={indexTokens}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showBalances={false}
+                  showTokenImgInDropdown={true}
+                  extendedSortSequence={sortedIndexTokensWithPoolValue}
+                />
+              )}
+            </BuyInputSection>{" "}
+          </div>
         )}
       </>
     );
@@ -1384,99 +1392,104 @@ export function TradeBox(p: Props) {
 
   function renderDecreaseSizeInput() {
     return (
-      <BuyInputSection
-        topLeftLabel={`Close`}
-        topRightLabel={existingPosition?.sizeInUsd ? `Max` : undefined}
-        topRightValue={
-          existingPosition?.sizeInUsd
-            ? formatUsd(existingPosition.sizeInUsd)
-            : undefined
-        }
-        inputValue={closeSizeInputValue}
-        onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
-        onClickTopRightLabel={() =>
-          setCloseSizeInputValue(
-            formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2)
-          )
-        }
-        showMaxButton={
-          existingPosition?.sizeInUsd.gt(0) &&
-          !closeSizeUsd?.eq(existingPosition.sizeInUsd)
-        }
-        onClickMax={() =>
-          setCloseSizeInputValue(
-            formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2)
-          )
-        }
-        showPercentSelector={existingPosition?.sizeInUsd.gt(0)}
-        onPercentChange={(percent) =>
-          setCloseSizeInputValue(
-            formatAmount(
-              existingPosition?.sizeInUsd.mul(percent).div(100),
-              USD_DECIMALS,
-              2
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+        <BuyInputSection
+          topLeftLabel={`Close`}
+          topRightLabel={existingPosition?.sizeInUsd ? `Max` : undefined}
+          topRightValue={
+            existingPosition?.sizeInUsd
+              ? formatUsd(existingPosition.sizeInUsd)
+              : undefined
+          }
+          inputValue={closeSizeInputValue}
+          onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
+          onClickTopRightLabel={() =>
+            setCloseSizeInputValue(
+              formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2)
             )
-          )
-        }
-      >
-        USD
-      </BuyInputSection>
+          }
+          showMaxButton={
+            existingPosition?.sizeInUsd.gt(0) &&
+            !closeSizeUsd?.eq(existingPosition.sizeInUsd)
+          }
+          onClickMax={() =>
+            setCloseSizeInputValue(
+              formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2)
+            )
+          }
+          showPercentSelector={existingPosition?.sizeInUsd.gt(0)}
+          onPercentChange={(percent) =>
+            setCloseSizeInputValue(
+              formatAmount(
+                existingPosition?.sizeInUsd.mul(percent).div(100),
+                USD_DECIMALS,
+                2
+              )
+            )
+          }
+        >
+          USD
+        </BuyInputSection>
+      </div>
     );
   }
 
   function renderTriggerPriceInput() {
     return (
-      <BuyInputSection
-        topLeftLabel={`Price`}
-        topRightLabel={`Mark`}
-        topRightValue={formatUsd(markPrice, {
-          displayDecimals: toToken?.priceDecimals,
-        })}
-        onClickTopRightLabel={() => {
-          setTriggerPriceInputValue(
-            formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2)
-          );
-        }}
-        inputValue={triggerPriceInputValue}
-        onInputValueChange={(e) => {
-          setTriggerPriceInputValue(e.target.value);
-        }}
-      >
-        USD
-      </BuyInputSection>
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
+        <BuyInputSection
+          topLeftLabel={`Price`}
+          topRightLabel={`Mark`}
+          topRightValue={formatUsd(markPrice, {
+            displayDecimals: toToken?.priceDecimals,
+          })}
+          onClickTopRightLabel={() => {
+            setTriggerPriceInputValue(
+              formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2)
+            );
+          }}
+          inputValue={triggerPriceInputValue}
+          onInputValueChange={(e) => {
+            setTriggerPriceInputValue(e.target.value);
+          }}
+        >
+          USD
+        </BuyInputSection>
+      </div>
     );
   }
 
   function renderTriggerRatioInput() {
     return (
-      <BuyInputSection
-        topLeftLabel={`Price`}
-        topRightLabel={`Mark`}
-        topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
-        onClickTopRightLabel={() => {
-          setTriggerRatioInputValue(
-            formatAmount(markRatio?.ratio, USD_DECIMALS, 10)
-          );
-        }}
-        inputValue={triggerRatioInputValue}
-        onInputValueChange={(e) => {
-          setTriggerRatioInputValue(e.target.value);
-        }}
-      >
-        {markRatio && (
-          <>
-            <TokenWithIcon
-              symbol={markRatio.smallestToken.symbol}
-              displaySize={20}
-            />
-             per 
-            <TokenWithIcon
-              symbol={markRatio.largestToken.symbol}
-              displaySize={20}
-            />
-          </>
-        )}
-      </BuyInputSection>
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+        <BuyInputSection
+          topLeftLabel={`Price`}
+          topRightLabel={`Mark`}
+          topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+          onClickTopRightLabel={() => {
+            setTriggerRatioInputValue(
+              formatAmount(markRatio?.ratio, USD_DECIMALS, 10)
+            );
+          }}
+          inputValue={triggerRatioInputValue}
+          onInputValueChange={(e) => {
+            setTriggerRatioInputValue(e.target.value);
+          }}
+        >
+          {markRatio && (
+            <>
+              <TokenWithIcon
+                symbol={markRatio.smallestToken.symbol}
+                displaySize={20}
+              />
+              <TokenWithIcon
+                symbol={markRatio.largestToken.symbol}
+                displaySize={20}
+              />
+            </>
+          )}
+        </BuyInputSection>
+      </div>
     );
   }
 
