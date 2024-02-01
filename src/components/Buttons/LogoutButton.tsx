@@ -7,12 +7,14 @@ import { useRouter } from "next/router";
 import { useDisconnect, useAccount } from "wagmi";
 // Images
 import Chain from "../../../public/Chain.svg";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 
 export default function LogoutButton() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const { disconnect } = useDisconnect();
-  const { address } = useAccount();
+  //const { address } = useAccount();
+  const {scaAddress: address} = useAlchemyAccountKitContext()
   const router = useRouter();
 
   const logingOut = async () => {

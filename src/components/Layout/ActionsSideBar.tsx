@@ -20,6 +20,8 @@ import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import { SyntheticsPage } from "../Gmx/chart/SyntheticsPage";
 import GM from "../Sections/GM";
+import { arbitrum, arbitrumGoerli, mainnet, polygon, polygonMumbai } from "viem/chains";
+import SwapButtonTest from "../Buttons/SwapButton";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -77,14 +79,16 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   }, [isHistory]);
 
   useEffect(() => {
+
     if (
       chain &&
-      (chain.id === 42161 ||
-        chain.id === 80001 ||
-        chain.id === 1 ||
-        chain.id === 137)
+      (chain.id === arbitrum.id ||
+        chain.id === polygonMumbai.id ||
+        chain.id === mainnet.id ||
+        chain.id === polygon.id || 
+        chain.id === arbitrumGoerli.id)
     ) {
-      const prev = networks.filter((network) => network.name === chain?.name);
+      const prev = networks.filter((network) => network.id === chain?.id);
 
       setPreviousNetwork(prev[0]);
     }
@@ -114,6 +118,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                   previousNetwork={previousNetwork}
                 />{" "}
                 <LogoutButton />
+                <SwapButtonTest/>
               </div>
             ) : (
               <LoginButton />

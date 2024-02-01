@@ -7,10 +7,13 @@ export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS; 
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET: number = 1;
+export const ETH_SEPOLIA = 11155111; 
 export const AVALANCHE: number = 43114;
 export const AVALANCHE_FUJI: number = 43113;
 export const ARBITRUM: number = 42161;
 export const ARBITRUM_GOERLI: number = 421613;
+export const POLYGON: number = 137;
+export const POLYGON_MUMBAI: number = 80001;
 
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
@@ -87,6 +90,7 @@ export function getAlchemyWsUrl() {
 
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
+  [ETH_SEPOLIA]: ["https://api.zan.top/node/v1/eth/sepolia/public"],
   [BSС_MAINNET]: [
     "https://bsc-dataseed.binance.org",
     "https://bsc-dataseed1.defibit.io",
@@ -116,6 +120,8 @@ export const RPC_PROVIDERS = {
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
+  [POLYGON]: ["https://polygon.blockpi.network/v1/rpc/public	"],
+  [POLYGON_MUMBAI]: ["https://polygon-mumbai.blockpi.network/v1/rpc/public"]
 };
 
 export function getRpcUrl(chainId: number): string | undefined {
