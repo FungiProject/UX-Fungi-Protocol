@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 import ReferralStorage from "../../../../../../abis/ReferralStorage.json";
 import Timelock from "../../../../../../abis/Timelock.json";
-import { REGEX_VERIFY_BYTES32 } from "../../../../../components/Gmx/chart/referralsHelper";
+import { REGEX_VERIFY_BYTES32 } from "../../../referralsHelper";
 import {
   ARBITRUM,
   AVALANCHE,

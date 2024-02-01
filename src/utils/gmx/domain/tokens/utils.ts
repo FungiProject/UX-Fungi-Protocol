@@ -27,6 +27,18 @@ export function getTokenUrl(chainId: number, address: string) {
   return getExplorerUrl(chainId) + "token/" + address;
 }
 
+export function convertToUsd(
+  tokenAmount: BigNumber | undefined,
+  tokenDecimals: number | undefined,
+  price: BigNumber | undefined
+) {
+  if (!tokenAmount || typeof tokenDecimals !== "number" || !price) {
+    return undefined;
+  }
+
+  return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
+}
+
 export function getIsEquivalentTokens(token1: Token, token2: Token) {
   if (token1.address === token2.address) {
     return true;

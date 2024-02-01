@@ -11,7 +11,6 @@ import {
   TokensData,
   convertToUsd,
   getTokenData,
-  Token,
   TokenData,
 } from "../../../../utils/gmx/domain/synthetics/tokens";
 import {
@@ -74,9 +73,10 @@ import { getCommonError } from "../../../../utils/gmx/domain/synthetics/trade/ut
 import { PoolSelector } from "../../common/PoolSelector/PoolSelector";
 import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
-import ExchangeInfoRow from "../../chart/ExchangeInfoRow";
+import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
 import { GmFees } from "../GmFees/GmFees";
-import Button from "../../chart/Button";
+import Button from "../../common/Buttons/Button";
+import { Token } from "@/utils/gmx/domain/tokens";
 
 export enum Operation {
   Deposit = "Deposit",

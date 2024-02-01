@@ -18,9 +18,16 @@ import Link from "next/link";
 import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
-import { SyntheticsPage } from "../Gmx/chart/SyntheticsPage";
+import { SyntheticsPage } from "../Sections/SyntheticsPage";
 import GM from "../Sections/GM";
-import { arbitrum, arbitrumGoerli, mainnet, polygon, polygonMumbai, sepolia } from "viem/chains";
+import {
+  arbitrum,
+  arbitrumGoerli,
+  mainnet,
+  polygon,
+  polygonMumbai,
+  sepolia,
+} from "viem/chains";
 import SwapButtonTest from "../Buttons/SwapButton";
 
 type ActionsSideBarProps = {
@@ -74,16 +81,14 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   }, [isHistory]);
 
   useEffect(() => {
-
     if (
       chain &&
       (chain.id === arbitrum.id ||
         chain.id === polygonMumbai.id ||
         chain.id === mainnet.id ||
-        chain.id === polygon.id || 
-        chain.id === arbitrumGoerli.id || 
+        chain.id === polygon.id ||
+        chain.id === arbitrumGoerli.id ||
         chain.id === sepolia.id)
-        
     ) {
       const prev = networks.filter((network) => network.id === chain?.id);
 
@@ -115,7 +120,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                   previousNetwork={previousNetwork}
                 />{" "}
                 <LogoutButton />
-                <SwapButtonTest/>
+                <SwapButtonTest />
               </div>
             ) : (
               <LoginButton />

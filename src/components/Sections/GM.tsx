@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 // Components
 import PageContainer from "../Container/PageContainer";
-import { MarketStats } from "../Gmx/gm/MarketStats";
+import { MarketStats } from "../Gmx/gm/MarketStats/MarketStats";
 import {
   useMarketTokensData,
   useMarketsInfo,

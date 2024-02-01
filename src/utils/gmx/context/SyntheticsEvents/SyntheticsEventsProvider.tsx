@@ -1,8 +1,7 @@
-// import { t } from "@lingui/macro";
 import EventEmitter from "../../../../../abis/EventEmitter.json";
-import { GmStatusNotification } from "../../../../components/Gmx/chart/GmStatusNotification";
-import { OrderStatusNotification } from "../../../../components/Gmx/chart/OrderStatusNotification";
-import { FeesSettlementStatusNotification } from "../../../../components/Gmx/chart/FeesSettlementStatusNotification";
+import { GmStatusNotification } from "../../../../components/Gmx/common/Notifications/GmStatusNotification";
+import { OrderStatusNotification } from "../../../../components/Gmx/chart/Orders/OrderStatusNotification";
+import { FeesSettlementStatusNotification } from "../../../../components/Gmx/common/Notifications/FeesSettlementStatusNotification";
 import { getContract } from "../../config/contracts";
 import { isDevelopment } from "../../config/env";
 import { getToken, getWrappedToken } from "../../config/tokens";

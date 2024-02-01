@@ -1,4 +1,3 @@
-import "./BuyInputSection.module.scss";
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import {
   INPUT_LABEL_SEPARATOR,

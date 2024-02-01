@@ -1,6 +1,5 @@
-//import { Trans, t } from "@lingui/macro";
-import ExternalLink from "../../chart/ExternalLink";
-import StatsTooltipRow from "../StatsTooltipRow";
+import ExternalLink from "../../common/ExternalLink/ExternalLink";
+import StatsTooltipRow from "../../common/Tooltip/StatsTooltipRow";
 import Tooltip from "../../common/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
 import { formatAmount } from "../../../../utils/gmx/lib/numbers";

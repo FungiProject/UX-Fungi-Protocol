@@ -1,8 +1,8 @@
 //import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import ExchangeInfoRow from "../../chart/ExchangeInfoRow";
-import StatsTooltipRow from "../../chart/StatsTooltipRow";
-import Tooltip from "../../chart/Tooltip";
+import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
+import StatsTooltipRow from "../../common/Tooltip/StatsTooltipRow";
+import Tooltip from "../../common/Tooltip/Tooltip";
 import {
   ExecutionFee,
   FeeItem,

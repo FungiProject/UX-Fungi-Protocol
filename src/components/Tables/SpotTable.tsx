@@ -16,7 +16,7 @@ import {
   assetsPolygon,
   assetsPolygonMumbai,
 } from "../../../constants/Constants";
-import Loader from "../Loader/Spinner";
+import Loader from "../Loader/SpinnerLoader";
 
 export default function SpotTable() {
   const typesMembersTable = ["Portfolio", "All"];

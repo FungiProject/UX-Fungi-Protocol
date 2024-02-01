@@ -3,7 +3,7 @@ import Token from "../../../../../abis/Token.json";
 import { getChainName, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
-import ExternalLink from "../../../../components/Gmx/chart/ExternalLink";
+import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 // import { Trans, t } from "@lingui/macro";
-import ExternalLink from "../../../../components/Gmx/chart/ExternalLink";
-import { ToastifyDebug } from "../../../../components/Gmx/chart/ToastifyDebug";
+import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "../../../../components/Gmx/common/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "../../config/chains";
 import { getNativeToken } from "../../config/tokens";
 import { switchNetwork } from "../wallets";
