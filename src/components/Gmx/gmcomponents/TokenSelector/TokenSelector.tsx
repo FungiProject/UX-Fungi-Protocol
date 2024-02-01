@@ -17,6 +17,7 @@ import { convertToUsd } from "../../domain/tokens";
 import TokenIcon from "../TokenIcon";
 import SearchInput from "../SearchInput/SearchInput";
 import Modal from "../Modal/Modal";
+import SearchBar from "@/components/Filters/SearchBar";
 
 type TokenState = {
   disabled?: boolean;
@@ -68,6 +69,7 @@ export default function TokenSelector(props: Props) {
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
+    className,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -83,8 +85,8 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  const onSearchKeywordChange = (e) => {
-    setSearchKeyword(e.target.value);
+  const getInfo = (query: string) => {
+    setSearchKeyword(query);
   };
 
   const filteredTokens = visibleTokens.filter((item) => {
@@ -180,28 +182,28 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div onClick={(event) => event.stopPropagation()}>
+    <div onClick={(event) => event.stopPropagation()} className={className}>
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
         headerContent={() => (
           <>
-            <div className=" text-start sm:mt-0 sm:text-left w-full">
-              <Dialog.Title as="h3" className="text-3xl">
+            <div className="text-start sm:mt-0 sm:text-left w-full">
+              <Dialog.Title as="h3" className="text-2xl">
                 Select Token
               </Dialog.Title>
             </div>
-            <SearchInput
-              className="mt-md"
-              value={searchKeyword}
-              setValue={onSearchKeywordChange}
-              onKeyDown={_handleKeyDown}
+            <SearchBar
+              getInfo={getInfo}
+              query={searchKeyword}
+              classMain="rounded-xl text-black px-[22px] items-center w-full  outline-none placeholder:text-black bg-white flex shadow-input mt-[16px] mb-[24px]"
+              placeholder={"Search Market"}
             />
           </>
         )}
       >
-        <div className="TokenSelector-tokens">
+        <div>
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
@@ -225,7 +227,7 @@ export default function TokenSelector(props: Props) {
             return (
               <div
                 key={token.address}
-                className={"TokenSelector-token-row"}
+                className={"flex items-center justify-between px-[20px]"}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && (
@@ -242,11 +244,11 @@ export default function TokenSelector(props: Props) {
                                     />*/}
                   </>
                 )}
-                <div className="Token-info">
+                <div className="hover:bg-gray-200 flex py-4  rounded-xl">
                   {showTokenImgInDropdown && (
                     <TokenIcon
                       symbol={token.symbol}
-                      className="token-logo"
+                      className="mr-4"
                       displaySize={40}
                       importSize={40}
                     />
@@ -261,7 +263,7 @@ export default function TokenSelector(props: Props) {
                     <div className="Token-text">
                       {balance.gt(0) &&
                         formatAmount(balance, token.decimals, 4, true)}
-                      {balance.eq(0) && "-"}
+                      {balance.eq(0) && "0"}
                     </div>
                   )}
                   <span className="text-accent">
@@ -300,7 +302,7 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div
-          className="flex"
+          className="flex justify-between"
           onClick={() => setIsModalVisible(true)}
         >
           <span className="flex">
@@ -322,10 +324,7 @@ export default function TokenSelector(props: Props) {
             />
           )}
           {!showNewCaret && (
-            <ChevronDownIcon
-              className="-mr-1 h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
+            <ChevronDownIcon className="-mr-1 h-5 w-5" aria-hidden="true" />
           )}
         </div>
       )}

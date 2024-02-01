@@ -116,7 +116,6 @@ import { useSafeState } from "../lib/useSafeState";
 import useIsMetamaskMobile from "../lib/wallets/useIsMetamaskMobile";
 import useWallet from "../lib/wallets/useWallet";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { IoMdSwap } from "react-icons/io";
 import { useLatest, usePrevious } from "react-use";
 
 import useUiFeeFactor from "../domain/synthetics/fees/utils/useUiFeeFactor";
@@ -1289,8 +1288,8 @@ export function TradeBox(p: Props) {
             )}
           </BuyInputSection>
         </div>
-        <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
-          <div className="flex items-center justify-center">
+        <div className="" onClick={onSwitchTokens}>
+          <div className="flex items-center justify-center ">
             <ArrowsUpDownIcon className="h-7 w-7 my-3" />
           </div>
         </div>
@@ -1480,12 +1479,12 @@ export function TradeBox(p: Props) {
             <div className="flex">
               <TokenWithIcon
                 symbol={markRatio.smallestToken.symbol}
-                displaySize={20}
+                displaySize={24}
               />{" "}
               <span className="mx-2">per</span>
               <TokenWithIcon
                 symbol={markRatio.largestToken.symbol}
-                displaySize={20}
+                displaySize={24}
               />
             </div>
           )}
@@ -1804,7 +1803,9 @@ export function TradeBox(p: Props) {
   const buttonContent = (
     <Button
       variant="primary-action"
-      className="w-full"
+      className={`${
+        isSubmitButtonDisabled && !shouldDisableValidation ? "opacity-50" : ""
+      } w-full bg-main rounded-xl py-3 text-white font-semibold`}
       onClick={onSubmit}
       disabled={isSubmitButtonDisabled && !shouldDisableValidation}
     >
@@ -1838,7 +1839,7 @@ export function TradeBox(p: Props) {
         optionLabels={tradeModeLabels}
         type="inline"
         option={tradeMode}
-        className="w-full rounded-full grid grid-cols-3 bg-white items-center text-center text-sm mb-4 font-semibold"
+        className="w-2/3 rounded-full grid grid-cols-3 bg-white items-center text-center text-sm mb-4 font-semibold"
         onChange={onSelectTradeMode}
         isSpan={true}
       />
@@ -1855,7 +1856,11 @@ export function TradeBox(p: Props) {
         {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}{" "}
         <div className="SwapBox-info-section">
           {isPosition && <>{renderPositionControls()}</>}{" "}
-          <div className="border-b-1 border-gray-200 my-[30px]" />
+          <div
+            className={`${
+              isSwap ? "" : "border-b-1 border-gray-200"
+            } my-[30px]`}
+          />
           {isIncrease && renderIncreaseOrderInfo()}
           {isTrigger && renderTriggerOrderInfo()}{" "}
           {feesType && (

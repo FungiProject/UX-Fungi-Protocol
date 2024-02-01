@@ -224,9 +224,12 @@ export default function TVChartContainer({
     >
       {chartDataLoading && <Loader />}
       <div
-        style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
+        style={{
+          visibility: !chartDataLoading ? "visible" : "hidden",
+          width: !chartDataLoading ? "100%" : "0%",
+        }}
         ref={chartContainerRef}
-        className="TVChartContainer ExchangeChart-bottom-content h-96 w-full "
+        className="TVChartContainer ExchangeChart-bottom-content h-96"
       />
     </div>
   );

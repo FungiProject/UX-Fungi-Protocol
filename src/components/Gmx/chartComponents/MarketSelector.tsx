@@ -12,9 +12,11 @@ import { formatTokenAmount, formatUsd } from "../lib/numbers";
 import { getByKey } from "../lib/objects";
 import { ReactNode, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import Modal from "./Modal";
+import Modal from "../gmcomponents/Modal/Modal";
 import TooltipWithPortal from "./TooltipWithPortal";
 import SearchInput from "./SearchInput";
+import SearchBar from "@/components/Filters/SearchBar";
+import { Dialog, Transition } from "@headlessui/react";
 
 type Props = {
   label?: string;
@@ -126,6 +128,10 @@ export function MarketSelector({
     }
   };
 
+  const getInfo = (query: string) => {
+    setSearchKeyword(query);
+  };
+
   return (
     <div
       className={cx(
@@ -140,13 +146,19 @@ export function MarketSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={() => (
-          <SearchInput
-            className="mt-md"
-            value={searchKeyword}
-            setValue={(e) => setSearchKeyword(e.target.value)}
-            placeholder={`Search Market`}
-            onKeyDown={_handleKeyDown}
-          />
+          <>
+            <div className="text-start sm:mt-0 sm:text-left w-full">
+              <Dialog.Title as="h3" className="text-2xl">
+                Select Market
+              </Dialog.Title>
+            </div>
+            <SearchBar
+              getInfo={getInfo}
+              query={searchKeyword}
+              classMain="rounded-xl text-black px-[22px] items-center w-full  outline-none placeholder:text-black bg-white flex shadow-input mt-[16px] mb-[24px]"
+              placeholder={"Search Market"}
+            />
+          </>
         )}
       >
         <div className="TokenSelector-tokens">
@@ -174,9 +186,9 @@ export function MarketSelector({
             return (
               <div
                 key={indexName}
-                className={cx("TokenSelector-token-row", {
-                  disabled: state.disabled,
-                })}
+                className={`hover:bg-gray-200 flex py-4 px-[20px] rounded-xl items-center justify-between ${
+                  state.disabled && "opacity-50"
+                }`}
                 onClick={() => !state.disabled && onSelectOption(option)}
               >
                 {state.disabled && state.message && (
@@ -194,12 +206,8 @@ export function MarketSelector({
                     renderContent={() => state.message}
                   />
                 )}
-                <div className="Token-info">
-                  <img
-                    src={assetImage}
-                    alt={indexName}
-                    className="token-logo"
-                  />
+                <div className=" flex">
+                  <img src={assetImage} alt={indexName} className="mr-3" />
                   <div className="Token-symbol">
                     <div className="Token-text">{indexName}</div>
                   </div>
@@ -211,7 +219,7 @@ export function MarketSelector({
                         formatTokenAmount(balance, marketToken?.decimals, "", {
                           useCommas: true,
                         })}
-                      {balance.eq(0) && "-"}
+                      {balance.eq(0) && "0"}
                     </div>
                   )}
                   <span className="text-accent">
@@ -227,19 +235,19 @@ export function MarketSelector({
       </Modal>
       {selectedMarketLabel ? (
         <div
-          className="TokenSelector-box"
+          className="flex items-center border-1 px-4 rounded-full py-1 justify-between"
           onClick={() => setIsModalVisible(true)}
         >
-          {selectedMarketLabel}
+          <span>{selectedMarketLabel}</span>
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       ) : (
         <div
-          className="TokenSelector-box"
+          className="flex items-center border-1 px-4 rounded-full py-1 justify-between"
           onClick={() => setIsModalVisible(true)}
         >
           {marketInfo ? getMarketIndexName(marketInfo) : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
+          <BiChevronDown className="ml-2" />
         </div>
       )}
     </div>

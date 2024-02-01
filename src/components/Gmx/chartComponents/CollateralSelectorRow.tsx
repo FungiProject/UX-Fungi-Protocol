@@ -1,6 +1,6 @@
 // import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import TokenSelector from "./TokenSelector";
+import TokenSelector from "../gmcomponents/TokenSelector/TokenSelector";
 import Tooltip from "./Tooltip";
 import { AvailableMarketsOptions } from "../domain/synthetics/trade/useAvailableMarketsOptions";
 import { Token } from "../domain/tokens";
@@ -157,7 +157,7 @@ export function CollateralSelectorRow(p: Props) {
         availableCollaterals && (
           <TokenSelector
             label={`Collateral In`}
-            className="border-1 rounded-full px-[12px] py-1 w-[125px]"
+            className="border-1 rounded-full px-[12px] py-1 w-[125px] "
             chainId={chainId}
             tokenAddress={selectedCollateralAddress}
             onSelectToken={(token) => {

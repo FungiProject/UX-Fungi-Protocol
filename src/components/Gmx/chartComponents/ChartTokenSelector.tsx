@@ -14,6 +14,7 @@ import { BigNumber } from "ethers";
 import { formatUsd } from "../lib/numbers";
 import { PositionsInfoData } from "../domain/synthetics/positions";
 import { convertTokenAddress } from "../config/tokens";
+import SearchBar from "@/components/Filters/SearchBar";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -184,15 +185,19 @@ export default function ChartTokenSelector(props: Props) {
     };
   }
 
+  const getInfo = (query: string) => {
+    setSearchKeyword(query);
+  };
+
   return (
-    <Popover className="Sflex items-center">
+    <Popover className="flex items-center relative">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">
               <button
-                className={cx("flex items-center chart-token-selector", {
+                className={cx("flex items-center ", {
                   "chart-token-label--active": open,
                 })}
               >
@@ -211,44 +216,33 @@ export default function ChartTokenSelector(props: Props) {
               </button>
             </Popover.Button>
 
-            <div className="chart-token-menu">
+            <div className="absolute rounded-xl shadow-input bg-white top-[68px]">
               <Popover.Panel
                 as="div"
-                className={cx("menu-items chart-token-menu-items", {
-                  isSwap: isSwap,
-                })}
+                className="h-[370px] w-[540px] overflow-auto py-[24px]"
               >
-                <SearchInput
-                  className="m-md"
-                  value={searchKeyword}
-                  setValue={({ target }) => setSearchKeyword(target.value)}
-                  onKeyDown={(e) => {
-                    if (
-                      e.key === "Enter" &&
-                      filteredTokens &&
-                      filteredTokens.length > 0
-                    ) {
-                      const token = filteredTokens[0];
-                      const { maxLongLiquidityPool, maxShortLiquidityPool } =
-                        getMaxLongShortLiquidityPool(token);
-                      handleMarketSelect(
-                        token,
-                        maxLongLiquidityPool,
-                        maxShortLiquidityPool
-                      );
-                      close();
-                    }
-                  }}
-                />
-                <div className="divider" />
-                <div className="chart-token-list">
-                  <table>
+                <div className="border-b-1 px-[42px]">
+                  <h1 className="text-2xl">Select Market</h1>
+                  <SearchBar
+                    getInfo={getInfo}
+                    query={searchKeyword}
+                    classMain="rounded-xl text-black px-[22px] items-center w-full  outline-none placeholder:text-black bg-white flex shadow-input mt-[16px] mb-[24px]"
+                    placeholder={"Search Market"}
+                  />
+                </div>
+
+                <div className="px-[22px] pt-[12px]">
+                  <table className="w-[500px]">
                     {filteredTokens && filteredTokens.length > 0 && (
-                      <thead className="table-head">
+                      <thead className="text-left">
                         <tr>
-                          <th>Market</th>
-                          <th>{!isSwap && `LONG LIQ.`}</th>
-                          <th>{!isSwap && `SHORT LIQ.`}</th>
+                          <th className="font-normal px-[20px]">Market</th>
+                          <th className="font-normal px-[20px]">
+                            {!isSwap && `LONG LIQ.`}
+                          </th>
+                          <th className="font-normal pl-[36px]">
+                            {!isSwap && `SHORT LIQ.`}
+                          </th>
                         </tr>
                       </thead>
                     )}
@@ -260,12 +254,10 @@ export default function ChartTokenSelector(props: Props) {
                           <Popover.Button
                             as="tr"
                             key={token.symbol}
-                            className={
-                              isSwap ? "Swap-token-list" : "Position-token-list"
-                            }
+                            className="hover:bg-gray-200 cursor-pointer"
                           >
                             <td
-                              className="token-item"
+                              className="py-4 px-[20px] rounded-l-xl"
                               onClick={() =>
                                 handleMarketSelect(
                                   token,
@@ -274,14 +266,17 @@ export default function ChartTokenSelector(props: Props) {
                                 )
                               }
                             >
-                              <span className="inline-items-center">
+                              <span className="flex items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon mx-2"
                                   symbol={token.symbol}
-                                  displaySize={16}
-                                  importSize={24}
+                                  displaySize={32}
+                                  importSize={40}
                                 />
-                                {token.symbol} {!isSwap && "/ USD"}
+                                <span className="ml-3">
+                                  {" "}
+                                  {token.symbol} {!isSwap && "/ USD"}
+                                </span>
                               </span>
                             </td>
 
@@ -310,6 +305,7 @@ export default function ChartTokenSelector(props: Props) {
                                   tradeType: TradeType.Short,
                                 });
                               }}
+                              className="pl-6 rounded-r-xl"
                             >
                               {!isSwap && maxShortLiquidityPool
                                 ? formatUsd(

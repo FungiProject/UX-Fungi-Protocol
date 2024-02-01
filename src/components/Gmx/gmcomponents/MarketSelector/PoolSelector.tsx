@@ -1,4 +1,9 @@
-import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "../../domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "../../domain/synthetics/markets";
 import { TokensData, convertToUsd } from "../../domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "../../lib/numbers";
@@ -7,11 +12,13 @@ import { useMemo, useState } from "react";
 //import { BiChevronDown } from "react-icons/bi";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Modal from "../Modal/Modal";
+import { Dialog, Transition } from "@headlessui/react";
 //import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 //import "./MarketSelector.scss";
 import SearchInput from "../SearchInput/SearchInput";
 import TokenIcon from "../TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "../../config/tokens";
+import SearchBar from "@/components/Filters/SearchBar";
 
 type Props = {
   label?: string;
@@ -62,15 +69,30 @@ export function PoolSelector({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
+  const getInfo = (query: string) => {
+    setSearchKeyword(query);
+  };
+
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
-      .filter((market) => !market.isDisabled && (showAllPools || getMarketIndexName(market) === selectedIndexName))
+      .filter(
+        (market) =>
+          !market.isDisabled &&
+          (showAllPools || getMarketIndexName(market) === selectedIndexName)
+      )
       .map((marketInfo) => {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
-        const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+        const marketToken = getByKey(
+          marketTokensData,
+          marketInfo.marketTokenAddress
+        );
         const gmBalance = marketToken?.balance;
-        const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
+        const gmBalanceUsd = convertToUsd(
+          marketToken?.balance,
+          marketToken?.decimals,
+          marketToken?.prices.minPrice
+        );
         const state = getMarketState?.(marketInfo);
 
         return {
@@ -99,7 +121,13 @@ export function PoolSelector({
     });
 
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
-  }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
+  }, [
+    getMarketState,
+    marketTokensData,
+    markets,
+    selectedIndexName,
+    showAllPools,
+  ]);
 
   const marketInfo = marketsOptions.find(
     (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
@@ -124,13 +152,18 @@ export function PoolSelector({
 
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
-    const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
+    const name = showAllPools
+      ? `GM: ${getMarketIndexName(marketInfo)}`
+      : getMarketPoolName(marketInfo);
 
     if (filteredOptions?.length > 1) {
       return (
         <div className="flex" onClick={() => setIsModalVisible(true)}>
           {name ? name : "..."}
-          <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
+          <ChevronDownIcon
+            className="-mr-1 h-5 w-5 text-gray-400"
+            aria-hidden="true"
+          />
         </div>
       );
     }
@@ -146,25 +179,43 @@ export function PoolSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={() => (
-          <SearchInput
-            className="mt-md"
-            value={searchKeyword}
-            setValue={(e) => setSearchKeyword(e.target.value)}
-            placeholder={`Search Pool`}
-            onKeyDown={_handleKeyDown}
-          />
+          <>
+            <div className="text-start sm:mt-0 sm:text-left w-full">
+              <Dialog.Title as="h3" className="text-2xl">
+                Select Pool
+              </Dialog.Title>
+            </div>
+            <SearchBar
+              getInfo={getInfo}
+              query={searchKeyword}
+              classMain="rounded-xl text-black px-[22px] items-center w-full  outline-none placeholder:text-black bg-white flex shadow-input mt-[16px] mb-[24px]"
+              placeholder={"Search Market"}
+            />
+          </>
         )}
       >
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
-            const { marketInfo, balance, balanceUsd, indexName, poolName, name, state = {} } = option;
+            const {
+              marketInfo,
+              balance,
+              balanceUsd,
+              indexName,
+              poolName,
+              name,
+              state = {},
+            } = option;
             const { longToken, shortToken, indexToken } = marketInfo;
 
             const indexTokenImage = marketInfo.isSpotOnly
-              ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+              ? getNormalizedTokenSymbol(longToken.symbol) +
+                getNormalizedTokenSymbol(shortToken.symbol)
               : getNormalizedTokenSymbol(indexToken.symbol);
 
-            const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+            const marketToken = getByKey(
+              marketTokensData,
+              marketInfo.marketTokenAddress
+            );
 
             return (
               <div
@@ -183,55 +234,71 @@ export function PoolSelector({
                     renderContent={() => state.message}
                   />
                 )*/}
-                <div className="Token-info">
-                  <div className="collaterals-logo">
-                    {showAllPools ? (
-                      <TokenIcon symbol={indexTokenImage} displaySize={40} importSize={40} />
-                    ) : (
-                      <>
+                <div className="hover:bg-gray-200 flex py-4 px-[20px] rounded-xl items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="collaterals-logo">
+                      {showAllPools ? (
                         <TokenIcon
-                          symbol={longToken.symbol}
+                          symbol={indexTokenImage}
                           displaySize={40}
                           importSize={40}
-                          className="collateral-logo collateral-logo-first"
+                          className="mr-4"
                         />
-                        {shortToken && (
+                      ) : (
+                        <>
                           <TokenIcon
-                            symbol={shortToken.symbol}
+                            symbol={longToken.symbol}
                             displaySize={40}
                             importSize={40}
-                            className="collateral-logo collateral-logo-second"
+                            className="mr-4"
                           />
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <div className="Token-symbol">
-                    <div className="Token-text">
-                      {showAllPools ? (
-                        <div className="lh-1 items-center">
-                          <span>{indexName && indexName}</span>
-                          <span className="subtext">{poolName && `[${poolName}]`}</span>
-                        </div>
-                      ) : (
-                        <div className="Token-text">{poolName}</div>
+                          {shortToken && (
+                            <TokenIcon
+                              symbol={shortToken.symbol}
+                              displaySize={40}
+                              importSize={40}
+                              className="mr-4"
+                            />
+                          )}
+                        </>
                       )}
                     </div>
+                    <div className="Token-symbol">
+                      <div className="Token-text">
+                        {showAllPools ? (
+                          <div className="lh-1 items-center">
+                            <span>{indexName && indexName}</span>
+                            <span className="subtext">
+                              {poolName && `[${poolName}]`}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="Token-text">{poolName}</div>
+                        )}
+                      </div>
+                    </div>{" "}
                   </div>
-                </div>
-                <div className="Token-balance">
-                  {showBalances && balance && (
-                    <div className="Token-text">
-                      {balance.gt(0) &&
-                        formatTokenAmount(balance, marketToken?.decimals, "GM", {
-                          useCommas: true,
-                        })}
-                      {balance.eq(0) && "-"}
-                    </div>
-                  )}
-                  <span className="text-accent">
-                    {showBalances && balanceUsd && balanceUsd.gt(0) && <div>{formatUsd(balanceUsd)}</div>}
-                  </span>
+                  <div className="Token-balance">
+                    {showBalances && balance && (
+                      <div className="Token-text">
+                        {balance.gt(0) &&
+                          formatTokenAmount(
+                            balance,
+                            marketToken?.decimals,
+                            "GM",
+                            {
+                              useCommas: true,
+                            }
+                          )}
+                        {balance.eq(0) && "0"}
+                      </div>
+                    )}
+                    <span className="text-accent">
+                      {showBalances && balanceUsd && balanceUsd.gt(0) && (
+                        <div>{formatUsd(balanceUsd)}</div>
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             );

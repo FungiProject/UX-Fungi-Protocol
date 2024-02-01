@@ -155,13 +155,23 @@ export function GmSwapBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
 
   //const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
-  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(
+    chainId,
+    { isDeposit: true }
+  );
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(
+    chainId,
+    { isDeposit: false }
+  );
 
-  const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
+  const [focusedInput, setFocusedInput] = useState<
+    "longCollateral" | "shortCollateral" | "market"
+  >("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, depositMarketTokensData);
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] =
+    useState(false);
+  const { marketsInfo: sortedMarketsInfoByIndexToken } =
+    useSortedMarketsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const operationLabels = {
     [Operation.Deposit]: `Buy GM`,
@@ -178,7 +188,9 @@ export function GmSwapBox(p: Props) {
   const isSingle = mode === Mode.Single;
   const isPair = mode === Mode.Pair;
 
-  const marketTokensData = isDeposit ? depositMarketTokensData : withdrawalMarketTokensData;
+  const marketTokensData = isDeposit
+    ? depositMarketTokensData
+    : withdrawalMarketTokensData;
   const markets = useMemo(
     () =>
       Object.values(marketsInfoData || {}).filter(
@@ -189,7 +201,9 @@ export function GmSwapBox(p: Props) {
   const marketInfo = getByKey(marketsInfoData, marketAddress);
   const availableModes = getAvailableModes(operation, marketInfo);
 
-  const [indexName, setIndexName] = useLocalStorageSerializeKey<string | undefined>(getSyntheticsDepositIndexTokenKey(chainId), undefined);
+  const [indexName, setIndexName] = useLocalStorageSerializeKey<
+    string | undefined
+  >(getSyntheticsDepositIndexTokenKey(chainId), undefined);
   const { infoTokens } = useAvailableTokenOptions(chainId, {
     marketsInfoData,
     tokensData,
@@ -429,7 +443,6 @@ export function GmSwapBox(p: Props) {
 
   const amounts = isDeposit ? depositAmounts : withdrawalAmounts;
 
-
   const { fees, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData || !amounts) {
       return {};
@@ -437,8 +450,8 @@ export function GmSwapBox(p: Props) {
 
     const basisUsd = isDeposit
       ? BigNumber.from(0)
-        .add(amounts?.longTokenUsd || 0)
-        .add(amounts?.shortTokenUsd || 0)
+          .add(amounts?.longTokenUsd || 0)
+          .add(amounts?.shortTokenUsd || 0)
       : amounts?.marketTokenUsd || BigNumber.from(0);
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
@@ -462,9 +475,9 @@ export function GmSwapBox(p: Props) {
 
     const gasLimit = isDeposit
       ? estimateExecuteDepositGasLimit(gasLimits, {
-        initialLongTokenAmount: amounts.longTokenAmount,
-        initialShortTokenAmount: amounts.shortTokenAmount,
-      })
+          initialLongTokenAmount: amounts.longTokenAmount,
+          initialShortTokenAmount: amounts.shortTokenAmount,
+        })
       : estimateExecuteWithdrawalGasLimit(gasLimits, {});
 
     const executionFee = getExecutionFee(
@@ -480,7 +493,6 @@ export function GmSwapBox(p: Props) {
       executionFee,
     };
   }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData]);
-
 
   const isHighPriceImpact =
     fees?.swapPriceImpact?.deltaUsd.lt(0) &&
@@ -631,9 +643,9 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0)
                 ? formatAmountFree(
-                  amounts.marketTokenAmount,
-                  marketToken.decimals
-                )
+                    amounts.marketTokenAmount,
+                    marketToken.decimals
+                  )
                 : ""
             );
           }
@@ -649,9 +661,9 @@ export function GmSwapBox(p: Props) {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.longTokenAmount,
-                    longToken.decimals
-                  )
+                      amounts.longTokenAmount,
+                      longToken.decimals
+                    )
                   : ""
               );
             }
@@ -659,9 +671,9 @@ export function GmSwapBox(p: Props) {
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.shortTokenAmount,
-                    shortToken.decimals
-                  )
+                      amounts.shortTokenAmount,
+                      shortToken.decimals
+                    )
                   : ""
               );
             }
@@ -683,34 +695,34 @@ export function GmSwapBox(p: Props) {
               setFirstTokenInputValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.longTokenAmount,
-                    longToken!.decimals
-                  )
+                      amounts.longTokenAmount,
+                      longToken!.decimals
+                    )
                   : ""
               );
               setSecondTokenInputValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.shortTokenAmount,
-                    shortToken!.decimals
-                  )
+                      amounts.shortTokenAmount,
+                      shortToken!.decimals
+                    )
                   : ""
               );
             } else {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.longTokenAmount,
-                    longToken!.decimals
-                  )
+                      amounts.longTokenAmount,
+                      longToken!.decimals
+                    )
                   : ""
               );
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount?.gt(0)
                   ? formatAmountFree(
-                    amounts.shortTokenAmount,
-                    shortToken!.decimals
-                  )
+                      amounts.shortTokenAmount,
+                      shortToken!.decimals
+                    )
                   : ""
               );
             }
@@ -740,9 +752,9 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(
               amounts.marketTokenAmount.gt(0)
                 ? formatAmountFree(
-                  amounts.marketTokenAmount,
-                  marketToken.decimals
-                )
+                    amounts.marketTokenAmount,
+                    marketToken.decimals
+                  )
                 : ""
             );
 
@@ -751,18 +763,18 @@ export function GmSwapBox(p: Props) {
                 setFirstTokenInputValue(
                   amounts.longTokenAmount.gt(0)
                     ? formatAmountFree(
-                      amounts.longTokenAmount,
-                      longToken!.decimals
-                    )
+                        amounts.longTokenAmount,
+                        longToken!.decimals
+                      )
                     : ""
                 );
               } else {
                 longTokenInputState?.setValue(
                   amounts.longTokenAmount.gt(0)
                     ? formatAmountFree(
-                      amounts.longTokenAmount,
-                      longToken!.decimals
-                    )
+                        amounts.longTokenAmount,
+                        longToken!.decimals
+                      )
                     : ""
                 );
               }
@@ -772,18 +784,18 @@ export function GmSwapBox(p: Props) {
                 setSecondTokenInputValue(
                   amounts.shortTokenAmount.gt(0)
                     ? formatAmountFree(
-                      amounts.shortTokenAmount,
-                      shortToken!.decimals
-                    )
+                        amounts.shortTokenAmount,
+                        shortToken!.decimals
+                      )
                     : ""
                 );
               } else {
                 shortTokenInputState?.setValue(
                   amounts.shortTokenAmount.gt(0)
                     ? formatAmountFree(
-                      amounts.shortTokenAmount,
-                      shortToken!.decimals
-                    )
+                        amounts.shortTokenAmount,
+                        shortToken!.decimals
+                      )
                     : ""
                 );
               }
@@ -886,13 +898,7 @@ export function GmSwapBox(p: Props) {
         history.replace({ search: "" });
       }*/
     },
-    [
-      marketsInfoData,
-      onSelectMarket,
-      queryParams,
-      setIndexName,
-      setOperation,
-    ]
+    [marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]
   );
 
   useEffect(
@@ -934,7 +940,7 @@ export function GmSwapBox(p: Props) {
           !secondTokenAddress ||
           !tokenOptions.find((token) => token.address === secondTokenAddress) ||
           convertTokenAddress(chainId, firstTokenAddress, "wrapped") ===
-          convertTokenAddress(chainId, secondTokenAddress, "wrapped")
+            convertTokenAddress(chainId, secondTokenAddress, "wrapped")
         ) {
           const secondToken = tokenOptions.find((token) => {
             return (
@@ -962,21 +968,22 @@ export function GmSwapBox(p: Props) {
   );
 
   return (
-    <div className="mx-5">
+    <div className="px-[32px] py-[24px]">
       <Tab
         options={Object.values(Operation)}
         optionLabels={operationLabels}
         option={operation}
         onChange={onOperationChange}
-        className={`h-[40px] p-[4px] mt-4 rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-sm mb-2 font-semibold`}
+        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
       />
-      <GmxTab
+      <Tab
         options={availableModes}
         optionLabels={modeLabels}
-        className="ml-2 mt-2"
+        className="w-2/3 rounded-full grid grid-cols-3 bg-white items-center text-center text-sm mb-4 font-semibold"
         type="inline"
         option={mode}
         onChange={setMode}
+        isSpan={true}
       />
 
       <form
@@ -985,7 +992,44 @@ export function GmSwapBox(p: Props) {
           submitState.onSubmit();
         }}
       >
-        <div className={`flex ${isWithdrawal?'flex-col-reverse':'flex-col'}`}>
+        <div
+          className={`flex ${isWithdrawal ? "flex-col-reverse" : "flex-col"}`}
+        >
+          {" "}
+          {
+            <div className={!isWithdrawal ? "hidden" : "block"}>
+              <ExchangeInfoRow
+                className="SwapBox-info-row"
+                label={`Pool`}
+                value={
+                  <PoolSelector
+                    label={`Pool`}
+                    className="SwapBox-info-dropdown"
+                    selectedIndexName={indexName}
+                    selectedMarketAddress={marketAddress}
+                    markets={markets}
+                    marketTokensData={marketTokensData}
+                    marketsInfoData={marketsInfoData}
+                    isSideMenu
+                    showBalances
+                    onSelectMarket={(marketInfo) => {
+                      onMarketChange(marketInfo.marketTokenAddress);
+                      showMarketToast(marketInfo);
+                    }}
+                  />
+                }
+              />
+              <GmFees
+                isDeposit={isDeposit}
+                totalFees={fees?.totalFees}
+                swapFee={fees?.swapFee}
+                swapPriceImpact={fees?.swapPriceImpact}
+                executionFee={executionFee}
+                uiFee={fees?.uiFee}
+              />{" "}
+              <div className="border-b-1" />{" "}
+            </div>
+          }
           <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-2">
             <BuyInputSection
               topLeftLabel={isDeposit ? `Pay` : `Receive`}
@@ -1037,9 +1081,9 @@ export function GmSwapBox(p: Props) {
                   );
                   const finalAmount = isMetamaskMobile
                     ? limitDecimals(
-                      formattedMaxAvailableAmount,
-                      MAX_METAMASK_MOBILE_DECIMALS
-                    )
+                        formattedMaxAvailableAmount,
+                        MAX_METAMASK_MOBILE_DECIMALS
+                      )
                     : formattedMaxAvailableAmount;
 
                   setFirstTokenInputValue(finalAmount);
@@ -1066,7 +1110,6 @@ export function GmSwapBox(p: Props) {
               )}
             </BuyInputSection>
           </div>
-
           {isPair && secondTokenAddress && (
             <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
               <BuyInputSection
@@ -1098,10 +1141,15 @@ export function GmSwapBox(p: Props) {
                   onClickTopRightLabel: () => {
                     if (secondToken?.balance) {
                       const maxAvailableAmount = secondToken.isNative
-                        ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                        ? secondToken.balance.sub(
+                            BigNumber.from(DUST_BNB).mul(2)
+                          )
                         : secondToken.balance;
                       setSecondTokenInputValue(
-                        formatAmountFree(maxAvailableAmount, secondToken.decimals)
+                        formatAmountFree(
+                          maxAvailableAmount,
+                          secondToken.decimals
+                        )
                       );
                       onFocusedCollateralInputChange(secondToken.address);
                     }
@@ -1119,9 +1167,9 @@ export function GmSwapBox(p: Props) {
                     );
                     const finalAmount = isMetamaskMobile
                       ? limitDecimals(
-                        formattedMaxAvailableAmount,
-                        MAX_METAMASK_MOBILE_DECIMALS
-                      )
+                          formattedMaxAvailableAmount,
+                          MAX_METAMASK_MOBILE_DECIMALS
+                        )
                       : formattedMaxAvailableAmount;
                     setSecondTokenInputValue(finalAmount);
                     onFocusedCollateralInputChange(secondToken.address);
@@ -1129,18 +1177,19 @@ export function GmSwapBox(p: Props) {
                 }}
               >
                 <div className="selected-token">
-                  <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+                  <TokenWithIcon
+                    symbol={secondToken?.symbol}
+                    displaySize={20}
+                  />
                 </div>
               </BuyInputSection>
             </div>
           )}
-
           <div className="AppOrder-ball-container" onClick={onSwitchSide}>
             <div className="flex items-center justify-center">
               <ArrowsUpDownIcon className="h-7 w-7 my-3" />
             </div>
           </div>
-
           <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
             <BuyInputSection
               topLeftLabel={isWithdrawal ? `Pay` : `Receive`}
@@ -1171,7 +1220,10 @@ export function GmSwapBox(p: Props) {
                 onClickTopRightLabel: () => {
                   if (marketToken?.balance) {
                     setMarketTokenInputValue(
-                      formatAmountFree(marketToken.balance, marketToken.decimals)
+                      formatAmountFree(
+                        marketToken.balance,
+                        marketToken.decimals
+                      )
                     );
                     setFocusedInput("market");
                   }
@@ -1185,9 +1237,9 @@ export function GmSwapBox(p: Props) {
                   );
                   const finalGMBalance = isMetamaskMobile
                     ? limitDecimals(
-                      formattedGMBalance,
-                      MAX_METAMASK_MOBILE_DECIMALS
-                    )
+                        formattedGMBalance,
+                        MAX_METAMASK_MOBILE_DECIMALS
+                      )
                     : formattedGMBalance;
                   setMarketTokenInputValue(finalGMBalance);
                   setFocusedInput("market");
@@ -1214,46 +1266,47 @@ export function GmSwapBox(p: Props) {
               />
             </BuyInputSection>
           </div>
-
-          <div className="GmSwapBox-info-section">
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={`Pool`}
-            value={
-              <PoolSelector
+          {
+            <div className={isWithdrawal ? "hidden" : "block"}>
+              {" "}
+              <ExchangeInfoRow
+                className="SwapBox-info-row"
                 label={`Pool`}
-                className="SwapBox-info-dropdown"
-                selectedIndexName={indexName}
-                selectedMarketAddress={marketAddress}
-                markets={markets}
-                marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
-                isSideMenu
-                showBalances
-                onSelectMarket={(marketInfo) => {
-                  onMarketChange(marketInfo.marketTokenAddress);
-                  showMarketToast(marketInfo);
-                }}
+                value={
+                  <PoolSelector
+                    label={`Pool`}
+                    className="SwapBox-info-dropdown"
+                    selectedIndexName={indexName}
+                    selectedMarketAddress={marketAddress}
+                    markets={markets}
+                    marketTokensData={marketTokensData}
+                    marketsInfoData={marketsInfoData}
+                    isSideMenu
+                    showBalances
+                    onSelectMarket={(marketInfo) => {
+                      onMarketChange(marketInfo.marketTokenAddress);
+                      showMarketToast(marketInfo);
+                    }}
+                  />
+                }
               />
-            }
-          />
-
-          <div className="App-card-divider" />
-
-          <GmFees
-            isDeposit={isDeposit}
-            totalFees={fees?.totalFees}
-            swapFee={fees?.swapFee}
-            swapPriceImpact={fees?.swapPriceImpact}
-            executionFee={executionFee}
-            uiFee={fees?.uiFee}
-          />
+              <GmFees
+                isDeposit={isDeposit}
+                totalFees={fees?.totalFees}
+                swapFee={fees?.swapFee}
+                swapPriceImpact={fees?.swapPriceImpact}
+                executionFee={executionFee}
+                uiFee={fees?.uiFee}
+              />{" "}
+              <div className="border-b-1" />{" "}
+            </div>
+          }
         </div>
-
-        </div>
-        <div className="Exchange-swap-button-container">
+        <div className="mt-4">
           <Button
-            className="w-full"
+            className={`${
+              submitState.isDisabled ? "opacity-50" : ""
+            } w-full bg-main rounded-xl py-3 text-white font-semibold`}
             variant="primary-action"
             onClick={submitState.onSubmit}
             disabled={submitState.isDisabled}
