@@ -10,7 +10,7 @@ import {
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { useAccount, useConnect, useDisconnect, useFeeData, useNetwork } from "wagmi";
 import { arbitrum } from "viem/chains";
-import { getRpcUrl } from "@/components/Gmx/config/chains";
+import { getRpcUrl } from "@/utils/gmx/config/chains";
 import { Address, createWalletClient, custom } from "viem";
 import { SmartAccountSigner, getDefaultEntryPointAddress, WalletClientSigner } from "@alchemy/aa-core";
 import { LightSmartContractAccount, getDefaultLightAccountFactoryAddress } from "@alchemy/aa-accounts";

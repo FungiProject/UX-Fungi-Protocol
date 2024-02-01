@@ -1,5 +1,5 @@
 // import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import Button from "./Button";
 import BuyInputSection from "../common/BuyInputSection/BuyInputSection";
 import Checkbox from "./Checkbox";
@@ -209,7 +209,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     isMarket,
   } = tradeFlags;
-  const { openConnectModal } = useConnectModal();
+  const { login: openConnectModal } = useAlchemyAccountKitContext();
   const {
     swapTokens,
     indexTokens,

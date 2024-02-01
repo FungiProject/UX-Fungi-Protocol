@@ -4,7 +4,7 @@ import {
   getWrappedToken,
 } from "../../../config/tokens";
 import { callContract } from "../../../lib/contracts/callContract";
-import WETH from "../../../../../components/Gmx/abis/WETH.json";
+import WETH from "../../../../../../abis/WETH.json";
 import { BigNumber, Signer, ethers } from "ethers";
 // import { t } from "@lingui/macro";
 import { formatTokenAmount } from "../../../lib/numbers";

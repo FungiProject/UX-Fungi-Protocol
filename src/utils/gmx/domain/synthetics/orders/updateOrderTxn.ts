@@ -1,5 +1,5 @@
 // import { t } from "@lingui/macro";
-import ExchangeRouter from "../../../../../components/Gmx/abis/ExchangeRouter.json";
+import ExchangeRouter from "../../../../../../abis/ExchangeRouter.json";
 import { getContract } from "../../../config/contracts";
 import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "../../../lib/contracts/callContract";

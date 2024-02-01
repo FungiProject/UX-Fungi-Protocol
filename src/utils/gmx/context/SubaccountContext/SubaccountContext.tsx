@@ -1,5 +1,5 @@
 // import { Trans } from "@lingui/macro";
-import DataStore from "../../../../components/Gmx/abis/DataStore.json";
+import DataStore from "../../../../../abis/DataStore.json";
 import {
   ARBITRUM,
   AVALANCHE,

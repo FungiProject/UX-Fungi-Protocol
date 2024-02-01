@@ -1,5 +1,5 @@
 import { Signer, ethers } from "ethers";
-import Token from "../../../../components/Gmx/abis/Token.json";
+import Token from "../../../../../abis/Token.json";
 import { getChainName, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";

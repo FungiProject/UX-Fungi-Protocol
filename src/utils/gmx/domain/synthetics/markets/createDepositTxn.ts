@@ -1,7 +1,7 @@
 import { getContract } from "../../../config/contracts";
 import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "../../../lib/contracts/callContract";
-import ExchangeRouter from "../../../../../components/Gmx/abis/ExchangeRouter.json";
+import ExchangeRouter from "../../../../../../abis/ExchangeRouter.json";
 import {
   NATIVE_TOKEN_ADDRESS,
   convertTokenAddress,

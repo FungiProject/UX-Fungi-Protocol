@@ -1,4 +1,4 @@
-import SyntheticsReader from "../../../../../components/Gmx/abis/SyntheticsReader.json";
+import SyntheticsReader from "../../../../../../abis/SyntheticsReader.json";
 import { getContract } from "../../../config/contracts";
 import { BigNumber } from "ethers";
 import { useMulticall } from "../../../lib/multicall";

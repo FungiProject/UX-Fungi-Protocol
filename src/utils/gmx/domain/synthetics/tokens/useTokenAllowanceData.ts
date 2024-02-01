@@ -1,4 +1,4 @@
-import Token from "../../../../../components/Gmx/abis/Token.json";
+import Token from "../../../../../../abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS } from "../../../config/tokens";
 import { useMulticall } from "../../../lib/multicall";
 import { TokensAllowanceData } from "./types";

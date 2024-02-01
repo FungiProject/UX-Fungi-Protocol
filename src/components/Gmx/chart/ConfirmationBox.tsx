@@ -72,8 +72,7 @@ import {
 import { BigNumber } from "ethers";
 import { useChainId } from "../../../utils/gmx/lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "../../../utils/gmx/lib/legacy";
-
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import PercentageInput from "./PercentageInput";
 import { SubaccountNavigationButton } from "./SubaccountNavigationButton";
 import TooltipWithPortal from "./TooltipWithPortal";
@@ -200,7 +199,7 @@ export function ConfirmationBox(p: Props) {
 
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
-  const { openConnectModal } = useConnectModal();
+  const { login: openConnectModal } = useAlchemyAccountKitContext();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 

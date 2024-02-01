@@ -1,5 +1,5 @@
-import DataStore from "../../../../../components/Gmx/abis/DataStore.json";
-import SyntheticsReader from "../../../../../components/Gmx/abis/SyntheticsReader.json";
+import DataStore from "../../../../../../abis/DataStore.json";
+import SyntheticsReader from "../../../../../../abis/SyntheticsReader.json";
 import { getContract } from "../../../config/contracts";
 import {
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,

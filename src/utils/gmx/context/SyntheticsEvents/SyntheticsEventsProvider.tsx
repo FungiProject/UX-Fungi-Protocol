@@ -1,5 +1,5 @@
 // import { t } from "@lingui/macro";
-import EventEmitter from "../../../../components/Gmx/abis/EventEmitter.json";
+import EventEmitter from "../../../../../abis/EventEmitter.json";
 import { GmStatusNotification } from "../../../../components/Gmx/chart/GmStatusNotification";
 import { OrderStatusNotification } from "../../../../components/Gmx/chart/OrderStatusNotification";
 import { FeesSettlementStatusNotification } from "../../../../components/Gmx/chart/FeesSettlementStatusNotification";

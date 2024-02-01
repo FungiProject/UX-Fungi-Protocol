@@ -1,4 +1,4 @@
-import SyntheticsReader from "../../../../../components/Gmx/abis/SyntheticsReader.json";
+import SyntheticsReader from "../../../../../../abis/SyntheticsReader.json";
 import { getContract } from "../../../config/contracts";
 import { convertTokenAddress, getToken } from "../../../config/tokens";
 import { isMarketEnabled } from "../../../config/markets";

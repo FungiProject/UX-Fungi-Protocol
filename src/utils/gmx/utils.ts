@@ -1,4 +1,4 @@
-import CustomErrors from "../../components/Gmx/abis/CustomErrors.json";
+import CustomErrors from "../../../abis/CustomErrors.json";
 // import { t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "../../components/Gmx/chart/StatsTooltipRow";

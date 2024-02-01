@@ -1,5 +1,5 @@
-import SyntheticsReader from "../../../../../components/Gmx/abis/SyntheticsReader.json";
-import TokenAbi from "../../../../../components/Gmx/abis/Token.json";
+import SyntheticsReader from "../../../../../../abis/SyntheticsReader.json";
+import TokenAbi from "../../../../../../abis/Token.json";
 import { getExplorerUrl } from "../../../config/chains";
 import { getContract } from "../../../config/contracts";
 import {

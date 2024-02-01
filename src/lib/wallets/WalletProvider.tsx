@@ -3,7 +3,7 @@ import { arbitrum, arbitrumGoerli, mainnet, polygon, polygonMumbai, sepolia } fr
 import { publicProvider } from "wagmi/providers/public";
 import { UniversalWalletConnector } from "@magiclabs/wagmi-connector";
 import { AlchemyAccountKitProvider } from "./AlchemyAccountKitProvider";
-import { getRpcUrl } from "@/components/Gmx/config/chains";
+import { getRpcUrl } from "@/utils/gmx/config/chains";
 
 
 export default function WalletProvider({ children }) {

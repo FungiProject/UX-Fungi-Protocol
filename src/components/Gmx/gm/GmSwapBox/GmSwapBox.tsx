@@ -75,7 +75,7 @@ import useUiFeeFactor from "../../../../utils/gmx/domain/synthetics/fees/utils/u
 import { getCommonError } from "../../../../utils/gmx/domain/synthetics/trade/utils/validation";
 import { PoolSelector } from "../../common/PoolSelector/PoolSelector";
 import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import ExchangeInfoRow from "../../chart/ExchangeInfoRow";
 import { GmFees } from "../GmFees/GmFees";
 import Button from "../../chart/Button";
@@ -145,7 +145,7 @@ export function GmSwapBox(p: Props) {
 
   const queryParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { openConnectModal } = useConnectModal();
+  const { login: openConnectModal } = useAlchemyAccountKitContext();
 
   const marketAddress = p.selectedMarketAddress;
 
@@ -529,12 +529,12 @@ export function GmSwapBox(p: Props) {
 
     const error = commonError || swapError;
 
-    /*if (!account) { //TODO fungi
+    if (!account) {
       return {
         text: `Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
       };
-    }*/
+    }
 
     const onSubmit = () => {
       setStage("confirmation");

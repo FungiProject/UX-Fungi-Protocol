@@ -1,4 +1,4 @@
-import SubaccountRouter from "../../../../../components/Gmx/abis/SubaccountRouter.json";
+import SubaccountRouter from "../../../../../../abis/SubaccountRouter.json";
 import { getContract } from "../../../config/contracts";
 import { Signer, ethers } from "ethers";
 

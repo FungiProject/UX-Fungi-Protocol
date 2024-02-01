@@ -3,8 +3,8 @@ import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import ReferralStorage from "../../../../../components/Gmx/abis/ReferralStorage.json";
-import Timelock from "../../../../../components/Gmx/abis/Timelock.json";
+import ReferralStorage from "../../../../../../abis/ReferralStorage.json";
+import Timelock from "../../../../../../abis/Timelock.json";
 import { REGEX_VERIFY_BYTES32 } from "../../../../../components/Gmx/chart/referralsHelper";
 import {
   ARBITRUM,

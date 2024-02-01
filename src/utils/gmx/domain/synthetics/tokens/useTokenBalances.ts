@@ -1,5 +1,5 @@
-import Multicall from "../../../../../components/Gmx/abis/Multicall.json";
-import Token from "../../../../../components/Gmx/abis/Token.json";
+import Multicall from "../../../../../../abis/Multicall.json";
+import Token from "../../../../../../abis/Token.json";
 import { getContract } from "../../../config/contracts";
 import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "../../../config/tokens";
 import { useMulticall } from "../../../lib/multicall";

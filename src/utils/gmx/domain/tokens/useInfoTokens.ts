@@ -1,4 +1,4 @@
-import VaultReader from "../../../../components/Gmx/abis/VaultReader.json";
+import VaultReader from "../../../../../abis/VaultReader.json";
 import { getServerUrl } from "../../config/backend";
 import { getContract } from "../../config/contracts";
 import { getV1Tokens, getWhitelistedV1Tokens } from "../../config/tokens";

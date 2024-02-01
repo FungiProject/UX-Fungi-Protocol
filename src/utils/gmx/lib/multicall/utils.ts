@@ -1,4 +1,4 @@
-import CustomErrors from "../../../../components/Gmx/abis/CustomErrors.json";
+import CustomErrors from "../../../../../abis/CustomErrors.json";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,

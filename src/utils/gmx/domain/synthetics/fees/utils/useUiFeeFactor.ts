@@ -1,5 +1,5 @@
 import { getContract } from "../../../../config/contracts";
-import DataStore from "../../../../../../components/Gmx/abis/DataStore.json";
+import DataStore from "../../../../../../../abis/DataStore.json";
 import { useMulticall } from "../../../../lib/multicall";
 import { uiFeeFactorKey } from "../../../../config/dataStore";
 import { BigNumber } from "ethers";

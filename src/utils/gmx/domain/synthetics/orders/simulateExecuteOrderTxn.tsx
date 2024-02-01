@@ -1,7 +1,7 @@
 // import { Trans, t } from "@lingui/macro";
-import CustomErrors from "../../../../../components/Gmx/abis/CustomErrors.json";
-import DataStore from "../../../../../components/Gmx/abis/DataStore.json";
-import ExchangeRouter from "../../../../../components/Gmx/abis/ExchangeRouter.json";
+import CustomErrors from "../../../../../../abis/CustomErrors.json";
+import DataStore from "../../../../../../abis/DataStore.json";
+import ExchangeRouter from "../../../../../../abis/ExchangeRouter.json";
 import { ToastifyDebug } from "../../../../../components/Gmx/chart/ToastifyDebug";
 import { getContract } from "../../../config/contracts";
 import { NONCE_KEY, orderKey } from "../../../config/dataStore";

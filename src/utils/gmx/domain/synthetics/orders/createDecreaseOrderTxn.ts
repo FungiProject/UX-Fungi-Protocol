@@ -1,4 +1,4 @@
-import ExchangeRouter from "../../../../../components/Gmx/abis/ExchangeRouter.json";
+import ExchangeRouter from "../../../../../../abis/ExchangeRouter.json";
 import { getContract } from "../../../config/contracts";
 import {
   NATIVE_TOKEN_ADDRESS,
