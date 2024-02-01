@@ -18,7 +18,7 @@ import Link from "next/link";
 import Logo from "../../../public/Logo.svg";
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
-import { SyntheticsPage } from "../Gmx/chartComponents/SyntheticsPage";
+import { SyntheticsPage } from "../Gmx/chart/SyntheticsPage";
 import GM from "../Sections/GM";
 
 type ActionsSideBarProps = {
@@ -52,8 +52,8 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         setPage(<History />);
         break;
       case "Yield":
-         setPage(<GM />);
-         break;
+        setPage(<GM />);
+        break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
         break;

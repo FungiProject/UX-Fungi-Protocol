@@ -16,11 +16,11 @@ import {
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-import { SettingsContextProvider } from "@/components/Gmx/context/SettingsContext/SettingsContextProvider";
+import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/SettingsContextProvider";
 import merge from "lodash/merge";
 import "@/styles/globals.css";
-import { SubaccountContextProvider } from "@/components/Gmx/context/SubaccountContext/SubaccountContext";
-import { SyntheticsEventsProvider } from "@/components/Gmx/context/SyntheticsEvents";
+import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
+import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
 
 const walletTheme = merge(darkTheme(), {
   colors: {
@@ -61,25 +61,28 @@ const config = createClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main>
-    <WagmiConfig client={config}>
-      {" "}
-      <RainbowKitProvider
-        theme={walletTheme}
-        chains={chains}
-        modalSize="compact"
-      >
-        <SettingsContextProvider>
-          <SubaccountContextProvider>
-            <SyntheticsEventsProvider>
-              <main className="font-dmSans">
-                <Component {...pageProps} />
-              </main>
-            </SyntheticsEventsProvider>
-          </SubaccountContextProvider>
-        </SettingsContextProvider>{" "}
-      </RainbowKitProvider>
-    </WagmiConfig>
-    <script async src="/charting_library/charting_library.standalone.js"></script>
+      <WagmiConfig client={config}>
+        {" "}
+        <RainbowKitProvider
+          theme={walletTheme}
+          chains={chains}
+          modalSize="compact"
+        >
+          <SettingsContextProvider>
+            <SubaccountContextProvider>
+              <SyntheticsEventsProvider>
+                <main className="font-dmSans">
+                  <Component {...pageProps} />
+                </main>
+              </SyntheticsEventsProvider>
+            </SubaccountContextProvider>
+          </SettingsContextProvider>{" "}
+        </RainbowKitProvider>
+      </WagmiConfig>
+      <script
+        async
+        src="/charting_library/charting_library.standalone.js"
+      ></script>
     </main>
   );
 }

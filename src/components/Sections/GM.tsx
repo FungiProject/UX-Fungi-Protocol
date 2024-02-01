@@ -2,25 +2,21 @@
 import React, { useEffect, useState, useRef } from "react";
 // Components
 import PageContainer from "../Container/PageContainer";
-import { MarketStats } from "../Gmx/gmcomponents/MarketStats";
+import { MarketStats } from "../Gmx/gm/MarketStats";
 import {
   useMarketTokensData,
   useMarketsInfo,
-} from "../Gmx/domain/synthetics/markets";
-import { useMarketTokensAPR } from "../Gmx/domain/synthetics/markets/useMarketTokensAPR";
-import { getTokenData } from "../Gmx/domain/synthetics/tokens";
-import { getByKey } from "../Gmx/lib/objects";
-import { useLocalStorageSerializeKey } from "../Gmx/lib/localStorage";
-import { getSyntheticsDepositMarketKey } from "../Gmx/config/localStorage";
-import { useChainId } from "../Gmx/lib/chains";
+} from "../../utils/gmx/domain/synthetics/markets";
+import { useMarketTokensAPR } from "../../utils/gmx/domain/synthetics/markets/useMarketTokensAPR";
+import { getTokenData } from "../../utils/gmx/domain/synthetics/tokens";
+import { getByKey } from "../../utils/gmx/lib/objects";
+import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localStorage";
+import { getSyntheticsDepositMarketKey } from "../../utils/gmx/config/localStorage";
+import { useChainId } from "../../utils/gmx/lib/chains";
 import { useSearchParams } from "next/navigation";
 
 import ResultsChart from "../Chart/ResultsChart";
-import {
-  GmSwapBox,
-  Operation,
-  Mode,
-} from "../Gmx/gmcomponents/GmSwapBox/GmSwapBox";
+import { GmSwapBox, Operation, Mode } from "../Gmx/gm/GmSwapBox/GmSwapBox";
 
 type HomeProps = {
   getSelectedAction: (action: string) => void;
