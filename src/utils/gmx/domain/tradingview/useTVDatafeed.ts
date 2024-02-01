@@ -3,7 +3,7 @@ import {
   PeriodParams,
   ResolutionString,
   SubscribeBarsCallback,
-} from "../../../../components/Gmx/charting_library";
+} from "../../../../charting_library";
 import {
   getNativeToken,
   getPriceDecimals,

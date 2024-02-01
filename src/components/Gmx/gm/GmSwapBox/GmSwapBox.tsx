@@ -22,7 +22,7 @@ import {
   useState,
   useMemo,
 } from "react";
-import Tab from "../../chart/Tab";
+import Tab from "../../common/Tab/Tab";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { helperToast } from "../../../../utils/gmx/lib/helperToast";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
@@ -571,7 +571,7 @@ export function GmSwapBox(p: Props) {
     shortCollateralLiquidityUsd,
     shortTokenInputState?.token,
     shouldDisableValidation,
-    openConnectModal
+    openConnectModal,
   ]);
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
@@ -1317,8 +1317,6 @@ export function GmSwapBox(p: Props) {
           </Button>
         </div>
       </form>
-
-
     </div>
   );
 }

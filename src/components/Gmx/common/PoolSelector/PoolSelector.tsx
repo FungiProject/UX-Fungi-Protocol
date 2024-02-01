@@ -15,13 +15,9 @@ import {
 } from "../../../../utils/gmx/lib/numbers";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { useMemo, useState } from "react";
-//import { BiChevronDown } from "react-icons/bi";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import Modal from "../Modal/Modal";
-import { Dialog, Transition } from "@headlessui/react";
-//import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-//import "./MarketSelector.scss";
-import SearchInput from "../../gm/SearchInput/SearchInput";
+import { Dialog } from "@headlessui/react";
 import TokenIcon from "../TokenIcon/TokenIcon";
 import { getNormalizedTokenSymbol } from "../../../../utils/gmx/config/tokens";
 import SearchBar from "@/components/Filters/SearchBar";

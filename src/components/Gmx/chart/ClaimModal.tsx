@@ -1,5 +1,5 @@
 // import { Trans, t } from "@lingui/macro";
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 import {
   MarketInfo,
   MarketsInfoData,

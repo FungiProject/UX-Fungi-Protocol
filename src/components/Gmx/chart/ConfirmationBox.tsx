@@ -4,7 +4,7 @@ import { ApproveTokenButton } from "./ApproveTokenButton";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 import StatsTooltipRow from "./StatsTooltipRow";
 import Tooltip from "./Tooltip";
 import { ValueTransition } from "./ValueTransition";

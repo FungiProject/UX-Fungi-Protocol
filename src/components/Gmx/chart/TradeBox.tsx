@@ -7,7 +7,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import { LeverageSlider } from "./LeverageSlider";
 import { MarketSelector } from "./MarketSelector";
 import { ConfirmationBox } from "./ConfirmationBox";
-import Tab from "./Tab";
+import Tab from "../common/Tab/Tab";
 import ToggleSwitch from "./ToggleSwitch";
 import TokenWithIcon from "../common/TokenIcon/TokenWithIcon";
 import TokenSelector from "../common/TokenSelector/TokenSelector";

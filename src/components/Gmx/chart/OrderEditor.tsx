@@ -1,7 +1,7 @@
 // import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "./BuyInputSection";
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 import { MarketsInfoData } from "../../../utils/gmx/domain/synthetics/markets";
 import {
   OrderInfo,

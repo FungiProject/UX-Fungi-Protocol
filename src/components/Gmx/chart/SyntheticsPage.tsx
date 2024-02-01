@@ -10,7 +10,7 @@ import { PositionSeller } from "./PositionSeller";
 import { TVChart } from "./TVChart";
 import { TradeBox } from "./TradeBox";
 import { TradeHistory } from "./TradeHistory";
-import Tab from "./Tab";
+import Tab from "../common/Tab/Tab";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "../../../utils/gmx/config/factors";
 import { getSyntheticsListSectionKey } from "../../../utils/gmx/config/localStorage";
 import { getToken } from "../../../utils/gmx/config/tokens";

@@ -4,7 +4,6 @@ import { getChainName, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "../../../../components/Gmx/chart/ExternalLink";
-// import { t, Trans } from "@lingui/macro";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 
@@ -45,10 +44,8 @@ export function approveTokens({
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(
         <div>
-          <Trans>
-            Approval submitted!{" "}
-            <ExternalLink href={txUrl}>View status.</ExternalLink>
-          </Trans>
+          Approval submitted!{" "}
+          <ExternalLink href={txUrl}>View status.</ExternalLink>
           <br />
         </div>
       );
@@ -59,7 +56,7 @@ export function approveTokens({
         const token = getTokenInfo(infoTokens, tokenAddress);
         const pendingTxn = {
           hash: res.hash,
-          message: includeMessage ? t`${token.symbol} Approved!` : false,
+          message: includeMessage ? `${token.symbol} Approved!` : false,
         };
         setPendingTxns([...pendingTxns, pendingTxn]);
       }
@@ -76,21 +73,19 @@ export function approveTokens({
       ) {
         failMsg = (
           <div>
-            <Trans>
-              There is not enough {nativeToken.symbol} in your account on{" "}
-              {networkName} to send this transaction.
-              <br />
-              <br />
-              <Link to="/buy_gmx#bridge">
-                Buy or Transfer {nativeToken.symbol} to {networkName}
-              </Link>
-            </Trans>
+            There is not enough {nativeToken.symbol} in your account on{" "}
+            {networkName} to send this transaction.
+            <br />
+            <br />
+            <Link to="/buy_gmx#bridge">
+              Buy or Transfer {nativeToken.symbol} to {networkName}
+            </Link>
           </div>
         );
       } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = t`Approval was cancelled`;
+        failMsg = `Approval was cancelled`;
       } else {
-        failMsg = t`Approval failed`;
+        failMsg = `Approval failed`;
       }
       helperToast.error(failMsg);
     })

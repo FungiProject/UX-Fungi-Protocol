@@ -17,7 +17,7 @@ import { BiCopy } from "react-icons/bi";
 import { FiTwitter } from "react-icons/fi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { useCopyToClipboard } from "react-use";
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 import { PositionShareCard } from "./PositionShareCard";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();

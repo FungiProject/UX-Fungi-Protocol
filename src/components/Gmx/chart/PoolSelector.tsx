@@ -15,7 +15,7 @@ import { formatTokenAmount, formatUsd } from "../../../utils/gmx/lib/numbers";
 import { getByKey } from "../../../utils/gmx/lib/objects";
 import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 import TooltipWithPortal from "./TooltipWithPortal";
 import SearchInput from "./SearchInput";
 import TokenIcon from "./TokenIcon";

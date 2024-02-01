@@ -1,8 +1,17 @@
 import React from "react";
-import styles from './Tab.module.scss';
 
 export default function Tab(props) {
-  const { options, option, setOption, onChange, type = "block", className, optionLabels, icons } = props;
+  const {
+    options,
+    option,
+    setOption,
+    onChange,
+    type = "block",
+    className,
+    optionLabels,
+    icons,
+    isSpan,
+  } = props;
   const onClick = (opt) => {
     if (setOption) {
       setOption(opt);
@@ -13,12 +22,25 @@ export default function Tab(props) {
   };
 
   return (
-    <div className={`${styles.Tab} ${styles[type]} ${className || ''}`}>
+    <div className={className}>
       {options.map((opt) => {
-        const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
+        const label =
+          optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
-          <div className={`${styles['Tab-option']} ${styles.muted} ${opt === option ? styles.active : ''}`} onClick={() => onClick(opt)} key={opt}>
-            {icons && icons[opt] && <img className={styles['Tab-option-icon']} src={icons[opt]} alt={option} />}
+          <div
+            className={
+              opt === option
+                ? `${
+                    !isSpan ? "bg-black text-white" : "text-black"
+                  }  rounded-full p-[5px] flex items-center justify-center`
+                : "bg-white flex items-center justify-center text-gray-500"
+            }
+            onClick={() => onClick(opt)}
+            key={opt}
+          >
+            {icons && icons[opt] && (
+              <img src={icons[opt]} alt={option} className="mr-4" />
+            )}
             {label}
           </div>
         );

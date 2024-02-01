@@ -3,7 +3,7 @@ import cx from "classnames";
 
 import { BiChevronDown } from "react-icons/bi";
 
-import Modal from "./Modal";
+import Modal from "../common/Modal/Modal";
 
 import dropDownIcon from "../../../../public/img/DROP_DOWN.svg";
 import TooltipWithPortal from "./TooltipWithPortal";

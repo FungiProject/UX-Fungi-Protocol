@@ -1,19 +1,11 @@
 import React, { useState, useEffect, ReactNode, useMemo } from "react";
-
-//import { BiChevronDown } from "react-icons/bi";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-
-//import Modal from "../Modal/Modal";
-import { Dialog, Transition } from "@headlessui/react";
-//import dropDownIcon from "img/DROP_DOWN.svg";
-//import "./TokenSelector.scss";
-//import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { Dialog } from "@headlessui/react";
 import {
   bigNumberify,
   expandDecimals,
   formatAmount,
 } from "../../../../utils/gmx/lib/numbers";
-//import SearchInput from "components/SearchInput/SearchInput";
 import { getToken } from "../../../../utils/gmx/config/tokens";
 import {
   InfoTokens,

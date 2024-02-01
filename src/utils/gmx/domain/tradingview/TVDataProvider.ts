@@ -13,7 +13,7 @@ import {
   getStableCoinPrice,
   getTokenChartPrice,
 } from "./requests";
-import { PeriodParams } from "../../../../components/Gmx/charting_library";
+import { PeriodParams } from "../../../../charting_library";
 
 const initialState = {
   lastBar: null,

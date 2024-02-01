@@ -79,7 +79,7 @@ export async function callContract(
     }
 
     return res;
-  } catch (e) {
+  } catch (e: any) {
     const { failMsg, autoCloseToast } = getErrorMessage(
       chainId,
       e,
