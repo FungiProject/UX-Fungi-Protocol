@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { useAccount, useConnect, useDisconnect, useFeeData, useNetwork } from "wagmi";
+import { useAccount, useConnect, useNetwork } from "wagmi";
 import { arbitrum } from "viem/chains";
 import { getRpcUrl } from "@/utils/gmx/config/chains";
 import { Address, createWalletClient, custom } from "viem";
@@ -53,7 +53,7 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
   
   //Wagmi
   const { chain } = useNetwork();
-  const { connect, connectors, isLoading, isIdle } = useConnect();
+  const { connect, connectors, isLoading, isIdle, isSuccess } = useConnect();
   const { isConnected, connector, address } = useAccount()
 
   //Alchemy
@@ -71,32 +71,26 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
   const [ownerAddress, setOwnerAddress] = useState<Address>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-
-  useEffect(()=>{
-    if(!chain){
-      return
-    }
-    setAlchemyProvider(new AlchemyProvider({
-      chain: chain,
-      rpcUrl: getRpcUrl(chain.id)! ?? getRpcUrl(arbitrum.id)! ,
-    }))
-  },[chain])
-
-
+ 
   const connectAlchemyProvider = useCallback(
     async () =>{
-      if(!chain || !isConnected || !alchemyProvider) {
+
+      if(!chain || !isConnected) {
         return
       }
-  
+      console.log("connectAlchemyProvider")
+
       const providerConnector = await connectors[0].getProvider();
       const walletClient = createWalletClient({ chain: chain, transport: custom(providerConnector) });
       const provSigner = new WalletClientSigner(walletClient, "json-rpc")
-      
       setSigner(provSigner)
+
+      const provAlchemyProvider = new AlchemyProvider({
+        chain: chain,
+        rpcUrl: getRpcUrl(chain.id)! ?? getRpcUrl(arbitrum.id)! ,
+      })
   
-     
-      const connectedProvider = alchemyProvider
+      const connectedProvider = provAlchemyProvider
         .connect((rpcClient) => {
           return new LightSmartContractAccount({
             rpcClient,
@@ -108,6 +102,7 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
         })
 
       setAlchemyProvider(connectedProvider);
+      setScaAddress(await connectedProvider.getAddress())
     },[chain, connectors, isConnected]
   )
  
@@ -124,19 +119,11 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
   );
 
   useEffect(() => {
-    if (!isConnected || !isIdle) {
+    if (!isConnected) {
       return;
     }
     connectAlchemyProvider();
   }, [connectAlchemyProvider, isConnected, isIdle]);
-
-
-  useEffect(()=>{
-    if(!alchemyProvider || !alchemyProvider.isConnected()){
-      return
-    }
-    (async () => { setScaAddress(await alchemyProvider.getAddress()) })()
-  },[alchemyProvider])
 
 
   const logout = useCallback(async () => {

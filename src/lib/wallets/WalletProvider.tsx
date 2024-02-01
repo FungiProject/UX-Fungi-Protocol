@@ -25,12 +25,16 @@ export default function WalletProvider({ children }) {
                         apiKey: process.env.NEXT_PUBLIC_MAGIC_API_KEY!,
                         networks: [
                             {
-                                chainId: mainnet.id,
-                                rpcUrl: getRpcUrl(mainnet.id)!
+                                chainId: sepolia.id,
+                                rpcUrl: getRpcUrl(sepolia.id)!
                             },
                             {
                                 chainId: arbitrum.id,
                                 rpcUrl: getRpcUrl(arbitrum.id)!
+                            },
+                            {
+                                chainId: mainnet.id,
+                                rpcUrl: getRpcUrl(mainnet.id)!
                             },
                             {
                                 chainId: arbitrumGoerli.id,
@@ -42,10 +46,6 @@ export default function WalletProvider({ children }) {
                             },
                             {
                                 chainId: polygonMumbai.id,
-                                rpcUrl: getRpcUrl(polygonMumbai.id)!
-                            },
-                            {
-                                chainId: sepolia.id,
                                 rpcUrl: getRpcUrl(polygonMumbai.id)!
                             }
                         ]

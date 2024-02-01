@@ -1,5 +1,4 @@
 // React
-import { useAlchemyProvider } from "@/hooks/useAlchemyProvider";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import React, { useState } from "react";
 import { encodeFunctionData, parseEther, parseUnits } from "viem";

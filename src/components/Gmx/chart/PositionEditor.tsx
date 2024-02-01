@@ -1,6 +1,6 @@
 // import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import Token from "../abis/Token.json";
+import Token from "../../../../abis/Token.json";
 import { ApproveTokenButton } from "./ApproveTokenButton";
 import Button from "./Button";
 import BuyInputSection from "./BuyInputSection";

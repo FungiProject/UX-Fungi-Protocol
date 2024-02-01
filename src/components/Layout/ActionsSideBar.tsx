@@ -20,7 +20,7 @@ import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import { SyntheticsPage } from "../Gmx/chart/SyntheticsPage";
 import GM from "../Sections/GM";
-import { arbitrum, arbitrumGoerli, mainnet, polygon, polygonMumbai } from "viem/chains";
+import { arbitrum, arbitrumGoerli, mainnet, polygon, polygonMumbai, sepolia } from "viem/chains";
 import SwapButtonTest from "../Buttons/SwapButton";
 
 type ActionsSideBarProps = {
@@ -29,7 +29,6 @@ type ActionsSideBarProps = {
 
 export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   const { isConnected } = useAccount();
-  const [connectedWallet, setConnectedWallet] = useState(false);
   const [previousNetwork, setPreviousNetwork] = useState<NetworkType>();
   const [actionSelected, setActionSelected] = useState<string>("Home");
 
@@ -67,10 +66,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   );
 
   useEffect(() => {
-    isConnected ? setConnectedWallet(true) : setConnectedWallet(false);
-  }, [isConnected]);
-
-  useEffect(() => {
     getViewComponent();
   }, [actionSelected]);
 
@@ -86,7 +81,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         chain.id === polygonMumbai.id ||
         chain.id === mainnet.id ||
         chain.id === polygon.id || 
-        chain.id === arbitrumGoerli.id)
+        chain.id === arbitrumGoerli.id || 
+        chain.id === sepolia.id)
+        
     ) {
       const prev = networks.filter((network) => network.id === chain?.id);
 
@@ -110,7 +107,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
           </Link>
 
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
-            {connectedWallet && previousNetwork ? (
+            {isConnected && previousNetwork ? (
               <div className="flex items-center">
                 <ChangeNetworkDropdown
                   isModal={false}
