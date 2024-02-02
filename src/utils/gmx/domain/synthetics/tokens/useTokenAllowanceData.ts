@@ -16,7 +16,7 @@ export function useTokensAllowanceData(
   p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses } = p;
-  const { account } = useWallet();
+  const { scAccount } = useWallet(); //TODO fungi scaAddress
 
   const isNativeToken =
     tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
@@ -24,11 +24,11 @@ export function useTokensAllowanceData(
   const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
       !p.skip &&
-      account &&
+      scAccount &&
       spenderAddress &&
       tokenAddresses.length > 0 &&
       !isNativeToken
-        ? [account, spenderAddress, tokenAddresses.join("-")]
+        ? [scAccount, spenderAddress, tokenAddresses.join("-")]
         : null,
 
     request: () =>
@@ -41,7 +41,7 @@ export function useTokensAllowanceData(
             calls: {
               allowance: {
                 methodName: "allowance",
-                params: [account, spenderAddress],
+                params: [scAccount, spenderAddress],
               },
             },
           };

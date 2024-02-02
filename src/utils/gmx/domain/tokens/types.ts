@@ -27,6 +27,12 @@ export type Token = {
   isPlatformToken?: boolean;
 };
 
+export type TokenData = Token & {
+  prices: TokenPrices;
+  balance?: BigNumber;
+  totalSupply?: BigNumber;
+};
+
 export type TokenInfo = Token & {
   hasMaxAvailableLong?: boolean;
   hasMaxAvailableShort?: boolean;
