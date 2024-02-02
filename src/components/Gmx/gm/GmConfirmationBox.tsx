@@ -24,6 +24,11 @@ import { useState } from "react";
 //import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
+import { createWithdrawalUserOp } from "@/utils/gmx/domain/synthetics/markets/createWithdrawalUserOp";
+import { createDepositUserOp } from "@/utils/gmx/domain/synthetics/markets/createDepositUserOp";
+import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 
 type Props = {
   isVisible: boolean;
@@ -69,7 +74,8 @@ export function GmConfirmationBox({
   setPendingTxns,
   shouldDisableValidation,
 }: Props) {
-  const { signer, account } = useWallet();
+  const { scAccount } = useWallet(); //TODO fungi
+  const {alchemyProvider} = useAlchemyAccountKitContext();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useTokensData(chainId);
@@ -209,7 +215,7 @@ export function GmConfirmationBox({
       };
     }
 
-    if (tokensToApprove.length > 0 && marketToken) {
+    /*if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address)!;
         return address === marketToken.address ? "GM" : token?.assetSymbol ?? token?.symbol;
@@ -224,7 +230,7 @@ export function GmConfirmationBox({
         }),
         disabled: true,
       };
-    }
+    }*/
 
     const operationText = isDeposit ? `Buy` : `Sell`;
     const text = `Confirm ${operationText}`;
@@ -247,60 +253,67 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData || !signer) {
+    if (!scAccount || !executionFee || !marketToken || !market || !marketTokenAmount ) {
       return Promise.resolve();
     }
 
-    return createDepositTxn(chainId, signer, {
-      account,
-      initialLongTokenAddress: longToken?.address || market.longTokenAddress,
-      initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
-      longTokenSwapPath: [],
-      shortTokenSwapPath: [],
-      longTokenAmount: longTokenAmount || BigNumber.from(0),
-      shortTokenAmount: shortTokenAmount || BigNumber.from(0),
-      marketTokenAddress: marketToken.address,
-      minMarketTokens: marketTokenAmount,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-      skipSimulation: shouldDisableValidation,
-      tokensData,
-      setPendingTxns,
-      setPendingDeposit,
-    });
+    const userOps =  tokensToApprove.map((address) =>
+        createApproveTokensUserOp({ tokenAddress: address, spender: routerAddress })
+    );
+   
+    const depositUserOp = createDepositUserOp(chainId,{
+        account: scAccount,
+        initialLongTokenAddress: longToken?.address || market.longTokenAddress,
+        initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
+        longTokenSwapPath: [],
+        shortTokenSwapPath: [],
+        longTokenAmount: longTokenAmount || BigNumber.from(0),
+        shortTokenAmount: shortTokenAmount || BigNumber.from(0),
+        marketTokenAddress: marketToken.address,
+        minMarketTokens: marketTokenAmount,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT
+    })
+
+    userOps.push(depositUserOp)
+
+    return sendUserOperations(alchemyProvider, chainId, userOps)
+
   }
 
   function onCreateWithdrawal() {
     if (
-      !account ||
+      !scAccount ||
       !market ||
       !marketToken ||
       !executionFee ||
       !longTokenAmount ||
-      !shortTokenAmount ||
-      !tokensData ||
-      !signer
+      !shortTokenAmount
     ) {
       return Promise.resolve();
     }
 
-    return createWithdrawalTxn(chainId, signer, {
-      account,
-      initialLongTokenAddress: longToken?.address || market.longTokenAddress,
-      initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
-      longTokenSwapPath: [],
-      shortTokenSwapPath: [],
-      marketTokenAmount: marketTokenAmount,
-      minLongTokenAmount: longTokenAmount,
-      minShortTokenAmount: shortTokenAmount,
-      marketTokenAddress: marketToken.address,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-      tokensData,
-      skipSimulation: shouldDisableValidation,
-      setPendingTxns,
-      setPendingWithdrawal,
-    });
+    const userOps =  tokensToApprove.map((address) =>
+        createApproveTokensUserOp({ tokenAddress: address, spender: routerAddress })
+    );
+
+    const withdrawalUserOp = createWithdrawalUserOp(chainId, {
+        account: scAccount,
+        initialLongTokenAddress: longToken?.address || market.longTokenAddress,
+        initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
+        longTokenSwapPath: [],
+        shortTokenSwapPath: [],
+        marketTokenAmount: marketTokenAmount,
+        minLongTokenAmount: longTokenAmount,
+        minShortTokenAmount: shortTokenAmount,
+        marketTokenAddress: marketToken.address,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+    })
+
+    userOps.push(withdrawalUserOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps)
   }
 
   return (

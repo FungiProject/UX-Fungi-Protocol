@@ -1,4 +1,5 @@
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useEffect } from "react";
 import { useAccount, useNetwork } from "wagmi";
 
 export default function useWallet() {

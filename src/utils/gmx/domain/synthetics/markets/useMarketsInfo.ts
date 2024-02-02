@@ -51,6 +51,7 @@ import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 import useWallet from "../../../lib/wallets/useWallet";
+import { useEffect } from "react";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -59,6 +60,7 @@ export type MarketsInfoResult = {
 };
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
+
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);

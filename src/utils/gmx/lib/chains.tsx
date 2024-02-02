@@ -1,6 +1,7 @@
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "../config/localStorage";
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "../config/chains";
 import useWallet from "./wallets/useWallet";
+import { useEffect } from "react";
 
 export function useChainId() {
   let { chainId } = useWallet();

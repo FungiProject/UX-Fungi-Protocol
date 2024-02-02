@@ -16,7 +16,7 @@ export const POLYGON: number = 137;
 export const POLYGON_MUMBAI: number = 80001;
 
 export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, ARBITRUM_GOERLI];
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -107,7 +107,7 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://arb1.arbitrum.io/rpc"],
+  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt"], //TODO fungi
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",

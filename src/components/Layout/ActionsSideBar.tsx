@@ -28,7 +28,6 @@ import {
   polygonMumbai,
   sepolia,
 } from "viem/chains";
-import SwapButtonTest from "../Buttons/SwapButton";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -120,7 +119,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                   previousNetwork={previousNetwork}
                 />{" "}
                 <LogoutButton />
-                <SwapButtonTest />
               </div>
             ) : (
               <LoginButton />

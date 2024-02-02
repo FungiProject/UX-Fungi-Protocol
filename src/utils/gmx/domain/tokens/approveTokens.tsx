@@ -6,8 +6,7 @@ import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
-import { UserOperationCallData } from "@alchemy/aa-core";
-import { Hex } from "@alchemy/aa-core";
+
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -96,13 +95,4 @@ export function approveTokens({
     });
 }
 
-export function getApproveTokensUserOp({
-  tokenAddress,
-  spender
-}: Params): Exclude<UserOperationCallData, Hex>{
- 
-  const calldata = new ethers.utils.Interface(Token.abi).encodeFunctionData("approve", [spender, ethers.constants.MaxUint256]) as `0x${string}`;
 
-  return { target: tokenAddress as `0x${string}` , data: calldata}
-   
-}

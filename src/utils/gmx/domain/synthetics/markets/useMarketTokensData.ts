@@ -26,7 +26,7 @@ export function useMarketTokensData(
   p: { isDeposit: boolean }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
-  const { account } = useWallet();
+  const { scAccount } = useWallet();
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
@@ -34,7 +34,7 @@ export function useMarketTokensData(
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded
-      ? [account, marketsAddresses.join("-"), pricesUpdatedAt]
+      ? [scAccount, marketsAddresses.join("-"), pricesUpdatedAt]
       : undefined,
 
     // Refresh on every prices update
@@ -99,10 +99,10 @@ export function useMarketTokensData(
               methodName: "totalSupply",
               params: [],
             },
-            balance: account
+            balance: scAccount
               ? {
                   methodName: "balanceOf",
-                  params: [account],
+                  params: [scAccount],
                 }
               : undefined,
           },
@@ -141,7 +141,7 @@ export function useMarketTokensData(
             },
             totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
             balance:
-              account && tokenData.balance?.returnValues
+              scAccount && tokenData.balance?.returnValues
                 ? BigNumber.from(tokenData?.balance?.returnValues[0])
                 : undefined,
             explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,

@@ -149,7 +149,7 @@ export function GmSwapBox(p: Props) {
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { scAccount } = useWallet();
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
@@ -528,7 +528,7 @@ export function GmSwapBox(p: Props) {
 
     const error = commonError || swapError;
 
-    if (!account) {
+    if (!scAccount) {
       return {
         text: `Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
@@ -553,7 +553,7 @@ export function GmSwapBox(p: Props) {
       onSubmit,
     };
   }, [
-    account,
+    scAccount,
     amounts?.longTokenAmount,
     amounts?.longTokenUsd,
     amounts?.marketTokenUsd,

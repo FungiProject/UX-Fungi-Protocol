@@ -1,6 +1,4 @@
-// React
 import React, { useEffect, useState, useRef } from "react";
-// Components
 import PageContainer from "../Container/PageContainer";
 import { MarketStats } from "../Gmx/gm/MarketStats/MarketStats";
 import {
@@ -14,9 +12,8 @@ import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localStorage";
 import { getSyntheticsDepositMarketKey } from "../../utils/gmx/config/localStorage";
 import { useChainId } from "../../utils/gmx/lib/chains";
 import { useSearchParams } from "next/navigation";
-
-import ResultsChart from "../Chart/ResultsChart";
 import { GmSwapBox, Operation, Mode } from "../Gmx/gm/GmSwapBox/GmSwapBox";
+import { MarketsInfoResult } from "../../utils/gmx/domain/synthetics/markets";
 
 type HomeProps = {
   getSelectedAction: (action: string) => void;
@@ -28,11 +25,18 @@ export default function GM() {
   const { chainId } = useChainId();
 
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
+  
   function buySellActionHandler() {
     gmSwapBoxRef?.current?.scrollIntoView();
     window.scrollBy(0, -25); // add some offset
   }
 
+  const [visible, setVisible] = useState(false);
+
+  useEffect(()=>{
+    console.log(chainId+ "adsf")
+  },[chainId])
+  
   const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
