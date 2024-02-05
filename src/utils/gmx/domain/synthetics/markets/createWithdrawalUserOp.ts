@@ -5,8 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import { isAddressZero } from "../../../lib/legacy";
 import { applySlippageToMinOut } from "../trade";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-import { UserOperationCallData } from "@alchemy/aa-core";
-import { Hex } from "@alchemy/aa-core";
+import { UserOperation } from "@/utils/gmx/lib/userOperations/types";
 
 type Params = {
     account: string;
@@ -25,9 +24,9 @@ type Params = {
 export function createWithdrawalUserOp(
     chainId: number,
     p: Params
-): Exclude<UserOperationCallData, Hex> {
+): UserOperation{
 
-    const contract = new ethers.utils.Interface(ExchangeRouter.abi);
+    const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi);
 
     const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
@@ -94,11 +93,10 @@ export function createWithdrawalUserOp(
     const encodedPayload = multicall
         .filter(Boolean)
         .map((call) =>
-            contract.encodeFunctionData(call!.method, call!.params)
+            contract.interface.encodeFunctionData(call!.method, call!.params)
         );
-
-
-    const calldata = contract.encodeFunctionData("multicall", [encodedPayload]) as `0x${string}`;
-
+    
+    const calldata = contract.interface.encodeFunctionData("multicall", [encodedPayload]) as `0x${string}`;
+  
     return { target: getContract(chainId, "ExchangeRouter") as `0x${string}`, data: calldata, value: wntAmount.toBigInt() }
 }

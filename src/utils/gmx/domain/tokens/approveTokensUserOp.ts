@@ -1,19 +1,25 @@
 import { UserOperationCallData } from "@alchemy/aa-core";
 import Token from "../../../../../abis/Token.json";
 import { Hex } from "@alchemy/aa-core";
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
+import { UserOperation } from "../../lib/userOperations/types";
 
 type Params = {
     tokenAddress: string;
     spender: string;
+    amount?: BigNumber;
 };
+
 
 export function createApproveTokensUserOp({
     tokenAddress,
-    spender
-}: Params): Exclude<UserOperationCallData, Hex> {
+    spender,
+    amount = ethers.constants.MaxUint256
+}: Params): UserOperation {
 
-    const calldata = new ethers.utils.Interface(Token.abi).encodeFunctionData("approve", [spender, ethers.constants.MaxUint256]) as `0x${string}`;
+    const contract = new ethers.Contract(tokenAddress, Token.abi);
+
+    const calldata = contract.interface.encodeFunctionData("approve", [spender, amount]) as `0x${string}`;
 
     return { target: tokenAddress as `0x${string}`, data: calldata }
 

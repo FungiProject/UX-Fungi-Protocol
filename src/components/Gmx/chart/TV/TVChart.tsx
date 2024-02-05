@@ -229,11 +229,6 @@ export function TVChart({
     }
   }
 
-  useEffect(() => {
-    console.log("adsfasdf");
-    console.log(window.TradingView);
-  }, []);
-
   function onSelectChartToken(token: Token) {
     onSelectChartTokenAddress(token.address);
   }

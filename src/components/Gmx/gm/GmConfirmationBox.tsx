@@ -252,16 +252,16 @@ export function GmConfirmationBox({
     [isVisible, submitButtonState]
   );
 
-  function onCreateDeposit() {
+  async function onCreateDeposit() {
     if (!scAccount || !executionFee || !marketToken || !market || !marketTokenAmount ) {
       return Promise.resolve();
     }
 
-    const userOps =  tokensToApprove.map((address) =>
-        createApproveTokensUserOp({ tokenAddress: address, spender: routerAddress })
-    );
-   
-    const depositUserOp = createDepositUserOp(chainId,{
+    const userOps = tokensToApprove.map((address) =>
+      createApproveTokensUserOp({ tokenAddress: address, spender: routerAddress })
+    )
+    
+    const depositUserOp = await createDepositUserOp(chainId,{
         account: scAccount,
         initialLongTokenAddress: longToken?.address || market.longTokenAddress,
         initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
@@ -281,7 +281,7 @@ export function GmConfirmationBox({
 
   }
 
-  function onCreateWithdrawal() {
+  async function onCreateWithdrawal() {
     if (
       !scAccount ||
       !market ||
@@ -293,9 +293,9 @@ export function GmConfirmationBox({
       return Promise.resolve();
     }
 
-    const userOps =  tokensToApprove.map((address) =>
+    const userOps = tokensToApprove.map((address) =>
         createApproveTokensUserOp({ tokenAddress: address, spender: routerAddress })
-    );
+      )
 
     const withdrawalUserOp = createWithdrawalUserOp(chainId, {
         account: scAccount,

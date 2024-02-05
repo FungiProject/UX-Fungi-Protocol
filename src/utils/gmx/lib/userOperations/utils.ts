@@ -5,11 +5,14 @@ import {
   MAX_GAS_PRICE_MAP,
 } from "../../config/chains";
 import { bigNumberify } from "../numbers";
+import axios from "axios"
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
+
 
 export async function setGasPrice(
-  txnOpts: any,
-  provider: Provider,
-  chainId: number
+    provider: Provider,
+    txnOpts: any,
+    chainId: number
 ) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
@@ -18,7 +21,7 @@ export async function setGasPrice(
 
   if (maxGasPrice) {
     if (gasPrice.gt(maxGasPrice)) {
-      maxGasPrice = gasPrice;
+      maxGasPrice = gasPrice.toString();
     }
 
     const feeData = await provider.getFeeData();
@@ -32,7 +35,7 @@ export async function setGasPrice(
     }
   }
 
-  txnOpts.gasPrice = gasPrice.add(premium);
+  txnOpts.gasPrice = gasPrice.add(premium ?? 0);
   return;
 }
 
@@ -50,11 +53,24 @@ export async function getGasLimit(
 
   let gasLimit = await contract.estimateGas[method](...params, { value });
 
+
   if (gasLimit.lt(22000)) {
     gasLimit = bigNumberify(22000)!;
   }
 
   return gasLimit.mul(11000).div(10000); // add a 10% buffer
+}
+
+export async function getGasLimitApi(alchemyProvider: AlchemyProvider, sender: string) {
+
+
+
+  const response = await axios.post('/api/alchemy/estimateUserOpGas', {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'eth_estimateUserOperationGas',
+    params: "eypapi",
+  });
 }
 
 
