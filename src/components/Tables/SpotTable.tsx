@@ -18,7 +18,11 @@ import {
 } from "../../../constants/Constants";
 import Loader from "../Loader/SpinnerLoader";
 
-export default function SpotTable() {
+type SpotTableProps = {
+  tokens: any;
+};
+
+export default function SpotTable({ tokens }: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);

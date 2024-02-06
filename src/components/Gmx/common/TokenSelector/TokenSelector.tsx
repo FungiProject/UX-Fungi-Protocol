@@ -42,6 +42,7 @@ type Props = {
   disableBodyScrollLock?: boolean;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
+  height?: string;
 };
 
 export default function TokenSelector(props: Props) {
@@ -69,6 +70,7 @@ export default function TokenSelector(props: Props) {
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
     className,
+    height,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -185,7 +187,7 @@ export default function TokenSelector(props: Props) {
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
-        label={props.label}
+        height={height ? height : "h-fit"}
         headerContent={() => (
           <>
             <div className="text-start sm:mt-0 sm:text-left w-full">
@@ -226,7 +228,7 @@ export default function TokenSelector(props: Props) {
             return (
               <div
                 key={token.address}
-                className={"flex items-center justify-between px-[20px]"}
+                className={"flex items-center justify-between "}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && (
@@ -243,43 +245,46 @@ export default function TokenSelector(props: Props) {
                                     />*/}
                   </>
                 )}
-                <div className="hover:bg-gray-200 flex py-4  rounded-xl">
-                  {showTokenImgInDropdown && (
-                    <TokenIcon
-                      symbol={token.symbol}
-                      className="mr-4"
-                      displaySize={40}
-                      importSize={40}
-                    />
-                  )}
-                  <div className="Token-symbol">
-                    <div className="Token-text">{token.symbol}</div>
-                    <span className="text-accent">{token.name}</span>
-                  </div>
-                </div>
-                <div className="Token-balance">
-                  {showBalances && balance && (
-                    <div className="Token-text">
-                      {balance.gt(0) &&
-                        formatAmount(balance, token.decimals, 4, true)}
-                      {balance.eq(0) && "0"}
+                <div className="hover:bg-gray-200 flex py-4 w-full rounded-xl flex justify-between items-center px-[20px]">
+                  <div className="flex">
+                    {showTokenImgInDropdown && (
+                      <TokenIcon
+                        symbol={token.symbol}
+                        className="mr-4"
+                        displaySize={40}
+                        importSize={40}
+                      />
+                    )}
+                    <div className="Token-symbol">
+                      <div className="Token-text">{token.symbol}</div>
+                      <span className="text-accent">{token.name}</span>
                     </div>
-                  )}
-                  <span className="text-accent">
-                    {mintAmount && (
-                      <div>
-                        Mintable:{" "}
-                        {formatAmount(mintAmount, token.decimals, 2, true)} USDG
+                  </div>
+                  <div className="Token-balance">
+                    {showBalances && balance && (
+                      <div className="Token-text">
+                        {balance.gt(0) &&
+                          formatAmount(balance, token.decimals, 4, true)}
+                        {balance.eq(0) && "0"}
                       </div>
                     )}
-                    {showMintingCap && !mintAmount && <div>-</div>}
-                    {!showMintingCap &&
-                      showBalances &&
-                      balanceUsd &&
-                      balanceUsd.gt(0) && (
-                        <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                    <span className="text-accent">
+                      {mintAmount && (
+                        <div>
+                          Mintable:{" "}
+                          {formatAmount(mintAmount, token.decimals, 2, true)}{" "}
+                          USDG
+                        </div>
                       )}
-                  </span>
+                      {showMintingCap && !mintAmount && <div>-</div>}
+                      {!showMintingCap &&
+                        showBalances &&
+                        balanceUsd &&
+                        balanceUsd.gt(0) && (
+                          <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                        )}
+                    </span>
+                  </div>
                 </div>
               </div>
             );

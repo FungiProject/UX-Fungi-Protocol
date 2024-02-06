@@ -7,7 +7,7 @@ export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS; 
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET: number = 1;
-export const ETH_SEPOLIA = 11155111; 
+export const ETH_SEPOLIA = 11155111;
 export const AVALANCHE: number = 43114;
 export const AVALANCHE_FUJI: number = 43113;
 export const ARBITRUM: number = 42161;
@@ -90,7 +90,9 @@ export function getAlchemyWsUrl() {
 
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  [ETH_SEPOLIA]: ["https://eth-sepolia.g.alchemy.com/v2/04K3Ey0y6hJIGfrqM7fquzu3ZzkE8aos"],
+  [ETH_SEPOLIA]: [
+    "https://eth-sepolia.g.alchemy.com/v2/04K3Ey0y6hJIGfrqM7fquzu3ZzkE8aos",
+  ],
   [BSС_MAINNET]: [
     "https://bsc-dataseed.binance.org",
     "https://bsc-dataseed1.defibit.io",
@@ -107,7 +109,9 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt"], //TODO fungi
+  [ARBITRUM]: [
+    "https://arb-mainnet.g.alchemy.com/v2/wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt",
+  ], //TODO fungi
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
@@ -121,7 +125,7 @@ export const RPC_PROVIDERS = {
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
   [POLYGON]: ["https://polygon.blockpi.network/v1/rpc/public	"],
-  [POLYGON_MUMBAI]: ["https://polygon-mumbai.blockpi.network/v1/rpc/public"]
+  [POLYGON_MUMBAI]: ["https://polygon-mumbai.blockpi.network/v1/rpc/public"],
 };
 
 export function getRpcUrl(chainId: number): string | undefined {

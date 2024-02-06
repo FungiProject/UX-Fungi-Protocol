@@ -1,7 +1,4 @@
-//import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode } from "react";
-//import { IS_TOUCH } from "../../config/env";
-//import "./Tooltip.module.scss";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
@@ -79,15 +76,32 @@ export default function Tooltip(props: Props) {
 
   //const className = cx("Tooltip", props.className);
 
-  const tooltipClass = `Tooltip ${props.className || ''}`;
-  const handleClass = `Tooltip-handle ${props.disableHandleStyle ? '' : 'active'} ${props.handleClassName || ''}`;
+  const tooltipClass = `text-black ${props.className || ""}`;
+  const handleClass = `${props.disableHandleStyle ? "" : "active"} ${
+    props.handleClassName || ""
+  }`;
 
   return (
-  <span className={tooltipClass} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+    <span
+      className={tooltipClass}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onMouseClick}
+    >
       <span onClick={onHandleClick} className={handleClass}>
-        {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
+        {props.isHandlerDisabled ? (
+          <div className="Tooltip-disabled-wrapper">{props.handle}</div>
+        ) : (
+          <>{props.handle}</>
+        )}
       </span>
-      {visible && <div className={`Tooltip-popup ${position}`}>{props.renderContent()}</div>}
+      {/* {visible && (
+        <div
+          className={`absolute w-96 z-50 bg-gray-100 p-2 rounded-lg text-black ${position}`}
+        >
+          {props.renderContent()}
+        </div>
+      )} */}
     </span>
   );
 }

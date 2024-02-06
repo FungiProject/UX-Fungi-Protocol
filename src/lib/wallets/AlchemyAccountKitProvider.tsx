@@ -12,9 +12,15 @@ import { useAccount, useConnect, useNetwork } from "wagmi";
 import { arbitrum } from "viem/chains";
 import { getRpcUrl } from "@/utils/gmx/config/chains";
 import { Address, createWalletClient, custom } from "viem";
-import { SmartAccountSigner, getDefaultEntryPointAddress, WalletClientSigner } from "@alchemy/aa-core";
-import { LightSmartContractAccount, getDefaultLightAccountFactoryAddress } from "@alchemy/aa-accounts";
-
+import {
+  SmartAccountSigner,
+  getDefaultEntryPointAddress,
+  WalletClientSigner,
+} from "@alchemy/aa-core";
+import {
+  LightSmartContractAccount,
+  getDefaultLightAccountFactoryAddress,
+} from "@alchemy/aa-accounts";
 
 type AlchemyAccountKitContextProps = {
   // Functions
@@ -27,8 +33,8 @@ type AlchemyAccountKitContextProps = {
   scaAddress?: string;
   isLoggedIn: boolean;
   isLoading: boolean;
-  isIdle: boolean,
-  alchemyProvider: AlchemyProvider
+  isIdle: boolean;
+  alchemyProvider: AlchemyProvider;
 };
 
 const defaultUnset: any = null;
@@ -42,81 +48,75 @@ const AlchemyAccountKitContext = createContext<AlchemyAccountKitContextProps>({
   isLoading: false,
   isIdle: false,
   scaAddress: defaultUnset,
-  alchemyProvider: defaultUnset
+  alchemyProvider: defaultUnset,
 });
 
+export const useAlchemyAccountKitContext = () =>
+  useContext(AlchemyAccountKitContext);
 
-export const useAlchemyAccountKitContext = () => useContext(AlchemyAccountKitContext);
-
-export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }) => {
-
-  
+export const AlchemyAccountKitProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   //Wagmi
   const { chain } = useNetwork();
-  const { connect, connectors, isLoading, isIdle, isSuccess } = useConnect();
-  const { isConnected, connector, address } = useAccount()
+  const { connect, connectors, isLoading, isIdle } = useConnect();
+  const { isConnected } = useAccount();
 
   //Alchemy
   const [alchemyProvider, setAlchemyProvider] = useState<AlchemyProvider>(
     new AlchemyProvider({
       chain: chain ?? arbitrum,
-      rpcUrl: chain ? getRpcUrl(chain.id)! : getRpcUrl(arbitrum.id)! ,
-    }),
+      rpcUrl: chain ? getRpcUrl(chain.id)! : getRpcUrl(arbitrum.id)!,
+    })
   );
   const [signer, setSigner] = useState<SmartAccountSigner>();
-
 
   const [scaAddress, setScaAddress] = useState<string>();
 
   const [ownerAddress, setOwnerAddress] = useState<Address>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
- 
-  const connectAlchemyProvider = useCallback(
-    async () =>{
+  const connectAlchemyProvider = useCallback(async () => {
+    if (!chain || !isConnected) {
+      return;
+    }
 
-      if(!chain || !isConnected) {
-        return
-      }
-      console.log("connectAlchemyProvider")
+    const providerConnector = await connectors[0].getProvider();
+    const walletClient = createWalletClient({
+      chain: chain,
+      transport: custom(providerConnector),
+    });
+    const provSigner = new WalletClientSigner(walletClient, "json-rpc");
+    setSigner(provSigner);
 
-      const providerConnector = await connectors[0].getProvider();
-      const walletClient = createWalletClient({ chain: chain, transport: custom(providerConnector) });
-      const provSigner = new WalletClientSigner(walletClient, "json-rpc")
-      setSigner(provSigner)
+    const provAlchemyProvider = new AlchemyProvider({
+      chain: chain,
+      rpcUrl: getRpcUrl(chain.id)! ?? getRpcUrl(arbitrum.id)!,
+    });
 
-      const provAlchemyProvider = new AlchemyProvider({
+    const connectedProvider = provAlchemyProvider.connect((rpcClient) => {
+      return new LightSmartContractAccount({
+        rpcClient,
+        owner: provSigner,
         chain: chain,
-        rpcUrl: getRpcUrl(chain.id)! ?? getRpcUrl(arbitrum.id)! ,
-      })
-  
-      const connectedProvider = provAlchemyProvider
-        .connect((rpcClient) => {
-          return new LightSmartContractAccount({
-            rpcClient,
-            owner: provSigner,
-            chain: chain,
-            entryPointAddress: getDefaultEntryPointAddress(chain),
-            factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-          });
-        })
+        entryPointAddress: getDefaultEntryPointAddress(chain),
+        factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+      });
+    });
 
-      setAlchemyProvider(connectedProvider);
-      setScaAddress(await connectedProvider.getAddress())
-    },[chain, connectors, isConnected]
-  )
- 
+    setAlchemyProvider(connectedProvider);
+    setScaAddress(await connectedProvider.getAddress());
+  }, [chain, connectors, isConnected]);
 
-  const login = useCallback(
-    async () => {
-      try {
-        connect({ connector: connectors[0] });
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [connect, connectors]
-  );
+  const login = useCallback(async () => {
+    try {
+      connect({ connector: connectors[0] });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [connect, connectors]);
 
   useEffect(() => {
     if (!isConnected) {
@@ -125,10 +125,7 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
     connectAlchemyProvider();
   }, [connectAlchemyProvider, isConnected, isIdle]);
 
-
-  const logout = useCallback(async () => {
-
-  }, []);
+  const logout = useCallback(async () => {}, []);
 
   /*useEffect(() => {
     async function fetchData() {
@@ -168,11 +165,10 @@ export const AlchemyAccountKitProvider = ({ children }: { children: ReactNode; }
         scaAddress,
         isLoading,
         isIdle,
-        alchemyProvider
+        alchemyProvider,
       }}
     >
       {children}
     </AlchemyAccountKitContext.Provider>
   );
 };
-

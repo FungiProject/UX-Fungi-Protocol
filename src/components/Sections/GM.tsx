@@ -25,7 +25,7 @@ export default function GM() {
   const { chainId } = useChainId();
 
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
-  
+
   function buySellActionHandler() {
     gmSwapBoxRef?.current?.scrollIntoView();
     window.scrollBy(0, -25); // add some offset
@@ -33,10 +33,6 @@ export default function GM() {
 
   const [visible, setVisible] = useState(false);
 
-  useEffect(()=>{
-    console.log(chainId+ "adsf")
-  },[chainId])
-  
   const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 

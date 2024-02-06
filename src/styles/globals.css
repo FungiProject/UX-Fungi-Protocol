@@ -121,7 +121,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border: none;
     border-radius: 1px;
     width: 3px;
-    height: 17px;
+    height: 18px;
     margin-bottom: -5px;
     margin-left: -1px;
     background: #514AF3;
@@ -150,4 +150,14 @@ input[type="number"]::-webkit-outer-spin-button {
   .rc-slider-mark-text-active:hover {
     opacity: 1;
   }
+}
+
+.Confirmation-box-warning{
+  max-width: 400px;
+  text-align: center;
+  margin: 12px 0;
+  background-color: rgb(254 202 202);
+  padding: 8px;
+  border-radius: 0.75rem;
+
 }

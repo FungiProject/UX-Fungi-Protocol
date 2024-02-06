@@ -32,7 +32,7 @@ import {
   DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
-  createIncreaseOrderTxn,
+  createIncreaseOrderUserOp,
 } from "../../../../utils/gmx/domain/synthetics/orders";
 import {
   PositionInfo,
@@ -79,6 +79,10 @@ import useSWR from "swr";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
 import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { createDepositUserOp } from "@/utils/gmx/domain/synthetics/markets/createDepositUserOp";
+import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 
 export type Props = {
   position?: PositionInfo;
@@ -105,6 +109,7 @@ export function PositionEditor(p: Props) {
     allowedSlippage,
   } = p;
   const { chainId } = useChainId();
+  const { scAccount } = useWallet(); //TODO fungi
   const { account, signer, active } = useWallet();
   const { login: openConnectModal } = useAlchemyAccountKitContext();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -141,6 +146,8 @@ export function PositionEditor(p: Props) {
       fetcher: contractFetcher(signer, Token) as any,
     }
   );
+
+  const { alchemyProvider } = useAlchemyAccountKitContext();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -402,12 +409,7 @@ export function PositionEditor(p: Props) {
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
 
-  function onSubmit() {
-    if (!account) {
-      openConnectModal?.();
-      return;
-    }
-
+  async function onCreateIncreaseOrder() {
     if (
       !executionFee?.feeTokenAmount ||
       !tokensData ||
@@ -420,11 +422,12 @@ export function PositionEditor(p: Props) {
       return;
     }
 
-    if (isDeposit) {
-      setIsSubmitting(true);
-
-      createIncreaseOrderTxn(chainId, signer, subaccount, {
-        account,
+    const createIncreaseOrderOp = await createIncreaseOrderUserOp(
+      chainId,
+      signer,
+      subaccount,
+      {
+        account: scAccount as string,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
         initialCollateralAmount: collateralDeltaAmount,
@@ -446,55 +449,162 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      })
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      }
+    );
+
+    userOps.push(createIncreaseOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
+  }
+
+  async function onCreateDecreaseOrder() {
+    if (
+      !executionFee?.feeTokenAmount ||
+      !tokensData ||
+      !markPrice ||
+      !position?.indexToken ||
+      !collateralDeltaAmount ||
+      !selectedCollateralAddress ||
+      !signer
+    ) {
+      return;
+    }
+
+    const createIncreaseOrderOp = await createDecreaseOrderUserOp(
+      chainId,
+      signer,
+      subaccount,
+      {
+        account: scAccount as string,
+        marketAddress: position.marketAddress,
+        initialCollateralAddress: position.collateralTokenAddress,
+        initialCollateralDeltaAmount: collateralDeltaAmount,
+        receiveTokenAddress: selectedCollateralAddress,
+        swapPath: [],
+        sizeDeltaUsd: BigNumber.from(0),
+        sizeDeltaInTokens: BigNumber.from(0),
+        acceptablePrice: markPrice,
+        triggerPrice: undefined,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+        orderType: OrderType.MarketDecrease,
+        isLong: position.isLong,
+        minOutputUsd: receiveUsd as BigNumber,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        indexToken: position.indexToken,
+        tokensData,
+        skipSimulation: p.shouldDisableValidation,
+      },
+      {
+        setPendingTxns,
+        setPendingOrder,
+        setPendingPosition,
+      }
+    );
+
+    userOps.push(createIncreaseOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
+  }
+
+  function onSubmit() {
+    setIsSubmitting(true);
+    if (!account) {
+      openConnectModal?.();
+      return;
+    }
+
+    let txnPromise: Promise<any>;
+
+    if (isDeposit) {
+      txnPromise = onCreateIncreaseOrder();
     } else {
       if (!receiveUsd) {
         return;
       }
-
-      setIsSubmitting(true);
-
-      createDecreaseOrderTxn(
-        chainId,
-        signer,
-        subaccount,
-        {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: collateralDeltaAmount,
-          receiveTokenAddress: selectedCollateralAddress,
-          swapPath: [],
-          sizeDeltaUsd: BigNumber.from(0),
-          sizeDeltaInTokens: BigNumber.from(0),
-          acceptablePrice: markPrice,
-          triggerPrice: undefined,
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-          orderType: OrderType.MarketDecrease,
-          isLong: position.isLong,
-          minOutputUsd: receiveUsd,
-          executionFee: executionFee.feeTokenAmount,
-          allowedSlippage,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          indexToken: position.indexToken,
-          tokensData,
-          skipSimulation: p.shouldDisableValidation,
-        },
-        {
-          setPendingTxns,
-          setPendingOrder,
-          setPendingPosition,
-        }
-      )
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      txnPromise = onCreateDecreaseOrder();
     }
+
+    txnPromise.finally(() => {
+      setIsSubmitting(false);
+    });
+
+    // if (isDeposit) {
+    //   setIsSubmitting(true);
+
+    //   createIncreaseOrderTxn(chainId, signer, subaccount, {
+    //     account,
+    //     marketAddress: position.marketAddress,
+    //     initialCollateralAddress: selectedCollateralAddress,
+    //     initialCollateralAmount: collateralDeltaAmount,
+    //     targetCollateralAddress: position.collateralTokenAddress,
+    //     collateralDeltaAmount,
+    //     swapPath: [],
+    //     sizeDeltaUsd: BigNumber.from(0),
+    //     sizeDeltaInTokens: BigNumber.from(0),
+    //     acceptablePrice: markPrice,
+    //     triggerPrice: undefined,
+    //     orderType: OrderType.MarketIncrease,
+    //     isLong: position.isLong,
+    //     executionFee: executionFee.feeTokenAmount,
+    //     allowedSlippage,
+    //     referralCode: userReferralInfo?.referralCodeForTxn,
+    //     indexToken: position.indexToken,
+    //     tokensData,
+    //     skipSimulation: p.shouldDisableValidation,
+    //     setPendingTxns,
+    //     setPendingOrder,
+    //     setPendingPosition,
+    //   })
+    //     .then(onClose)
+    //     .finally(() => {
+    //       setIsSubmitting(false);
+    //     });
+    // } else {
+    //   if (!receiveUsd) {
+    //     return;
+    //   }
+
+    //   setIsSubmitting(true);
+
+    //   createDecreaseOrderTxn(
+    //     chainId,
+    //     signer,
+    //     subaccount,
+    //     {
+    //       account,
+    //       marketAddress: position.marketAddress,
+    //       initialCollateralAddress: position.collateralTokenAddress,
+    //       initialCollateralDeltaAmount: collateralDeltaAmount,
+    //       receiveTokenAddress: selectedCollateralAddress,
+    //       swapPath: [],
+    //       sizeDeltaUsd: BigNumber.from(0),
+    //       sizeDeltaInTokens: BigNumber.from(0),
+    //       acceptablePrice: markPrice,
+    //       triggerPrice: undefined,
+    //       decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    //       orderType: OrderType.MarketDecrease,
+    //       isLong: position.isLong,
+    //       minOutputUsd: receiveUsd,
+    //       executionFee: executionFee.feeTokenAmount,
+    //       allowedSlippage,
+    //       referralCode: userReferralInfo?.referralCodeForTxn,
+    //       indexToken: position.indexToken,
+    //       tokensData,
+    //       skipSimulation: p.shouldDisableValidation,
+    //     },
+    //     {
+    //       setPendingTxns,
+    //       setPendingOrder,
+    //       setPendingPosition,
+    //     }
+    //   )
+    //     .then(onClose)
+    //     .finally(() => {
+    //       setIsSubmitting(false);
+    //     });
+    // }
   }
 
   useEffect(

@@ -149,7 +149,6 @@ export function MarketSelector({
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
-        label={label}
         headerContent={() => (
           <>
             <div className="text-start sm:mt-0 sm:text-left w-full">

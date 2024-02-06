@@ -98,6 +98,15 @@ export default function BuyInputSection(props: Props) {
             className={"align-right mb-2"}
             onClick={onClickTopRightLabel}
           >
+            {showMaxButton && (
+              <button
+                type="button"
+                className="text-main text-xs mr-2"
+                onClick={onClickMax}
+              >
+                <span>MAX</span>
+              </button>
+            )}
             <span className="text-sm text-black/70">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
@@ -123,17 +132,8 @@ export default function BuyInputSection(props: Props) {
             {staticInput && (
               <div className="InputSection-static-input">{inputValue}</div>
             )}
-            {showMaxButton && (
-              <button
-                type="button"
-                className="Exchange-swap-max"
-                onClick={onClickMax}
-              >
-                <span>MAX</span>
-              </button>
-            )}
           </div>
-          <div className="PositionEditor-token-symbol">{children}</div>
+          <div className="flex">{children}</div>
         </div>
       </div>
       {showPercentSelector && isPercentSelectorVisible && onPercentChange && (

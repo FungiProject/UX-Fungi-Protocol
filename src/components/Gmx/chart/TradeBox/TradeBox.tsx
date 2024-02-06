@@ -30,7 +30,10 @@ import {
 import { MAX_METAMASK_MOBILE_DECIMALS } from "../../../../utils/gmx/config/ui";
 import { useSettings } from "../../../../utils/gmx/context/SettingsContext/SettingsContextProvider";
 import { useHasOutdatedUi } from "../../../../utils/gmx/domain/legacy";
-import { useUserReferralInfo } from "../../../../utils/gmx/domain/referrals/hooks";
+import {
+  useUserReferralCode,
+  useUserReferralInfo,
+} from "../../../../utils/gmx/domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -239,9 +242,9 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+
   const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-
   const { minCollateralUsd, minPositionSizeUsd } =
     usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
@@ -1278,6 +1281,7 @@ export function TradeBox(p: Props) {
                 onSelectToken={(token) =>
                   onSelectFromTokenAddress(token.address)
                 }
+                height="h-[400px]"
                 tokens={swapTokens}
                 infoTokens={infoTokens}
                 className="GlpSwap-from-token"
@@ -1326,6 +1330,7 @@ export function TradeBox(p: Props) {
                   onSelectToken={(token) =>
                     onSelectToTokenAddress(token.address)
                   }
+                  height="h-[400px]"
                   tokens={swapTokens}
                   infoTokens={infoTokens}
                   className="GlpSwap-from-token"
@@ -1373,6 +1378,7 @@ export function TradeBox(p: Props) {
                   onSelectToken={(token) =>
                     onSelectToTokenAddress(token.address)
                   }
+                  height="h-[400px]"
                   tokens={indexTokens}
                   infoTokens={infoTokens}
                   className="GlpSwap-from-token"
@@ -1508,6 +1514,7 @@ export function TradeBox(p: Props) {
                 value={leverageOption}
                 onChange={setLeverageOption}
                 isPositive={isLong}
+                marks={[0.1, 1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50]}
               />
             )}{" "}
           </>

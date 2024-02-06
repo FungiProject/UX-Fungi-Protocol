@@ -1,6 +1,4 @@
-// import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ApproveTokenButton } from "../ApproveTokenButton/ApproveTokenButton";
 import Button from "../../common/Buttons/Button";
 import Checkbox from "../../common/Checkbox/Checkbox";
 import ExchangeInfoRow from "../ExchangeInfoRow/ExchangeInfoRow";
@@ -29,6 +27,7 @@ import {
   PositionOrderInfo,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
+  createIncreaseOrderUserOp,
   createSwapOrderTxn,
   isLimitOrderType,
   isOrderForPosition,
@@ -105,6 +104,11 @@ import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../../common/Notifications/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
+import { ArrowDownIcon } from "@heroicons/react/24/outline";
+import { uniq } from "lodash";
 
 export type Props = {
   isVisible: boolean;
@@ -197,9 +201,10 @@ export function ConfirmationBox(p: Props) {
   } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
-  const { signer, account } = useWallet();
+  const { signer, account, scAccount } = useWallet();
   const { chainId } = useChainId();
   const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { alchemyProvider } = useAlchemyAccountKitContext();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
@@ -238,6 +243,24 @@ export function ConfirmationBox(p: Props) {
     tokenAddresses: fromToken ? [fromToken.address] : [],
     skip: !p.isVisible,
   });
+
+  const tokensToApprove = (function getTokensToApprove() {
+    const addresses: string[] = [];
+
+    if (!tokensAllowanceData) {
+      return addresses;
+    }
+
+    if (
+      fromToken &&
+      payAmount &&
+      getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount)
+    ) {
+      addresses.push(fromToken.address);
+    }
+
+    return uniq(addresses);
+  })();
 
   const needPayTokenApproval =
     tokensAllowanceData &&
@@ -402,12 +425,12 @@ export function ConfirmationBox(p: Props) {
       };
     }
 
-    if (needPayTokenApproval) {
-      return {
-        text: `Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`,
-        disabled: true,
-      };
-    }
+    // if (needPayTokenApproval) {
+    //   return {
+    //     text: `Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`,
+    //     disabled: true,
+    //   };
+    // }
 
     if (
       isIncrease &&
@@ -480,6 +503,8 @@ export function ConfirmationBox(p: Props) {
     1
   );
 
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
+
   function onCancelOrderClick(key: string): void {
     if (!signer) return;
     cancelOrdersTxn(chainId, signer, subaccount, {
@@ -534,49 +559,63 @@ export function ConfirmationBox(p: Props) {
     });
   }
 
-  function onSubmitIncreaseOrder() {
+  async function onSubmitIncreaseOrder() {
     if (
       !tokensData ||
-      !account ||
+      !scAccount ||
       !fromToken ||
       !collateralToken ||
       !increaseAmounts?.acceptablePrice ||
       !executionFee ||
       !marketInfo ||
-      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(chainId, signer, subaccount, {
-      account,
-      marketAddress: marketInfo.marketTokenAddress,
-      initialCollateralAddress: fromToken?.address,
-      initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-      targetCollateralAddress: collateralToken.address,
-      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-      swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-      triggerPrice: isLimit ? triggerPrice : undefined,
-      acceptablePrice: increaseAmounts.acceptablePrice,
-      isLong,
-      orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage,
-      referralCode: referralCodeForTxn,
-      indexToken: marketInfo.indexToken,
-      tokensData,
-      skipSimulation: isLimit || shouldDisableValidation,
-      setPendingTxns: p.setPendingTxns,
-      setPendingOrder,
-      setPendingPosition,
-    });
+    const userOps = tokensToApprove.map((address: string) =>
+      createApproveTokensUserOp({
+        tokenAddress: address,
+        spender: routerAddress,
+      })
+    );
+
+    const createIncreaseOrderOp = await createIncreaseOrderUserOp(
+      chainId,
+      subaccount,
+      {
+        account: scAccount as string,
+        marketAddress: marketInfo.marketTokenAddress,
+        initialCollateralAddress: fromToken?.address,
+        initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+        targetCollateralAddress: collateralToken.address,
+        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+        triggerPrice: isLimit ? triggerPrice : undefined,
+        acceptablePrice: increaseAmounts.acceptablePrice,
+        isLong,
+        orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        referralCode: referralCodeForTxn,
+        indexToken: marketInfo.indexToken,
+        tokensData,
+        skipSimulation: isLimit || shouldDisableValidation,
+        setPendingTxns: p.setPendingTxns,
+        setPendingOrder,
+        setPendingPosition,
+      }
+    );
+
+    userOps.push(createIncreaseOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
   }
 
-  function onSubmitDecreaseOrder() {
+  async function onSubmitDecreaseOrder() {
     if (
       !account ||
       !marketInfo ||
@@ -594,12 +633,19 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createDecreaseOrderTxn(
+    const userOps = needPayTokenApproval.map((address: string) =>
+      createApproveTokensUserOp({
+        tokenAddress: address,
+        spender: routerAddress,
+      })
+    );
+
+    const createIncreaseOrderOp = await createDecreaseOrderUserOp(
       chainId,
       signer,
       subaccount,
       {
-        account,
+        account: scAccount as string,
         marketAddress: marketInfo.marketTokenAddress,
         swapPath: [],
         initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
@@ -628,6 +674,45 @@ export function ConfirmationBox(p: Props) {
         setPendingPosition,
       }
     );
+
+    // return createDecreaseOrderTxn(
+    //   chainId,
+    //   signer,
+    //   subaccount,
+    //   {
+    //     account,
+    //     marketAddress: marketInfo.marketTokenAddress,
+    //     swapPath: [],
+    //     initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+    //     initialCollateralAddress: collateralToken.address,
+    //     receiveTokenAddress: collateralToken.address,
+    //     triggerPrice: decreaseAmounts.triggerPrice,
+    //     acceptablePrice: decreaseAmounts.acceptablePrice,
+    //     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    //     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+    //     minOutputUsd: BigNumber.from(0),
+    //     isLong,
+    //     decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+    //     orderType: fixedTriggerOrderType,
+    //     executionFee: executionFee.feeTokenAmount,
+    //     allowedSlippage,
+    //     referralCode: referralCodeForTxn,
+    //     // Skip simulation to avoid EmptyPosition error
+    //     // skipSimulation: !existingPosition || shouldDisableValidation,
+    //     skipSimulation: true,
+    //     indexToken: marketInfo.indexToken,
+    //     tokensData,
+    //   },
+    //   {
+    //     setPendingTxns,
+    //     setPendingOrder,
+    //     setPendingPosition,
+    //   }
+    // );
+
+    userOps.push(createIncreaseOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
   }
 
   function onSubmit() {
@@ -682,8 +767,8 @@ export function ConfirmationBox(p: Props) {
       return (
         <>
           <div className="Confirmation-box-main">
-            <div>
-              Pay
+            <div className="flex text-lg justify-center">
+              <span className="mr-2">Pay</span>
               {formatTokenAmountWithUsd(
                 swapAmounts?.amountIn,
                 swapAmounts?.usdIn,
@@ -691,9 +776,11 @@ export function ConfirmationBox(p: Props) {
                 fromToken?.decimals
               )}
             </div>
-            <div className="Confirmation-box-main-icon"></div>
-            <div>
-              Receive
+            <div className="flex items-center justify-center ">
+              <ArrowDownIcon className="h-7 w-7 my-1" />
+            </div>
+            <div className="flex text-lg justify-center">
+              <span className="mr-2">Receive</span>
               {formatTokenAmountWithUsd(
                 swapAmounts?.amountOut,
                 swapAmounts?.usdOut,
@@ -702,7 +789,6 @@ export function ConfirmationBox(p: Props) {
               )}
             </div>
           </div>
-          {renderSubaccountNavigationButton()}
         </>
       );
     }
@@ -710,9 +796,9 @@ export function ConfirmationBox(p: Props) {
     if (isIncrease) {
       return (
         <>
-          <div className="Confirmation-box-main">
-            <span>
-              Pay
+          <div>
+            <span className="flex text-lg justify-center">
+              <span className="mr-2">Pay </span>{" "}
               {formatTokenAmountWithUsd(
                 increaseAmounts?.initialCollateralAmount,
                 increaseAmounts?.initialCollateralUsd,
@@ -720,9 +806,11 @@ export function ConfirmationBox(p: Props) {
                 fromToken?.decimals
               )}
             </span>
-            <div className="Confirmation-box-main-icon"></div>
-            <div>
-              {isLong ? `Long` : `Short`}{" "}
+            <div className="flex items-center justify-center ">
+              <ArrowDownIcon className="h-7 w-7 my-1" />
+            </div>
+            <div className="flex text-lg justify-center">
+              <span className="mr-2"> {isLong ? `Long` : `Short`}</span>
               {formatTokenAmountWithUsd(
                 increaseAmounts?.sizeDeltaInTokens,
                 increaseAmounts?.sizeDeltaUsd,
@@ -731,7 +819,6 @@ export function ConfirmationBox(p: Props) {
               )}
             </div>
           </div>
-          {renderSubaccountNavigationButton()}
         </>
       );
     }
@@ -1124,7 +1211,7 @@ export function ConfirmationBox(p: Props) {
             )
           }
         />
-        <div className="line-divider" />
+        <div className="border-b-1" />
       </>
     );
   }
@@ -1163,12 +1250,14 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
+
           {isLimit && renderAvailableLiquidity()}
           {renderLeverage(
             existingPosition?.leverage,
@@ -1181,6 +1270,7 @@ export function ConfirmationBox(p: Props) {
               label={`Collateral Spread`}
               isWarning={swapSpreadInfo.isHigh}
               isTop={true}
+              className="border-b-1 pb-4"
             >
               {formatAmount(
                 collateralSpreadInfo.spread.mul(100),
@@ -1241,7 +1331,7 @@ export function ConfirmationBox(p: Props) {
           />
 
           <ExchangeInfoRow
-            className="SwapBox-info-row"
+            className="border-b-1 pb-4"
             label={`Liq. Price`}
             value={
               <ValueTransition
@@ -1263,7 +1353,7 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
-          <div className="Exchange-info-row top-line">
+          <div className="flex justify-between">
             <div>
               {isCollateralSwap ? (
                 <Tooltip
@@ -1670,7 +1760,7 @@ export function ConfirmationBox(p: Props) {
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
 
-        {needPayTokenApproval && fromToken && (
+        {/* {needPayTokenApproval && fromToken && (
           <>
             <ApproveTokenButton
               tokenAddress={fromToken.address}
@@ -1678,12 +1768,16 @@ export function ConfirmationBox(p: Props) {
               spenderAddress={getContract(chainId, "SyntheticsRouter")}
             />
           </>
-        )}
+        )} */}
 
         <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
             variant="primary-action"
-            className="w-full"
+            className={`mt-4 ${
+              submitButtonState.disabled && !shouldDisableValidation
+                ? "opacity-50"
+                : ""
+            } w-full bg-main rounded-xl py-3 text-white font-semibold`}
             type="submit"
             onClick={onSubmit}
             disabled={submitButtonState.disabled && !shouldDisableValidation}

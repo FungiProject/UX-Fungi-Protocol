@@ -77,7 +77,7 @@ import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
 import { GmFees } from "../GmFees/GmFees";
 import Button from "../../common/Buttons/Button";
 import { Token } from "@/utils/gmx/domain/tokens";
-import { GmConfirmationBox } from "../GmConfirmationBox";
+import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -95,7 +95,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   onSelectMarket: (marketAddress: string) => void;
-  setPendingTxns: (txns: any) => void;
+  // setPendingTxns: (txns: any) => void;
   operation: Operation;
   shouldDisableValidation?: boolean;
   mode: Mode;
@@ -1334,7 +1334,7 @@ export function GmSwapBox(p: Props) {
         error={submitState.error}
         isDeposit={isDeposit}
         executionFee={executionFee}
-        setPendingTxns={p.setPendingTxns}
+        // setPendingTxns={p.setPendingTxns}
         onSubmitted={() => {
           setStage("swap");
         }}
@@ -1346,7 +1346,6 @@ export function GmSwapBox(p: Props) {
         setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         shouldDisableValidation={shouldDisableValidation}
       />
-
     </div>
   );
 }

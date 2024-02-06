@@ -111,7 +111,7 @@ export default function PercentageInput({
   }, []);
 
   return (
-    <div className="Percentage-input-wrapper">
+    <div className="Percentage-input-wrapperflex">
       <div
         className={cx("Percentage-input", { "input-error": Boolean(error) })}
       >
@@ -136,7 +136,7 @@ export default function PercentageInput({
         <label htmlFor={id}>
           <span>%</span>
         </label>
-      </div>
+      </div>{" "}
       {error && !shouldShowPanel && (
         <div
           className={cx(

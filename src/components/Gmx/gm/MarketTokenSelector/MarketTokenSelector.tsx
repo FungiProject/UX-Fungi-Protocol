@@ -175,7 +175,7 @@ export default function MarketTokenSelector(props: Props) {
             <div className="absolute rounded-xl shadow-input bg-white mt-7">
               <Popover.Panel
                 as="div"
-                className="h-[500px] w-[700px] overflow-auto py-[24px]"
+                className="z-50 h-[500px] w-[700px] overflow-auto py-[24px]"
               >
                 <div className="border-b-1 px-[42px]">
                   <h1 className="text-2xl">Select Market</h1>

@@ -179,7 +179,7 @@ export function PoolSelector({
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
-        label={label}
+        height="h-[440px]"
         headerContent={() => (
           <>
             <div className="text-start sm:mt-0 sm:text-left w-full">

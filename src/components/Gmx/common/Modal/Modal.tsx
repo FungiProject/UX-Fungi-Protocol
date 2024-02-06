@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
+  const { isVisible, setIsVisible, zIndex, onAfterOpen, label, height } = props;
 
   const modalRef = useRef(null);
 
@@ -57,7 +57,8 @@ export default function Modal(props) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 min-w-[400px] min-h-fit  bg-white  shadow-input">
-                <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
+                <div className="absolute right-0 top-0 hidden p-4 pt-4 sm:flex justify-between w-full">
+                  <h1 className="text-xl">{label}</h1>
                   <button
                     type="button"
                     className="rounded-md bg-white hover:text-gray-700 text-black focus:outline-none"
@@ -70,12 +71,16 @@ export default function Modal(props) {
                     />
                   </button>
                 </div>
-                <div className="sm:flex flex-col sm:items-start  mt-[50px]">
+                <div className="sm:flex flex-col sm:items-start mt-[50px]">
                   <div className="w-full border-b-1 px-[36px]">
                     {props.headerContent && props.headerContent()}
                   </div>
 
-                  <div className="px-[18px] w-full my-4 overflow-y-auto h-[400px]">
+                  <div
+                    className={`px-[18px] w-full my-4 overflow-y-auto ${
+                      height ? `${height}` : "h-fit"
+                    }`}
+                  >
                     {props.children}
                   </div>
                 </div>

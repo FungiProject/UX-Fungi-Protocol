@@ -105,7 +105,7 @@ export default function TokensModal({
                     />
                   </button>
                 </div>
-                <div className="sm:flex flex-col sm:items-start  mt-[50px]">
+                <div className="sm:flex flex-col sm:items-start mt-[50px]">
                   <div className="w-full border-b-1 px-[64px]">
                     <div className=" text-start sm:mt-0 sm:text-left w-full">
                       <Dialog.Title as="h3" className="text-3xl">
