@@ -109,6 +109,7 @@ import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveToke
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { uniq } from "lodash";
+import { createSwapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createSwapOrderUserOp";
 
 export type Props = {
   isVisible: boolean;
@@ -527,23 +528,29 @@ export function ConfirmationBox(p: Props) {
     });
   }
 
-  function onSubmitSwap() {
+  async function onSubmitSwap() {
     if (
-      !account ||
+      !scAccount ||
       !tokensData ||
       !swapAmounts?.swapPathStats ||
       !fromToken ||
       !toToken ||
       !executionFee ||
-      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createSwapOrderTxn(chainId, signer, subaccount, {
-      account,
+    const userOps = tokensToApprove.map((address: string) =>
+      createApproveTokensUserOp({
+        tokenAddress: address,
+        spender: routerAddress,
+      })
+    );
+
+    const createSwapOrderOp = await createSwapOrderUserOp(chainId, subaccount, {
+      account: scAccount,
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
       swapPath: swapAmounts.swapPathStats?.swapPath,
@@ -557,6 +564,26 @@ export function ConfirmationBox(p: Props) {
       setPendingTxns,
       setPendingOrder,
     });
+
+    userOps.push(createSwapOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
+
+    // return createSwapOrderTxn(chainId, signer, subaccount, {
+    //   account:scAccount,
+    //   fromTokenAddress: fromToken.address,
+    //   fromTokenAmount: swapAmounts.amountIn,
+    //   swapPath: swapAmounts.swapPathStats?.swapPath,
+    //   toTokenAddress: toToken.address,
+    //   orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
+    //   minOutputAmount: swapAmounts.minOutputAmount,
+    //   referralCode: referralCodeForTxn,
+    //   executionFee: executionFee.feeTokenAmount,
+    //   allowedSlippage,
+    //   tokensData,
+    //   setPendingTxns,
+    //   setPendingOrder,
+    // });
   }
 
   async function onSubmitIncreaseOrder() {
@@ -617,7 +644,7 @@ export function ConfirmationBox(p: Props) {
 
   async function onSubmitDecreaseOrder() {
     if (
-      !account ||
+      !scAccount ||
       !marketInfo ||
       !collateralToken ||
       fixedTriggerOrderType === undefined ||
@@ -626,23 +653,21 @@ export function ConfirmationBox(p: Props) {
       !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
-      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(`Error submitting order`);
       return Promise.resolve();
     }
 
-    const userOps = needPayTokenApproval.map((address: string) =>
+    const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
         tokenAddress: address,
         spender: routerAddress,
       })
     );
 
-    const createIncreaseOrderOp = await createDecreaseOrderUserOp(
+    const createDecreaseOrderOp = await createDecreaseOrderUserOp(
       chainId,
-      signer,
       subaccount,
       {
         account: scAccount as string,
@@ -710,7 +735,7 @@ export function ConfirmationBox(p: Props) {
     //   }
     // );
 
-    userOps.push(createIncreaseOrderOp);
+    userOps.push(createDecreaseOrderOp);
 
     return sendUserOperations(alchemyProvider, chainId, userOps);
   }

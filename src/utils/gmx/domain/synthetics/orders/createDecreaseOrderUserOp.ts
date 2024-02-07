@@ -63,7 +63,6 @@ export type DecreaseOrderUserOpCallbacks = {
 
 export async function createDecreaseOrderUserOp(
   chainId: number,
-  signer: Signer,
   subaccount: Subaccount,
   params: createDecreaseOrderUserOpProps | createDecreaseOrderUserOpProps[],
   callbacks: DecreaseOrderUserOpCallbacks
@@ -71,8 +70,7 @@ export async function createDecreaseOrderUserOp(
   const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    signer
+    ExchangeRouter.abi
   );
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
@@ -123,35 +121,35 @@ export async function createDecreaseOrderUserOp(
     }
   });
 
-  const txnCreatedAt = Date.now();
-  const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
+  // const txnCreatedAt = Date.now();
+  // const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
   const calldata = router.interface.encodeFunctionData("multicall", [
     encodedPayload,
   ]) as `0x${string}`;
 
-  ps.forEach((p) => {
-    if (isMarketOrderType(p.orderType)) {
-      if (callbacks.setPendingPosition) {
-        callbacks.setPendingPosition(
-          getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
-        );
-      }
-    }
+  // ps.forEach((p) => {
+  //   if (isMarketOrderType(p.orderType)) {
+  //     if (callbacks.setPendingPosition) {
+  //       callbacks.setPendingPosition(
+  //         getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
+  //       );
+  //     }
+  //   }
 
-    if (callbacks.setPendingOrder) {
-      callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
-    }
-  });
+  //   if (callbacks.setPendingOrder) {
+  //     callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
+  //   }
+  // });
 
-  if (callbacks.setPendingFundingFeeSettlement) {
-    callbacks.setPendingFundingFeeSettlement({
-      orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
-      positions: ps.map((p) =>
-        getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
-      ),
-    });
-  }
+  // if (callbacks.setPendingFundingFeeSettlement) {
+  //   callbacks.setPendingFundingFeeSettlement({
+  //     orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
+  //     positions: ps.map((p) =>
+  //       getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)
+  //     ),
+  //   });
+  // }
 
   return {
     target: getContract(chainId, "ExchangeRouter") as `0x${string}`,

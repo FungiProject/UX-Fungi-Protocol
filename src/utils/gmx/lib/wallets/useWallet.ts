@@ -8,7 +8,7 @@ export default function useWallet() {
   const { chain } = useNetwork();
   //const { data: signer } = useSigner(); //TODO fungi
   const signer = undefined;
-  // scaAddress Ukhezo = 0xeE78B1FaA849923F5A37137b0F5AFc7484376Ea8
+
   return {
     scAccount: scaAddress,
     account: address,

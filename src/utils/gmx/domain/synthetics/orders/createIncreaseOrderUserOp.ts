@@ -59,7 +59,7 @@ export async function createIncreaseOrderUserOp(
 ): Promise<UserOperation> {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
-  console.log(subaccount);
+
   const exchangeRouter = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     ExchangeRouter.abi
@@ -67,6 +67,7 @@ export async function createIncreaseOrderUserOp(
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : exchangeRouter;
+
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment
     ? p.initialCollateralAmount

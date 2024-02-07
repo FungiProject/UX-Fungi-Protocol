@@ -36,7 +36,7 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { scAccount } = useWallet();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] =
     useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
@@ -172,7 +172,7 @@ export function PositionList(p: Props) {
           markPrice={positionToShare.markPrice}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
-          account={account}
+          account={scAccount}
         />
       )}
     </div>

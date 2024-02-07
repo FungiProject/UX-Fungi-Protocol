@@ -531,7 +531,7 @@ export function PositionItem(p: Props) {
       >
         <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
           {/* title */}
-          <div className="Exchange-list-title">
+          <div className="Exchange-list-title ">
             <Tooltip
               handle={
                 <>
@@ -700,169 +700,167 @@ export function PositionItem(p: Props) {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
-      <div className="App-card">
-        <div>
-          <div
-            className={cx("App-card-title Position-card-title", {
-              "Position-active-card": isCurrentMarket,
-            })}
-            onClick={() => p.onSelectPositionClick?.()}
-          >
-            <span className="Exchange-list-title inline-flex">
-              <TokenIcon
-                className="PositionList-token-icon"
-                symbol={p.position.marketInfo.indexToken?.symbol}
-                displaySize={20}
-                importSize={24}
-              />
-              {p.position.marketInfo.indexToken?.symbol}
+      <div className="flex">
+        <div
+          className={cx("App-card-title Position-card-title", {
+            "Position-active-card": isCurrentMarket,
+          })}
+          onClick={() => p.onSelectPositionClick?.()}
+        >
+          <span className="Exchange-list-title inline-flex">
+            <TokenIcon
+              className="PositionList-token-icon"
+              symbol={p.position.marketInfo.indexToken?.symbol}
+              displaySize={20}
+              importSize={24}
+            />
+            {p.position.marketInfo.indexToken?.symbol}
+          </span>
+          <div>
+            <span className="Position-leverage">
+              {formatLeverage(p.position.leverage)}&nbsp;
             </span>
-            <div>
-              <span className="Position-leverage">
-                {formatLeverage(p.position.leverage)}&nbsp;
-              </span>
-              <span
-                className={cx("Exchange-list-side", {
-                  positive: p.position.isLong,
-                  negative: !p.position.isLong,
-                })}
-              >
-                {p.position.isLong ? `Long` : `Short`}
-              </span>
-            </div>
-            {p.position.pendingUpdate && (
-              <ImSpinner2 className="spin position-loading-icon" />
-            )}
+            <span
+              className={cx("Exchange-list-side", {
+                positive: p.position.isLong,
+                negative: !p.position.isLong,
+              })}
+            >
+              {p.position.isLong ? `Long` : `Short`}
+            </span>
           </div>
-
-          <div className="App-card-divider" />
-          <div className="App-card-content">
-            {showDebugValues && (
-              <div className="App-card-row">
-                <div className="label">Key</div>
-                <div className="debug-key muted">{p.position.contractKey}</div>
-              </div>
-            )}
-            <div className="App-card-row">
-              <div className="label">Market</div>
-              <div onClick={() => p.onSelectPositionClick?.()}>
-                <div className="items-top">
-                  <span>{indexName && indexName}</span>
-                  <span className="subtext">{poolName && `[${poolName}]`}</span>
-                </div>
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">Net Value</div>
-              <div>{renderNetValue()}</div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">PnL</div>
-              <div>
-                <span
-                  className={cx(
-                    "Exchange-list-info-label cursor-pointer Position-pnl",
-                    {
-                      positive: displayedPnl?.gt(0),
-                      negative: displayedPnl?.lt(0),
-                      muted: displayedPnl?.eq(0),
-                    }
-                  )}
-                  onClick={p.openSettings}
-                >
-                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                </span>
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">Size</div>
-              <div>{formatUsd(p.position.sizeInUsd)}</div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">Collateral</div>
-              <div>{renderCollateral()}</div>
-            </div>
-          </div>
-          <div className="App-card-divider" />
-          <div className="App-card-content">
-            <div className="App-card-row">
-              <div className="label">Entry Price</div>
-              <div>
-                {formatUsd(p.position.entryPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })}
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">Mark Price</div>
-              <div>
-                {formatUsd(p.position.markPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })}
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">Liq. Price</div>
-              <div>{renderLiquidationPrice()}</div>
-            </div>
-          </div>
-          <div className="App-card-divider" />
-          <div className="App-card-row">
-            <div className="label">Orders</div>
-            <div>
-              {!p.positionOrders?.length && "None"}
-              {renderPositionOrders(true)}
-            </div>
-          </div>
-          {!p.hideActions && (
-            <>
-              <div className="App-card-divider" />
-              <div className="Position-item-action">
-                <div className="Position-item-buttons">
-                  <Button
-                    variant="secondary"
-                    disabled={p.position.sizeInUsd.eq(0)}
-                    onClick={p.onClosePositionClick}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    disabled={p.position.sizeInUsd.eq(0)}
-                    onClick={p.onEditCollateralClick}
-                  >
-                    Edit Collateral
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    disabled={p.position.sizeInUsd.eq(0)}
-                    onClick={() => {
-                      // TODO: remove after adding trigger functionality to Modal
-                      window.scrollTo({ top: isMobile ? 500 : 0 });
-                      p.onSelectPositionClick?.(TradeMode.Trigger);
-                    }}
-                  >
-                    TP/SL
-                  </Button>
-                </div>
-                <div>
-                  {!p.position.isOpening && !p.hideActions && (
-                    <PositionDropdown
-                      handleMarketSelect={() => p.onSelectPositionClick?.()}
-                      handleMarketIncreaseSize={() =>
-                        p.onSelectPositionClick?.(TradeMode.Market)
-                      }
-                      handleShare={p.onShareClick}
-                      handleLimitIncreaseSize={() =>
-                        p.onSelectPositionClick?.(TradeMode.Limit)
-                      }
-                    />
-                  )}
-                </div>
-              </div>
-            </>
+          {p.position.pendingUpdate && (
+            <ImSpinner2 className="spin position-loading-icon" />
           )}
         </div>
+
+        <div className="App-card-divider" />
+        <div className="flex">
+          {showDebugValues && (
+            <div className="App-card-row">
+              <div className="label">Key</div>
+              <div className="debug-key muted">{p.position.contractKey}</div>
+            </div>
+          )}
+          <div className="App-card-row">
+            <div className="label">Market</div>
+            <div onClick={() => p.onSelectPositionClick?.()}>
+              <div className="items-top">
+                <span>{indexName && indexName}</span>
+                <span className="subtext">{poolName && `[${poolName}]`}</span>
+              </div>
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Net Value</div>
+            <div>{renderNetValue()}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">PnL</div>
+            <div>
+              <span
+                className={cx(
+                  "Exchange-list-info-label cursor-pointer Position-pnl",
+                  {
+                    positive: displayedPnl?.gt(0),
+                    negative: displayedPnl?.lt(0),
+                    muted: displayedPnl?.eq(0),
+                  }
+                )}
+                onClick={p.openSettings}
+              >
+                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+              </span>
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Size</div>
+            <div>{formatUsd(p.position.sizeInUsd)}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Collateral</div>
+            <div>{renderCollateral()}</div>
+          </div>
+        </div>
+        <div className="App-card-divider" />
+        <div className="flex">
+          <div className="App-card-row">
+            <div className="label">Entry Price</div>
+            <div>
+              {formatUsd(p.position.entryPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Mark Price</div>
+            <div>
+              {formatUsd(p.position.markPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Liq. Price</div>
+            <div>{renderLiquidationPrice()}</div>
+          </div>
+        </div>
+        <div className="App-card-divider" />
+        <div className="flex">
+          <div className="label">Orders</div>
+          <div>
+            {!p.positionOrders?.length && "None"}
+            {renderPositionOrders(true)}
+          </div>
+        </div>
+        {!p.hideActions && (
+          <>
+            <div className="App-card-divider" />
+            <div className="Position-item-action">
+              <div className="Position-item-buttons">
+                <Button
+                  variant="secondary"
+                  disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={p.onClosePositionClick}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={p.onEditCollateralClick}
+                >
+                  Edit Collateral
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={() => {
+                    // TODO: remove after adding trigger functionality to Modal
+                    window.scrollTo({ top: isMobile ? 500 : 0 });
+                    p.onSelectPositionClick?.(TradeMode.Trigger);
+                  }}
+                >
+                  TP/SL
+                </Button>
+              </div>
+              <div>
+                {!p.position.isOpening && !p.hideActions && (
+                  <PositionDropdown
+                    handleMarketSelect={() => p.onSelectPositionClick?.()}
+                    handleMarketIncreaseSize={() =>
+                      p.onSelectPositionClick?.(TradeMode.Market)
+                    }
+                    handleShare={p.onShareClick}
+                    handleLimitIncreaseSize={() =>
+                      p.onSelectPositionClick?.(TradeMode.Limit)
+                    }
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     );
   }

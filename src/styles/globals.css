@@ -8,9 +8,10 @@
 html{
     background-color:  #F4F4FF;
     margin: 0 43px 0 25px;
-    max-width: 1520px;
+    max-width: 1720px;
     margin: auto;
     padding: 0 40px 100px 40px;
+    overflow-y: hidden;
 }
 
 .loader-scale {
@@ -159,5 +160,12 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: rgb(254 202 202);
   padding: 8px;
   border-radius: 0.75rem;
+}
 
+.Confirmation-box-info{
+  max-width: 400px;
+  text-align: center;
+  margin: 12px 0;
+  padding: 8px;
+  border-radius: 0.75rem;
 }

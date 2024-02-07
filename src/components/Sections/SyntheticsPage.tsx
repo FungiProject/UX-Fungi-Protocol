@@ -82,7 +82,7 @@ export function SyntheticsPage(p: Props) {
     openSettings,
   } = p;
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
+  const { signer, account, scAccount } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } =
     useMarketsInfo(chainId);
 
@@ -93,14 +93,14 @@ export function SyntheticsPage(p: Props) {
       tokensData,
       pricesUpdatedAt,
       showPnlInLeverage: savedIsPnlInLeverage,
-      account,
+      account: scAccount,
     }
   );
 
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(
     chainId,
     {
-      account,
+      account: scAccount,
       marketsInfoData,
       positionsInfoData,
       tokensData,
@@ -400,7 +400,7 @@ export function SyntheticsPage(p: Props) {
               marketsInfoData={marketsInfoData}
             />
 
-            <div className="Exchange-lists large">
+            <div className="o">
               <div className="Exchange-list-tab-container">
                 <Tab
                   options={Object.keys(ListSection)}
@@ -441,56 +441,57 @@ export function SyntheticsPage(p: Props) {
                   </Checkbox>
                 </div> */}
               </div>
-
-              {listSection === ListSection.Positions && (
-                <PositionList
-                  positionsData={positionsInfoData}
-                  ordersData={ordersInfoData}
-                  isLoading={isPositionsLoading}
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  onOrdersClick={() => setListSection(ListSection.Orders)}
-                  onSettlePositionFeesClick={handleSettlePositionFeesClick}
-                  onSelectPositionClick={onSelectPositionClick}
-                  onClosePositionClick={setClosingPositionKey}
-                  onEditCollateralClick={setEditingPositionKey}
-                  showPnlAfterFees={showPnlAfterFees}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                  currentMarketAddress={marketAddress}
-                  currentCollateralAddress={collateralAddress}
-                  currentTradeType={tradeType}
-                  openSettings={openSettings}
-                />
-              )}
-              {listSection === ListSection.Orders && (
-                <OrderList
-                  marketsInfoData={marketsInfoData}
-                  tokensData={tokensData}
-                  positionsData={positionsInfoData}
-                  ordersData={ordersInfoData}
-                  selectedOrdersKeys={selectedOrdersKeys}
-                  setSelectedOrdersKeys={setSelectedOrdersKeys}
-                  isLoading={isOrdersLoading}
-                  setPendingTxns={setPendingTxns}
-                />
-              )}
-              {listSection === ListSection.Trades && (
-                <TradeHistory
-                  account={account}
-                  marketsInfoData={marketsInfoData}
-                  tokensData={tokensData}
-                  shouldShowPaginationButtons
-                />
-              )}
-              {listSection === ListSection.Claims && (
-                <Claims
-                  marketsInfoData={marketsInfoData}
-                  positionsInfoData={positionsInfoData}
-                  tokensData={tokensData}
-                  shouldShowPaginationButtons
-                  setIsClaiming={setIsClaiming}
-                  setIsSettling={setIsSettling}
-                />
-              )}
+              <div className="overflow-auto h-32">
+                {listSection === ListSection.Positions && (
+                  <PositionList
+                    positionsData={positionsInfoData}
+                    ordersData={ordersInfoData}
+                    isLoading={isPositionsLoading}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    onOrdersClick={() => setListSection(ListSection.Orders)}
+                    onSettlePositionFeesClick={handleSettlePositionFeesClick}
+                    onSelectPositionClick={onSelectPositionClick}
+                    onClosePositionClick={setClosingPositionKey}
+                    onEditCollateralClick={setEditingPositionKey}
+                    showPnlAfterFees={showPnlAfterFees}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    currentMarketAddress={marketAddress}
+                    currentCollateralAddress={collateralAddress}
+                    currentTradeType={tradeType}
+                    openSettings={openSettings}
+                  />
+                )}
+                {listSection === ListSection.Orders && (
+                  <OrderList
+                    marketsInfoData={marketsInfoData}
+                    tokensData={tokensData}
+                    positionsData={positionsInfoData}
+                    ordersData={ordersInfoData}
+                    selectedOrdersKeys={selectedOrdersKeys}
+                    setSelectedOrdersKeys={setSelectedOrdersKeys}
+                    isLoading={isOrdersLoading}
+                    setPendingTxns={setPendingTxns}
+                  />
+                )}
+                {listSection === ListSection.Trades && (
+                  <TradeHistory
+                    account={account}
+                    marketsInfoData={marketsInfoData}
+                    tokensData={tokensData}
+                    shouldShowPaginationButtons
+                  />
+                )}
+                {listSection === ListSection.Claims && (
+                  <Claims
+                    marketsInfoData={marketsInfoData}
+                    positionsInfoData={positionsInfoData}
+                    tokensData={tokensData}
+                    shouldShowPaginationButtons
+                    setIsClaiming={setIsClaiming}
+                    setIsSettling={setIsSettling}
+                  />
+                )}
+              </div>
             </div>
           </div>
         }
