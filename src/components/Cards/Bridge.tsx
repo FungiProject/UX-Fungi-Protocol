@@ -1,7 +1,6 @@
 // React
 import React, { ReactElement, useEffect, useState } from "react";
 // Components
-import TxButton from "../Buttons/TxButton";
 import TokenDropdown from "../Dropdown/TokenDropdown";
 // Wagmi
 import { useContractRead, useNetwork } from "wagmi";
@@ -19,11 +18,11 @@ import { abiERC20 } from "../../../abis/abis.json";
 // Viem
 import { formatUnits } from "viem";
 
-type DWCActionCardProps = {
+type BridgeProps = {
   actionSelected?: string;
 };
 
-export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
+export default function Bridge({ actionSelected }: BridgeProps) {
   const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
   const [children, setChildren] = useState<ReactElement>(<span></span>);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -142,11 +141,6 @@ export default function DWCActionCard({ actionSelected }: DWCActionCardProps) {
           </div>
         </div>
       </div>
-      {!isLoading && (
-        <TxButton className="bg-main w-full mt-[12px] rounded-2xl py-[16px] text-white font-semibold tracking-wider hover:bg-mainHover">
-          {children}
-        </TxButton>
-      )}
     </main>
   );
 }

@@ -22,7 +22,6 @@ export function useTokenBalances(
     key: account ? [account] : null,
     request: () =>
       getV2Tokens(chainId).reduce((acc, token) => {
-        // Skip synthetic tokens
         if (token.isSynthetic) return acc;
 
         const address = token.address;

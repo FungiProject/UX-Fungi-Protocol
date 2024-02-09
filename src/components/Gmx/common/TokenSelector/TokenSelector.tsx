@@ -293,7 +293,7 @@ export default function TokenSelector(props: Props) {
       </Modal>
       {selectedTokenLabel ? (
         <div
-          className="TokenSelector-box"
+          className="TokenSelector-box "
           onClick={() => setIsModalVisible(true)}
         >
           {selectedTokenLabel}
@@ -306,13 +306,13 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div
-          className="flex justify-between"
+          className="flex justify-between "
           onClick={() => setIsModalVisible(true)}
         >
           <span className="flex">
             {showSymbolImage && (
               <TokenIcon
-                className="mr-3"
+                className="mx-3"
                 symbol={tokenInfo.symbol}
                 importSize={24}
                 displaySize={20}

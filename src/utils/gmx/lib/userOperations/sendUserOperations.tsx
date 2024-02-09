@@ -15,7 +15,7 @@ export async function sendUserOperations(
     if (userOperations.length === 0) {
       return;
     }
-    console.log("Asd", alchemyProvider, chainId, userOperations);
+
     const uo = await alchemyProvider.sendUserOperation(
       userOperations.length > 1 ? userOperations : userOperations[0]
     );

@@ -83,7 +83,7 @@ export function GmConfirmationBox({
   const { alchemyProvider } = useAlchemyAccountKitContext();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useTokensData(chainId);
+
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const [isSubmitting, setIsSubmitting] = useState(false);

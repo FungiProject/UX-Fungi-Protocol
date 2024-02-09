@@ -3,24 +3,24 @@ import { useState } from "react";
 // Heroicons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 // Types
-import { assetType } from "@/types/Types";
+import { tokenType } from "@/types/Types";
 // Next
 import Image from "next/image";
 // Components
 import TokensModal from "../Modals/TokensModal";
 
 type TokenDropdownProps = {
-  getToken: (token: assetType) => void;
-  assets: assetType[];
-  token: assetType | null;
-  oppositToken: assetType | null;
+  getToken: (token: tokenType) => void;
+  tokens: tokenType[];
+  token: tokenType | undefined;
+  oppositToken: tokenType | undefined;
   type: string;
   className: string;
 };
 
 export default function TokenDropdown({
   getToken,
-  assets,
+  tokens,
   token,
   oppositToken,
   type,
@@ -36,21 +36,16 @@ export default function TokenDropdown({
     <div>
       {token ? (
         <button className={className} onClick={() => setOpenModal(true)}>
-          <span>{token.symbol}</span>
-          <Image
-            height={25}
-            width={25}
-            alt="Token Image"
-            src={token.image}
-            className="ml-5"
-          />
+          <img height={25} width={25} alt={token.coinKey} src={token.logoURI} />{" "}
+          <span>{token.symbol}</span>{" "}
+          <ChevronDownIcon className=" h-5 w-5 text-black" aria-hidden="true" />
         </button>
       ) : (
         <button
-          className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center w-[175px]"
+          className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center w-[120px]"
           onClick={() => setOpenModal(true)}
         >
-          {type}
+          <span className="pl-2">{type}</span>
           <ChevronDownIcon
             className="-mr-1 h-5 w-5 text-gray-400"
             aria-hidden="true"
@@ -59,7 +54,7 @@ export default function TokenDropdown({
       )}
       {openModal && (
         <TokensModal
-          assets={assets}
+          tokens={tokens}
           getToken={getToken}
           getOpenModal={getOpenModal}
           oppositToken={oppositToken}

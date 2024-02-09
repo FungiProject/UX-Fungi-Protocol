@@ -88,7 +88,26 @@ export default function BuyInputSection(props: Props) {
   return (
     <div className="flex-1">
       <div className="flex-1" onClick={handleBoxClick}>
-        <div className="flex justify-between">
+        <div className="flex-1 flex justify-between">
+          <div className="flex justify-between">
+            {!staticInput && (
+              <NumberInput
+                value={inputValue}
+                className="outline-none placeholder:text-black"
+                inputRef={inputRef}
+                onValueChange={onUserInput}
+                onFocus={handleOnFocus}
+                onBlur={handleOnBlur}
+                placeholder="0.00"
+              />
+            )}
+            {staticInput && (
+              <div className="InputSection-static-input">{inputValue}</div>
+            )}
+          </div>
+          <div className="flex">{children}</div>
+        </div>
+        <div className="flex justify-between mt-2">
           <div data-label="left" className="text-sm text-black/70">
             {topLeftLabel}
             {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
@@ -109,31 +128,12 @@ export default function BuyInputSection(props: Props) {
             )}
             <span className="text-sm text-black/70">{topRightLabel}</span>
             {topRightValue && (
-              <span className="Exchange-swap-label">
+              <span className="text-black/70">
                 {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;
-                {topRightValue}
+                <span className="text-black"> {topRightValue}</span>
               </span>
             )}
           </div>
-        </div>
-        <div className="flex-1 flex justify-between">
-          <div className="flex justify-between">
-            {!staticInput && (
-              <NumberInput
-                value={inputValue}
-                className="outline-none placeholder:text-black"
-                inputRef={inputRef}
-                onValueChange={onUserInput}
-                onFocus={handleOnFocus}
-                onBlur={handleOnBlur}
-                placeholder="0.0"
-              />
-            )}
-            {staticInput && (
-              <div className="InputSection-static-input">{inputValue}</div>
-            )}
-          </div>
-          <div className="flex">{children}</div>
         </div>
       </div>
       {showPercentSelector && isPercentSelectorVisible && onPercentChange && (

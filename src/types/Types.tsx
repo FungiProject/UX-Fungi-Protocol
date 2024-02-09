@@ -49,3 +49,14 @@ export type memberType = {
   address: string;
   image: string;
 };
+
+export type tokenType = {
+  address: string;
+  chainId: number;
+  coinKey: string;
+  decimals: number;
+  logoURI: string;
+  name: string;
+  priceUSD: string;
+  symbol: string;
+};

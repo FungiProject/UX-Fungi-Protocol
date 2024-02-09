@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
 // Components
-import DWCActionCard from "../Cards/DWCActionCard";
+import DWCActionCard from "../Cards/Bridge";
 
 interface DepositWitdrawModalProps {
   getOpenModal: (openmodal: boolean) => void;

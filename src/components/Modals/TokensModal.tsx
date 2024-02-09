@@ -5,28 +5,28 @@ import { Dialog, Transition } from "@headlessui/react";
 // Components
 import SearchBar from "../Filters/SearchBar";
 // Types
-import { assetType } from "@/types/Types";
+import { tokenType } from "@/types/Types";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import TokenCard from "../Cards/TokenCard";
 
 interface TokensModalProps {
   getOpenModal: (openModal: boolean) => void;
-  getToken: (asset: assetType) => void;
-  assets: assetType[];
-  oppositToken: assetType | null;
+  getToken: (asset: tokenType) => void;
+  tokens: tokenType[];
+  oppositToken: tokenType | undefined;
 }
 
 export default function TokensModal({
   getOpenModal,
-  assets,
+  tokens,
   getToken,
   oppositToken,
 }: TokensModalProps) {
   const [open, setOpen] = useState(true);
   const [search, setSearch] = useState<string>("");
-  const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([
-    ...assets,
+  const [tokensArrayCopy, setTokensArrayCopy] = useState<tokenType[]>([
+    ...tokens,
   ]);
 
   const closeModal = () => {
@@ -38,28 +38,28 @@ export default function TokensModal({
     setSearch(query);
   };
 
-  const selectToken = (token: assetType) => {
+  const selectToken = (token: tokenType) => {
     getToken(token);
     closeModal();
   };
 
   useEffect(() => {
-    let copy = [...assets];
+    let copy = [...tokens];
 
     if (search.length !== 0) {
       copy = copy.filter(
-        (asset: assetType) =>
+        (asset: tokenType) =>
           asset.name.toLowerCase().includes(search.toLowerCase()) ||
           asset.address.toLowerCase() === search.toLowerCase()
       );
     }
 
-    setAssetsArrayCopy(copy);
+    setTokensArrayCopy(copy);
   }, [search]);
 
   useEffect(() => {
     if (oppositToken) {
-      setAssetsArrayCopy((prevTokens: assetType[]) =>
+      setTokensArrayCopy((prevTokens: tokenType[]) =>
         prevTokens.filter((token) => token.name !== oppositToken.name)
       );
     }
@@ -121,12 +121,12 @@ export default function TokensModal({
                   </div>
 
                   <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
-                    {assetsArrayCopy.map((asset: assetType) => {
+                    {tokensArrayCopy.map((token: tokenType) => {
                       return (
                         <TokenCard
-                          asset={asset}
+                          token={token}
                           getToken={selectToken}
-                          key={asset.address}
+                          key={token.address}
                         />
                       );
                     })}

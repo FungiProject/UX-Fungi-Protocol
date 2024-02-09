@@ -21,6 +21,15 @@ html{
 .shadow-input{
     box-shadow: 0px 0.537px 5.37px 0px rgba(81, 74, 243, 0.25);
 }
+
+.arrows-swapper-token{box-shadow: 0px 0.537px 5.37px 0px rgba(81, 74, 243, 0.25);
+  cursor: pointer;
+  width: fit-content;
+  height: fit-content;
+  padding: 12px;
+  margin: 4px auto;
+}
+
   
 @keyframes pulse {
     from {
