@@ -78,7 +78,7 @@ export function getAlchemyHttpUrl() {
   /*if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
       return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
     }*/ // TODO fungi
-  return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+  return "https://arb-mainnet.g.alchemy.com/v2/wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt";
 }
 
 export function getAlchemyWsUrl() {

@@ -1,102 +1,119 @@
 import { BigNumber, ethers } from "ethers";
-import { networks } from "./assetPlataformCoingecko";
 import { chains } from "./chainsLifi";
+import { tokens } from "./tokensLifi";
+import { TokenBalance, TokenRebalanceInput } from "@/components/Cards/Rebalancer";}
 import axios from "axios";
+import { createApproveTokensUserOp } from "../gmx/domain/tokens/approveTokensUserOp";
+import { UserOperation } from "../gmx/lib/userOperations/types";
 
 
-interface BalanceTokenParams {
-    token: string,
-    tokenLifIId: string,
-    chainId: string,
-    balance: BigNumber,
-    decimals: BigNumber,
-    priceUsd?: number,
-    usdValue?: number,
+interface RebalanceSwap {
+    tokenIn: string,
+    amountIn: string,
+    tokenOut: string
 }
 
-interface TotalUsdByChainId {
-    [chainId: string]: number;
-}
+export function computeRebalance(balances: TokenBalance[], rebalances: TokenRebalanceInput[]): RebalanceSwap[] {
 
-interface BalanceTokenByChain {
-    [chainId: string]: BalanceTokenParams[]
-}
+    computeTokensUsd(balances);
 
-interface RebalanceParams {
-    token: string, //lifi
-    percentaje: number
+    const totalUsd = computeTotalValueUsdBalance(balances)
+
+    const swaps: RebalanceSwap[] = getRebalanceSwaps(totalUsd, balances, rebalances);
+
+    return swaps;
 }
 
 
-export default async function computeRebalance(params: BalanceTokenParams[], rebalances: RebalanceParams[]) {
+export async function getUserOpSwapLifi(chainId: number, scAccount: string, swaps: RebalanceSwap[]): Promise<UserOperation[]> {
 
-    const { totalUsdByChain, balanceTokensByChain } = await getUsdValuByChainId(params)
+    const chain = getChainIdLiFi(chainId)
 
-    const userOperationsSwap = Object.keys(totalUsdByChain).map( chainId=>{ 
-        return rebalance(chainId, totalUsdByChain[chainId], balanceTokensByChain[chainId], rebalances)
+    const promises = swaps.map(swap => getLiFiSwapQuote(chain!, swap.amountIn, swap.tokenIn, chain!, swap.tokenOut, scAccount))
+
+    const swapsResolved = await Promise.all(promises)
+
+    const userOps: UserOperation[] = []
+    swaps.forEach((swap, index) => {
+
+        //Approve
+        userOps.push(createApproveTokensUserOp({ tokenAddress: swap.tokenIn, spender: swapsResolved[index].estimate.approvalAddress, amount: BigNumber.from(swap.amountIn) }))
+        //Swap
+        userOps.push({ target: swapsResolved[index].transactionRequest.to, data: swapsResolved[index].transactionRequest.data, value: swapsResolved[index].transactionRequest.value })
+
     })
-    
+
+    return userOps
 }
 
-interface BalanceTokenParamsWithUsdAvailable extends BalanceTokenParams {
-    usdAvailable: number;
+
+//Obtiene el valor en usd del monto total del balance de este token
+function computeTokensUsd(balances: TokenBalance[]) {
+
+    balances.forEach((token) => {
+        token.totalValueUsd = parseInt(token.priceUSD) * parseInt(ethers.utils.formatUnits(token.balance, token.decimals));
+    });
+
 }
 
-async function rebalance(chainId: string, totalUsdByChain: number, balancesToken: BalanceTokenParams[], rebalances: RebalanceParams[]): number{
+function computeTotalValueUsdBalance(balances: TokenBalance[]) {
+    return balances.reduce((accumulator, current) => current.totalValueUsd + accumulator, 0)
+}
 
+
+function getRebalanceSwaps(totalUsd: number, balancesToken: TokenBalance[], rebalances: TokenRebalanceInput[]): RebalanceSwap[] {
+
+    //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
     const balanceTokensSorted = balancesToken.sort((a, b) => {
-        if (a.usdValue && b.usdValue ) {
-            return b.usdValue - a.usdValue;
+        if (a.totalValueUsd && b.totalValueUsd) {
+            return b.totalValueUsd - a.totalValueUsd;
         } else {
             return 0;
         }
     });
+    const rebalancesSorted = rebalances.sort((a, b) => b.percentage - a.percentage);
 
     //Añadimos el campo usdAvailable que será el que lleve la cuenta de la cantidad que falta sin userOp
-    const balanceTokensMap: BalanceTokenParamsWithUsdAvailable[] = balanceTokensSorted.map(a=>({...a, usdAvailable: a.usdValue || 0 }))
+    interface BalanceTokenParamsWithUsdAvailable extends TokenBalance {
+        usdAvailable: number;
+    }
+    const balanceTokensMap: BalanceTokenParamsWithUsdAvailable[] = balanceTokensSorted.map(a => ({ ...a, usdAvailable: a.totalValueUsd || 0 }))
 
-    const rebalancesSorted = rebalances.sort((a, b) => b.percentaje - a.percentaje);
+    let swaps: RebalanceSwap[] = [];
 
-    let userOp:{}[] = [];
+    rebalancesSorted.forEach(rebalance => {
 
-    rebalancesSorted.forEach(rebalance=>{
-      
-        let amountUsdByPercentaje =  totalUsdByChain * (rebalance.percentaje/100); //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
+        let amountUsdByPercentaje = totalUsd * (rebalance.percentage / 100); //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
 
         for (let i = 0; i < balanceTokensMap.length; i++) {
-            
-            const balanceToken = balanceTokensMap[i];
-            if(amountUsdByPercentaje===0){break}
-            
-            if(balanceToken.usdAvailable>0){
-                if(amountUsdByPercentaje>balanceToken.usdAvailable){
-                    
-                    userOp.push(
-                        getUserOpSwap(
-                            chainId, 
-                            balanceToken.token, 
-                            ethers.utils.parseUnits(
-                                (balanceToken.usdAvailable/balanceToken.priceUsd!).toString(),
-                                balanceToken.decimals
-                            ).toString(), 
-                            rebalance.token
-                        )
-                    )
-                    
-                    balanceToken.usdAvailable = 0;
-                    amountUsdByPercentaje = amountUsdByPercentaje-balanceToken.usdAvailable
-                } else if(amountUsdByPercentaje>0) {
 
-                    userOp.push(
-                        getUserOpSwap(
-                            chainId, 
-                            balanceToken.token, 
-                            ethers.utils.parseUnits(
-                                (amountUsdByPercentaje/balanceToken.priceUsd!).toString(),
-                                balanceToken.decimals
-                            ).toString(), 
-                            rebalance.token
-                        )
+            const balanceToken = balanceTokensMap[i];
+            if (amountUsdByPercentaje === 0) { break }
+
+            if (balanceToken.usdAvailable > 0) {
+                if (amountUsdByPercentaje > balanceToken.usdAvailable) {
+
+                    swaps.push({
+                        tokenIn: balanceToken.address,
+                        amountIn: ethers.utils.parseUnits(
+                            (balanceToken.usdAvailable / parseInt(balanceToken.priceUSD!)).toString(),
+                            balanceToken.decimals
+                        ).toString(),
+                        tokenOut: rebalance.address
+                    })
+
+                    balanceToken.usdAvailable = 0;
+                    amountUsdByPercentaje = amountUsdByPercentaje - balanceToken.usdAvailable
+                } else if (amountUsdByPercentaje > 0) {
+
+                    swaps.push({
+                        tokenIn: balanceToken.address,
+                        amountIn: ethers.utils.parseUnits(
+                            (amountUsdByPercentaje / parseInt(balanceToken.priceUSD!)).toString(),
+                            balanceToken.decimals
+                        ).toString(),
+                        tokenOut: rebalance.address
+                    }
                     )
 
                     balanceToken.usdAvailable = balanceToken.usdAvailable - amountUsdByPercentaje;
@@ -106,65 +123,38 @@ async function rebalance(chainId: string, totalUsdByChain: number, balancesToken
         }
     })
 
-    return 0;
+    return swaps;
 }
 
-function getUserOpSwap(chaindId: string, tokenIn: string, amountIn: string, tokenOut: string): {}{
-
-    return {}
-}
-
-async function getUsdValuByChainId(params: BalanceTokenParams[]): Promise<{totalUsdByChain,balanceTokensByChain}> {
-    await getValueUsd(params);
-
-    let balanceTokensByChain: BalanceTokenByChain = {}
-    let totalUsdByChain: TotalUsdByChainId =  {}
-
-    params.forEach(balanceToken => {
-        if (!totalUsdByChain[balanceToken.chainId]) {
-            totalUsdByChain[balanceToken.chainId] = 0;
-        }
-    })
-
-    const chainsWithBalance = Object.keys(totalUsdByChain);
-
-    chainsWithBalance.forEach(chainId=>{
-        const paramsWithMatchingChainId = params.filter(param => param.chainId === chainId);
-        balanceTokensByChain[chainId] = paramsWithMatchingChainId
-        totalUsdByChain[chainId] = paramsWithMatchingChainId.reduce((accumulator, currentValue) => accumulator + (currentValue?.usdValue || 0), 0);
-    })
-
-    return {totalUsdByChain, balanceTokensByChain}
-}
-
-//Obtenemos el precio en usd de cada uno de los tokens y calculamos su valor en la cartera
-async function getValueUsd(params: BalanceTokenParams[]) {
-
-    const promises = params.map(async (token) => {
-        try {
-            const response = await axios.get(
-                `https://api.coingecko.com/api/v3/simple/token_price/${getChainIdLiFi(token.chainId)}?contract_addresses=${token.token}&vs_currencies=usd`
-            );
-            if (response.status === 200) {
-                const data = response.data;
-                const priceInUSD = data[token.token]?.usd;
-                if (priceInUSD !== undefined) {
-                    token.priceUsd = priceInUSD
-                    token.usdValue = parseInt(ethers.utils.formatUnits(token.decimals))*priceInUSD 
-                } else {
-                    throw Error("Value could not be obtained")
-                }
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    });
-
-    await Promise.all(promises);
-}
-
-
+//Obtiene la key de la chain de lifi desde el chainId
 function getChainIdLiFi(chainId: number): string | undefined {
     const chain = chains.find(chain => chain.id === chainId);
     return chain ? chain.key : undefined;
+}
+
+//Obtiene el address del token con el coinKey de lify
+function getTokenAddressLifi(chainId: string, coinKey: string) {
+    const token = tokens[chainId].find(token => token.coinKey === coinKey);
+    return token ? token.address ? ethers.constants.AddressZero
+}
+
+export const getLiFiSwapQuote = async (
+    fromChain: string,
+    fromAmount: string,
+    fromToken: string,
+    toChain: string,
+    toToken: string,
+    fromAddress: string,
+) => {
+    const result = await axios.get('https://li.quest/v1/quote', {
+        params: {
+            fromChain,
+            fromAmount,
+            fromToken,
+            toChain,
+            toToken,
+            fromAddress,
+        }
+    });
+    return result.data;
 }

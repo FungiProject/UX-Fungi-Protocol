@@ -1,29 +1,37 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "../Gmx/common/Buttons/Button";
 import TokenDropdown from "../Dropdown/TokenDropdown";
-import {
-  assetsArbitrum
-} from "../../../constants/Constants";
 import { tokenType } from "@/types/Types";
-import RebalanceTokensSelected from "./RebalanceTokensSelected";
 import TokenCardRebalance from "./TokenCardRebalance";
 import RebalanceSlider from "../Sliders/RebalanceSlider";
+import { computeRebalance, getUserOpSwapLifi} from "@/utils/rebalancer/useRebalance";}
+import { BigNumber } from "ethers";
+import useWallet from "@/utils/gmx/lib/wallets/useWallet";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 
 type RebalancerProps = {
   tokens: tokenType[];
   chainId: number;
 };
 
-
 export interface TokenRebalanceInput extends tokenType {
   percentage: number
 }
 
+export interface TokenBalance extends tokenType {
+  balance: BigNumber,
+  totalValueUsd: number,
+}
+
 export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
 
+  const { scAccount } = useWallet();
+  const { alchemyProvider } = useAlchemyAccountKitContext()
   const [error, setError] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedTokens, setSelectedTokens] = useState<TokenRebalanceInput[]>([])
+  const [balancesTokens, setBalanceTokens] = useState<TokenBalance[]>([])
   const [onFocusToken, setOnFocusToken] = useState<TokenRebalanceInput | null>()
   const [tokensOptions, setTokensOptions] = useState<tokenType[]>(tokens)
   const [percentaje, setPercentaje] = useState(0)
@@ -69,10 +77,11 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
   function onSubmit() {
     setIsSubmitting(true);
 
-    /*let txnPromise: Promise<any>;
-    if (!account) {
-      txnPromise = onSubmitWrapOrUnwrap();
-    }
+    
+    const rebalances = computeRebalance(balancesTokens,selectedTokens)
+    const userOps = await getUserOpSwapLifi(chainId,scAccount!,rebalances)
+    
+    let txnPromise: Promise<any> = sendUserOperations(alchemyProvider,chainId, userOps)
 
     txnPromise
       .then(() => {
@@ -80,7 +89,7 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
       })
       .finally(() => {
         setIsSubmitting(false);
-      });*/
+      });
   }
 
 
@@ -102,7 +111,14 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
 
     if (!selectedTokens || selectedTokens.length === 0) {
       return {
-        text: "Rebalance",
+        text: "Select tokens",
+        disabled: true,
+      };
+    }
+
+    if (!scAccount || scAccount.length === 0) {
+      return {
+        text: "Connect account",
         disabled: true,
       };
     }
@@ -113,7 +129,7 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
       text,
       disabled: false,
     };
-  }, []);
+  }, [selectedTokens]);
 
 
   return <div>
@@ -140,12 +156,10 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
     <div>
       <Button
         variant="primary-action"
-        className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
-          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""} w-full bg-main rounded-xl py-3 text-white font-semibold`}
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}
-      // disabled={submitButtonState.disabled && !shouldDisableValidation}
       >
         {submitButtonState.text}
       </Button>
