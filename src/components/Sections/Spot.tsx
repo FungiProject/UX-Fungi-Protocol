@@ -36,7 +36,7 @@ export default function Spot() {
                   paddingButton="py-[5px]"
                 />
                 {actionSelected === "Rebalance" ? (
-                  <Rebalancer />
+                  <Rebalancer tokens={tokens} chainId={chainId}/>
                 ) : actionSelected === "Bridge" ? (
                   <Bridge />
                 ) : (

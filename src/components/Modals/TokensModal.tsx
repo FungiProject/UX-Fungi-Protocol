@@ -29,6 +29,7 @@ export default function TokensModal({
     ...tokens,
   ]);
 
+
   const closeModal = () => {
     setOpen(false);
     getOpenModal(false);
