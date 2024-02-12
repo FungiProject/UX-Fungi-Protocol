@@ -24,7 +24,7 @@ export interface TokenRebalanceInput extends tokenType {
 
 export interface TokenBalance extends tokenType {
   balance: BigNumber;
-  totalValueUsd: number;
+  totalValueUsd?: number;
 }
 
 export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
@@ -33,9 +33,43 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
   const [error, setError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState<TokenRebalanceInput[]>(
-    []
+    [
+      {
+        address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+        chainId: 42161,
+        symbol: "DAI",
+        decimals: 18,
+        name: "DAI Stablecoin",
+        coinKey: "DAI",
+        logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+        priceUSD: "0.99985",
+        percentage: 100
+      },
+    ]
   );
-  const [balancesTokens, setBalanceTokens] = useState<TokenBalance[]>([]);
+  const [balancesTokens, setBalanceTokens] = useState<TokenBalance[]>([
+    {
+      address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      chainId: 42161,
+      symbol: "USDC.e",
+      decimals: 6,
+      name: "Bridged USD Coin",
+      coinKey: "USDCe",
+      logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+      priceUSD: "1",
+      balance: BigNumber.from("4900000")
+    },{
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      chainId: 42161,
+      symbol: "USDC",
+      decimals: 6,
+      name: "USD Coin",
+      coinKey: "USDC",
+      logoURI: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+      priceUSD: "1",
+      balance: BigNumber.from("2950000")
+    },
+  ]);
   const [onFocusToken, setOnFocusToken] =
     useState<TokenRebalanceInput | null>();
   const [tokensOptions, setTokensOptions] = useState<tokenType[]>(tokens);
@@ -83,11 +117,15 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
     setTokensOptions([{ ...token }, ...tokensOptions]);
   };
 
+
   async function onSubmit() {
     setIsSubmitting(true);
 
+
     const rebalances = computeRebalance(balancesTokens, selectedTokens);
     const userOps = await getUserOpSwapLifi(chainId, scAccount!, rebalances);
+
+    console.log(userOps)
 
     let txnPromise: Promise<any> = sendUserOperations(
       alchemyProvider,
@@ -171,7 +209,7 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
           } w-full bg-main rounded-xl py-3 text-white font-semibold`}
           type="submit"
           onClick={onSubmit}
-          disabled={submitButtonState.disabled}
+          //disabled={submitButtonState.disabled}
         >
           {submitButtonState.text}
         </Button>
