@@ -44,7 +44,7 @@ export default function TokenDropdown({
         </button>
       ) : (
         <button
-          className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center w-[120px]"
+          className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center"
           onClick={() => setOpenModal(true)}
           disabled={disabled}
         >
