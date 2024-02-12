@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { sendUserOperations } from "../../utils/gmx/lib/userOperations/sendUserOperations";
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { getCallDataApprove } from "./getCallDataApprove";
 import { Hex } from "viem";
 import axios from "axios";
 
 export const useLiFiTx = (
-  alchemyProvider: AlchemyProvider,
-  chainId: number,
+  type: string,
   fromChain: string | undefined,
   fromAmount: string | undefined,
   fromToken: string | undefined,
@@ -31,18 +28,43 @@ export const useLiFiTx = (
 
   const sendLiFiTx = async () => {
     try {
-      setStatus({ disabled: true, text: `Swapping ${fromToken}` });
-
-      const quote = await getQuote({
-        fromChain,
-        fromAmount,
-        fromToken,
-        toChain,
-        toToken,
-        fromAddress,
-        toAddress,
-        slippage,
+      setStatus({
+        disabled: true,
+        text: `${type === "Swap" ? "Swapping" : "Bridging"} ${fromToken}`,
       });
+
+      const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
+      let quote;
+      try {
+        const responses = await Promise.all(
+          orders.map((order) => {
+            return getQuote({
+              fromChain,
+              fromAmount,
+              fromToken,
+              toChain,
+              toToken,
+              fromAddress,
+              toAddress,
+              slippage,
+              order,
+            });
+          })
+        );
+
+        const filteredResponses = responses.filter((response) => {
+          return response.estimate.executionDuration < 300;
+        });
+
+        quote = filteredResponses.reduce((maxResponse, response) => {
+          return response.estimate.toAmountMin >
+            maxResponse.estimate.toAmountMin
+            ? response
+            : maxResponse;
+        }, filteredResponses[0]);
+      } catch (error) {
+        console.error("Error obteniendo cotizaciones:", error);
+      }
 
       const approvee: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;

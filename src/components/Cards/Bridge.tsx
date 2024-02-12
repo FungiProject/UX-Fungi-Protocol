@@ -1,10 +1,5 @@
 // React
-import React, {
-  ReactElement,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
 // Axios
@@ -54,8 +49,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [tx, sendTx] = useLiFiTx(
-    alchemyProvider,
-    Number(chainId),
+    "Bridge",
     networkFrom?.symbol,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.coinKey,
@@ -112,7 +106,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       slippage !== undefined
     ) {
       setSubmitButtonState({
-        text: `Swap ${tokenFrom.coinKey}`,
+        text: `Bridge ${tokenFrom.coinKey}`,
         disabled: false,
       });
     }

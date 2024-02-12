@@ -47,8 +47,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tx, sendTx] = useLiFiTx(
-    alchemyProvider,
-    Number(chainId),
+    "Swap",
     network,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.coinKey,

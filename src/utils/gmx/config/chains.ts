@@ -91,7 +91,8 @@ export function getAlchemyWsUrl() {
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
   [ETH_SEPOLIA]: [
-    "https://eth-sepolia.g.alchemy.com/v2/04K3Ey0y6hJIGfrqM7fquzu3ZzkE8aos",
+    // "https://eth-sepolia.g.alchemy.com/v2/04K3Ey0y6hJIGfrqM7fquzu3ZzkE8aos",
+    "",
   ],
   [BSС_MAINNET]: [
     "https://bsc-dataseed.binance.org",
