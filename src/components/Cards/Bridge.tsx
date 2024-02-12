@@ -1,146 +1,385 @@
 // React
-import React, { ReactElement, useEffect, useState } from "react";
+import React, {
+  ReactElement,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
-// Wagmi
-import { useContractRead, useNetwork } from "wagmi";
+// Axios
+import axios from "axios";
 // Constants
-import {
-  assetsArbitrum,
-  assetsMainnet,
-  assetsPolygon,
-  assetsPolygonMumbai,
-} from "../../../constants/Constants";
+import Arbitrum from "../../../public/ArbitrumTokens/Arbitrum.svg";
 // Types
-import { assetType } from "@/types/Types";
-// Abis
-import { abiERC20 } from "../../../abis/abis.json";
-// Viem
-import { formatUnits } from "viem";
+import { NetworkType, tokenType } from "@/types/Types";
+import useWallet from "@/utils/gmx/lib/wallets/useWallet";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useLiFiTx } from "./useLiFiTx";
+import { helperToast } from "@/utils/gmx/lib/helperToast";
+import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
+import Button from "../Gmx/common/Buttons/Button";
+import NetworkDropdown from "../Dropdown/NetworkDropdown";
+import { networks } from "../../../constants/Constants";
+import useLiFiConnections from "@/hooks/useLiFiConnections";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 
 type BridgeProps = {
-  actionSelected?: string;
+  tokens: tokenType[];
+  chainId: number;
 };
 
-export default function Bridge({ actionSelected }: BridgeProps) {
-  const [amountTo, setAmountTo] = useState<number | undefined>(undefined);
-  const [children, setChildren] = useState<ReactElement>(<span></span>);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [assets, setAssets] = useState<assetType[] | null>(null);
-  const [network, setNetwork] = useState<string | null>(null);
-  const [tokenTo, setTokenTo] = useState<assetType | null>(null);
-  const [maxBalanceTokenTo, setMaxBalanceTokenTo] = useState<null | number>(
-    null
+export default function Bridge({ tokens, chainId }: BridgeProps) {
+  const { scAccount } = useWallet();
+
+  const { alchemyProvider, login: openConnectModal } =
+    useAlchemyAccountKitContext();
+  const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
+  const [tokenFrom, setTokenFrom] = useState<tokenType | undefined>(undefined);
+  const [tokenTo, setTokenTo] = useState<tokenType | undefined>(undefined);
+  const [networkFrom, setNetworkFrom] = useState<NetworkType | undefined>(
+    undefined
+  );
+  const [networkTo, setNetworkTo] = useState<NetworkType | undefined>(
+    undefined
+  );
+  const [fromAddress, setFromAddress] = useState(scAccount);
+  const [toAddress, setToAddress] = useState(scAccount);
+  const [slippage, setSlippage] = useState("0.1");
+  const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
+    undefined
   );
 
-  const { chain } = useNetwork();
+  const [connectionsLoading, setConnectionsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: tokenToDecimals } = useContractRead({
-    address: tokenTo?.address as `0x${string}`,
-    abi: abiERC20,
-    functionName: "decimals",
-  });
+  const [tx, sendTx] = useLiFiTx(
+    alchemyProvider,
+    Number(chainId),
+    networkFrom?.symbol,
+    (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
+    tokenFrom?.coinKey,
+    networkTo?.symbol,
+    tokenTo?.coinKey,
+    fromAddress,
+    toAddress,
+    slippage
+  );
+  const [submitButtonState, setSubmitButtonState] = useState<{
+    disabled: boolean;
+    text: string | null;
+  }>({ disabled: true, text: "Enter an amount" });
+
+  const [connections, setConnections] = useState();
+
+  useEffect(() => {
+    if (tokenFrom && tokenTo && amountFrom) {
+      setAmountToReceive(
+        (amountFrom * Number(tokenFrom.priceUSD)) / Number(tokenTo.priceUSD)
+      );
+    } else {
+      setAmountToReceive(0);
+    }
+  }, [amountFrom, tokenFrom, tokenTo]);
+
+  useEffect(() => {
+    if (scAccount) {
+      setFromAddress(scAccount);
+      setToAddress(scAccount);
+    }
+  }, [scAccount]);
+
+  useEffect(() => {
+    const submitButtonDisabled = typeof tx === "object" ? tx.disabled : true;
+    const submitButtonText = typeof tx === "object" ? tx.text : "";
+
+    setSubmitButtonState({
+      text: submitButtonText,
+      disabled: submitButtonDisabled,
+    });
+  }, [tx]);
+
+  useEffect(() => {
+    if (
+      scAccount !== undefined &&
+      amountFrom !== undefined &&
+      tokenFrom !== undefined &&
+      tokenTo !== undefined &&
+      networkTo !== undefined &&
+      networkFrom !== undefined &&
+      fromAddress !== undefined &&
+      toAddress !== undefined &&
+      slippage !== undefined
+    ) {
+      setSubmitButtonState({
+        text: `Swap ${tokenFrom.coinKey}`,
+        disabled: false,
+      });
+    }
+    if (amountToReceive === 0) {
+      setSubmitButtonState({
+        text: "Enter an amount",
+        disabled: true,
+      });
+    }
+  }, [
+    scAccount,
+    amountFrom,
+    tokenFrom,
+    tokenTo,
+    networkFrom,
+    networkTo,
+    fromAddress,
+    toAddress,
+    slippage,
+    amountToReceive,
+  ]);
+
+  useEffect(() => {
+    if (chainId === 42161) {
+      setNetworkFrom({
+        name: "Arbitrum One",
+        id: 42161,
+        image: Arbitrum.src,
+        symbol: "ARB",
+      });
+    }
+  }, [chainId]);
+
+  useEffect(() => {
+    const getConnections = async (
+      fromChain: string,
+      toChain: string,
+      fromToken: string
+    ) => {
+      const result = await axios.get("https://li.quest/v1/connections", {
+        params: {
+          fromChain,
+          toChain,
+          fromToken,
+        },
+      });
+
+      setConnections(result.data.connections[0].toTokens);
+      setConnectionsLoading(false);
+    };
+
+    return () => {
+      if (
+        networkFrom !== undefined &&
+        networkTo !== undefined &&
+        tokenFrom !== undefined
+      ) {
+        getConnections(networkFrom.symbol, networkTo.symbol, tokenFrom.symbol);
+      }
+    };
+  }, [networkFrom, networkTo, tokenFrom, amountFrom]);
+
+  useEffect(() => {
+    setConnectionsLoading(false);
+  }, [connections]);
+
+  function onSubmit() {
+    setIsSubmitting(true);
+
+    let txnPromise: Promise<any>;
+
+    if (!scAccount) {
+      openConnectModal?.();
+      return;
+    } else {
+      txnPromise = onSubmitSwap();
+    }
+  }
+
+  const onSubmitSwap = async () => {
+    if (
+      scAccount === undefined ||
+      amountFrom === undefined ||
+      tokenFrom === undefined ||
+      tokenTo === undefined ||
+      networkFrom === undefined ||
+      networkTo === undefined ||
+      fromAddress === undefined ||
+      toAddress === undefined ||
+      slippage === undefined ||
+      typeof sendTx !== "function"
+    ) {
+      helperToast.error(`Error submitting order`);
+      return Promise.resolve();
+    }
+
+    const resultTx: any = await sendTx();
+
+    await sendUserOperations(alchemyProvider, chainId, resultTx);
+  };
 
   const handleAmountChange = (amount: number) => {
-    setAmountTo(amount);
+    setAmountFrom(amount);
   };
 
-  const initialTxButton = () => {
-    switch (actionSelected) {
-      case "Deposit":
-        setChildren(<span>Approve</span>);
-        break;
-      case "Withdraw":
-        setChildren(<span>Withdraw</span>);
-        break;
-      default:
-        setChildren(<span>Approve</span>);
-        break;
-    }
-    setIsLoading(false);
-  };
-
-  const getTokenTo = (token: assetType) => {
+  const getTokenTo = (token: tokenType) => {
     setTokenTo(token);
   };
 
-  useEffect(() => {
-    if (chain && chain.id === 80001) {
-      setAssets(assetsPolygonMumbai);
-      setNetwork("mumbai");
-    } else if (chain && chain.id === 42161) {
-      setAssets(assetsArbitrum);
-      setNetwork("arbitrum");
-    } else if (chain && chain.id === 1) {
-      setAssets(assetsMainnet);
-      setNetwork("mainnet");
-    } else if (chain && chain.id === 137) {
-      setAssets(assetsPolygon);
-      setNetwork("polygon");
-    }
-  }, [chain]);
+  const getTokenFrom = (token: tokenType) => {
+    setTokenFrom(token);
+  };
 
-  useEffect(() => {
-    initialTxButton();
-  }, []);
+  const getNetworkTo = (network: NetworkType) => {
+    setNetworkTo(network);
+  };
 
-  useEffect(() => {
-    setIsLoading(true);
-    initialTxButton();
-  }, [actionSelected]);
+  const getNetworkFrom = (network: NetworkType) => {
+    setNetworkFrom(network);
+  };
 
   return (
-    <main className={actionSelected ? "mt-[40px]" : "mt-[12px]"}>
-      <h1 className="text-2xl font-medium ml-[28px] mb-[16px]">
-        {actionSelected}
-      </h1>
-      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
-        <input
-          type="number"
-          step={0.0000001}
-          min={0}
-          className="outline-none placeholder:text-black"
-          placeholder="0.00"
-          value={amountTo}
-          onChange={(e: any) => handleAmountChange(e.target.value)}
-        />
-        <div className="flex flex-col text-sm font-medium">
-          <div className="flex flex-col text-sm font-medium">
-            {assets && (
-              <TokenDropdown
-                assets={assets}
-                getToken={getTokenTo}
-                token={tokenTo}
-                type="Token"
-                oppositToken={null}
-                className="flex justify-between w-[175px] border-1 rounded-full font-semibold px-[12px] py-2.5 items-center "
-              />
-            )}
-
-            {tokenTo && maxBalanceTokenTo && tokenToDecimals !== undefined ? (
-              <div className="mt-[6px] flex justify-end">
-                Balance:{" "}
-                <span className="ml-1">
-                  {Number(
-                    formatUnits(
-                      maxBalanceTokenTo as unknown as bigint,
-                      tokenToDecimals as number
-                    )
-                  ).toFixed(3)}
+    <main className="mt-[12px]">
+      <div className="relative">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[150px]">
+          <BuyInputSection
+            topLeftLabel={`Pay`}
+            topLeftValue={
+              amountFrom !== 0 &&
+              amountFrom !== undefined &&
+              tokenTo !== undefined
+                ? `$${(amountFrom * Number(tokenFrom?.priceUSD)).toFixed(2)}`
+                : ""
+            }
+            bridgeComponent={
+              <div className="flex flex-col">
+                <TokenDropdown
+                  tokens={tokens}
+                  getToken={getTokenFrom}
+                  token={tokenFrom}
+                  oppositToken={tokenTo}
+                  type="From"
+                  className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                />
+                <span className="text-xs mt-2 text-gray-500 ml-2">
+                  From this token
                 </span>
-                <button
-                  className="text-main ml-1.5"
-                  onClick={() => setAmountTo(100)}
-                >
-                  Max
-                </button>
               </div>
-            ) : (
-              <div></div>
-            )}
-          </div>
+            }
+            topRightLabel={`Balance`}
+            // topRightValue={formatTokenAmount(
+            //   fromToken?.balance,
+            //   fromToken?.decimals,
+            //   "",
+            //   {
+            //     useCommas: true,
+            //   }
+            // )}
+            topRightValue={"0"}
+            // onClickTopRightLabel={onMaxClick}
+            inputValue={amountFrom}
+            onInputValueChange={(e: any) => handleAmountChange(e.target.value)}
+            // showMaxButton={isNotMatchAvailableBalance}
+            // onClickMax={onMaxClick}
+          >
+            <div className="flex flex-col">
+              {/* Change to network selector */}
+              <NetworkDropdown
+                networks={networks}
+                getNetwork={getNetworkFrom}
+                network={networkFrom}
+                type="On"
+                className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+              />
+              <span className="text-xs text-end mt-2 text-gray-500">
+                On this network
+              </span>
+            </div>
+          </BuyInputSection>
         </div>
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[150px] mt-[12px]">
+          <BuyInputSection
+            topLeftLabel={`Receive`}
+            topLeftValue={
+              amountToReceive !== 0 &&
+              amountToReceive !== undefined &&
+              tokenTo !== undefined
+                ? `$${(amountToReceive * Number(tokenTo?.priceUSD)).toFixed(2)}`
+                : ""
+            }
+            bridgeComponent={
+              <>
+                {!connectionsLoading && connections !== undefined ? (
+                  <div className="flex flex-col">
+                    <TokenDropdown
+                      tokens={connections}
+                      getToken={getTokenTo}
+                      token={tokenTo}
+                      oppositToken={tokenFrom}
+                      type="To"
+                      className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                    />
+                    <span className="text-xs mt-2 text-gray-500 ml-2">
+                      To this token
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col opacity-30">
+                    <TokenDropdown
+                      tokens={connections}
+                      getToken={getTokenTo}
+                      token={tokenTo}
+                      oppositToken={tokenFrom}
+                      disabled={true}
+                      type="To"
+                      className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                    />
+                    <span className="text-xs mt-2 text-gray-500 ml-2">
+                      To this token
+                    </span>
+                  </div>
+                )}
+              </>
+            }
+            topRightLabel={`Balance`}
+            // topRightValue={formatTokenAmount(
+            //   toToken?.balance,
+            //   toToken?.decimals,
+            //   "",
+            //   {
+            //     useCommas: true,
+            //   }
+            // )}
+            inputValue={amountToReceive?.toFixed(2)}
+            staticInput={true}
+            topRightValue={"0"}
+            showMaxButton={false}
+            preventFocusOnLabelClick="right"
+          >
+            <div className="flex flex-col">
+              {/* Change to network selector */}
+              <NetworkDropdown
+                networks={networks}
+                getNetwork={getNetworkTo}
+                network={networkTo}
+                type="On"
+                className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+              />
+              <span className="text-xs text-end mt-2 text-gray-500">
+                On this network
+              </span>
+            </div>
+          </BuyInputSection>
+        </div>{" "}
       </div>
+      <Button
+        variant="primary-action"
+        className={`mt-4 ${
+          submitButtonState.disabled ? "opacity-50" : ""
+        } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        type="submit"
+        onClick={onSubmit}
+        disabled={submitButtonState.disabled}
+        // disabled={submitButtonState.disabled && !shouldDisableValidation}
+      >
+        {submitButtonState.text}
+      </Button>
     </main>
   );
 }

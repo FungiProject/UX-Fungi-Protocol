@@ -10,6 +10,8 @@ type Props = {
   topLeftValue?: string;
   topRightLabel?: string;
   topRightValue?: string;
+
+  bridgeComponent?: ReactNode;
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;
   onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -28,6 +30,7 @@ export default function BuyInputSection(props: Props) {
   const {
     topLeftLabel,
     topLeftValue,
+    bridgeComponent,
     topRightLabel,
     topRightValue,
     onClickTopRightLabel,
@@ -90,7 +93,8 @@ export default function BuyInputSection(props: Props) {
       <div className="flex-1" onClick={handleBoxClick}>
         <div className="flex-1 flex justify-between">
           <div className="flex justify-between">
-            {!staticInput && (
+            {bridgeComponent}
+            {!staticInput && !bridgeComponent && (
               <NumberInput
                 value={inputValue}
                 className="outline-none placeholder:text-black"
@@ -101,17 +105,39 @@ export default function BuyInputSection(props: Props) {
                 placeholder="0.00"
               />
             )}
-            {staticInput && (
+            {staticInput && !bridgeComponent && (
               <div className="InputSection-static-input">{inputValue}</div>
             )}
           </div>
           <div className="flex">{children}</div>
         </div>
         <div className="flex justify-between mt-2">
-          <div data-label="left" className="text-sm text-black/70">
-            {topLeftLabel}
-            {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
-          </div>
+          {bridgeComponent ? (
+            <>
+              {!staticInput && (
+                <NumberInput
+                  value={inputValue}
+                  className="outline-none placeholder:text-black ml-2"
+                  inputRef={inputRef}
+                  onValueChange={onUserInput}
+                  onFocus={handleOnFocus}
+                  onBlur={handleOnBlur}
+                  placeholder="0.00"
+                />
+              )}
+              {staticInput && (
+                <div className="InputSection-static-input ml-2">
+                  {inputValue}
+                </div>
+              )}
+            </>
+          ) : (
+            <div data-label="left" className="text-sm text-black/70">
+              {topLeftLabel}
+              {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
+            </div>
+          )}
+
           <div
             data-label="right"
             className={"align-right mb-2"}

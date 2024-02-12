@@ -71,7 +71,7 @@ import { HIGH_PRICE_IMPACT_BPS } from "../../../../utils/gmx/config/factors";
 import useUiFeeFactor from "../../../../utils/gmx/domain/synthetics/fees/utils/useUiFeeFactor";
 import { getCommonError } from "../../../../utils/gmx/domain/synthetics/trade/utils/validation";
 import { PoolSelector } from "../../common/PoolSelector/PoolSelector";
-import { ArrowsUpDownIcon } from "@heroicons/react/16/solid";
+import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
 import { GmFees } from "../GmFees/GmFees";
@@ -996,7 +996,9 @@ export function GmSwapBox(p: Props) {
         }}
       >
         <div
-          className={`flex ${isWithdrawal ? "flex-col-reverse" : "flex-col"}`}
+          className={`flex ${
+            isWithdrawal ? "flex-col-reverse" : "flex-col relative"
+          }`}
         >
           {" "}
           {
@@ -1114,7 +1116,11 @@ export function GmSwapBox(p: Props) {
             </BuyInputSection>
           </div>
           {isPair && secondTokenAddress && (
-            <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
+            <div
+              className={`flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] ${
+                !isWithdrawal && isPair ? "mt-4" : ""
+              } `}
+            >
               <BuyInputSection
                 topLeftLabel={isDeposit ? `Pay` : `Receive`}
                 topLeftValue={formatUsd(secondTokenUsd)}
@@ -1188,12 +1194,21 @@ export function GmSwapBox(p: Props) {
               </BuyInputSection>
             </div>
           )}
-          <div className="AppOrder-ball-container" onClick={onSwitchSide}>
-            <div className="flex items-center justify-center">
-              <ArrowsUpDownIcon className="h-7 w-7 my-3" />
-            </div>
+          <div
+            className={`${
+              !isWithdrawal && !isPair
+                ? "absolute inset-0 top-[29%] arrows-swapper-token  rounded-xl bg-white"
+                : "my-3"
+            } flex items-center justify-center`}
+            onClick={onSwitchSide}
+          >
+            <ArrowsUpDownIcon className="h-7 w-7" />
           </div>
-          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+          <div
+            className={`flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] ${
+              !isWithdrawal && !isPair ? "mt-[24px]" : ""
+            }`}
+          >
             <BuyInputSection
               topLeftLabel={isWithdrawal ? `Pay` : `Receive`}
               topLeftValue={

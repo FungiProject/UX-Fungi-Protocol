@@ -6,13 +6,7 @@ import TokenDropdown from "../Dropdown/TokenDropdown";
 import { tokenType } from "@/types/Types";
 // Wagmi
 import { useAccount, useContractRead, useNetwork } from "wagmi";
-// Constants
-import {
-  assetsArbitrum,
-  assetsMainnet,
-  assetsPolygon,
-  assetsPolygonMumbai,
-} from "../../../constants/Constants";
+
 // Utils
 import getMaxTokens from "@/utils/getMaxToken";
 // Viem
@@ -29,6 +23,7 @@ import Button from "../Gmx/common/Buttons/Button";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 
 type SwapperProps = {
   tokens: tokenType[];
@@ -37,7 +32,9 @@ type SwapperProps = {
 
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
-  const { alchemyProvider } = useAlchemyAccountKitContext();
+
+  const { alchemyProvider, login: openConnectModal } =
+    useAlchemyAccountKitContext();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<tokenType | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<tokenType | undefined>(undefined);
@@ -162,7 +159,9 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       return Promise.resolve();
     }
 
-    await sendTx();
+    const resultTx: any = await sendTx();
+
+    await sendUserOperations(alchemyProvider, chainId, resultTx);
   };
 
   function onSwitchTokens() {
@@ -268,7 +267,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
             //     useCommas: true,
             //   }
             // )}
-            inputValue={amountToReceive?.toFixed(2)}
+            inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 5)}
             topRightValue={"0"}
             staticInput={true}
             showMaxButton={false}
@@ -299,7 +298,4 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       </Button>
     </main>
   );
-}
-function openConnectModal() {
-  throw new Error("Function not implemented.");
 }

@@ -3,7 +3,7 @@ import { sendUserOperations } from "../../utils/gmx/lib/userOperations/sendUserO
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { getCallDataApprove } from "./getCallDataApprove";
 import { Hex } from "viem";
-import { useLiFiQuote } from "./useLiFiQuote";
+import axios from "axios";
 
 export const useLiFiTx = (
   alchemyProvider: AlchemyProvider,
@@ -21,28 +21,29 @@ export const useLiFiTx = (
     disabled: boolean;
     text: string | null;
   }>({ disabled: true, text: "Enter an amount" });
-  const { quote, loading, getQuote } = useLiFiQuote();
 
-  const fetchTxCallData = async () => {
-    await getQuote({
-      fromChain,
-      fromAmount,
-      fromToken,
-      toChain,
-      toToken,
-      fromAddress,
-      toAddress,
-      slippage,
+  const getQuote = async (params) => {
+    const response = await axios.get("https://li.quest/v1/quote", {
+      params,
     });
-    return quote;
+    return response.data;
   };
 
   const sendLiFiTx = async () => {
     try {
       setStatus({ disabled: true, text: `Swapping ${fromToken}` });
 
-      await fetchTxCallData();
-      console.log(quote);
+      const quote = await getQuote({
+        fromChain,
+        fromAmount,
+        fromToken,
+        toChain,
+        toToken,
+        fromAddress,
+        toAddress,
+        slippage,
+      });
+
       const approvee: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
@@ -58,12 +59,9 @@ export const useLiFiTx = (
         data: quote.transactionRequest.data,
       };
 
-      await sendUserOperations(alchemyProvider, chainId, [
-        callDataApprove,
-        callDataLiFiTx,
-      ]);
-
       setStatus({ disabled: true, text: "Enter an amount" });
+
+      return [callDataApprove, callDataLiFiTx];
     } catch (error) {
       setStatus({ disabled: true, text: "Enter an amount" });
       console.error(error);

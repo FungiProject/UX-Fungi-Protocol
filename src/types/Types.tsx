@@ -32,6 +32,7 @@ export type NetworkType = {
   name: string;
   id: number;
   image: string;
+  symbol: string;
 };
 
 export type assetType = {
@@ -55,7 +56,7 @@ export type tokenType = {
   chainId: number;
   coinKey: string;
   decimals: number;
-  logoURI: string;
+  logoURI?: string;
   name: string;
   priceUSD: string;
   symbol: string;

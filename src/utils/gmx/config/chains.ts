@@ -85,7 +85,7 @@ export function getAlchemyWsUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
     return "wss://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
   }
-  return "wss://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+  return "wss://arb-mainnet.g.alchemy.com/v2/FPAjK7-IT4Hh6mC7zHxsDEHC0BhShXD2";
 }
 
 export const RPC_PROVIDERS = {
@@ -110,7 +110,7 @@ export const RPC_PROVIDERS = {
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [
-    "https://arb-mainnet.g.alchemy.com/v2/wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt",
+    "https://arb-mainnet.g.alchemy.com/v2/FPAjK7-IT4Hh6mC7zHxsDEHC0BhShXD2",
   ], //TODO fungi
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",

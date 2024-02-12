@@ -1243,8 +1243,8 @@ export function TradeBox(p: Props) {
 
   function renderTokenInputs() {
     return (
-      <>
-        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+      <div className="relative">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mb-[24px]">
           <BuyInputSection
             topLeftLabel={`Pay`}
             topLeftValue={
@@ -1292,10 +1292,12 @@ export function TradeBox(p: Props) {
             )}
           </BuyInputSection>
         </div>
-        <div className="" onClick={onSwitchTokens}>
-          <div className="flex items-center justify-center ">
-            <ArrowsUpDownIcon className="h-7 w-7 my-3" />
-          </div>
+
+        <div
+          className="flex items-center justify-center arrows-swapper-token rounded-xl absolute inset-0 top-[38%] bg-white"
+          onClick={onSwitchTokens}
+        >
+          <ArrowsUpDownIcon className="h-7 w-7" />
         </div>
 
         {isSwap && (
@@ -1391,7 +1393,7 @@ export function TradeBox(p: Props) {
             </BuyInputSection>{" "}
           </div>
         )}
-      </>
+      </div>
     );
   }
 

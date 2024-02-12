@@ -11,11 +11,12 @@ import TokensModal from "../Modals/TokensModal";
 
 type TokenDropdownProps = {
   getToken: (token: tokenType) => void;
-  tokens: tokenType[];
+  tokens: tokenType[] | undefined;
   token: tokenType | undefined;
   oppositToken: tokenType | undefined;
   type: string;
   className: string;
+  disabled?: boolean;
 };
 
 export default function TokenDropdown({
@@ -25,6 +26,7 @@ export default function TokenDropdown({
   oppositToken,
   type,
   className,
+  disabled,
 }: TokenDropdownProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -44,6 +46,7 @@ export default function TokenDropdown({
         <button
           className="flex justify-between border-1 rounded-full font-semibold px-[8px] py-2.5 items-center w-[120px]"
           onClick={() => setOpenModal(true)}
+          disabled={disabled}
         >
           <span className="pl-2">{type}</span>
           <ChevronDownIcon
@@ -52,7 +55,7 @@ export default function TokenDropdown({
           />
         </button>
       )}
-      {openModal && (
+      {openModal && tokens !== undefined && (
         <TokensModal
           tokens={tokens}
           getToken={getToken}

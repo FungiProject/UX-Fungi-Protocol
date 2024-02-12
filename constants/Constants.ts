@@ -96,16 +96,31 @@ export const navigation = [
     href: "/nfts",
     imageActive: NFTActive.src,
     imageDesactive: NFTDesactive.src,
-  }
+  },
 ];
 
 export const networks = [
-  { name: "Ethereum", id: 1, image: Mainnet.src },
-  { name: "Ethereum Sepolia", id: 11155111, image: Mainnet.src },
-  { name: "Arbitrum One", id: 42161, image: Arbitrum.src },
-  { name: "Arbitrum Goerli", id: 421613, image: Arbitrum.src},
-  { name: "Polygon", id: 137, image: Polygon.src },
-  { name: "Polygon Mumbai", id: 80001, image: Polygon.src },
+  { name: "Ethereum", id: 1, image: Mainnet.src, symbol: "ETH" },
+  {
+    name: "Ethereum Sepolia",
+    id: 11155111,
+    image: Mainnet.src,
+    symbol: "ETH Sepolia",
+  },
+  { name: "Arbitrum One", id: 42161, image: Arbitrum.src, symbol: "ARB" },
+  {
+    name: "Arbitrum Goerli",
+    id: 421613,
+    image: Arbitrum.src,
+    symbol: "ARB Goerli",
+  },
+  { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
+  {
+    name: "Polygon Mumbai",
+    id: 80001,
+    image: Polygon.src,
+    symbol: "POL Mumbai",
+  },
 ];
 
 export const assetsArbitrum = [
@@ -548,183 +563,6 @@ export const assetsMainnet = [
   // },
 ];
 
-export const assetsPolygon = [
-  {
-    name: "Polygon",
-    address: "",
-    symbol: "MATIC",
-    coingeckoApi: "matic-network",
-    image: Polygon.src,
-  },
-  {
-    name: "AAVE",
-    address: "",
-    symbol: "AAVE",
-    coingeckoApi: "aave",
-    image: AAVE.src,
-  },
-  {
-    name: "Uniswap",
-    address: "",
-    symbol: "UNI",
-    coingeckoApi: "uniswap",
-    image: Uniswap.src,
-  },
-  {
-    name: "USD Coin (PoS)",
-    address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-    symbol: "USDC.e",
-    coingeckoApi: "bridged-usdc-polygon-pos-bridge",
-    image: USDC.src,
-  },
-];
-
-export const assetsPolygonMumbai = [
-  {
-    name: "Polygon",
-    address: "",
-    symbol: "MATIC",
-    coingeckoApi: "matic-network",
-    image: Polygon.src,
-  },
-  {
-    name: "AAVE",
-    address: "",
-    symbol: "AAVE",
-    coingeckoApi: "aave",
-    image: AAVE.src,
-  },
-  {
-    name: "Uniswap",
-    address: "",
-    symbol: "UNI",
-    coingeckoApi: "uniswap",
-    image: Uniswap.src,
-  },
-  {
-    name: "USD Coin (PoS)",
-    address: "",
-    symbol: "USDC.e",
-    coingeckoApi: "bridged-usdc-polygon-pos-bridge",
-    image: USDC.src,
-  },
-];
-
 export const actions = ["Swap", "Fees", "Deposit", "Withdraw"];
 
 export const fundViews = ["Overview", "Portfolio", "Activity", "Members"];
-
-export const activities = [
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701772887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    time: 1701772887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701772887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    time: 1701772887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    time: 1701772887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701772887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701772887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Deposit",
-    amountOut: "2000 USDC.e",
-    amountIn: null,
-    sender: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    hash: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    time: 1701742887,
-  },
-  {
-    type: "Swap",
-    amountOut: "2000 LINK",
-    amountIn: "3000 UNI",
-    sender: "0xF70c1cEa8909563619547128A92dd7CC965F9657",
-    hash: "0x43DdF2bF7B0d2bb2D3904298763bcA2D3F2b40E0",
-    time: 1701772887,
-  },
-];

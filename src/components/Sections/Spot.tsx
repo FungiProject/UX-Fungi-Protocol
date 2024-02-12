@@ -38,7 +38,7 @@ export default function Spot() {
                 {actionSelected === "Rebalance" ? (
                   <Rebalancer />
                 ) : actionSelected === "Bridge" ? (
-                  <Bridge />
+                  <Bridge tokens={tokens} chainId={chainId} />
                 ) : (
                   <Swapper tokens={tokens} chainId={chainId} />
                 )}
