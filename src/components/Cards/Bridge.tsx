@@ -249,7 +249,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
                   token={tokenFrom}
                   oppositToken={tokenTo}
                   type="From"
-                  className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                  className="flex justify-between w-[125px] px-[12px] py-2.5 border-1 rounded-full font-semibold items-center "
                 />
                 <span className="text-xs mt-2 text-gray-500 ml-2">
                   From this token
@@ -307,7 +307,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
                       token={tokenTo}
                       oppositToken={tokenFrom}
                       type="To"
-                      className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                      className="flex justify-between w-[125px] px-[12px] py-2.5 border-1 rounded-full font-semibold items-center "
                     />
                     <span className="text-xs mt-2 text-gray-500 ml-2">
                       To this token
@@ -322,7 +322,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
                       oppositToken={tokenFrom}
                       disabled={true}
                       type="To"
-                      className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+                      className="flex justify-between w-[125px] px-[12px] py-2.5 border-1 rounded-full font-semibold items-center "
                     />
                     <span className="text-xs mt-2 text-gray-500 ml-2">
                       To this token

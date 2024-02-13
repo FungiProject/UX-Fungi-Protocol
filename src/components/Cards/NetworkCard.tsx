@@ -21,10 +21,10 @@ type NetworkCardProps = {
 export default function NetworkCard({ network, getNetwork }: NetworkCardProps) {
   return (
     <button
-      className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
+      className="py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
       onClick={() => getNetwork(network)}
     >
-      <div className="pl-[46px] flex">
+      <div className="pl-[16px] flex">
         <img
           width={46}
           height={46}

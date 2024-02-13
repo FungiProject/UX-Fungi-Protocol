@@ -57,7 +57,7 @@ export default function TokenCard({ token, getToken }: TokenCardProps) {
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
       onClick={() => getToken(token)}
     >
-      <div className="pl-[46px] flex">
+      <div className="flex">
         <img
           width={46}
           height={46}

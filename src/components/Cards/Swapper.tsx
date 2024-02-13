@@ -237,7 +237,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
               token={tokenFrom}
               oppositToken={tokenTo}
               type="From"
-              className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+              className="flex justify-between w-[125px] px-[12px] py-2.5 border-1 rounded-full font-semibold items-center "
             />
           </BuyInputSection>
         </div>
@@ -278,7 +278,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
               token={tokenTo}
               oppositToken={tokenFrom}
               type="To"
-              className="flex justify-between w-[125px] rounded-full font-semibold items-center "
+              className="flex justify-between w-[125px] px-[12px] py-2.5 border-1 rounded-full font-semibold items-center "
             />
           </BuyInputSection>
         </div>{" "}
