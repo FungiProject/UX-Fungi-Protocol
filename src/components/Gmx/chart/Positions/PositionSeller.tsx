@@ -136,7 +136,7 @@ export function PositionSeller(p: Props) {
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
-  console.log(scAccount);
+
   const ORDER_OPTION_LABELS = {
     [OrderOption.Market]: `Market`,
     [OrderOption.Trigger]: `TP/SL`,

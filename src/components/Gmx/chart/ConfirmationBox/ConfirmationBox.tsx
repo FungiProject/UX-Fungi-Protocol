@@ -107,6 +107,7 @@ import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { uniq } from "lodash";
 import { createSwapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createSwapOrderUserOp";
+import { createWrapOrUnwrapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createWrapOrUnwrapUserOp";
 
 export type Props = {
   isVisible: boolean;
@@ -499,16 +500,36 @@ export function ConfirmationBox(p: Props) {
     });
   }
 
-  function onSubmitWrapOrUnwrap() {
-    if (!account || !swapAmounts || !fromToken || !signer) {
+  async function onSubmitWrapOrUnwrap() {
+    if (!scAccount || !swapAmounts || !fromToken) {
       return Promise.resolve();
     }
 
-    return createWrapOrUnwrapTxn(chainId, signer, {
-      amount: swapAmounts.amountIn,
-      isWrap: Boolean(fromToken.isNative),
-      setPendingTxns,
-    });
+    const userOps = tokensToApprove.map((address: string) =>
+      createApproveTokensUserOp({
+        tokenAddress: address,
+        spender: routerAddress,
+      })
+    );
+
+    const createWrapOrUnwrapOrderOp = await createWrapOrUnwrapOrderUserOp(
+      chainId,
+      {
+        amount: swapAmounts.amountIn,
+        isWrap: Boolean(fromToken.isNative),
+        setPendingTxns,
+      }
+    );
+
+    userOps.push(createWrapOrUnwrapOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, userOps);
+
+    // return createWrapOrUnwrapTxn(chainId, signer, {
+    //   amount: swapAmounts.amountIn,
+    //   isWrap: Boolean(fromToken.isNative),
+    //   setPendingTxns,
+    // });
   }
 
   async function onSubmitSwap() {
