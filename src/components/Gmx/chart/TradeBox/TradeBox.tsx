@@ -4,7 +4,7 @@ import Button from "../../common/Buttons/Button";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
 import Checkbox from "../../common/Checkbox/Checkbox";
 import ExchangeInfoRow from "../ExchangeInfoRow/ExchangeInfoRow";
-import { LeverageSlider } from "../Slider/LeverageSlider";
+import LeverageSlider from "../Slider/LeverageSlider";
 import { MarketSelector } from "../Market/MarketSelector";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
 import Tab from "../../common/Tab/Tab";
