@@ -45,6 +45,7 @@ import { getMidPrice } from "../../utils/gmx/domain/tokens";
 import { helperToast } from "../../utils/gmx/lib/helperToast";
 import useWallet from "../../utils/gmx/lib/wallets/useWallet";
 import PageContainer from "@/components/Container/PageContainer";
+import { PositionSeller } from "../Gmx/chart/Positions/PositionSeller";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -441,7 +442,7 @@ export function SyntheticsPage(p: Props) {
                   </Checkbox>
                 </div> */}
               </div>
-              <div className="overflow-auto h-32">
+              <div>
                 {listSection === ListSection.Positions && (
                   <PositionList
                     positionsData={positionsInfoData}
@@ -617,7 +618,7 @@ export function SyntheticsPage(p: Props) {
               --main-bg-color: #08091b;                   
              {
          `}</style>
-      </Helmet>
+      </Helmet> */}
 
       <PositionSeller
         position={closingPosition!}
@@ -633,7 +634,7 @@ export function SyntheticsPage(p: Props) {
         tradeFlags={tradeFlags}
       />
 
-      <PositionEditor
+      {/* <PositionEditor
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         position={editingPosition}
@@ -641,7 +642,7 @@ export function SyntheticsPage(p: Props) {
         onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         shouldDisableValidation={shouldDisableValidation}
-      />
+      /> */}
 
       <ClaimModal
         marketsInfoData={marketsInfoData}
@@ -661,7 +662,7 @@ export function SyntheticsPage(p: Props) {
           setGettingPendingFeePositionKeys([]);
           setIsSettling(false);
         }, [])}
-      /> */}
+      />
     </div>
   );
 }

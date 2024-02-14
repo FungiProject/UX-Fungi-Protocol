@@ -7,7 +7,7 @@ import { PositionsInfoData } from "../../../../utils/gmx/domain/synthetics/posit
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
-import Tooltip from "../Tooltip";
+import Tooltip from "../../common/Tooltip/Tooltip";
 import { useSyntheticsEvents } from "../../../../utils/gmx/context/SyntheticsEvents";
 import { useUserReferralInfo } from "../../../../utils/gmx/domain/referrals";
 import {

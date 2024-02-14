@@ -163,9 +163,7 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <div
-          className={cx("position-list-collateral", { isSmall: !p.isLarge })}
-        >
+        <div className="flex items-center justify-center ml-4">
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "left-bottom" : "right-bottom"}
@@ -286,16 +284,16 @@ export function PositionItem(p: Props) {
             }}
           />
 
-          {!p.position.isOpening &&
+          {/* {!p.position.isOpening &&
             !p.hideActions &&
             p.onEditCollateralClick && (
               <span className="edit-icon" onClick={p.onEditCollateralClick}>
                 <AiOutlineEdit fontSize={16} />
               </span>
-            )}
+            )} */}
         </div>
 
-        <div className="Exchange-list-info-label Position-collateral-amount muted">
+        <div className="ml-3">
           {`(${formatTokenAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
@@ -524,145 +522,94 @@ export function PositionItem(p: Props) {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
-      <tr
-        className={cx("Exchange-list-item", {
-          "Exchange-list-item-active": isCurrentMarket,
-        })}
+      <div
+        className={`py-2 flex items-center grid grid-cols-10 text-center ${
+          isCurrentMarket
+            ? "border-l-4 border-main bg-gray-100"
+            : "border-l-4 border-white"
+        }`}
       >
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <div
+          className="flex flex-col items-center justify-center col-span-2 ml-6"
+          onClick={() => {
+            p.onSelectPositionClick?.();
+          }}
+        >
           {/* title */}
-          <div className="Exchange-list-title ">
-            <Tooltip
-              handle={
-                <>
-                  <TokenIcon
-                    className="PositionList-token-icon"
-                    symbol={p.position.marketInfo.indexToken.symbol}
-                    displaySize={20}
-                    importSize={24}
-                  />
-                  {p.position.marketInfo.indexToken.symbol}
-                </>
-              }
-              position="left-bottom"
-              handleClassName="plain"
-              renderContent={() => (
-                <div>
-                  <StatsTooltipRow
-                    label={`Market`}
-                    value={
-                      <div className="items-center">
-                        <span>{indexName && indexName}</span>
-                        <span className="subtext lh-1">
-                          {poolName && `[${poolName}]`}
-                        </span>
-                      </div>
-                    }
-                    showDollar={false}
-                  />
-
-                  <br />
-
-                  <div>
-                    <span>
-                      Click on the Position to select its market, then use the
-                      trade box to increase your Position Size, or to set
-                      Take-Profit / Stop-Loss Orders.
-                    </span>
-                    <br />
-                    <br />
-                    <span>
-                      Use the "Close" button to reduce your Position Size.
-                    </span>
-                  </div>
-
-                  {showDebugValues && (
-                    <>
-                      <br />
-                      <StatsTooltipRow
-                        label={"Key"}
-                        value={
-                          <div className="debug-key muted">
-                            {p.position.contractKey}
-                          </div>
-                        }
-                        showDollar={false}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
+          <div className="Exchange-list-title flex items-center">
+            <TokenIcon
+              className="mr-4"
+              symbol={p.position.marketInfo.indexToken.symbol}
+              displaySize={20}
+              importSize={24}
             />
+            {p.position.marketInfo.indexToken.symbol}
             {p.position.pendingUpdate && (
               <ImSpinner2 className="spin position-loading-icon" />
             )}
           </div>
           <div className="Exchange-list-info-label">
-            <span className="muted Position-leverage">
+            <span className="text-sm">
               {formatLeverage(p.position.leverage) || "..."}&nbsp;
             </span>
             <span
-              className={cx({
-                positive: p.position.isLong,
-                negative: !p.position.isLong,
-              })}
+              className={`${
+                !p.position.isLong ? "text-red-400" : "text-green-400"
+              }`}
             >
               {p.position.isLong ? `Long` : `Short`}
             </span>
           </div>
-        </td>
-        <td>
+        </div>
+        <div className="flex flex-col items-center">
           {/* netValue */}
           {p.position.isOpening ? (
             `Opening...`
           ) : (
-            <>
+            <div>
               {renderNetValue()}
               {displayedPnl && (
                 <div
                   onClick={p.openSettings}
-                  className={cx(
-                    "Exchange-list-info-label cursor-pointer Position-pnl",
-                    {
-                      positive: displayedPnl.gt(0),
-                      negative: displayedPnl.lt(0),
-                      muted: displayedPnl.eq(0),
-                    }
-                  )}
+                  className={`flex ml-3 font-medium text-xs ${
+                    Number(displayedPnl) <= 0
+                      ? "text-red-400"
+                      : "text-green-400"
+                  }`}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 </div>
               )}
-            </>
+            </div>
           )}
-        </td>
-        <td>
+        </div>
+        <div className="ml-8">
           {formatUsd(p.position.sizeInUsd)}
           {renderPositionOrders()}
-        </td>
-        <td>
+        </div>
+        <div>
           {/* collateral */}
           <div>{renderCollateral()}</div>
-        </td>
-        <td>
+        </div>
+        <div>
           {/* entryPrice */}
           {p.position.isOpening
             ? `Opening...`
             : formatUsd(p.position.entryPrice, {
                 displayDecimals: indexPriceDecimals,
               })}
-        </td>
-        <td>
+        </div>
+        <div>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: indexPriceDecimals,
           })}
-        </td>
-        <td>
+        </div>
+        <div>
           {/* liqPrice */}
           {renderLiquidationPrice()}
-        </td>
-        <td>
+        </div>
+        <div>
           {/* Close */}
           {!p.position.isOpening && !p.hideActions && (
             <button
@@ -673,8 +620,8 @@ export function PositionItem(p: Props) {
               Close
             </button>
           )}
-        </td>
-        <td>
+        </div>
+        <div>
           {!p.position.isOpening && !p.hideActions && (
             <PositionDropdown
               handleEditCollateral={p.onEditCollateralClick}
@@ -691,8 +638,8 @@ export function PositionItem(p: Props) {
               }
             />
           )}
-        </td>
-      </tr>
+        </div>
+      </div>
     );
   }
 
@@ -700,167 +647,169 @@ export function PositionItem(p: Props) {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
-      <div className="flex">
-        <div
-          className={cx("App-card-title Position-card-title", {
-            "Position-active-card": isCurrentMarket,
-          })}
-          onClick={() => p.onSelectPositionClick?.()}
-        >
-          <span className="Exchange-list-title inline-flex">
-            <TokenIcon
-              className="PositionList-token-icon"
-              symbol={p.position.marketInfo.indexToken?.symbol}
-              displaySize={20}
-              importSize={24}
-            />
-            {p.position.marketInfo.indexToken?.symbol}
-          </span>
-          <div>
-            <span className="Position-leverage">
-              {formatLeverage(p.position.leverage)}&nbsp;
+      <div className="App-card">
+        <div>
+          <div
+            className={cx("App-card-title Position-card-title", {
+              "Position-active-card": isCurrentMarket,
+            })}
+            onClick={() => p.onSelectPositionClick?.()}
+          >
+            <span className="Exchange-list-title inline-flex">
+              <TokenIcon
+                className="PositionList-token-icon"
+                symbol={p.position.marketInfo.indexToken?.symbol}
+                displaySize={20}
+                importSize={24}
+              />
+              {p.position.marketInfo.indexToken?.symbol}
             </span>
-            <span
-              className={cx("Exchange-list-side", {
-                positive: p.position.isLong,
-                negative: !p.position.isLong,
-              })}
-            >
-              {p.position.isLong ? `Long` : `Short`}
-            </span>
-          </div>
-          {p.position.pendingUpdate && (
-            <ImSpinner2 className="spin position-loading-icon" />
-          )}
-        </div>
-
-        <div className="App-card-divider" />
-        <div className="flex">
-          {showDebugValues && (
-            <div className="App-card-row">
-              <div className="label">Key</div>
-              <div className="debug-key muted">{p.position.contractKey}</div>
-            </div>
-          )}
-          <div className="App-card-row">
-            <div className="label">Market</div>
-            <div onClick={() => p.onSelectPositionClick?.()}>
-              <div className="items-top">
-                <span>{indexName && indexName}</span>
-                <span className="subtext">{poolName && `[${poolName}]`}</span>
-              </div>
-            </div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">Net Value</div>
-            <div>{renderNetValue()}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">PnL</div>
             <div>
+              <span className="Position-leverage">
+                {formatLeverage(p.position.leverage)}&nbsp;
+              </span>
               <span
-                className={cx(
-                  "Exchange-list-info-label cursor-pointer Position-pnl",
-                  {
-                    positive: displayedPnl?.gt(0),
-                    negative: displayedPnl?.lt(0),
-                    muted: displayedPnl?.eq(0),
-                  }
-                )}
-                onClick={p.openSettings}
+                className={cx("Exchange-list-side", {
+                  positive: p.position.isLong,
+                  negative: !p.position.isLong,
+                })}
               >
-                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                {p.position.isLong ? `Long` : `Short`}
               </span>
             </div>
+            {p.position.pendingUpdate && (
+              <ImSpinner2 className="spin position-loading-icon" />
+            )}
           </div>
-          <div className="App-card-row">
-            <div className="label">Size</div>
-            <div>{formatUsd(p.position.sizeInUsd)}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">Collateral</div>
-            <div>{renderCollateral()}</div>
-          </div>
-        </div>
-        <div className="App-card-divider" />
-        <div className="flex">
-          <div className="App-card-row">
-            <div className="label">Entry Price</div>
-            <div>
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
-            </div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">Mark Price</div>
-            <div>
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
-            </div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">Liq. Price</div>
-            <div>{renderLiquidationPrice()}</div>
-          </div>
-        </div>
-        <div className="App-card-divider" />
-        <div className="flex">
-          <div className="label">Orders</div>
-          <div>
-            {!p.positionOrders?.length && "None"}
-            {renderPositionOrders(true)}
-          </div>
-        </div>
-        {!p.hideActions && (
-          <>
-            <div className="App-card-divider" />
-            <div className="Position-item-action">
-              <div className="Position-item-buttons">
-                <Button
-                  variant="secondary"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onClosePositionClick}
-                >
-                  Close
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onEditCollateralClick}
-                >
-                  Edit Collateral
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={() => {
-                    // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: isMobile ? 500 : 0 });
-                    p.onSelectPositionClick?.(TradeMode.Trigger);
-                  }}
-                >
-                  TP/SL
-                </Button>
+
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            {showDebugValues && (
+              <div className="App-card-row">
+                <div className="label">Key</div>
+                <div className="debug-key muted">{p.position.contractKey}</div>
               </div>
+            )}
+            <div className="App-card-row">
+              <div className="label">Market</div>
+              <div onClick={() => p.onSelectPositionClick?.()}>
+                <div className="items-top">
+                  <span>{indexName && indexName}</span>
+                  <span className="subtext">{poolName && `[${poolName}]`}</span>
+                </div>
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Net Value</div>
+              <div>{renderNetValue()}</div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">PnL</div>
               <div>
-                {!p.position.isOpening && !p.hideActions && (
-                  <PositionDropdown
-                    handleMarketSelect={() => p.onSelectPositionClick?.()}
-                    handleMarketIncreaseSize={() =>
-                      p.onSelectPositionClick?.(TradeMode.Market)
+                <span
+                  className={cx(
+                    "Exchange-list-info-label cursor-pointer Position-pnl",
+                    {
+                      positive: displayedPnl?.gt(0),
+                      negative: displayedPnl?.lt(0),
+                      muted: displayedPnl?.eq(0),
                     }
-                    handleShare={p.onShareClick}
-                    handleLimitIncreaseSize={() =>
-                      p.onSelectPositionClick?.(TradeMode.Limit)
-                    }
-                  />
-                )}
+                  )}
+                  onClick={p.openSettings}
+                >
+                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                </span>
               </div>
             </div>
-          </>
-        )}
+            <div className="App-card-row">
+              <div className="label">Size</div>
+              <div>{formatUsd(p.position.sizeInUsd)}</div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Collateral</div>
+              <div>{renderCollateral()}</div>
+            </div>
+          </div>
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            <div className="App-card-row">
+              <div className="label">Entry Price</div>
+              <div>
+                {formatUsd(p.position.entryPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Mark Price</div>
+              <div>
+                {formatUsd(p.position.markPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Liq. Price</div>
+              <div>{renderLiquidationPrice()}</div>
+            </div>
+          </div>
+          <div className="App-card-divider" />
+          <div className="App-card-row">
+            <div className="label">Orders</div>
+            <div>
+              {!p.positionOrders?.length && "None"}
+              {renderPositionOrders(true)}
+            </div>
+          </div>
+          {!p.hideActions && (
+            <>
+              <div className="App-card-divider" />
+              <div className="Position-item-action">
+                <div className="Position-item-buttons">
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={p.onClosePositionClick}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={p.onEditCollateralClick}
+                  >
+                    Edit Collateral
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={() => {
+                      // TODO: remove after adding trigger functionality to Modal
+                      window.scrollTo({ top: isMobile ? 500 : 0 });
+                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                    }}
+                  >
+                    TP/SL
+                  </Button>
+                </div>
+                <div>
+                  {!p.position.isOpening && !p.hideActions && (
+                    <PositionDropdown
+                      handleMarketSelect={() => p.onSelectPositionClick?.()}
+                      handleMarketIncreaseSize={() =>
+                        p.onSelectPositionClick?.(TradeMode.Market)
+                      }
+                      handleShare={p.onShareClick}
+                      handleLimitIncreaseSize={() =>
+                        p.onSelectPositionClick?.(TradeMode.Limit)
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     );
   }

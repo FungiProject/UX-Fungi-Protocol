@@ -9,14 +9,13 @@ type Props = {
 export function ValueTransition(p: Props) {
   if (!p.to || p.to === p.from) return <>{p.from}</>;
   if (!p.from) return <>{p.to}</>;
-
+  console.log(p);
   return (
     <>
-      <div className="inline-block muted">
-        {p.from}
-        <BsArrowRight className="transition-arrow" />
+      <div className="flex items-center">
+        <span>{p.from}</span>
+        <BsArrowRight className="mx-2" /> {p.to}
       </div>
-      {p.to}
     </>
   );
 }

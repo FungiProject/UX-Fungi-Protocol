@@ -10,7 +10,7 @@ type Props = {
   topLeftValue?: string;
   topRightLabel?: string;
   topRightValue?: string;
-
+  getCliked?: (status: boolean) => void;
   bridgeComponent?: ReactNode;
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;
@@ -45,6 +45,7 @@ export default function BuyInputSection(props: Props) {
     showPercentSelector,
     onPercentChange,
     preventFocusOnLabelClick,
+    getCliked,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] =
     useState(false);
@@ -52,6 +53,9 @@ export default function BuyInputSection(props: Props) {
 
   function handleOnFocus() {
     if (showPercentSelector && onPercentChange) {
+      if (getCliked) {
+        getCliked(true);
+      }
       setIsPercentSelectorVisible(true);
     }
     onFocus?.();
@@ -59,6 +63,9 @@ export default function BuyInputSection(props: Props) {
 
   function handleOnBlur() {
     if (showPercentSelector && onPercentChange) {
+      if (getCliked) {
+        getCliked(false);
+      }
       setIsPercentSelectorVisible(false);
     }
     onBlur?.();
@@ -163,10 +170,10 @@ export default function BuyInputSection(props: Props) {
         </div>
       </div>
       {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
-        <ul className="PercentSelector">
+        <ul className="flex w-full bg-gray-100 rounded-lg py-1 justify-between">
           {PERCENTAGE_SUGGESTIONS.map((percentage) => (
             <li
-              className="PercentSelector-item"
+              className="hover:bg-black hover:text-white px-2 py-0.5 rounded-lg cursor-pointer"
               key={percentage}
               onMouseDown={() => {
                 onPercentChange?.(percentage);

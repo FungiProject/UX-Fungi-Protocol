@@ -111,10 +111,8 @@ export default function PercentageInput({
   }, []);
 
   return (
-    <div className="Percentage-input-wrapperflex">
-      <div
-        className={cx("Percentage-input", { "input-error": Boolean(error) })}
-      >
+    <div className="relative">
+      <div className="absolute right-0 flex">
         {negativeSign && (
           <span
             className="Percentage-input-negative-sign"
@@ -132,6 +130,7 @@ export default function PercentageInput({
           placeholder={inputValue || getValueText(defaultValue)}
           autoComplete="off"
           onChange={handleChange}
+          className="w-10"
         />
         <label htmlFor={id}>
           <span>%</span>
@@ -150,7 +149,7 @@ export default function PercentageInput({
         </div>
       )}
       {shouldShowPanel && (
-        <ul className="Percentage-list  ">
+        <ul className="flex  bg-gray-100 rounded-lg py-1 justify-between absolute top-7 right-0 border-1 h-fit">
           {suggestions.map((slippage) => (
             <li
               key={slippage}
@@ -159,6 +158,7 @@ export default function PercentageInput({
                 onChange(slippage * 100);
                 setIsPanelVisible(false);
               }}
+              className="flex hover:bg-black hover:text-white px-2 py-0.5 rounded-lg cursor-pointer"
             >
               {slippage}%
             </li>

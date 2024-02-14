@@ -55,7 +55,7 @@ export function PositionList(p: Props) {
           {p.isLoading ? `Loading...` : `No open positions`}
         </div>
       )} */}
-      <div className="Exchange-list small">
+      {/* <div className="Exchange-list small">
         {!p.isLoading &&
           positions.map((position) => (
             <PositionItem
@@ -88,78 +88,68 @@ export function PositionList(p: Props) {
               hideActions={p.hideActions}
             />
           ))}
-      </div>
+      </div> */}
 
-      <table className="w-full">
-        <tbody>
-          <tr className="border-b-1 h-14">
-            <th>
-              <span className="ml-6 mr-14">Position</span>
-            </th>
-            <th>
-              <span className="mr-14">Net Value</span>
-            </th>
-            <th>
-              <span className="mr-14">Size</span>
-            </th>
-            <th>
-              <span className="mr-14">Collateral</span>
-            </th>
-            <th>
-              <span className="mr-14">Entry Price</span>
-            </th>
-            <th>
-              <span className="mr-14">Mark Price</span>
-            </th>
-            <th>
-              <span className="mr-14">Liq. Price</span>
-            </th>
-          </tr>
+      <div className="w-full">
+        <div>
+          <div className="border-b-1 h-12 grid grid-cols-10 font-semibold flex items-center text-center pl-6">
+            <span className="col-span-2">Position</span>
+            <span>Net Value</span>
+            <span>Size</span>
+            <span>Collateral</span>
+            <span>Entry Price</span>
+            <span>Mark Price</span>
+            <span>Liq. Price</span>
+          </div>
+
           {positions.length === 0 && (
-            <tr>
-              <td colSpan={15}>
+            <div>
+              <div className="grid-span-full ml-9 font-semibold">
                 <div className="Exchange-empty-positions-list-note ml-6 mt-[24px]">
                   {p.isLoading ? `Loading...` : `No open positions`}
                 </div>
-              </td>
-            </tr>
+              </div>
+            </div>
           )}
-          {!p.isLoading &&
-            positions.map((position) => (
-              <PositionItem
-                key={position.key}
-                positionOrders={
-                  orders.filter((order) =>
-                    isOrderForPosition(order, position.key)
-                  ) as PositionOrderInfo[]
-                }
-                position={position}
-                onEditCollateralClick={() =>
-                  p.onEditCollateralClick(position.key)
-                }
-                onClosePositionClick={() =>
-                  p.onClosePositionClick(position.key)
-                }
-                onGetPendingFeesClick={() =>
-                  p.onSettlePositionFeesClick(position.key)
-                }
-                onOrdersClick={p.onOrdersClick}
-                onSelectPositionClick={(tradeMode?: TradeMode) =>
-                  p.onSelectPositionClick(position.key, tradeMode)
-                }
-                showPnlAfterFees={p.showPnlAfterFees}
-                isLarge={true}
-                savedShowPnlAfterFees={p.savedShowPnlAfterFees}
-                currentMarketAddress={p.currentMarketAddress}
-                currentCollateralAddress={p.currentCollateralAddress}
-                currentTradeType={p.currentTradeType}
-                openSettings={p.openSettings}
-                hideActions={p.hideActions}
-                onShareClick={() => handleSharePositionClick(position.key)}
-              />
-            ))}
-        </tbody>
-      </table>
+          <div className="h-[200px] overflow-auto">
+            {" "}
+            {!p.isLoading &&
+              positions.map((position) => (
+                <PositionItem
+                  key={position.key}
+                  positionOrders={
+                    orders.filter((order) =>
+                      isOrderForPosition(order, position.key)
+                    ) as PositionOrderInfo[]
+                  }
+                  position={position}
+                  onEditCollateralClick={() =>
+                    p.onEditCollateralClick(position.key)
+                  }
+                  onClosePositionClick={() =>
+                    p.onClosePositionClick(position.key)
+                  }
+                  onGetPendingFeesClick={() =>
+                    p.onSettlePositionFeesClick(position.key)
+                  }
+                  onOrdersClick={p.onOrdersClick}
+                  onSelectPositionClick={(tradeMode?: TradeMode) =>
+                    p.onSelectPositionClick(position.key, tradeMode)
+                  }
+                  showPnlAfterFees={p.showPnlAfterFees}
+                  isLarge={true}
+                  savedShowPnlAfterFees={p.savedShowPnlAfterFees}
+                  currentMarketAddress={p.currentMarketAddress}
+                  currentCollateralAddress={p.currentCollateralAddress}
+                  currentTradeType={p.currentTradeType}
+                  openSettings={p.openSettings}
+                  hideActions={p.hideActions}
+                  onShareClick={() => handleSharePositionClick(position.key)}
+                />
+              ))}
+          </div>
+        </div>
+      </div>
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}

@@ -405,13 +405,6 @@ export function ConfirmationBox(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
-    if (priceImpactWarningState.validationError) {
-      return {
-        text: "Price Impact not yet acknowledged",
-        disabled: true,
-      };
-    }
-
     if (isSubmitting) {
       return {
         text: `Creating Order...`,
@@ -425,13 +418,6 @@ export function ConfirmationBox(p: Props) {
         disabled: true,
       };
     }
-
-    // if (needPayTokenApproval) {
-    //   return {
-    //     text: `Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`,
-    //     disabled: true,
-    //   };
-    // }
 
     if (
       isIncrease &&

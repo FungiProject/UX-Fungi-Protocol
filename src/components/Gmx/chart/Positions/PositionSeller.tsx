@@ -5,7 +5,6 @@ import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "../ExchangeInfoRow/ExchangeInfoRow";
 import Modal from "../../common/Modal/Modal";
 import PercentageInput from "../Inputs/PercentageInput";
-import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
 import Tab from "../../common/Tab/Tab";
 import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import TokenSelector from "../../common/TokenSelector/TokenSelector";
@@ -84,9 +83,11 @@ import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import { HighPriceImpactWarning } from "../../common/Notifications/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { helperToast } from "@/utils/gmx/lib/helperToast";
+import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 
 export type Props = {
   position?: PositionInfo;
@@ -121,8 +122,9 @@ export function PositionSeller(p: Props) {
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
-  const { signer, account } = useWallet();
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { signer, account, scAccount } = useWallet();
+  const { login: openConnectModal, alchemyProvider } =
+    useAlchemyAccountKitContext();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } =
@@ -131,10 +133,10 @@ export function PositionSeller(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
   const { savedAcceptablePriceImpactBuffer } = useSettings();
-
+  const [showInputs, setShowInputs] = useState<boolean>(false);
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
-
+  console.log(scAccount);
   const ORDER_OPTION_LABELS = {
     [OrderOption.Market]: `Market`,
     [OrderOption.Trigger]: `TP/SL`,
@@ -266,6 +268,10 @@ export function PositionSeller(p: Props) {
     position &&
     receiveToken &&
     !getIsEquivalentTokens(position.collateralToken, receiveToken);
+
+  const getClikedBuyInputSection = (status: boolean) => {
+    setShowInputs(status);
+  };
 
   const swapAmounts = useMemo(() => {
     if (
@@ -412,8 +418,8 @@ export function PositionSeller(p: Props) {
 
   useEffect(() => {
     if (isVisible) {
-      setIsHighPositionImpactAcceptedLatestRef.current(false);
-      setIsHighSwapImpactAcceptedLatestRef.current(false);
+      setIsHighPositionImpactAcceptedLatestRef.current(true);
+      setIsHighSwapImpactAcceptedLatestRef.current(true);
     }
   }, [
     setIsHighPositionImpactAcceptedLatestRef,
@@ -478,8 +484,8 @@ export function PositionSeller(p: Props) {
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
 
-  function onSubmit() {
-    if (!account) {
+  async function onSubmit() {
+    if (!scAccount) {
       openConnectModal?.();
       return;
     }
@@ -495,20 +501,24 @@ export function PositionSeller(p: Props) {
       !receiveToken?.address ||
       !receiveUsd ||
       !decreaseAmounts?.acceptablePrice ||
-      !signer ||
       !orderType
     ) {
-      return;
+      helperToast.error(`Error submitting order`);
+      return Promise.resolve();
     }
 
-    setIsSubmitting(true);
+    // const userOps = tokensToApprove.map((address: string) =>
+    //   createApproveTokensUserOp({
+    //     tokenAddress: address,
+    //     spender: routerAddress,
+    //   })
+    // );
 
-    createDecreaseOrderTxn(
+    const createSwapOrderOp = await createDecreaseOrderUserOp(
       chainId,
-      signer,
       subaccount,
       {
-        account,
+        account: scAccount,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralDeltaAmount:
@@ -535,7 +545,11 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       }
-    )
+    );
+
+    // userOps.push(createSwapOrderOp);
+
+    return sendUserOperations(alchemyProvider, chainId, [createSwapOrderOp])
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }
@@ -543,8 +557,8 @@ export function PositionSeller(p: Props) {
     function resetForm() {
       if (!isVisible !== prevIsVisible) {
         setCloseUsdInputValue("");
-        setIsHighPositionImpactAcceptedLatestRef.current(false);
-        setIsHighSwapImpactAcceptedLatestRef.current(false);
+        setIsHighPositionImpactAcceptedLatestRef.current(true);
+        setIsHighSwapImpactAcceptedLatestRef.current(true);
         setTriggerPriceInputValue("");
         setReceiveTokenAddress(undefined);
         setOrderOption(OrderOption.Market);
@@ -803,6 +817,7 @@ export function PositionSeller(p: Props) {
               warning: isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
+            height={"h-[700px]"}
             showBalances={false}
             disableBodyScrollLock={true}
             infoTokens={availableTokensOptions?.infoTokens}
@@ -811,7 +826,7 @@ export function PositionSeller(p: Props) {
             tokens={availableTokensOptions?.swapTokens || []}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
-              <span className="PositionSelector-selected-receive-token">
+              <span>
                 {formatTokenAmountWithUsd(
                   receiveTokenAmount,
                   receiveUsd,
@@ -854,19 +869,20 @@ export function PositionSeller(p: Props) {
           option={orderOption}
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
-        />
-        <SubaccountNavigationButton
-          executionFee={executionFee?.feeTokenAmount}
-          closeConfirmationBox={onClose}
-          tradeFlags={tradeFlags}
+          className="mt-4 h-[40px] p-[4px] w-full rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
         />
 
         {position && (
           <>
-            <div className="relative">
+            <div
+              className={`flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium ${
+                showInputs ? "h-[130px]" : "h-[90px]"
+              }`}
+            >
               <BuyInputSection
-                topLeftLabel={`Close`}
+                topLeftLabel={`Set %`}
                 topRightLabel={`Max`}
+                getCliked={getClikedBuyInputSection}
                 topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) =>
@@ -889,37 +905,40 @@ export function PositionSeller(p: Props) {
                   );
                   setCloseUsdInputValue(formattedAmount);
                 }}
+                preventFocusOnLabelClick="right"
               >
                 USD
               </BuyInputSection>
             </div>
             {isTrigger && (
-              <BuyInputSection
-                topLeftLabel={`Price`}
-                topRightLabel={`Mark`}
-                topRightValue={formatUsd(markPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })}
-                onClickTopRightLabel={() => {
-                  setTriggerPriceInputValue(
-                    formatAmount(
-                      markPrice,
-                      USD_DECIMALS,
-                      toToken?.priceDecimals || 2
-                    )
-                  );
-                }}
-                inputValue={triggerPriceInputValue}
-                onInputValueChange={(e) => {
-                  setTriggerPriceInputValue(e.target.value);
-                }}
-              >
-                USD
-              </BuyInputSection>
+              <div className="mt-4 flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[90px]">
+                <BuyInputSection
+                  topLeftLabel={`Price`}
+                  topRightLabel={`Mark`}
+                  topRightValue={formatUsd(markPrice, {
+                    displayDecimals: toToken?.priceDecimals,
+                  })}
+                  onClickTopRightLabel={() => {
+                    setTriggerPriceInputValue(
+                      formatAmount(
+                        markPrice,
+                        USD_DECIMALS,
+                        toToken?.priceDecimals || 2
+                      )
+                    );
+                  }}
+                  inputValue={triggerPriceInputValue}
+                  onInputValueChange={(e) => {
+                    setTriggerPriceInputValue(e.target.value);
+                  }}
+                >
+                  USD
+                </BuyInputSection>
+              </div>
             )}
 
-            <div className="PositionEditor-info-box">
-              <div className="PositionEditor-keep-leverage-settings">
+            <div>
+              {/* <div>
                 <ToggleSwitch
                   isChecked={keepLeverage ?? false}
                   setIsChecked={setKeepLeverage}
@@ -933,7 +952,7 @@ export function PositionSeller(p: Props) {
                     </span>
                   </span>
                 </ToggleSwitch>
-              </div>
+              </div> */}
 
               {isTrigger ? (
                 <>
@@ -954,7 +973,7 @@ export function PositionSeller(p: Props) {
                 </>
               )}
 
-              <div className="Exchange-info-row">
+              <div className="flex text-center border-y-1 items-center py-4 justify-center">
                 <div>
                   <Tooltip
                     handle={
@@ -1006,19 +1025,13 @@ export function PositionSeller(p: Props) {
               {receiveTokenRow}
             </div>
 
-            {priceImpactWarningState.shouldShowWarning && (
-              <>
-                <div className="App-card-divider" />
-                <HighPriceImpactWarning
-                  priceImpactWarinigState={priceImpactWarningState}
-                  className="PositionSeller-price-impact-warning"
-                />
-              </>
-            )}
-
             <div className="Exchange-swap-button-container">
               <Button
-                className="w-full"
+                className={`mt-4 ${
+                  Boolean(error) && !p.shouldDisableValidation
+                    ? "opacity-50"
+                    : ""
+                } w-full bg-main rounded-xl py-3 text-white font-semibold`}
                 variant="primary-action"
                 disabled={Boolean(error) && !p.shouldDisableValidation}
                 onClick={onSubmit}

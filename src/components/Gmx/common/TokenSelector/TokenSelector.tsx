@@ -293,7 +293,7 @@ export default function TokenSelector(props: Props) {
       </Modal>
       {selectedTokenLabel ? (
         <div
-          className="TokenSelector-box "
+          className="flex justify-between border-1 rounded-full items-center px-2 py-1"
           onClick={() => setIsModalVisible(true)}
         >
           {selectedTokenLabel}
