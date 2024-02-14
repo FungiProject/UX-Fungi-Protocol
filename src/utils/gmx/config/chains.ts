@@ -16,7 +16,7 @@ export const POLYGON: number = 137;
 export const POLYGON_MUMBAI: number = 80001;
 
 export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, ARBITRUM_GOERLI];
+export const SUPPORTED_CHAIN_IDS = [ARBITRUM];
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {

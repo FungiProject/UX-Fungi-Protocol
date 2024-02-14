@@ -100,27 +100,27 @@ export const navigation = [
 ];
 
 export const networks = [
-  { name: "Ethereum", id: 1, image: Mainnet.src, symbol: "ETH" },
-  {
-    name: "Ethereum Sepolia",
-    id: 11155111,
-    image: Mainnet.src,
-    symbol: "ETH Sepolia",
-  },
+  // { name: "Ethereum", id: 1, image: Mainnet.src, symbol: "ETH" },
+  // {
+  //   name: "Ethereum Sepolia",
+  //   id: 11155111,
+  //   image: Mainnet.src,
+  //   symbol: "ETH Sepolia",
+  // },
   { name: "Arbitrum One", id: 42161, image: Arbitrum.src, symbol: "ARB" },
-  {
-    name: "Arbitrum Goerli",
-    id: 421613,
-    image: Arbitrum.src,
-    symbol: "ARB Goerli",
-  },
-  { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
-  {
-    name: "Polygon Mumbai",
-    id: 80001,
-    image: Polygon.src,
-    symbol: "POL Mumbai",
-  },
+  // {
+  //   name: "Arbitrum Goerli",
+  //   id: 421613,
+  //   image: Arbitrum.src,
+  //   symbol: "ARB Goerli",
+  // },
+  // { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
+  // {
+  //   name: "Polygon Mumbai",
+  //   id: 80001,
+  //   image: Polygon.src,
+  //   symbol: "POL Mumbai",
+  // },
 ];
 
 export const assetsArbitrum = [
