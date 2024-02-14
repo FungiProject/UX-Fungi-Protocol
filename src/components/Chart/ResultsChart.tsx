@@ -8,49 +8,23 @@ import Chart from "../../../public/Chart.svg";
 import formatNumber from "@/utils/formatNumber";
 
 type ResultsChartProps = {
-  performance?: number;
-  aum?: number;
   personalBalance: number;
 };
 
-export default function ResultsChart({
-  performance,
-  aum,
-  personalBalance,
-}: ResultsChartProps) {
+export default function ResultsChart({ personalBalance }: ResultsChartProps) {
   const [chartTime, setChartTime] = useState("1h");
 
   const timeButtons = ["1h", "1d", "7d", "1m", "ytd", "all"];
+
   return (
-    <main className="h-[574px] flex flex-col bg-white rounded-xl px-[40px] py-[16px] shadow-xl">
+    <main className="h-[574px] flex flex-col mt-[24px]">
       <div className="flex justify-between">
-        {performance && aum && (
-          <div className="flex flex-col">
-            <span className="text-lg xl:text-xl">AUM</span>
-            <span className="text-xl xl:text-3xl">${formatNumber(aum)}</span>
-          </div>
-        )}
         <div className=" flex flex-col">
-          <span className="text-lg xl:text-xl">My Balance</span>
-          <span className="text-xl xl:text-3xl">
+          <span className="text-xl ml-[30px]">
             ${formatNumber(personalBalance)}
           </span>
         </div>
-        {performance && aum && (
-          <div className=" flex flex-col">
-            <span className="text-lg xl:text-xl">Performance</span>
-            <span
-              className={
-                performance >= 0
-                  ? "text-green-500 text-xl xl:text-3xl"
-                  : "text-red-500 text-xl xl:text-3xl"
-              }
-            >
-              {performance} %
-            </span>
-          </div>
-        )}
-        <div className="text-lg xl:text-xl items-center flex">
+        <div className="text-xs items-center flex mr-[12px]">
           {timeButtons.map((time: string) => {
             return (
               <button

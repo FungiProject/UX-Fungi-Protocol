@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 // Next
 import { useRouter } from "next/router";
 // Constants
-import { fundViews } from "@/constants/Constants";
+import { fundViews } from "../../../constants/Constants";
 // Wagmi
 import { useAccount } from "wagmi";
 // Components

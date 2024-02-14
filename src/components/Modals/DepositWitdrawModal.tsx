@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
 // Components
-import DWCActionCard from "../Cards/DWCActionCard";
+import DWCActionCard from "../Cards/Bridge";
 
 interface DepositWitdrawModalProps {
   getOpenModal: (openmodal: boolean) => void;
@@ -49,7 +49,7 @@ export default function DepositWitdrawModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 min-w-[727px] min-h-[528px]  bg-white sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 min-w-[392px] min-h-[350px]  bg-white sm:p-6">
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
@@ -63,7 +63,7 @@ export default function DepositWitdrawModal({
                     />
                   </button>
                 </div>
-                <div className="sm:flex sm:items-start px-[115px]">
+                <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                     <DWCActionCard actionSelected={modalType} />
                   </div>

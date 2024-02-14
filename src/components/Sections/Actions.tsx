@@ -1,7 +1,7 @@
 // React
 import React from "react";
 // Components
-import DWCActionCard from "../Cards/DWCActionCard";
+import DWCActionCard from "../Cards/Bridge";
 import Swapper from "../Cards/Swapper";
 
 type ActionsProps = {

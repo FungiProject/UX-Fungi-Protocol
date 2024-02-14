@@ -1,7 +1,7 @@
 // React
 import React, { useEffect, useState } from "react";
 // Types
-import { assetType } from "@/types/Types";
+import { assetType, tokenType } from "@/types/Types";
 // Next
 import Image from "next/image";
 // Wagmi
@@ -14,22 +14,16 @@ import getMaxTokens from "@/utils/getMaxToken";
 import { formatUnits } from "viem";
 
 type TokenCardProps = {
-  asset: assetType;
-  getToken: (token: assetType) => void;
+  token: tokenType;
+  getToken: (token: tokenType) => void;
 };
 
-export default function TokenCard({ asset, getToken }: TokenCardProps) {
+export default function TokenCard({ token, getToken }: TokenCardProps) {
   const [network, setNetwork] = useState<string | null>(null);
   const [balanceToken, setBalanceToken] = useState<null | number>(null);
 
   const { address } = useAccount();
   const { chain } = useNetwork();
-
-  const { data: tokenFromDecimals } = useContractRead({
-    address: asset?.address as `0x${string}`,
-    abi: abiERC20,
-    functionName: "decimals",
-  });
 
   useEffect(() => {
     if (chain && chain.id === 80001) {
@@ -45,12 +39,12 @@ export default function TokenCard({ asset, getToken }: TokenCardProps) {
 
   useEffect(() => {
     const fetchMax = async () => {
-      if (address && network && asset) {
+      if (address && network && token) {
         try {
-          const result = await getMaxTokens(address, asset?.address, network);
+          const result = await getMaxTokens(address, token?.address, network);
           setBalanceToken(result);
         } catch (error) {
-          console.error("Error fetching max tokens of", asset.symbol);
+          console.error("Error fetching max tokens of", token.symbol);
         }
       }
     };
@@ -61,30 +55,28 @@ export default function TokenCard({ asset, getToken }: TokenCardProps) {
   return (
     <button
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
-      onClick={() => getToken(asset)}
+      onClick={() => getToken(token)}
     >
-      <div className="pl-[46px] flex">
-        <Image
+      <div className="flex">
+        <img
           width={46}
           height={46}
-          alt="Network Image"
-          src={asset.image}
+          alt={token.coinKey}
+          src={token.logoURI}
           aria-hidden="true"
           className="mr-6 rounded-full"
         />
         <div className="flex flex-col">
-          <span>{asset.name}</span>
-          <span>{asset.symbol}</span>
+          <span>{token.name}</span>
+          <span>{token.symbol}</span>
         </div>
       </div>
-      {balanceToken &&
-      tokenFromDecimals !== undefined &&
-      Number(balanceToken) !== 0 ? (
+      {balanceToken && Number(balanceToken) !== 0 ? (
         <div>
           {Number(
             formatUnits(
               balanceToken as unknown as bigint,
-              tokenFromDecimals as number
+              token.decimals as number
             )
           ).toFixed(5)}
         </div>

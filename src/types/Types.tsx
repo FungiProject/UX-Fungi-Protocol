@@ -1,5 +1,6 @@
 export type navigationType = {
-  image: string;
+  imageActive: string;
+  imageDesactive: string;
   name: string;
   href: string;
 };
@@ -20,20 +21,18 @@ export type homeDataType = {
   imageSrc: string;
 };
 
-export type fundType = {
-  name: string;
-  aum: number;
-  networks: string[];
-  image: string;
-  members: number;
-  allTime: number;
-  href: string;
+export type positionType = {
+  type: string;
+  number: number;
+  totalValue: number;
+  unPnL: number;
 };
 
 export type NetworkType = {
   name: string;
   id: number;
   image: string;
+  symbol: string;
 };
 
 export type assetType = {
@@ -50,4 +49,15 @@ export type assetType = {
 export type memberType = {
   address: string;
   image: string;
+};
+
+export type tokenType = {
+  address: string;
+  chainId: number;
+  coinKey: string;
+  decimals: number;
+  logoURI?: string;
+  name: string;
+  priceUSD: string;
+  symbol: string;
 };

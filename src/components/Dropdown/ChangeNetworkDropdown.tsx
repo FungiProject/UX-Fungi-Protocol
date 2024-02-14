@@ -1,3 +1,4 @@
+
 // React
 import { Fragment, useEffect, useState } from "react";
 // Headlessui
@@ -33,7 +34,7 @@ export default function ChangeNetworkDropdown({
       );
       setChainSelected(chainSelected[0]);
     }
-  }, [chain]);
+  }, [chain, networks]);
 
   return (
     <Menu
