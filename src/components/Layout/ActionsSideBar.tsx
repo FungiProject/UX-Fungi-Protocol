@@ -125,7 +125,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         </div>
       </div>
       {!isHistory && (
-        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-7 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
+        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
           {navigation.map((link: navigationType) => {
             return (
               <button
