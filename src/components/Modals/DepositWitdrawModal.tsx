@@ -4,8 +4,6 @@ import React, { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
-// Components
-import DWCActionCard from "../Cards/Bridge";
 
 interface DepositWitdrawModalProps {
   getOpenModal: (openmodal: boolean) => void;
@@ -65,7 +63,8 @@ export default function DepositWitdrawModal({
                 </div>
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                    <DWCActionCard actionSelected={modalType} />
+                    Deposit
+                    {/* <DWCActionCard /> */}
                   </div>
                 </div>
               </Dialog.Panel>

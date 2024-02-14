@@ -5,12 +5,7 @@ import Link from "next/link";
 // Components
 import DepositWitdrawModal from "../Modals/DepositWitdrawModal";
 
-type ActionsButtonProps = {
-  fund: string;
-  isOwner: boolean;
-};
-
-export default function ActionsButton({ fund, isOwner }: ActionsButtonProps) {
+export default function ActionsButton() {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>("");
 

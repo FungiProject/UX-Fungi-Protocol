@@ -34,7 +34,7 @@ export default function HomeTable({
             <span className="text-3xl">${formatNumber(cash)}</span>
           </p>
         </div>
-        <ActionsButton fund={""} isOwner={false} />
+        <ActionsButton />
       </div>
       {positions.map((position: positionType, index: number) => (
         <HomeTableCard
