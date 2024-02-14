@@ -1,4 +1,3 @@
-
 // React
 import { Fragment, useEffect, useState } from "react";
 // Headlessui
@@ -15,13 +14,11 @@ import { useNetwork, useSwitchNetwork } from "wagmi";
 type NetworkDropdownProps = {
   networks: NetworkType[];
   isModal?: boolean;
-  previousNetwork: NetworkType;
 };
 
 export default function ChangeNetworkDropdown({
   networks,
   isModal,
-  previousNetwork,
 }: NetworkDropdownProps) {
   const [chainSelected, setChainSelected] = useState<NetworkType>();
   const { chain } = useNetwork();
@@ -43,20 +40,12 @@ export default function ChangeNetworkDropdown({
     >
       <div>
         <Menu.Button className="inline-flex w-fit items-center justify-center gap-x-1.5 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-lg">
-          {chainSelected ? (
+          {chainSelected && (
             <Image
               width={25}
               height={25}
               alt="Network image"
               src={chainSelected.image}
-              aria-hidden="true"
-            />
-          ) : (
-            <Image
-              width={25}
-              height={25}
-              alt="Network image"
-              src={previousNetwork.image}
               aria-hidden="true"
             />
           )}

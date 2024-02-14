@@ -32,7 +32,7 @@ import {
 } from "../../domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "../../lib/chains";
-import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../lib/localstorage";
 import { useMulticall } from "../../lib/multicall";
 import { applyFactor } from "../../lib/numbers";
 import { getByKey } from "../../lib/objects";
@@ -105,7 +105,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [notificationState, setNotificationState] =
     useState<SubaccountNotificationState>("none");
 
-  const { signer, account } = useWallet();
+  const { signer, account }: any = useWallet();
   const { chainId } = useChainId();
   const [config, setConfig] =
     useLocalStorageSerializeKey<SubaccountSerializedConfig>(

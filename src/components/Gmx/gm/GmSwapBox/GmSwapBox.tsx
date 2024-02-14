@@ -34,7 +34,7 @@ import {
 } from "../../../../utils/gmx/lib/numbers";
 import { useSafeState } from "../../../../utils/gmx/lib/useSafeState";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import {
   SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY,
   getSyntheticsDepositIndexTokenKey,

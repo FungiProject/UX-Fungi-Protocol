@@ -61,7 +61,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { contractFetcher } from "../../../../utils/gmx/lib/contracts/contractFetcher";
 import { DUST_BNB } from "../../../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import {
   formatAmountFree,
   formatTokenAmount,
@@ -422,39 +422,39 @@ export function PositionEditor(p: Props) {
       return;
     }
 
-    const createIncreaseOrderOp = await createIncreaseOrderUserOp(
-      chainId,
-      signer,
-      subaccount,
-      {
-        account: scAccount as string,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: selectedCollateralAddress,
-        initialCollateralAmount: collateralDeltaAmount,
-        targetCollateralAddress: position.collateralTokenAddress,
-        collateralDeltaAmount,
-        swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        orderType: OrderType.MarketIncrease,
-        isLong: position.isLong,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: p.shouldDisableValidation,
-        setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      }
-    );
+    // const createIncreaseOrderOp = await createIncreaseOrderUserOp(
+    //   chainId,
+    //   signer,
+    //   subaccount,
+    //   {
+    //     account: scAccount as string,
+    //     marketAddress: position.marketAddress,
+    //     initialCollateralAddress: selectedCollateralAddress,
+    //     initialCollateralAmount: collateralDeltaAmount,
+    //     targetCollateralAddress: position.collateralTokenAddress,
+    //     collateralDeltaAmount,
+    //     swapPath: [],
+    //     sizeDeltaUsd: BigNumber.from(0),
+    //     sizeDeltaInTokens: BigNumber.from(0),
+    //     acceptablePrice: markPrice,
+    //     triggerPrice: undefined,
+    //     orderType: OrderType.MarketIncrease,
+    //     isLong: position.isLong,
+    //     executionFee: executionFee.feeTokenAmount,
+    //     allowedSlippage,
+    //     referralCode: userReferralInfo?.referralCodeForTxn,
+    //     indexToken: position.indexToken,
+    //     tokensData,
+    //     skipSimulation: p.shouldDisableValidation,
+    //     setPendingTxns,
+    //     setPendingOrder,
+    //     setPendingPosition,
+    //   }
+    // );
 
-    userOps.push(createIncreaseOrderOp);
+    // userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    // return sendUserOperations(alchemyProvider, chainId, userOps);
   }
 
   async function onCreateDecreaseOrder() {
@@ -470,42 +470,42 @@ export function PositionEditor(p: Props) {
       return;
     }
 
-    const createIncreaseOrderOp = await createDecreaseOrderUserOp(
-      chainId,
-      signer,
-      subaccount,
-      {
-        account: scAccount as string,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: collateralDeltaAmount,
-        receiveTokenAddress: selectedCollateralAddress,
-        swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-        orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
-        minOutputUsd: receiveUsd as BigNumber,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: p.shouldDisableValidation,
-      },
-      {
-        setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      }
-    );
+    // const createIncreaseOrderOp = await createDecreaseOrderUserOp(
+    //   chainId,
+    //   signer,
+    //   subaccount,
+    //   {
+    //     account: scAccount as string,
+    //     marketAddress: position.marketAddress,
+    //     initialCollateralAddress: position.collateralTokenAddress,
+    //     initialCollateralDeltaAmount: collateralDeltaAmount,
+    //     receiveTokenAddress: selectedCollateralAddress,
+    //     swapPath: [],
+    //     sizeDeltaUsd: BigNumber.from(0),
+    //     sizeDeltaInTokens: BigNumber.from(0),
+    //     acceptablePrice: markPrice,
+    //     triggerPrice: undefined,
+    //     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    //     orderType: OrderType.MarketDecrease,
+    //     isLong: position.isLong,
+    //     minOutputUsd: receiveUsd as BigNumber,
+    //     executionFee: executionFee.feeTokenAmount,
+    //     allowedSlippage,
+    //     referralCode: userReferralInfo?.referralCodeForTxn,
+    //     indexToken: position.indexToken,
+    //     tokensData,
+    //     skipSimulation: p.shouldDisableValidation,
+    //   },
+    //   {
+    //     setPendingTxns,
+    //     setPendingOrder,
+    //     setPendingPosition,
+    //   }
+    // );
 
-    userOps.push(createIncreaseOrderOp);
+    // userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    // return sendUserOperations(alchemyProvider, chainId, userOps);
   }
 
   function onSubmit() {

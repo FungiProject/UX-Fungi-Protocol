@@ -103,7 +103,7 @@ import shortImg from "../../../../img/short.svg";
 import swapImg from "../../../../img/swap.svg";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { DUST_BNB, USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import {
   formatAmount,
   formatAmountFree,

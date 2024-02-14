@@ -1,16 +1,16 @@
 // React
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 // Components
 import LogoutButton from "../Buttons/LogoutButton";
 import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 import LoginButton from "../Buttons/LoginButton";
 import Home from "../Sections/Home";
 // Wagmi
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 // Constants
 import { networks, navigation } from "../../../constants/Constants";
 // Types
-import { NetworkType, navigationType } from "@/types/Types";
+import { navigationType } from "@/types/Types";
 // Next
 import Image from "next/image";
 import Link from "next/link";
@@ -20,14 +20,9 @@ import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import { SyntheticsPage } from "../Sections/SyntheticsPage";
 import GM from "../Sections/GM";
-import {
-  arbitrum,
-  arbitrumGoerli,
-  mainnet,
-  polygon,
-  polygonMumbai,
-  sepolia,
-} from "viem/chains";
+import { getIsSyntheticsSupported } from "@/utils/gmx/config/features";
+import { useChainId } from "@/utils/gmx/lib/chains";
+import { SyntheticsFallbackPage } from "../Sections/SyntheticsFallbackPage";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -35,14 +30,12 @@ type ActionsSideBarProps = {
 
 export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   const { isConnected } = useAccount();
-  const [previousNetwork, setPreviousNetwork] = useState<NetworkType>();
+  const { chainId } = useChainId();
   const [actionSelected, setActionSelected] = useState<string>("Home");
 
   const getSelectedAction = (action: string) => {
     setActionSelected(action);
   };
-
-  const { chain } = useNetwork();
 
   const getViewComponent = () => {
     switch (actionSelected) {
@@ -53,7 +46,11 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         setPage(<Spot />);
         break;
       case "Perps":
-        setPage(<SyntheticsPage />);
+        {
+          getIsSyntheticsSupported(chainId)
+            ? setPage(<SyntheticsPage />)
+            : setPage(<SyntheticsFallbackPage />);
+        }
         break;
       case "Transaction History":
         setPage(<History />);
@@ -79,21 +76,21 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
     isHistory && setActionSelected("Transaction History");
   }, [isHistory]);
 
-  useEffect(() => {
-    if (
-      chain &&
-      (chain.id === arbitrum.id ||
-        chain.id === polygonMumbai.id ||
-        chain.id === mainnet.id ||
-        chain.id === polygon.id ||
-        chain.id === arbitrumGoerli.id ||
-        chain.id === sepolia.id)
-    ) {
-      const prev = networks.filter((network) => network.id === chain?.id);
+  // useEffect(() => {
+  //   if (
+  //     chain &&
+  //     (chain.id === arbitrum.id ||
+  //       chain.id === polygonMumbai.id ||
+  //       chain.id === mainnet.id ||
+  //       chain.id === polygon.id ||
+  //       chain.id === arbitrumGoerli.id ||
+  //       chain.id === sepolia.id)
+  //   ) {
+  //     const prev = networks.filter((network) => network.id === chain?.id);
 
-      setPreviousNetwork(prev[0]);
-    }
-  }, [chain]);
+  //     setPreviousNetwork(prev[0]);
+  //   }
+  // }, [chain]);
 
   return (
     <div>
@@ -111,13 +108,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
           </Link>
 
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
-            {isConnected && previousNetwork ? (
+            {isConnected ? (
               <div className="flex items-center">
-                <ChangeNetworkDropdown
-                  isModal={false}
-                  networks={networks}
-                  previousNetwork={previousNetwork}
-                />{" "}
+                <ChangeNetworkDropdown isModal={false} networks={networks} />{" "}
                 <LogoutButton />
               </div>
             ) : (

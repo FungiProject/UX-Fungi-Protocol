@@ -24,7 +24,7 @@ import { SyntheticsTVDataProvider } from "../../../../utils/gmx/domain/synthetic
 import { Token } from "../../../../utils/gmx/domain/tokens";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import {
   formatAmount,
   formatUsd,

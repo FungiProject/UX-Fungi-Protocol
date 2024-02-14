@@ -2,7 +2,7 @@ import useWallet from "../../../lib/wallets/useWallet";
 import { useEffect, useState } from "react";
 
 export function useTransactionPending(hash: string | null | undefined) {
-  const { signer } = useWallet();
+  const { signer }: any = useWallet();
   const [status, setStatus] = useState(false);
 
   useEffect(() => {

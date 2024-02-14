@@ -54,7 +54,7 @@ export function getOracleKeeperRandomIndex(
     const filteredUrls = urls.filter((url, i) => !bannedIndexes.includes(i));
 
     if (filteredUrls.length) {
-      const url = sample(filteredUrls);
+      const url: any = sample(filteredUrls);
       return urls.indexOf(url);
     }
   }

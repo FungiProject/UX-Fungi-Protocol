@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
-import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { FeeItem, SwapFeeItem } from "../../synthetics/fees";
+import { DecreasePositionSwapType, OrderType } from "../../synthetics/orders";
 import { MarketInfo } from "../markets";
 
 export enum TradeType {
@@ -197,7 +197,10 @@ export type SwapEstimator = (
   usdOut: BigNumber;
 };
 
-export type FindSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
+export type FindSwapPath = (
+  usdIn: BigNumber,
+  opts: { byLiquidity?: boolean }
+) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 

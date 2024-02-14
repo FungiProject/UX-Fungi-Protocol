@@ -22,7 +22,7 @@ import {
 import { usePositionsInfo } from "../../utils/gmx/domain/synthetics/positions/usePositionsInfo";
 import { useChainId } from "../../utils/gmx/lib/chains";
 import { getPageTitle } from "../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localstorage";
 import { formatUsd } from "../../utils/gmx/lib/numbers";
 import { getByKey } from "../../utils/gmx/lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -47,20 +47,6 @@ import useWallet from "../../utils/gmx/lib/wallets/useWallet";
 import PageContainer from "@/components/Container/PageContainer";
 import { PositionSeller } from "../Gmx/chart/Positions/PositionSeller";
 
-export type Props = {
-  savedIsPnlInLeverage: boolean;
-  shouldDisableValidation: boolean;
-  savedShouldShowPositionLines: boolean;
-  showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
-  savedSlippageAmount: number;
-  setSavedShouldShowPositionLines: (value: boolean) => void;
-  setPendingTxns: (txns: any) => void;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
-  openSettings: () => void;
-};
-
 enum ListSection {
   Positions = "Positions",
   Orders = "Orders",
@@ -68,7 +54,7 @@ enum ListSection {
   Claims = "Claims",
 }
 
-export function SyntheticsPage(p: Props) {
+export function SyntheticsPage(p) {
   const {
     savedIsPnlInLeverage,
     shouldDisableValidation,

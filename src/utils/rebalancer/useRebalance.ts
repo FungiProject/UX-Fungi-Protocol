@@ -36,7 +36,6 @@ export async function getUserOpSwapLifi(
   scAccount: string,
   swaps: RebalanceSwap[]
 ): Promise<UserOperation[]> {
-
   const chain = getChainIdLiFi(chainId);
 
   const promises = swaps.map((swap) =>
@@ -84,7 +83,10 @@ function computeTokensUsd(balances: TokenBalance[]) {
 
 function computeTotalValueUsdBalance(balances: TokenBalance[]) {
   return balances.reduce(
-    (accumulator, current) => current.totalValueUsd + accumulator,
+    (accumulator, current) =>
+      current.totalValueUsd
+        ? current.totalValueUsd + accumulator
+        : 0 + accumulator,
     0
   );
 }

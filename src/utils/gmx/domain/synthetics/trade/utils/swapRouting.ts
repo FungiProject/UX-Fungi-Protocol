@@ -1,4 +1,4 @@
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData } from "../../../synthetics/markets";
 import { BigNumber } from "ethers";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
@@ -10,7 +10,13 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   };
 
   for (const market of markets) {
-    const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals, isDisabled } = market;
+    const {
+      longTokenAddress,
+      shortTokenAddress,
+      marketTokenAddress,
+      isSameCollaterals,
+      isDisabled,
+    } = market;
 
     if (isSameCollaterals || isDisabled) {
       continue;
@@ -30,9 +36,11 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
       to: longTokenAddress,
     };
 
-    graph.abjacencyList[longTokenAddress] = graph.abjacencyList[longTokenAddress] || [];
+    graph.abjacencyList[longTokenAddress] =
+      graph.abjacencyList[longTokenAddress] || [];
     graph.abjacencyList[longTokenAddress].push(longShortEdge);
-    graph.abjacencyList[shortTokenAddress] = graph.abjacencyList[shortTokenAddress] || [];
+    graph.abjacencyList[shortTokenAddress] =
+      graph.abjacencyList[shortTokenAddress] || [];
     graph.abjacencyList[shortTokenAddress].push(shortLongEdge);
 
     graph.edges.push(longShortEdge, shortLongEdge);
@@ -41,7 +49,9 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   return graph;
 }
 
-export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
+export const createSwapEstimator = (
+  marketsInfoData: MarketsInfoData
+): SwapEstimator => {
   return (e: MarketEdge, usdIn: BigNumber) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -68,7 +78,11 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
-export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator: SwapEstimator) {
+export function getBestSwapPath(
+  routes: SwapRoute[],
+  usdIn: BigNumber,
+  estimator: SwapEstimator
+) {
   if (routes.length === 0) {
     return undefined;
   }
@@ -114,7 +128,12 @@ export function findAllPaths(
     dfs(e, [], [], {});
   }
 
-  function dfs(edge: MarketEdge, path: string[], pathEdges: MarketEdge[], visited: { [edgeId: string]: boolean }) {
+  function dfs(
+    edge: MarketEdge,
+    path: string[],
+    pathEdges: MarketEdge[],
+    visited: { [edgeId: string]: boolean }
+  ) {
     // avoid too deep paths and cycles
     if (path.length >= maxDepth || visited[edge.marketAddress]) {
       return;
@@ -128,7 +147,11 @@ export function findAllPaths(
       routes.push({
         edged: pathEdges,
         path: path,
-        liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: path, initialCollateralAddress: from }),
+        liquidity: getMaxSwapPathLiquidity({
+          marketsInfoData,
+          swapPath: path,
+          initialCollateralAddress: from,
+        }),
       });
       return;
     }

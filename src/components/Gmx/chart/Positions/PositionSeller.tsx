@@ -65,7 +65,7 @@ import { getIsEquivalentTokens } from "../../../../utils/gmx/domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import {
   bigNumberify,
   formatAmount,

@@ -17,7 +17,7 @@ import {
 } from "../../config/localStorage";
 import { getOracleKeeperRandomIndex } from "../../config/oracleKeeper";
 import { useChainId } from "../../lib/chains";
-import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../lib/localstorage";
 import {
   Dispatch,
   ReactNode,

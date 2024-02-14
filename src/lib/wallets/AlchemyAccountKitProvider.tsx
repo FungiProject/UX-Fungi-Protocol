@@ -1,4 +1,3 @@
-import { useAlchemyProvider } from "@/hooks/useAlchemyProvider";
 import {
   ReactNode,
   createContext,
@@ -74,7 +73,7 @@ export const AlchemyAccountKitProvider = ({
   const [signer, setSigner] = useState<SmartAccountSigner>();
 
   const [scaAddress, setScaAddress] = useState<string>();
-
+  console.log(isIdle);
   const [ownerAddress, setOwnerAddress] = useState<Address>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
@@ -105,10 +104,10 @@ export const AlchemyAccountKitProvider = ({
         factoryAddress: getDefaultLightAccountFactoryAddress(chain),
       });
     });
-
+    const address = await connectedProvider.getAddress();
     setAlchemyProvider(connectedProvider);
-    setScaAddress(await connectedProvider.getAddress());
-  }, [chain, connectors, isConnected]);
+    setScaAddress(address);
+  }, [chain, connectors, isConnected, scaAddress]);
 
   const login = useCallback(async () => {
     try {
@@ -123,7 +122,7 @@ export const AlchemyAccountKitProvider = ({
       return;
     }
     connectAlchemyProvider();
-  }, [connectAlchemyProvider, isConnected, isIdle]);
+  }, [connectAlchemyProvider, isConnected, isIdle, scaAddress]);
 
   const logout = useCallback(async () => {}, []);
 

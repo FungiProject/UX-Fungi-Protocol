@@ -1,4 +1,4 @@
-import { ChartData } from "charting_library";
+import { ChartData } from "../../charting_library";
 import { getTokenBySymbol } from "./config/tokens";
 import { Token } from "./domain/tokens";
 

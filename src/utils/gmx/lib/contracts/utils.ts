@@ -12,9 +12,9 @@ export async function setGasPrice(
   chainId: number
 ) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+  const premium: any = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  const gasPrice = await provider.getGasPrice();
+  const gasPrice: any = await provider.getGasPrice();
 
   if (maxGasPrice) {
     if (gasPrice.gt(maxGasPrice)) {
@@ -56,5 +56,3 @@ export async function getGasLimit(
 
   return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
-
-

@@ -4,9 +4,7 @@ import cx from "classnames";
 import groupBy from "lodash/groupBy";
 import { FaChevronDown } from "react-icons/fa";
 import { Token } from "../../../../utils/gmx/domain/tokens";
-import SearchInput from "../SearchInput";
 import TokenIcon from "../../common/TokenIcon/TokenIcon";
-// import { t } from "@lingui/macro";
 import { TradeFlags } from "../../../../utils/gmx/domain/synthetics/trade/useTradeFlags";
 import {
   AvailableTokenOptions,

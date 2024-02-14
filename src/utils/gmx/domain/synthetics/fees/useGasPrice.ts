@@ -52,7 +52,7 @@ export function useGasPrice(chainId: number) {
                 .div(BASIS_POINTS_DIVISOR);
               gasPrice = gasPrice.add(buffer);
             }
-            const premium =
+            const premium: any =
               GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
             resolve(gasPrice.add(premium));

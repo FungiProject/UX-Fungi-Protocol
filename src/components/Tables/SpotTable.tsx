@@ -10,12 +10,7 @@ import { NetworkType, assetType } from "@/types/Types";
 // Wagmi
 import { useNetwork } from "wagmi";
 // Constants
-import {
-  assetsArbitrum,
-  assetsMainnet,
-  assetsPolygon,
-  assetsPolygonMumbai,
-} from "../../../constants/Constants";
+import { assetsArbitrum, assetsMainnet } from "../../../constants/Constants";
 import Loader from "../Loader/SpinnerLoader";
 
 type SpotTableProps = {
@@ -37,24 +32,16 @@ export default function SpotTable({ tokens }: SpotTableProps) {
     let copy: any[] = [];
 
     if (!sortByNetwork) {
-      if (chain && chain.id === 80001) {
-        copy = assetsPolygonMumbai;
-      } else if (chain && chain.id === 42161) {
+      if (chain && chain.id === 42161) {
         copy = assetsArbitrum;
       } else if (chain && chain.id === 1) {
         copy = assetsMainnet;
-      } else if (chain && chain.id === 137) {
-        copy = assetsPolygon;
       }
     } else {
-      if (selectedNetwork && selectedNetwork.id === 80001) {
-        copy = assetsPolygonMumbai;
-      } else if (selectedNetwork && selectedNetwork.id === 42161) {
+      if (selectedNetwork && selectedNetwork.id === 42161) {
         copy = assetsArbitrum;
       } else if (selectedNetwork && selectedNetwork.id === 1) {
         copy = assetsMainnet;
-      } else if (selectedNetwork && selectedNetwork.id === 137) {
-        copy = assetsPolygon;
       }
     }
 

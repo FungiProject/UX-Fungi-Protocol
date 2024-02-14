@@ -15,7 +15,7 @@ import { SUBACCOUNT_DOCS_URL } from "../../../../utils/gmx/domain/synthetics/sub
 import { TradeFlags } from "../../../../utils/gmx/domain/synthetics/trade/useTradeFlags";
 import { BigNumber } from "ethers";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
-import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
 import { ReactNode, memo, useCallback } from "react";
 import {
   ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,

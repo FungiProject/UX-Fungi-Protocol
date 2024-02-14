@@ -1,6 +1,6 @@
 import { getSyntheticsTradeOptionsKey } from "../../../config/localStorage";
 import { getIsUnwrap, getIsWrap } from "../../tokens";
-import { useLocalStorageSerializeKey } from "../../../lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../lib/localstorage";
 import { getByKey } from "../../../lib/objects";
 import { useCallback, useEffect, useMemo } from "react";
 import { MarketInfo, MarketsInfoData } from "../markets";
@@ -247,9 +247,9 @@ export function useSelectedTradeOption(
       }
       oldState.tradeType = position.isLong ? TradeType.Long : TradeType.Short;
       oldState.tokens.indexTokenAddress = position.indexToken.address;
-      oldState.markets[oldState.tokens.indexTokenAddress] =
-        oldState.markets[oldState.tokens.indexTokenAddress] || {};
-      oldState.markets[oldState.tokens.indexTokenAddress][
+      oldState.markets[oldState.tokens.indexTokenAddress as string] =
+        oldState.markets[oldState.tokens.indexTokenAddress as string] || {};
+      oldState.markets[oldState.tokens.indexTokenAddress as string][
         position.isLong ? "long" : "short"
       ] = position.marketAddress;
       oldState.collateralAddress = position.collateralToken.address;

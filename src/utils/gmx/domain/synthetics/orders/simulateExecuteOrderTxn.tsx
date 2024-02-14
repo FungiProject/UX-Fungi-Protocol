@@ -88,7 +88,7 @@ export async function simulateExecuteOrderTxn(
       blockTag: blockNumber,
       from: p.account,
     });
-  } catch (txnError) {
+  } catch (txnError: any) {
     const customErrors = new ethers.Contract(
       ethers.constants.AddressZero,
       CustomErrors.abi

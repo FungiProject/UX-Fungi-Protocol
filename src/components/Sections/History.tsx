@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ActivityViewTable from "../Tables/ActivityViewTable";
-import { activities } from "../../../constants/Constants";
+// import { activities } from "../../../constants/Constants";
 import Spinner from "../Loader/SpinnerLoader";
 import {
   ChevronLeftIcon,
@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function History() {
   const [activityArrayCopy, setActivityArrayCopy] = useState<any[]>([
-    ...activities,
+    // ...activities,
   ]);
   const [loading, setLoading] = useState(true);
 
@@ -36,42 +36,42 @@ export default function History() {
     setCurrentPage(currentPage - 1);
   };
 
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === currentPage ||
-        i === currentPage - 1 ||
-        i === currentPage + 1 ||
-        i === totalPages
-      ) {
-        pageNumbers.push(i);
-      } else if (i === currentPage - 2 || i === currentPage + 2) {
-        pageNumbers.push("...");
-      }
-    }
+  // const renderPageNumbers = () => {
+  //   const pageNumbers = [];
+  //   for (let i = 1; i <= totalPages; i++) {
+  //     if (
+  //       i === 1 ||
+  //       i === currentPage ||
+  //       i === currentPage - 1 ||
+  //       i === currentPage + 1 ||
+  //       i === totalPages
+  //     ) {
+  //       pageNumbers.push(i);
+  //     } else if (i === currentPage - 2 || i === currentPage + 2) {
+  //       pageNumbers.push("...");
+  //     }
+  //   }
 
-    return pageNumbers.map((pageNumber, index) =>
-      pageNumber.toString() !== "..." ? (
-        <button
-          key={index}
-          className={
-            pageNumber === currentPage
-              ? "bg-main py-0.5 px-2 rounded-lg text-white"
-              : "mx-2.5"
-          }
-          onClick={() => handlePageChange(Number(pageNumber))}
-        >
-          {pageNumber}
-        </button>
-      ) : (
-        <span className="mx-1" key={index}>
-          {pageNumber}
-        </span>
-      )
-    );
-  };
+  //   return pageNumbers.map((pageNumber, index) =>
+  //     pageNumber.toString() !== "..." ? (
+  //       <button
+  //         key={index}
+  //         className={
+  //           pageNumber === currentPage
+  //             ? "bg-main py-0.5 px-2 rounded-lg text-white"
+  //             : "mx-2.5"
+  //         }
+  //         onClick={() => handlePageChange(Number(pageNumber))}
+  //       >
+  //         {pageNumber}
+  //       </button>
+  //     ) : (
+  //       <span className="mx-1" key={index}>
+  //         {pageNumber}
+  //       </span>
+  //     )
+  //   );
+  // };
 
   return (
     <main>
@@ -88,11 +88,12 @@ export default function History() {
           <Spinner />
         </div>
       ) : (
-        <ActivityViewTable
-          activities={activities}
-          startIndex={startIndex}
-          endIndex={endIndex}
-        />
+        // <ActivityViewTable
+        //   activities={activities}
+        //   startIndex={startIndex}
+        //   endIndex={endIndex}
+        // />
+        <div></div>
       )}
       <div className="flex items-center mt-4 relative">
         <span>
@@ -107,7 +108,7 @@ export default function History() {
               />
             </button>
           )}
-          {renderPageNumbers()}{" "}
+          {/* {renderPageNumbers()}{" "} */}
           {currentPage < activityArrayCopy.length / 5 && (
             <button onClick={() => handleClickNext()}>
               <ChevronRightIcon
