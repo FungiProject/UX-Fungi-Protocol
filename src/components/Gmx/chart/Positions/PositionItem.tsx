@@ -440,7 +440,9 @@ export function PositionItem(p: Props) {
           );
         }
         return (
-          <div className="Position-list-order">{renderOrderText(order)}</div>
+          <div className="Position-list-order" key={order.key}>
+            {renderOrderText(order)}
+          </div>
         );
       });
     }

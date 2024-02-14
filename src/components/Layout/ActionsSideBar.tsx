@@ -32,6 +32,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   const { isConnected } = useAccount();
   const { chainId } = useChainId();
   const [actionSelected, setActionSelected] = useState<string>("Home");
+  const [connected, setConnected] = useState(false);
 
   const getSelectedAction = (action: string) => {
     setActionSelected(action);
@@ -76,6 +77,10 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
     isHistory && setActionSelected("Transaction History");
   }, [isHistory]);
 
+  useEffect(() => {
+    isConnected && setConnected(true);
+  }, [isConnected]);
+
   // useEffect(() => {
   //   if (
   //     chain &&
@@ -108,7 +113,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
           </Link>
 
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
-            {isConnected ? (
+            {connected ? (
               <div className="flex items-center">
                 <ChangeNetworkDropdown isModal={false} networks={networks} />{" "}
                 <LogoutButton />

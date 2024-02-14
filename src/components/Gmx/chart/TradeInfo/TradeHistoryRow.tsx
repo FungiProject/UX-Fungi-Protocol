@@ -90,8 +90,8 @@ function getPositionOrderMessage(
                     )}
                   </span>
                 ) : null}
-                {message.tooltipRows?.map((props) => (
-                  <StatsTooltipRow {...props} />
+                {message.tooltipRows?.map((props, index) => (
+                  <StatsTooltipRow {...props} key={index} />
                 ))}
                 {message.tooltipFooter ? (
                   <span
