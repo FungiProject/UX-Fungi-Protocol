@@ -32,7 +32,7 @@ export function createWrapOrUnwrapOrderUserOp(
     ) as `0x${string}`;
 
     return {
-      target: router.address,
+      target: router.address as `0x${string}`,
       data: calldata,
       value: p.amount.toBigInt(),
     };
@@ -43,7 +43,7 @@ export function createWrapOrUnwrapOrderUserOp(
     ) as `0x${string}`;
 
     return {
-      target: router.address,
+      target: router.address as `0x${string}`,
       data: calldata,
       value: p.amount.toBigInt(),
     };
