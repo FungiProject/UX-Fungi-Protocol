@@ -15,7 +15,8 @@ export default function HistoryPage() {
 
   return (
     <div>
-      <ActionsSideBar isHistory={true} />
+      {/* <ActionsSideBar isHistory={true} /> */}
+      Keep working
     </div>
   );
 }
