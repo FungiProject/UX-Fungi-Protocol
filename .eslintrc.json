@@ -9,27 +9,30 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-    "rules": {
-      "react/no-unescaped-entities": 0,
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "off",
-      "no-irregular-whitespace": "off",
-
-
-      "curly": "off",
-      "no-undef": "error",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "prefer-const": "off",
-      "no-console": "warn",
-      "@typescript-eslint/ban-ts-comment": "off",
-      "no-var": "error",
-      "no-async-promise-executor": "off",
-      "@typescript-eslint/ban-types": "off",
-      "no-case-declarations": "error",
-      "@typescript-eslint/no-empty-interface": "off",
-      "no-extra-boolean-cast": "error",
-      "no-prototype-builtins": "error",
-      "no-empty": "error"
-    }
+  "rules": {
+    "react/display-name": "off",
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-irregular-whitespace": "off",
+    "curly": "off",
+    "no-undef": "error",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "prefer-const": "off",
+    "no-console": "warn",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "no-var": "error",
+    "no-async-promise-executor": "off",
+    "@typescript-eslint/ban-types": "off",
+    "no-case-declarations": "error",
+    "@typescript-eslint/no-empty-interface": "off",
+    "no-extra-boolean-cast": "error",
+    "no-prototype-builtins": "error",
+    "no-empty": "error"
+  },
+  "globals": {
+    "process": true,
+    "TradingView": true
+  }
 }
   
