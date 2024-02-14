@@ -7,7 +7,7 @@ import { useSettings } from "../../../context/SettingsContext/SettingsContextPro
 import { timezoneOffset } from "../../prices";
 import { Bar } from "../../tradingview/types";
 import { buildUrl } from "../../../lib/buildUrl";
-import { useLocalStorageSerializeKey } from "../../../lib/localStorage";
+import { useLocalStorageSerializeKey } from "../../../lib/localstorage";
 import { useMemo } from "react";
 
 export type TickersResponse = {

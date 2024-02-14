@@ -22,8 +22,9 @@ export default function ActionsButton() {
     <main>
       <div>
         <button
-          className="bg-main text-white rounded-xl px-16 py-3 text-sm hover:bg-mainHover"
+          className="bg-main text-white rounded-xl px-16 py-3 text-sm opacity-50"
           onClick={() => chooseModal("Deposit")}
+          disabled={true}
         >
           Deposit
         </button>
