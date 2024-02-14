@@ -147,3 +147,5 @@ export const SubaccountNavigationButton = memo(
 function isTouchDevice() {
   return "ontouchstart" in window;
 }
+
+export default SubaccountNavigationButton;

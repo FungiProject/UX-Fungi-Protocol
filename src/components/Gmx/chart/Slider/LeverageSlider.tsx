@@ -29,7 +29,7 @@ function getMarksWithLabel(marks: number[]) {
   }, {} as { [key: number]: string });
 }
 
-export function LeverageSlider(p: Props) {
+export default function LeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
   const finalMarks = marks ?? defaultMarks;
 

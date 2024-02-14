@@ -3,7 +3,7 @@ import Button from "../Gmx/common/Buttons/Button";
 import TokenDropdown from "../Dropdown/TokenDropdown";
 import { tokenType } from "@/types/Types";
 import TokenCardRebalance from "./TokenCardRebalance";
-import RebalanceSlider from "../Sliders/RebalanceSlider";
+
 import {
   computeRebalance,
   getUserOpSwapLifi,

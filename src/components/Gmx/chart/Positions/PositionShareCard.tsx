@@ -122,3 +122,5 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+
+export default PositionShareCard;
