@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "../../common/ExternalLink/ExternalLink";
 import StatsTooltipRow from "../../common/Tooltip/StatsTooltipRow";
 import Tooltip from "../../common/Tooltip/Tooltip";

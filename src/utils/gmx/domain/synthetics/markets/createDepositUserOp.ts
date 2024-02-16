@@ -1,6 +1,6 @@
 import { getContract } from "@/utils/gmx/config/contracts";
 import ExchangeRouter from "@/../abis/ExchangeRouter.json";
-import { ethers, BigNumber, Signer } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { UI_FEE_RECEIVER_ACCOUNT } from "@/utils/gmx/config/ui";
 import { applySlippageToMinOut } from "../trade";
 import {

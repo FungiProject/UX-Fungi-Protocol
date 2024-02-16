@@ -1,4 +1,3 @@
-// import { Trans } from "@lingui/macro";
 import SpinningLoader from "../../../Loader/SpinningLoaderGMX";
 import { getPriceDecimals } from "../../../../utils/gmx/config/tokens";
 import { Token } from "../../../../utils/gmx/domain/tokens";

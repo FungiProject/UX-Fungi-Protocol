@@ -1,4 +1,3 @@
-// import { t, Trans } from "@lingui/macro";
 import Modal from "../../common/Modal/Modal";
 import { formatDeltaUsd, formatUsd } from "../../../../utils/gmx/lib/numbers";
 import Button from "../../common/Buttons/Button";

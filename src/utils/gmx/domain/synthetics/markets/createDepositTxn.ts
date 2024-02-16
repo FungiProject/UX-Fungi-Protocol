@@ -11,7 +11,6 @@ import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-// import { t } from "@lingui/macro";
 
 type Params = {
   account: string;

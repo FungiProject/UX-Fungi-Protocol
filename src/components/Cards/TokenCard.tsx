@@ -1,13 +1,9 @@
 // React
 import React, { useEffect, useState } from "react";
 // Types
-import { assetType, tokenType } from "@/types/Types";
-// Next
-import Image from "next/image";
+import { tokenType } from "@/types/Types";
 // Wagmi
-import { useAccount, useContractRead, useNetwork } from "wagmi";
-// Abis
-import { abiERC20 } from "../../../abis/abis.json";
+import { useAccount, useNetwork } from "wagmi";
 // Utils
 import getMaxTokens from "@/utils/getMaxToken";
 // Viem

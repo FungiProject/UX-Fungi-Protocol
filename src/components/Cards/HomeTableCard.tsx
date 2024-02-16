@@ -1,7 +1,5 @@
 // React
 import React from "react";
-// Next
-import Image from "next/image";
 // Types
 import { positionType } from "@/types/Types";
 // Utils

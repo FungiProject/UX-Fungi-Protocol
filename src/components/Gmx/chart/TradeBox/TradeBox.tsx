@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import Button from "../../common/Buttons/Button";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
@@ -30,10 +29,7 @@ import {
 import { MAX_METAMASK_MOBILE_DECIMALS } from "../../../../utils/gmx/config/ui";
 import { useSettings } from "../../../../utils/gmx/context/SettingsContext/SettingsContextProvider";
 import { useHasOutdatedUi } from "../../../../utils/gmx/domain/legacy";
-import {
-  useUserReferralCode,
-  useUserReferralInfo,
-} from "../../../../utils/gmx/domain/referrals/hooks";
+import { useUserReferralInfo } from "../../../../utils/gmx/domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,

@@ -37,10 +37,9 @@ export function createWrapOrUnwrapOrderUserOp(
       value: p.amount.toBigInt(),
     };
   } else {
-    const calldata = router.interface.encodeFunctionData(
-      "withdraw",
-      []
-    ) as `0x${string}`;
+    const calldata = router.interface.encodeFunctionData("withdraw", [
+      p.amount,
+    ]) as `0x${string}`;
 
     return {
       target: router.address as `0x${string}`,

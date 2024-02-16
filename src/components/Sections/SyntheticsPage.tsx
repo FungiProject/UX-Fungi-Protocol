@@ -1,6 +1,4 @@
-// import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import Checkbox from "../Gmx/common/Checkbox/Checkbox";
 import { ClaimModal } from "../Gmx/chart/Claims/ClaimModal";
 import { Claims } from "../Gmx/chart/Claims/Claims";
 import { OrderList } from "../Gmx/chart/Orders/OrderList";

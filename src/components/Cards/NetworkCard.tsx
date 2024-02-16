@@ -1,17 +1,7 @@
 // React
-import React, { useEffect, useState } from "react";
+import React from "react";
 // Types
-import { NetworkType, assetType, tokenType } from "@/types/Types";
-// Next
-import Image from "next/image";
-// Wagmi
-import { useAccount, useContractRead, useNetwork } from "wagmi";
-// Abis
-import { abiERC20 } from "../../../abis/abis.json";
-// Utils
-import getMaxTokens from "@/utils/getMaxToken";
-// Viem
-import { formatUnits } from "viem";
+import { NetworkType } from "@/types/Types";
 
 type NetworkCardProps = {
   network: NetworkType;

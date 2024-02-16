@@ -1,13 +1,10 @@
 // React
-import { Fragment, useState } from "react";
-// Headlessui
-import { Menu, Transition } from "@headlessui/react";
+import { useState } from "react";
 // Heroicons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 // Types
 import { NetworkType } from "@/types/Types";
-// Next
-import Image from "next/image";
+// Components
 import NetworkModal from "../Modals/NetworkModal";
 
 type NetworkDropdownProps = {

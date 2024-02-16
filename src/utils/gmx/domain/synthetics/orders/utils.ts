@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import { Token } from "../../tokens";
 import { BigNumber } from "ethers";
 import {

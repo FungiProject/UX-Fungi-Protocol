@@ -1,10 +1,8 @@
-// import { Trans } from "@lingui/macro";
 import { getWrappedToken } from "../../../../utils/gmx/config/tokens";
 import { approveTokens } from "../../../../utils/gmx/domain/tokens";
 import { isAddressZero } from "../../../../utils/gmx/lib/legacy";
 import { useState } from "react";
 import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
-
 import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 
 type Props = {

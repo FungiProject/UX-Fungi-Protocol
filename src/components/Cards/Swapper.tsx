@@ -1,23 +1,11 @@
 // React
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
 // Types
 import { tokenType } from "@/types/Types";
-// Wagmi
-import { useAccount, useContractRead, useNetwork } from "wagmi";
-
-// Utils
-import getMaxTokens from "@/utils/getMaxToken";
-// Viem
-import { formatUnits } from "viem";
-// Abis
-import { abiERC20 } from "../../../abis/abis.json";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import {
-  AlchemyAccountKitProvider,
-  useAlchemyAccountKitContext,
-} from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import { useLiFiTx } from "./useLiFiTx";
 import Button from "../Gmx/common/Buttons/Button";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
