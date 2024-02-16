@@ -5,15 +5,13 @@ import {
   convertTokenAddress,
 } from "../../../config/tokens";
 import { SetPendingOrder } from "../../../context/SyntheticsEvents";
-import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "../../../lib/contracts/callContract";
+import { BigNumber, ethers } from "ethers";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-// import { t } from "@lingui/macro";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 

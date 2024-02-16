@@ -1,4 +1,3 @@
-// import { plural, t } from "@lingui/macro";
 import ExchangeRouter from "../../../../../../abis/ExchangeRouter.json";
 import { getContract } from "../../../config/contracts";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";

@@ -11,8 +11,7 @@ import {
 } from "../../../context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "../tokens";
 import { Token } from "../../tokens";
-import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "../../../lib/contracts/callContract";
+import { BigNumber, ethers } from "ethers";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import {
@@ -22,7 +21,6 @@ import {
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-// import { t } from "@lingui/macro";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 

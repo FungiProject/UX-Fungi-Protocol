@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "../Gmx/common/Buttons/Button";
-import TokenDropdown from "../Dropdown/TokenDropdown";
 import { tokenType } from "@/types/Types";
 import TokenCardRebalance from "./TokenCardRebalance";
 

@@ -23,7 +23,6 @@ import {
 } from "../../../../utils/gmx/lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
-
 import Button from "../../common/Buttons/Button";
 import TokenIcon from "../../common/TokenIcon/TokenIcon";
 import { useSettings } from "../../../../utils/gmx/context/SettingsContext/SettingsContextProvider";

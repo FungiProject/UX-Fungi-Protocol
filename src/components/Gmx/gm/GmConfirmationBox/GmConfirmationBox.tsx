@@ -1,17 +1,8 @@
-//import { Trans, plural, t } from "@lingui/macro";
-import cx from "classnames";
-//import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "../../common/Modal/Modal";
 import { getContract } from "@/utils/gmx/config/contracts";
 import { ExecutionFee } from "@/utils/gmx/domain/synthetics/fees";
 import { useMarkets } from "@/utils/gmx/domain/synthetics/markets";
-import { createDepositTxn } from "@/utils/gmx/domain/synthetics/markets";
-import { createWithdrawalTxn } from "@/utils/gmx/domain/synthetics/markets";
-import {
-  getNeedTokenApprove,
-  getTokenData,
-  useTokensData,
-} from "@/utils/gmx/domain/synthetics/tokens";
+import { getNeedTokenApprove } from "@/utils/gmx/domain/synthetics/tokens";
 import { TokenData } from "@/utils/gmx/domain/tokens/types";
 import { useTokensAllowanceData } from "@/utils/gmx/domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "@/utils/gmx/domain/synthetics/trade";
@@ -25,7 +16,6 @@ import Button from "../../common/Buttons/Button";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "@/utils/gmx/config/factors";
 import { useSyntheticsEvents } from "@/utils/gmx/context/SyntheticsEvents";
 import { useState } from "react";
-//import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { createWithdrawalUserOp } from "@/utils/gmx/domain/synthetics/markets/createWithdrawalUserOp";

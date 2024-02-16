@@ -1,4 +1,3 @@
-// import { Trans } from "@lingui/macro";
 import { useTradeHistory } from "../../../../utils/gmx/domain/synthetics/tradeHistory";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { TradeHistoryRow } from "./TradeHistoryRow";

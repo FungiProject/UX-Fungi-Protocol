@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import { getChainName, getHighExecutionFee } from "../../../../config/chains";
 import { NATIVE_TOKEN_ADDRESS } from "../../../../config/tokens";
 import { TokensData, convertToUsd, getTokenData } from "../../tokens";

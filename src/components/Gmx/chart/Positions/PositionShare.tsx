@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import Button from "../../common/Buttons/Button";
 import { useAffiliateCodes } from "../../../../utils/gmx/domain/referrals/hooks";
 import { Token } from "../../../../utils/gmx/domain/tokens";

@@ -79,10 +79,6 @@ import useSWR from "swr";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
 import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
-import { createDepositUserOp } from "@/utils/gmx/domain/synthetics/markets/createDepositUserOp";
-import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
-import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 
 export type Props = {
   position?: PositionInfo;

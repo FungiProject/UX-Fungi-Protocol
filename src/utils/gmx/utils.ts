@@ -1,5 +1,4 @@
 import CustomErrors from "../../../abis/CustomErrors.json";
-// import { t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "../../components/Gmx/common/Tooltip/StatsTooltipRow";
 import {

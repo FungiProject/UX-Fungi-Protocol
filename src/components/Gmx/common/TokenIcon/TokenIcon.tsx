@@ -1,6 +1,5 @@
 import { importImage } from "../../../../utils/gmx/lib/legacy";
 import cx from "classnames";
-//import "./TokenIcon.scss";
 import Image from "next/image";
 
 function getIconUrlPath(symbol, size: 24 | 40) {

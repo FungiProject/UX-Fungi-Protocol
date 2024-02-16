@@ -1,4 +1,3 @@
-//import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
 import StatsTooltipRow from "../../common/Tooltip/StatsTooltipRow";

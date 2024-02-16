@@ -5,3 +5,5 @@ export * from "./createWithdrawalTxn";
 export * from "./useMarketTokensData";
 export * from "./useMarkets";
 export * from "./useMarketsInfo";
+export * from "./createDepositUserOp";
+export * from "./createWithdrawalUserOp";

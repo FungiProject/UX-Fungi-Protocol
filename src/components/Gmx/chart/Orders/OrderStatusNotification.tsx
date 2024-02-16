@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import cx from "classnames";
 import {
   TransactionStatus,

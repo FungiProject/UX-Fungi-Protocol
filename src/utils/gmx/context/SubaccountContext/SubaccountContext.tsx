@@ -1,4 +1,3 @@
-// import { Trans } from "@lingui/macro";
 import DataStore from "../../../../../abis/DataStore.json";
 import {
   ARBITRUM,
