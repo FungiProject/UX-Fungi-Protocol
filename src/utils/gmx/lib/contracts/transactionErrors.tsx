@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "../../../../components/Gmx/common/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "../../config/chains";

@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "../../config/chains";
 import { BigNumber, Contract } from "ethers";
