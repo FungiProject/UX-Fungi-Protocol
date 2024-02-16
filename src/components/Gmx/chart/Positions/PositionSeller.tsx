@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Button from "../../common/Buttons/Button";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
@@ -6,7 +5,6 @@ import ExchangeInfoRow from "../ExchangeInfoRow/ExchangeInfoRow";
 import Modal from "../../common/Modal/Modal";
 import PercentageInput from "../Inputs/PercentageInput";
 import Tab from "../../common/Tab/Tab";
-import ToggleSwitch from "../ToggleSwitch/ToggleSwitch";
 import TokenSelector from "../../common/TokenSelector/TokenSelector";
 import Tooltip from "../../common/Tooltip/Tooltip";
 import TooltipWithPortal from "../../common/Tooltip/TooltipWithPortal";
@@ -33,7 +31,6 @@ import { MarketsInfoData } from "../../../../utils/gmx/domain/synthetics/markets
 import {
   DecreasePositionSwapType,
   OrderType,
-  createDecreaseOrderTxn,
 } from "../../../../utils/gmx/domain/synthetics/orders";
 import {
   PositionInfo,

@@ -6,7 +6,6 @@ import {
 import { callContract } from "../../../lib/contracts/callContract";
 import WETH from "../../../../../../abis/WETH.json";
 import { BigNumber, Signer, ethers } from "ethers";
-// import { t } from "@lingui/macro";
 import { formatTokenAmount } from "../../../lib/numbers";
 
 type WrapOrUnwrapParams = {

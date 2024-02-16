@@ -1,7 +1,5 @@
 // React
 import React, { useState } from "react";
-// Next
-import Link from "next/link";
 // Components
 import DepositWitdrawModal from "../Modals/DepositWitdrawModal";
 

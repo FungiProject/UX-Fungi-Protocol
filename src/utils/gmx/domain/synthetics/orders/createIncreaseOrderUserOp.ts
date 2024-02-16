@@ -9,21 +9,15 @@ import {
   SetPendingPosition,
 } from "../../../context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "../tokens";
-import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "../../../lib/contracts/callContract";
-import {
-  PriceOverrides,
-  simulateExecuteOrderTxn,
-} from "./simulateExecuteOrderTxn";
+import { BigNumber, ethers } from "ethers";
+import { PriceOverrides } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
-import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { UserOperation } from "@/utils/gmx/lib/userOperations/types";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 

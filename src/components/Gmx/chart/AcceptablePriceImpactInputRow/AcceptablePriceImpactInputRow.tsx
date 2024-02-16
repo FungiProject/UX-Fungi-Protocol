@@ -1,4 +1,3 @@
-// import { Trans, t } from "@lingui/macro";
 import ExchangeInfoRow from "../ExchangeInfoRow/ExchangeInfoRow";
 import PercentageInput from "../Inputs/PercentageInput";
 import { HIGH_POSITION_IMPACT_BPS } from "../../../../utils/gmx/config/factors";

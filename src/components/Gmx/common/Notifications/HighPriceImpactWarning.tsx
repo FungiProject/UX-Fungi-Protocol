@@ -1,4 +1,3 @@
-// import { Trans } from "@lingui/macro";
 import Checkbox from "../Checkbox/Checkbox";
 import { PriceImpactWarningState } from "../../../../utils/gmx/domain/synthetics/trade/usePriceImpactWarningState";
 

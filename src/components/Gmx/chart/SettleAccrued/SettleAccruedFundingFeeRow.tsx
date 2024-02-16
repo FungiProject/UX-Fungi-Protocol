@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import Checkbox from "../../common/Checkbox/Checkbox";
 import Tooltip from "../../common/Tooltip/Tooltip";
 import {

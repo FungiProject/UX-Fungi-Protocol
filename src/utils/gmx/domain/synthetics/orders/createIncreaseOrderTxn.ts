@@ -20,7 +20,6 @@ import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
-// import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 

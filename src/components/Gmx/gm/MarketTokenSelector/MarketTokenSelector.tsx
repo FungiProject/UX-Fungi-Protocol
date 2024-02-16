@@ -1,8 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
 import { Popover } from "@headlessui/react";
-//import cx from "classnames";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-//import SearchInput from "components/SearchInput/SearchInput";
 import {
   MarketInfo,
   MarketTokensAPRData,

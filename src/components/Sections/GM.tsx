@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import PageContainer from "../Container/PageContainer";
 import { MarketStats } from "../Gmx/gm/MarketStats/MarketStats";
 import {

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 // Wagmi
-import { useDisconnect, useAccount } from "wagmi";
+import { useDisconnect } from "wagmi";
 // Images
 import Chain from "../../../public/Chain.svg";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
@@ -14,7 +14,7 @@ export default function LogoutButton() {
 
   const { disconnect } = useDisconnect();
   //const { address } = useAccount();
-  const {scaAddress: address} = useAlchemyAccountKitContext()
+  const { scaAddress: address } = useAlchemyAccountKitContext();
   const router = useRouter();
 
   const logingOut = async () => {

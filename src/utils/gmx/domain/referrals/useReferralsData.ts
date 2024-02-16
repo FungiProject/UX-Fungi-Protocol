@@ -5,6 +5,7 @@ import { decodeReferralCode, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
 import { SUPPORTED_CHAIN_IDS } from "../../config/chains";
 import { getReferralsGraphClient } from "../../lib/subgraph";
+
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 

@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import { getTotalAccruedFundingUsd } from "../../../../utils/gmx/domain/synthetics/markets";
 import { PositionsInfoData } from "../../../../utils/gmx/domain/synthetics/positions";
 import { CSSProperties, useMemo } from "react";

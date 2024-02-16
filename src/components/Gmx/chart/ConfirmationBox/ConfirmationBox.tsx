@@ -31,7 +31,6 @@ import {
   isTriggerDecreaseOrderType,
 } from "../../../../utils/gmx/domain/synthetics/orders";
 import { cancelOrdersTxn } from "../../../../utils/gmx/domain/synthetics/orders/cancelOrdersTxn";
-import { createWrapOrUnwrapTxn } from "../../../../utils/gmx/domain/synthetics/orders/createWrapOrUnwrapTxn";
 import {
   PositionInfo,
   formatAcceptablePrice,

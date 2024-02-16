@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import { Popover } from "@headlessui/react";
-import cx from "classnames";
 import groupBy from "lodash/groupBy";
 import { FaChevronDown } from "react-icons/fa";
 import { Token } from "../../../../utils/gmx/domain/tokens";
@@ -197,11 +196,7 @@ export default function ChartTokenSelector(props: Props) {
         return (
           <>
             <Popover.Button as="div">
-              <button
-                className={cx("flex items-center ", {
-                  "chart-token-label--active": open,
-                })}
-              >
+              <button className="flex items-center">
                 {selectedToken && (
                   <span className="flex items-center">
                     <TokenIcon

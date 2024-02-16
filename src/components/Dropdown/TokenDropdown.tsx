@@ -4,8 +4,6 @@ import { useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 // Types
 import { tokenType } from "@/types/Types";
-// Next
-import Image from "next/image";
 // Components
 import TokensModal from "../Modals/TokensModal";
 

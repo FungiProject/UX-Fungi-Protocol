@@ -16,7 +16,6 @@ import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import Button from "../Gmx/common/Buttons/Button";
 import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
-import useLiFiConnections from "@/hooks/useLiFiConnections";
 import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 
 type BridgeProps = {

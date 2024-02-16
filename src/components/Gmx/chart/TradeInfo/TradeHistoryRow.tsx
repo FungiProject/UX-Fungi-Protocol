@@ -22,7 +22,6 @@ import {
   formatPositionMessage,
   formatSwapMessage,
 } from "../../../../utils/gmx/utils";
-// import { t } from "@lingui/macro";
 import TooltipWithPortal from "../../common/Tooltip/TooltipWithPortal";
 
 type Props = {

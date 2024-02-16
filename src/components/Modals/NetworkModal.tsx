@@ -8,7 +8,6 @@ import SearchBar from "../Filters/SearchBar";
 import { NetworkType } from "@/types/Types";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import TokenCard from "../Cards/TokenCard";
 import NetworkCard from "../Cards/NetworkCard";
 
 interface NetworkModalProps {

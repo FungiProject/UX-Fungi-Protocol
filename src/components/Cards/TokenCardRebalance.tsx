@@ -1,6 +1,6 @@
 // React
 import React, { useEffect, useState } from "react";
-import { assetType, tokenType } from "@/types/Types";
+import { tokenType } from "@/types/Types";
 import { TokenRebalanceInput } from "./Rebalancer";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 

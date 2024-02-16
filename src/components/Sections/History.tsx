@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import ActivityViewTable from "../Tables/ActivityViewTable";
-// import { activities } from "../../../constants/Constants";
+
 import Spinner from "../Loader/SpinnerLoader";
 import {
   ChevronLeftIcon,

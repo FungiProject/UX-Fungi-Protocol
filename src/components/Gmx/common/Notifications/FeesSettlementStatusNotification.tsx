@@ -1,4 +1,3 @@
-// import { Trans, plural, t } from "@lingui/macro";
 import cx from "classnames";
 import {
   TransactionStatus,
