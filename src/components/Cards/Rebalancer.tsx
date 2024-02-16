@@ -101,6 +101,18 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
     //setTokensOptions(tokens)
   }, []);
 
+  useEffect(() => {
+    let copy = [...tokens];
+
+    if (search.length !== 0) {
+      copy = copy.filter((token: tokenType) =>
+        token.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    setTokensArrayCopy(copy);
+  }, [search]);
+
   const onAddToken = (token: tokenType) => {
     setSelectedTokens([
       ...selectedTokens,
@@ -154,13 +166,9 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
       userOps
     );
 
-    txnPromise
-      .then(() => {
-        //onSubmitted();
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    txnPromise.finally(() => {
+      setIsSubmitting(false);
+    });
   }
 
   const submitButtonState = useMemo(() => {
@@ -203,7 +211,7 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
   return (
     <div className="relative">
       {openSelector && (
-        <div className="h-[630px] w-full absolute z-50 bg-white shadow-input rounded-xl">
+        <div className="h-[640px] w-full absolute z-50 bg-white shadow-input rounded-xl">
           <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
             <button
               type="button"
@@ -227,7 +235,7 @@ export default function Rebalancer({ tokens, chainId }: RebalancerProps) {
               />
             </div>
 
-            <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
+            <div className="px-[18px] w-full my-4 overflow-y-auto h-[460px]">
               {tokensArrayCopy.map((token: tokenType) => {
                 return (
                   <TokenCard

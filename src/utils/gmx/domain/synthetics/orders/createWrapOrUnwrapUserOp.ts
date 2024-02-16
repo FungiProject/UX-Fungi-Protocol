@@ -9,6 +9,7 @@ import { BigNumber, Signer, ethers } from "ethers";
 // import { t } from "@lingui/macro";
 import { formatTokenAmount } from "../../../lib/numbers";
 import { getContract } from "../../../config/contracts";
+import { UserOperation } from "@/utils/gmx/lib/userOperations/types";
 
 type WrapOrUnwrapParams = {
   amount: BigNumber;
@@ -21,8 +22,6 @@ export function createWrapOrUnwrapOrderUserOp(
   p: WrapOrUnwrapParams
 ) {
   const wrappedToken = getWrappedToken(chainId);
-  const nativeToken = getToken(chainId, NATIVE_TOKEN_ADDRESS);
-
   const router = new ethers.Contract(wrappedToken.address, WETH.abi);
 
   if (p.isWrap) {
@@ -44,7 +43,6 @@ export function createWrapOrUnwrapOrderUserOp(
     return {
       target: router.address as `0x${string}`,
       data: calldata,
-      value: p.amount.toBigInt(),
     };
   }
 }
