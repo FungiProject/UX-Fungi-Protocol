@@ -1,57 +1,20 @@
-// React
 import React, { useEffect, useState } from "react";
-// Types
 import { tokenType } from "@/types/Types";
-// Wagmi
-import { useAccount, useNetwork } from "wagmi";
-// Utils
-import getMaxTokens from "@/utils/getMaxToken";
-// Viem
-import { formatUnits } from "viem";
+import { TokenInfo } from "@/domain/tokens/types";
+import { BigNumber } from "alchemy-sdk";
+import { ethers } from "ethers";
 
 type TokenCardProps = {
-  token: tokenType;
-  getToken: (token: tokenType) => void;
+  token: TokenInfo;
+  onClick: (token: TokenInfo) => void;
 };
 
-export default function TokenCard({ token, getToken }: TokenCardProps) {
-  const [network, setNetwork] = useState<string | null>(null);
-  const [balanceToken, setBalanceToken] = useState<null | number>(null);
-
-  const { address } = useAccount();
-  const { chain } = useNetwork();
-
-  useEffect(() => {
-    if (chain && chain.id === 80001) {
-      setNetwork("mumbai");
-    } else if (chain && chain.id === 42161) {
-      setNetwork("arbitrum");
-    } else if (chain && chain.id === 1) {
-      setNetwork("mainnet");
-    } else if (chain && chain.id === 137) {
-      setNetwork("polygon");
-    }
-  }, [chain]);
-
-  useEffect(() => {
-    const fetchMax = async () => {
-      if (address && network && token) {
-        try {
-          const result = await getMaxTokens(address, token?.address, network);
-          setBalanceToken(result);
-        } catch (error) {
-          console.error("Error fetching max tokens of", token.symbol);
-        }
-      }
-    };
-
-    fetchMax();
-  }, [address, network]);
+export default function TokenCard({ token, onClick }: TokenCardProps) {
 
   return (
     <button
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
-      onClick={() => getToken(token)}
+      onClick={() => onClick(token)}
     >
       <div className="flex">
         <img
@@ -67,14 +30,9 @@ export default function TokenCard({ token, getToken }: TokenCardProps) {
           <span>{token.symbol}</span>
         </div>
       </div>
-      {balanceToken && Number(balanceToken) !== 0 ? (
+      {token.balance && !token.balance.eq(BigNumber.from(0)) ? (
         <div>
-          {Number(
-            formatUnits(
-              balanceToken as unknown as bigint,
-              token.decimals as number
-            )
-          ).toFixed(5)}
+          {Number(ethers.utils.formatUnits(token.balance,token.decimals)).toFixed(5)}
         </div>
       ) : (
         <div>0</div>

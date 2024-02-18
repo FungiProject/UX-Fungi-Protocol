@@ -13,6 +13,9 @@ import { encodeReferralCode } from "@/utils/gmx/domain/referrals";
 import { REFERRAL_CODE_KEY } from "@/utils/gmx/config/localStorage";
 import { ethers } from "ethers";
 import { useHistory } from "react-router-dom";
+import { SWRConfig } from "swr";
+import { swrGCMiddleware } from "@/lib/swrMiddlewares";
+import { FungiGlobalContextProvider } from "@/context/FungiGlobalContext";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -46,28 +49,34 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <main>
-      <WalletProvider>
-        <SettingsContextProvider>
-          <SubaccountContextProvider>
-            <SyntheticsEventsProvider>
-              <main className="font-dmSans">
-                <Component {...pageProps} />
-              </main>
-            </SyntheticsEventsProvider>
-          </SubaccountContextProvider>
-        </SettingsContextProvider>{" "}
-      </WalletProvider>
-      <ToastContainer
-        limit={1}
-        transition={Zoom}
-        position="bottom-right"
-        autoClose={TOAST_AUTO_CLOSE_TIME}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick={false}
-        draggable={false}
-        pauseOnHover
-      />
+      <FungiGlobalContextProvider>
+      <SWRConfig
+        value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
+      >
+        <WalletProvider>
+          <SettingsContextProvider>
+            <SubaccountContextProvider>
+              <SyntheticsEventsProvider>
+                <main className="font-dmSans">
+                  <Component {...pageProps} />
+                </main>
+              </SyntheticsEventsProvider>
+            </SubaccountContextProvider>
+          </SettingsContextProvider>{" "}
+        </WalletProvider>
+        <ToastContainer
+          limit={1}
+          transition={Zoom}
+          position="bottom-right"
+          autoClose={TOAST_AUTO_CLOSE_TIME}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick={false}
+          draggable={false}
+          pauseOnHover
+        />
+      </SWRConfig>
+      </FungiGlobalContextProvider>
       <script
         async
         src="/charting_library/charting_library.standalone.js"

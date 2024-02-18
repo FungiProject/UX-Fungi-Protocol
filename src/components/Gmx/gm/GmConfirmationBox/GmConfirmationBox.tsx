@@ -20,7 +20,7 @@ import { useKey } from "react-use";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { createWithdrawalUserOp } from "@/utils/gmx/domain/synthetics/markets/createWithdrawalUserOp";
 import { createDepositUserOp } from "@/utils/gmx/domain/synthetics/markets/createDepositUserOp";
-import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";

@@ -3,88 +3,37 @@ import React, { useEffect, useState } from "react";
 // Components
 import SpotTableCard from "../Cards/SpotTableCard";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
-// Axios
-import axios from "axios";
 // Types
 import { NetworkType, assetType } from "@/types/Types";
 // Wagmi
 import { useNetwork } from "wagmi";
 // Constants
-import { assetsArbitrum, assetsMainnet } from "../../../constants/Constants";
 import Loader from "../Loader/SpinnerLoader";
+import { TokenData, TokenInfo } from "@/domain/tokens/types";
+import { useTokenMarketData } from "@/hooks/useTokenMarketData";
 
 type SpotTableProps = {
-  tokens: any;
+  tokens: TokenInfo[]
 };
 
-export default function SpotTable({ tokens }: SpotTableProps) {
+export default function SpotTable({tokens}: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
-  const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedNetwork, setSelectedNetwork] = useState<NetworkType | null>(
-    null
-  );
+  const [loading, setLoading] = useState(false);
+  const [tokensToQueryData, setTokensToQueryData] = useState<TokenInfo[]>()
+  const { tokenMarketsData, fetchData }= useTokenMarketData([])
 
-  const { chain } = useNetwork();
-
-  const fetchData = async (sortByNetwork: boolean) => {
-    let copy: any[] = [];
-
-    if (!sortByNetwork) {
-      if (chain && chain.id === 42161) {
-        copy = assetsArbitrum;
-      } else if (chain && chain.id === 1) {
-        copy = assetsMainnet;
-      }
-    } else {
-      if (selectedNetwork && selectedNetwork.id === 42161) {
-        copy = assetsArbitrum;
-      } else if (selectedNetwork && selectedNetwork.id === 1) {
-        copy = assetsMainnet;
-      }
+  useEffect(()=>{
+    if(tokensToQueryData && tokensToQueryData.length>0){
+      fetchData(tokensToQueryData)
     }
+  },[tokensToQueryData])
 
-    const promises = copy.map(async (asset) => {
-      try {
-        console.log(`Fetching data for ${asset.coingeckoApi}`);
-        const response = await axios.get(
-          `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}?x_cg_demo_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API}`
-        );
-        if (response.status === 200) {
-          const data = response.data;
-          asset.price = data?.market_data.current_price.usd;
-          asset.marketCap = data?.market_data.market_cap.usd;
-          asset.volumen24 = data?.market_data.total_volume.usd;
-        } else {
-          console.log("Error");
-        }
-      } catch (error) {
-        asset.price = 0;
-        asset.marketCap = 0;
-        asset.volumen24 = 0;
-      }
-    });
-
-    await Promise.all(promises).then(() => {
-      setAssetsArrayCopy(copy);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    return () => {
-      fetchData(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchData(false);
-  }, [chain]);
-
-  useEffect(() => {
-    fetchData(true);
-  }, [selectedNetwork]);
+  useEffect(()=>{
+    if(tokens && tokens.length>0){
+      fetchData(tokens.slice(0,10))
+    }
+  },[tokens])
 
   const getTypeMember = (action: string) => {
     setTypeMember(action);
@@ -112,8 +61,8 @@ export default function SpotTable({ tokens }: SpotTableProps) {
         </div>
       ) : (
         <div className="overflow-auto h-[590px]">
-          {assetsArrayCopy.map((asset: assetType, index: number) => (
-            <SpotTableCard asset={asset} key={asset.name} index={index} />
+          {tokenMarketsData && tokenMarketsData.length>0 && tokenMarketsData.map((token: TokenData, index: number) => (
+            <SpotTableCard asset={token} key={token.token.coinKey} index={index} />
           ))}
         </div>
       )}

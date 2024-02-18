@@ -8,22 +8,21 @@ import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 import Bridge from "../Cards/Bridge";
 import Rebalancer from "../Cards/Rebalancer";
 // Hooks
-import useLiFiTokens from "@/hooks/useLiFiTokens";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
+import { useTokensInfo } from "@/hooks/useTokensInfo";
 
 export default function Spot() {
   const { chainId } = useWallet();
   const [actionSelected, setActionSelected] = useState("Swap");
-  const tokens = useLiFiTokens({ chain: "ARB" });
+  const {tokens} = useTokensInfo()
 
   const getActionSelected = (action: string) => {
     setActionSelected(action);
   };
-  console.log(chainId);
   return (
     <main>
       <PageContainer
-        main={<SpotTable tokens={tokens} />}
+        main={<SpotTable tokens={tokens}/>}
         secondary={
           <div className="px-[32px] pt-[24px]">
             {tokens !== undefined && chainId !== undefined && (
@@ -36,7 +35,7 @@ export default function Spot() {
                   paddingButton="py-[5px]"
                 />
                 {actionSelected === "Rebalance" ? (
-                  <Rebalancer tokens={tokens} chainId={chainId}/>
+                  <Rebalancer tokens={tokens}/>
                 ) : actionSelected === "Bridge" ? (
                   <Bridge tokens={tokens} chainId={chainId} />
                 ) : (

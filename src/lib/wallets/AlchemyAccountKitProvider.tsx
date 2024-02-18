@@ -73,7 +73,6 @@ export const AlchemyAccountKitProvider = ({
   const [signer, setSigner] = useState<SmartAccountSigner>();
 
   const [scaAddress, setScaAddress] = useState<string>();
-  console.log(isIdle);
   const [ownerAddress, setOwnerAddress] = useState<Address>();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
