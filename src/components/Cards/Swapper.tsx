@@ -279,7 +279,6 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}
-        // disabled={submitButtonState.disabled && !shouldDisableValidation}
       >
         {submitButtonState.text}
       </Button>

@@ -503,14 +503,14 @@ export function ConfirmationBox(p: Props) {
     if (!scAccount || !swapAmounts || !fromToken) {
       return Promise.resolve();
     }
-
+    console.log("pepe");
     const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
         tokenAddress: address,
         spender: routerAddress,
       })
     );
-
+    console.log("pepa");
     const createWrapOrUnwrapOrderOp = await createWrapOrUnwrapOrderUserOp(
       chainId,
       {

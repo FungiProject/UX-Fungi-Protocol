@@ -18,7 +18,6 @@ type RebalancerProps = {
   tokens: TokenInfo[];
 };
 
-
 export default function Rebalancer({ tokens }: RebalancerProps) {
   const { chainId, scAccount } = useWallet();
   const { alchemyProvider } = useAlchemyAccountKitContext();
@@ -26,13 +25,13 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [openSelector, setOpenSelector] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedTokens, setSelectedTokens] = useState<TokenInfoRebalanceInput[]>([]);
+  const [selectedTokens, setSelectedTokens] = useState<
+    TokenInfoRebalanceInput[]
+  >([]);
   const [search, setSearch] = useState<string>("");
   const [tokensCopy, setTokensCopy] = useState<TokenInfo[]>([...tokens]);
   const { tokensBalances } = useTokenBalances();
-  const { sendUserOperations } = useUserOperations()
-
-
+  const { sendUserOperations } = useUserOperations();
 
   const getInfo = (query: string) => {
     setSearch(query);
@@ -81,7 +80,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
 
   async function onSubmit() {
     if (!tokensBalances || !selectedTokens || !chainId) {
-      return
+      return;
     }
 
     setIsSubmitting(true);
@@ -90,7 +89,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
     const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
 
     let txnPromise = sendUserOperations(userOps);
- 
+
     txnPromise
       .then(() => {
         //onSubmitted();
@@ -98,7 +97,6 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       .finally(() => {
         setIsSubmitting(false);
       });
-
   }
 
   const submitButtonState = useMemo(() => {
@@ -167,12 +165,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
 
             <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
               {tokensCopy.map((token: TokenInfo) => {
-                return (
-                  <TokenCard
-                    token={token}
-                    onClick={onAddToken}
-                  />
-                );
+                return <TokenCard token={token} onClick={onAddToken} />;
               })}
             </div>
           </div>
@@ -217,8 +210,9 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       <div>
         <Button
           variant="primary-action"
-          className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
-            } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+          className={`mt-4 ${
+            submitButtonState.disabled ? "opacity-50" : ""
+          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
           type="submit"
           onClick={onSubmit}
           disabled={submitButtonState.disabled}
