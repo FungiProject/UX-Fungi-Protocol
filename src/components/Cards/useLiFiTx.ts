@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { getCallDataApprove } from "./getCallDataApprove";
+//import { getCallDataApprove } from "./getCallDataApprove";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { Hex } from "viem";
 import axios from "axios";
+import { BigNumber } from "ethers";
 
 export const useLiFiTx = (
   type: string,
@@ -66,15 +68,15 @@ export const useLiFiTx = (
         console.error("Error obteniendo cotizaciones:", error);
       }
 
-      const approvee: Hex = quote.transactionRequest.to;
+      const spender: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
 
-      const callDataApprove = getCallDataApprove(
-        approvee,
+      const callDataApprove = createApproveTokensUserOp({
         tokenAddress,
-        amount
-      );
+        spender,
+        amount: BigNumber.from(amount)
+      });
 
       const callDataLiFiTx = {
         target: quote.transactionRequest.to,

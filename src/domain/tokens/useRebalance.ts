@@ -65,14 +65,17 @@ export async function getUserOpRebalance(
 
   const userOps: UserOperation[] = [];
   swaps.forEach((swap, index) => {
-    //Approve
-    userOps.push(
-      createApproveTokensUserOp({
-        tokenAddress: swap.tokenIn,
-        spender: swapsResolved[index].estimate.approvalAddress,
-        amount: BigNumber.from(swap.amountIn),
-      })
-    );
+    //need approve if is not native
+    if(swap.tokenIn !== ethers.constants.AddressZero) {
+      //Approve
+      userOps.push(
+        createApproveTokensUserOp({
+          tokenAddress: swap.tokenIn,
+          spender: swapsResolved[index].estimate.approvalAddress,
+          amount: BigNumber.from(swap.amountIn),
+        })
+      );
+    }
     //Swap
     userOps.push({
       target: swapsResolved[index].transactionRequest.to,

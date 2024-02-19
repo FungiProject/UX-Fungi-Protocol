@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
-// Types
-import { tokenType } from "@/types/Types";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import { useLiFiTx } from "./useLiFiTx";
@@ -11,10 +9,12 @@ import Button from "../Gmx/common/Buttons/Button";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { useUserOperations } from "@/hooks/useUserOperations";
+import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { TokenInfo } from "@/domain/tokens/types";
 
 type SwapperProps = {
-  tokens: tokenType[];
+  tokens: TokenInfo[];
   chainId: number;
 };
 
@@ -24,8 +24,8 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { alchemyProvider, login: openConnectModal } =
     useAlchemyAccountKitContext();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
-  const [tokenFrom, setTokenFrom] = useState<tokenType | undefined>(undefined);
-  const [tokenTo, setTokenTo] = useState<tokenType | undefined>(undefined);
+  const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
+  const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
   const [network, setNetwork] = useState<string | undefined>(undefined);
   const [fromAddress, setFromAddress] = useState(scAccount);
   const [toAddress, setToAddress] = useState(scAccount);
@@ -33,6 +33,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
   );
+  const {sendUserOperations} = useUserOperations();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tx, sendTx] = useLiFiTx(
     "Swap",
@@ -148,7 +149,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(alchemyProvider, chainId, resultTx);
+    await sendUserOperations(resultTx);
   };
 
   function onSwitchTokens() {
@@ -160,11 +161,11 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     setAmountFrom(amount);
   };
 
-  const getTokenTo = (token: tokenType) => {
+  const getTokenTo = (token: TokenInfo) => {
     setTokenTo(token);
   };
 
-  const getTokenFrom = (token: tokenType) => {
+  const getTokenFrom = (token: TokenInfo) => {
     setTokenFrom(token);
   };
 
@@ -204,15 +205,14 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   fromToken?.balance,
-            //   fromToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
-            topRightValue={"0"}
+             topRightValue={formatTokenAmount(
+              tokenFrom?.balance,
+              tokenFrom?.decimals,
+               "",
+               {
+                 useCommas: true,
+               }
+             )}
             // onClickTopRightLabel={onMaxClick}
             inputValue={amountFrom}
             onInputValueChange={(e: any) => handleAmountChange(e.target.value)}
@@ -246,14 +246,14 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   toToken?.balance,
-            //   toToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
+             topRightValue={formatTokenAmount(
+               tokenTo?.balance,
+               tokenTo?.decimals,
+               "",
+               {
+                 useCommas: true,
+               }
+             )}
             inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 5)}
             topRightValue={"0"}
             staticInput={true}

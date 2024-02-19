@@ -6,7 +6,6 @@ import {
   getUserOpRebalance,
 } from "@/domain/tokens/useRebalance";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import SearchBar from "../Filters/SearchBar";
@@ -14,6 +13,7 @@ import TokenCard from "./TokenCard";
 import { TokenInfo } from "@/domain/tokens/types";
 import { useTokenBalances } from "@/hooks/useTokensBalances";
 import { TokenInfoRebalanceInput } from "@/domain/tokens/types";
+import { useUserOperations } from "@/hooks/useUserOperations";
 type RebalancerProps = {
   tokens: TokenInfo[];
 };
@@ -30,6 +30,8 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   const [search, setSearch] = useState<string>("");
   const [tokensCopy, setTokensCopy] = useState<TokenInfo[]>([...tokens]);
   const { tokensBalances } = useTokenBalances();
+  const { sendUserOperations } = useUserOperations()
+
 
 
   const getInfo = (query: string) => {
@@ -87,12 +89,8 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
     const rebalances = computeRebalance(tokensBalances, selectedTokens);
     const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
 
-    let txnPromise: Promise<any> = sendUserOperations(
-      alchemyProvider,
-      chainId,
-      userOps
-    );
-
+    let txnPromise = sendUserOperations(userOps);
+ 
     txnPromise
       .then(() => {
         //onSubmitted();
