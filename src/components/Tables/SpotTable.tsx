@@ -13,27 +13,51 @@ import { TokenData, TokenInfo } from "@/domain/tokens/types";
 import { useTokenMarketData } from "@/hooks/useTokenMarketData";
 
 type SpotTableProps = {
-  tokens: TokenInfo[]
+  tokens: TokenInfo[];
+  startIndex: number;
+  endIndex: number;
+  getLength: (length: number) => void;
 };
 
-export default function SpotTable({tokens}: SpotTableProps) {
+export default function SpotTable({
+  tokens,
+  startIndex,
+  endIndex,
+  getLength,
+}: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
-  const [tokensToQueryData, setTokensToQueryData] = useState<TokenInfo[]>()
-  const { tokenMarketsData, fetchData }= useTokenMarketData([])
+  const { tokenMarketsData, fetchData } = useTokenMarketData([]);
 
-  useEffect(()=>{
-    if(tokensToQueryData && tokensToQueryData.length>0){
-      fetchData(tokensToQueryData)
-    }
-  },[tokensToQueryData])
+  const checkTokens = () => {
+    if (tokens && typeMember === "All") {
+      setLoading(true);
+      fetchData(tokens.slice(startIndex, endIndex));
+      getLength(tokens.length);
+    } else if (tokens && typeMember === "Portfolio") {
+      setLoading(true);
+      const tokensWithBalance = tokens.filter((tokenData: any) => {
+        return Number(tokenData.balance) !== 0;
+      });
 
-  useEffect(()=>{
-    if(tokens && tokens.length>0){
-      fetchData(tokens.slice(0,10))
+      fetchData(tokensWithBalance.slice(startIndex, endIndex));
+      getLength(tokensWithBalance.length);
     }
-  },[tokens])
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    checkTokens();
+  }, [tokens]);
+
+  useEffect(() => {
+    checkTokens();
+  }, [typeMember]);
+
+  useEffect(() => {
+    checkTokens();
+  }, [startIndex, endIndex]);
 
   const getTypeMember = (action: string) => {
     setTypeMember(action);
@@ -61,9 +85,15 @@ export default function SpotTable({tokens}: SpotTableProps) {
         </div>
       ) : (
         <div className="overflow-auto h-[590px]">
-          {tokenMarketsData && tokenMarketsData.length>0 && tokenMarketsData.map((token: TokenData, index: number) => (
-            <SpotTableCard asset={token} key={token.token.coinKey} index={index} />
-          ))}
+          {tokenMarketsData &&
+            tokenMarketsData.length > 0 &&
+            tokenMarketsData.map((token: TokenData, index: number) => (
+              <SpotTableCard
+                asset={token}
+                key={token.token.coinKey}
+                index={index}
+              />
+            ))}
         </div>
       )}
     </div>

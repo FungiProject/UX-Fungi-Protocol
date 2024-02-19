@@ -9,7 +9,6 @@ import formatNumber from "@/utils/formatNumber";
 import { networks } from "../../../constants/Constants";
 import { TokenData } from "@/domain/tokens/types";
 
-
 type AssetsTableCardProps = {
   asset: TokenData;
   index: number;
@@ -20,11 +19,7 @@ export default function AssetsTableCard({
   index,
 }: AssetsTableCardProps) {
   return (
-    <div
-      className={`${
-        index !== 0 && "border-t-1 border-gray-300"
-      } grid grid-cols-7 py-[24px] items-center`}
-    >
+    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center">
       <div className="flex items-center col-span-2">
         <img
           width={40}
@@ -38,13 +33,19 @@ export default function AssetsTableCard({
         </div>
       </div>
       <div className="text-center">
-        ${asset?.tokenData?.price !== undefined && formatNumber(asset.tokenData.price|| 0)}
+        $
+        {asset?.tokenData?.price !== undefined &&
+          formatNumber(asset.tokenData.price || 0)}
       </div>
       <div className="text-center">
-        ${asset?.tokenData?.marketCap !== undefined && formatNumber(asset.tokenData.marketCap || 0)}
+        $
+        {asset?.tokenData?.marketCap !== undefined &&
+          formatNumber(asset.tokenData.marketCap || 0)}
       </div>
       <div className="text-center">
-        ${asset?.tokenData?.volumen24 !== undefined && formatNumber(asset.tokenData.volumen24 || 0)}
+        $
+        {asset?.tokenData?.volumen24 !== undefined &&
+          formatNumber(asset.tokenData.volumen24 || 0)}
       </div>
       <div className="flex justify-center">
         {/* TODO: Change to tokens network */}
