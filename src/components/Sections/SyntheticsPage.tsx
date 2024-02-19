@@ -594,6 +594,7 @@ export function SyntheticsPage(p) {
             </div> */}
           </div>
         }
+        page="Perps Section"
       />
 
       {/* <Helmet>

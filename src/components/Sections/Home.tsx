@@ -35,6 +35,7 @@ export default function Home({ getSelectedAction }: HomeProps) {
           />
         }
         secondary={<ResultsChart personalBalance={0} />}
+        page="Home Section"
       />
     </main>
   );

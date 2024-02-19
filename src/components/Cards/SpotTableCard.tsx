@@ -14,12 +14,9 @@ type AssetsTableCardProps = {
   index: number;
 };
 
-export default function AssetsTableCard({
-  asset,
-  index,
-}: AssetsTableCardProps) {
+export default function AssetsTableCard({ asset }: AssetsTableCardProps) {
   return (
-    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center">
+    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center fadeInAnimation">
       <div className="flex items-center col-span-2">
         <img
           width={40}

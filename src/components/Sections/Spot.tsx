@@ -98,6 +98,7 @@ export default function Spot() {
                   startIndex={startIndex}
                   endIndex={endIndex}
                   getLength={getLength}
+                  handlePageChange={handlePageChange}
                 />{" "}
                 <div className="flex justify-center items-center absolute inset-x-0 bottom-6 mx-10">
                   <span className="absolute inset-x-0 bottom-2">
@@ -140,7 +141,7 @@ export default function Spot() {
         }
         secondary={
           <div className="px-[32px] pt-[24px]">
-            {tokens !== undefined && chainId !== undefined && (
+            {tokens.length > 0 && chainId !== undefined && (
               <>
                 <ActionsSwitcher
                   actions={["Swap", "Bridge", "Rebalance"]}
@@ -160,6 +161,7 @@ export default function Spot() {
             )}
           </div>
         }
+        page="Spot Section"
       />
     </main>
   );

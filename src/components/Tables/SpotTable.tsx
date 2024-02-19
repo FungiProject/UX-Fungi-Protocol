@@ -17,6 +17,7 @@ type SpotTableProps = {
   startIndex: number;
   endIndex: number;
   getLength: (length: number) => void;
+  handlePageChange: (page: number) => void;
 };
 
 export default function SpotTable({
@@ -24,6 +25,7 @@ export default function SpotTable({
   startIndex,
   endIndex,
   getLength,
+  handlePageChange,
 }: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
@@ -53,6 +55,7 @@ export default function SpotTable({
 
   useEffect(() => {
     checkTokens();
+    handlePageChange(1);
   }, [typeMember]);
 
   useEffect(() => {
