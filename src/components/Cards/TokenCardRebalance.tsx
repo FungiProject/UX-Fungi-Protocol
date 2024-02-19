@@ -1,13 +1,14 @@
 // React
 import React, { useEffect, useState } from "react";
 import { tokenType } from "@/types/Types";
-import { TokenRebalanceInput } from "./Rebalancer";
+import { TokenInfoRebalanceInput } from "@/domain/tokens/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { TokenInfo } from "@/domain/tokens/types";
 
 type TokenCardProps = {
-  token: TokenRebalanceInput;
-  selectedTokens: TokenRebalanceInput[];
-  onRemove: (token: tokenType) => void;
+  token: TokenInfoRebalanceInput;
+  selectedTokens: TokenInfoRebalanceInput[];
+  onRemove: (token: TokenInfo) => void;
   onPercentageChange: (coinKey: string, percentage: number) => void;
 };
 

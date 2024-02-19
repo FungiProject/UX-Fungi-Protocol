@@ -7,9 +7,11 @@ import { assetType } from "@/types/Types";
 // Utils
 import formatNumber from "@/utils/formatNumber";
 import { networks } from "../../../constants/Constants";
+import { TokenData } from "@/domain/tokens/types";
+
 
 type AssetsTableCardProps = {
-  asset: assetType;
+  asset: TokenData;
   index: number;
 };
 
@@ -24,25 +26,25 @@ export default function AssetsTableCard({
       } grid grid-cols-7 py-[24px] items-center`}
     >
       <div className="flex items-center col-span-2">
-        <Image
+        <img
           width={40}
           height={40}
-          alt="Logo"
-          src={asset.image}
+          alt="Token Logo"
+          src={asset.token.logoURI}
           className="ml-[36px] rounded-full"
         />
         <div className="flex items-start flex-col text-start ml-[30px]">
-          <div>{asset.name}</div> <div>{asset.symbol}</div>
+          <div>{asset.token.name}</div> <div>{asset.token.symbol}</div>
         </div>
       </div>
       <div className="text-center">
-        ${asset?.price !== undefined && formatNumber(asset.price)}
+        ${asset?.tokenData?.price !== undefined && formatNumber(asset.tokenData.price|| 0)}
       </div>
       <div className="text-center">
-        ${asset?.marketCap !== undefined && formatNumber(asset.marketCap)}
+        ${asset?.tokenData?.marketCap !== undefined && formatNumber(asset.tokenData.marketCap || 0)}
       </div>
       <div className="text-center">
-        ${asset?.volumen24 !== undefined && formatNumber(asset.volumen24)}
+        ${asset?.tokenData?.volumen24 !== undefined && formatNumber(asset.tokenData.volumen24 || 0)}
       </div>
       <div className="flex justify-center">
         {/* TODO: Change to tokens network */}

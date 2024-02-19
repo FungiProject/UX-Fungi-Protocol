@@ -1,42 +1,54 @@
 import { BigNumber, ethers } from "ethers";
-import { chains } from "./chainsLifi";
-import {
-  TokenBalance,
-  TokenRebalanceInput,
-} from "@/components/Cards/Rebalancer";
-import axios from "axios";
-import { createApproveTokensUserOp } from "../gmx/domain/tokens/approveTokensUserOp";
-import { UserOperation } from "../gmx/lib/userOperations/types";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
+import { UserOperation } from "../../utils/gmx/lib/userOperations/types";
+import { TokenInfo } from "@/domain/tokens/types";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
+import { TokenInfoRebalanceInput, RebalanceSwap } from "@/domain/tokens/types";
+import { getLiFiSwapQuote } from "@/lib/lifi/getQuote";
 
-interface RebalanceSwap {
-  tokenIn: string;
-  amountIn: string;
-  tokenOut: string;
+export interface TokenInfoTotalUsd extends TokenInfo {
+  totalValueUsd?: number;
 }
 
 export function computeRebalance(
-  balances: TokenBalance[],
-  rebalances: TokenRebalanceInput[]
+  balances: TokenInfo[],
+  rebalances: TokenInfoRebalanceInput[]
 ): RebalanceSwap[] {
-  computeTokensUsd(balances);
+  //Calculamos el valor de cada balance en usdc
+  const tokenInfoBalanceUsd = computeTokensUsd(balances);
 
-  const totalUsd = computeTotalValueUsdBalance(balances);
+  //Eliminamos lo que tengan un balance bajo porque falla lifi
+  const tokenInfoRemoveLow = removeTokenLowBalance(tokenInfoBalanceUsd)
+
+  //Calculamos la suma de todos los balances en usd
+  const totalUsd = computeTotalValueUsdBalance(tokenInfoRemoveLow);
 
   const swaps: RebalanceSwap[] = getRebalanceSwaps(
     totalUsd,
-    balances,
+    tokenInfoRemoveLow,
     rebalances
   );
 
   return swaps;
 }
 
-export async function getUserOpSwapLifi(
+function removeTokenLowBalance(balances: TokenInfoTotalUsd[]) {
+
+  const newTokensBalances = balances.filter(token => {
+    if (token.totalValueUsd && token.totalValueUsd > 0.05) {
+      return true;
+    }
+    return false;
+  })
+  return newTokensBalances;
+}
+
+export async function getUserOpRebalance(
   chainId: number,
   scAccount: string,
   swaps: RebalanceSwap[]
 ): Promise<UserOperation[]> {
-  const chain = getChainIdLiFi(chainId);
+  const chain = getChainIdLifi(chainId);
 
   const promises = swaps.map((swap) =>
     getLiFiSwapQuote(
@@ -53,14 +65,17 @@ export async function getUserOpSwapLifi(
 
   const userOps: UserOperation[] = [];
   swaps.forEach((swap, index) => {
-    //Approve
-    userOps.push(
-      createApproveTokensUserOp({
-        tokenAddress: swap.tokenIn,
-        spender: swapsResolved[index].estimate.approvalAddress,
-        amount: BigNumber.from(swap.amountIn),
-      })
-    );
+    //need approve if is not native
+    if(swap.tokenIn !== ethers.constants.AddressZero) {
+      //Approve
+      userOps.push(
+        createApproveTokensUserOp({
+          tokenAddress: swap.tokenIn,
+          spender: swapsResolved[index].estimate.approvalAddress,
+          amount: BigNumber.from(swap.amountIn),
+        })
+      );
+    }
     //Swap
     userOps.push({
       target: swapsResolved[index].transactionRequest.to,
@@ -73,15 +88,21 @@ export async function getUserOpSwapLifi(
 }
 
 //Obtiene el valor en usd del monto total del balance de este token
-function computeTokensUsd(balances: TokenBalance[]) {
-  balances.forEach((token) => {
-    token.totalValueUsd =
-      parseInt(token.priceUSD) *
-      parseInt(ethers.utils.formatUnits(token.balance, token.decimals));
-  });
+function computeTokensUsd(balances: TokenInfo[]):TokenInfoTotalUsd[]  {
+
+  const balancesUsdValue: TokenInfoTotalUsd[] = balances.map(token=>{
+    return {
+      ...token,
+      totalValueUsd: Number(token.priceUSD) *
+      Number(ethers.utils.formatUnits(token.balance || "0", token.decimals))
+    }
+  })
+
+  return balancesUsdValue;
 }
 
-function computeTotalValueUsdBalance(balances: TokenBalance[]) {
+
+function computeTotalValueUsdBalance(balances: TokenInfoTotalUsd[]) {
   return balances.reduce(
     (accumulator, current) =>
       current.totalValueUsd
@@ -91,10 +112,11 @@ function computeTotalValueUsdBalance(balances: TokenBalance[]) {
   );
 }
 
+
 function getRebalanceSwaps(
   totalUsd: number,
-  balancesToken: TokenBalance[],
-  rebalances: TokenRebalanceInput[]
+  balancesToken: TokenInfoTotalUsd[],
+  rebalances: TokenInfoRebalanceInput[]
 ): RebalanceSwap[] {
   //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
   const balanceTokensSorted = balancesToken.sort((a, b) => {
@@ -109,7 +131,7 @@ function getRebalanceSwaps(
   );
 
   //Añadimos el campo usdAvailable que será el que lleve la cuenta de la cantidad que falta sin userOp
-  interface BalanceTokenParamsWithUsdAvailable extends TokenBalance {
+  interface BalanceTokenParamsWithUsdAvailable extends TokenInfoTotalUsd {
     usdAvailable: number;
   }
   const balanceTokensMap: BalanceTokenParamsWithUsdAvailable[] =
@@ -136,7 +158,7 @@ function getRebalanceSwaps(
             amountIn: ethers.utils
               .parseUnits(
                 (
-                  balanceToken.usdAvailable / parseInt(balanceToken.priceUSD!)
+                  (balanceToken.usdAvailable / Number(balanceToken.priceUSD!)).toFixed(15)
                 ).toString(),
                 balanceToken.decimals
               )
@@ -153,7 +175,7 @@ function getRebalanceSwaps(
             amountIn: ethers.utils
               .parseUnits(
                 (
-                  amountUsdByPercentaje / parseInt(balanceToken.priceUSD!)
+                  (amountUsdByPercentaje / Number(balanceToken.priceUSD!)).toFixed(15)
                 ).toString(),
                 balanceToken.decimals
               )
@@ -172,29 +194,4 @@ function getRebalanceSwaps(
   return swaps;
 }
 
-//Obtiene la key de la chain de lifi desde el chainId
-function getChainIdLiFi(chainId: number): string | undefined {
-  const chain = chains.find((chain) => chain.id === chainId);
-  return chain ? chain.key : undefined;
-}
 
-export const getLiFiSwapQuote = async (
-  fromChain: string,
-  fromAmount: string,
-  fromToken: string,
-  toChain: string,
-  toToken: string,
-  fromAddress: string
-) => {
-  const result = await axios.get("https://li.quest/v1/quote", {
-    params: {
-      fromChain,
-      fromAmount,
-      fromToken,
-      toChain,
-      toToken,
-      fromAddress,
-    },
-  });
-  return result.data;
-};

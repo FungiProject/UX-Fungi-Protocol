@@ -133,8 +133,8 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                 onClick={() => setActionSelected(link.name)}
                 className={
                   link.name === actionSelected
-                    ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center`
-                    : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px]"
+                    ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center mx-1`
+                    : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px] mx-1"
                 }
               >
                 <Image

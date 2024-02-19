@@ -101,7 +101,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../../common/Notifications/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
 import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
-import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { uniq } from "lodash";
@@ -503,14 +503,14 @@ export function ConfirmationBox(p: Props) {
     if (!scAccount || !swapAmounts || !fromToken) {
       return Promise.resolve();
     }
-
+    console.log("pepe");
     const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
         tokenAddress: address,
         spender: routerAddress,
       })
     );
-
+    console.log("pepa");
     const createWrapOrUnwrapOrderOp = await createWrapOrUnwrapOrderUserOp(
       chainId,
       {
