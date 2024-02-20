@@ -1,12 +1,12 @@
 // React
 import React from "react";
 // Types
-import { positionType } from "@/types/Types";
+import { PositionInfo } from "@/domain/position/types";
 // Utils
 import formatNumber from "@/utils/formatNumber";
 
 type HomeTableCardProps = {
-  position: positionType;
+  position: PositionInfo;
   getSelectedAction: (action: string) => void;
 };
 
@@ -20,25 +20,27 @@ export default function HomeTableCard({
       <div className="text-center">
         {position.type === "Spot" ? "Nr. of tokens" : "Open positions"}
         <br></br>
-        {position.number}
+        {position.numberPositions}
       </div>{" "}
       <div className="text-center">
         {" "}
         {position.type === "Spot" ? "Value of tokens" : "Collateral in"}
-        <br></br>
-        {formatNumber(position.totalValue)}
+        <br></br>${formatNumber(position.totalValue)}
       </div>{" "}
       <div className="text-center">
         <span>Unrealized PnL</span>
         <br></br>
-        <span
-          className={`${
-            position.unPnL < 0 ? "text-red-500" : "text-green-500"
-          }`}
-        >
-          {" "}
-          ${formatNumber(position.unPnL)}
-        </span>
+        {typeof position.unPnL === "string" ? (
+          <span>{position.unPnL}</span>
+        ) : (
+          <span
+            className={`${
+              position.unPnL < 0 ? "text-red-500" : "text-green-500"
+            }`}
+          >
+            ${formatNumber(position.unPnL)}
+          </span>
+        )}
       </div>
       <div className="justify-center flex">
         <button

@@ -303,7 +303,10 @@ export function useUserReferralCode(
   account,
   skipLocalReferralCode = false
 ) {
-  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  let localStorageCode = "";
+  if (typeof window !== "undefined") {
+    localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY) || "";
+  }
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR<string>(
     account && [

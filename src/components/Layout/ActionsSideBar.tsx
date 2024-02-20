@@ -23,6 +23,8 @@ import GM from "../Sections/GM";
 import { getIsSyntheticsSupported } from "@/utils/gmx/config/features";
 import { useChainId } from "@/utils/gmx/lib/chains";
 import { SyntheticsFallbackPage } from "../Sections/SyntheticsFallbackPage";
+import Credit from "../Sections/Credit";
+import Nfts from "../Sections/Nfts";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -46,6 +48,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
       case "Spot":
         setPage(<Spot />);
         break;
+
       case "Perps":
         {
           getIsSyntheticsSupported(chainId)
@@ -53,11 +56,17 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
             : setPage(<SyntheticsFallbackPage />);
         }
         break;
-      case "Transaction History":
-        setPage(<History />);
+      case "Credit":
+        setPage(<Credit />);
         break;
       case "Yield":
         setPage(<GM />);
+        break;
+      case "NFTs":
+        setPage(<Nfts />);
+        break;
+      case "Transaction History":
+        setPage(<History />);
         break;
       default:
         setPage(<Home getSelectedAction={getSelectedAction} />);
