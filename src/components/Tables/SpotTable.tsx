@@ -78,8 +78,8 @@ export default function SpotTable({
           actions={typesMembersTable}
           actionSelected={typeMember}
           getActionSelected={getTypeMember}
-          className="h-[30px] p-[4px] w-[130px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
-          paddingButton="py-[3px]"
+          className="h-[34px] p-[4px] w-[160px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
+          paddingButton="py-[5px]"
         />
       </div>
       {loading ? (

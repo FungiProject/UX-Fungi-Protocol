@@ -24,7 +24,7 @@ export default function Home({ getSelectedAction }: HomeProps) {
       totalCash !== undefined &&
       totalBalance !== undefined &&
       setPositionsLoaded(true);
-  }, [positions]);
+  }, [positions, totalCash, totalBalance]);
 
   return (
     <main>

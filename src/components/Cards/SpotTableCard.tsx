@@ -16,7 +16,7 @@ type AssetsTableCardProps = {
 
 export default function AssetsTableCard({ asset }: AssetsTableCardProps) {
   return (
-    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center fadeInAnimation">
+    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center fadeInAnimation border-l-4 hover:border-l-main border-l-white cursor-pointer">
       <div className="flex items-center col-span-2">
         <img
           width={40}
