@@ -19,7 +19,6 @@ import {
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
-// import { t } from "@lingui/macro";
 
 export function getPositionKey(
   account: string,

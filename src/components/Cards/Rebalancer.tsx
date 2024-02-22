@@ -137,7 +137,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   }, [selectedTokens]);
 
   return (
-    <div className="relative">
+    <div className="relative mt-10">
       {openSelector && (
         <div className="h-[630px] w-full absolute z-50 bg-white shadow-input rounded-xl">
           <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
@@ -171,7 +171,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
           </div>
         </div>
       )}
-      <div className="flex flex-col text-sm font-medium">
+      <div className="flex flex-col text-sm font-medium mb-8">
         <div className="flex justify-center text-sm font-medium">
           <button
             className="flex justify-between border-1 rounded-xl font-semibold px-[12px] py-2.5 items-center w-[300px]"
@@ -192,7 +192,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
           style={{ width: `${totalPercentage}%`, transitionDuration: "0.8s" }}
         />
       </div>
-      <div className="grid grid-cols-3 w-full text-sm">
+      <div className="grid grid-cols-3 w-full text-sm mb-8">
         <span>0%</span> <span className="text-center">50%</span>{" "}
         <span className="text-end">100%</span>
       </div>

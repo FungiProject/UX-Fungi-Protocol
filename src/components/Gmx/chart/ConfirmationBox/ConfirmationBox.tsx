@@ -503,14 +503,14 @@ export function ConfirmationBox(p: Props) {
     if (!scAccount || !swapAmounts || !fromToken) {
       return Promise.resolve();
     }
-    console.log("pepe");
+
     const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
         tokenAddress: address,
         spender: routerAddress,
       })
     );
-    console.log("pepa");
+
     const createWrapOrUnwrapOrderOp = await createWrapOrUnwrapOrderUserOp(
       chainId,
       {
@@ -1786,16 +1786,6 @@ export function ConfirmationBox(p: Props) {
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
-
-        {/* {needPayTokenApproval && fromToken && (
-          <>
-            <ApproveTokenButton
-              tokenAddress={fromToken.address}
-              tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
-              spenderAddress={getContract(chainId, "SyntheticsRouter")}
-            />
-          </>
-        )} */}
 
         <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button

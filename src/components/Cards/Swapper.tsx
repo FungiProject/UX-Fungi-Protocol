@@ -21,8 +21,7 @@ type SwapperProps = {
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
 
-  const { alchemyProvider, login: openConnectModal } =
-    useAlchemyAccountKitContext();
+  const { login: openConnectModal } = useAlchemyAccountKitContext();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -33,8 +32,9 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
   );
-  const {sendUserOperations} = useUserOperations();
+  const { sendUserOperations } = useUserOperations();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [tx, sendTx] = useLiFiTx(
     "Swap",
     network,
@@ -50,6 +50,8 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     disabled: boolean;
     text: string | null;
   }>({ disabled: true, text: "Enter an amount" });
+
+  const isNotMatchAvailableBalance = tokenFrom?.balance?.gt(0);
 
   useEffect(() => {
     if (tokenFrom && tokenTo && amountFrom) {
@@ -169,32 +171,25 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     setTokenFrom(token);
   };
 
+  function onMaxClick() {
+    if (tokenFrom?.balance) {
+      const formattedAmount = formatTokenAmount(
+        tokenFrom?.balance,
+        tokenFrom?.decimals,
+        "",
+        {
+          useCommas: true,
+        }
+      );
+
+      handleAmountChange(Number(formattedAmount));
+    }
+  }
+
   return (
     <main className="mt-[12px]">
       <div className="relative">
         <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
-          {/* <input
-            type="number"
-            step={0.0000001}
-            min={0}
-            className="outline-none placeholder:text-black"
-            placeholder="0.00"
-            value={amountFrom ?? ""}
-            onChange={(e: any) => handleAmountChange(e.target.value)}
-          />
-          <div className="flex flex-col text-sm font-medium">
-            <div className="flex flex-col text-sm font-medium">
-              <TokenDropdown
-                tokens={tokens}
-                getToken={getTokenFrom}
-                token={tokenFrom}
-                oppositToken={tokenTo}
-                type="From"
-                className="flex justify-between w-[125px] rounded-full font-semibold px-[12px] py-2.5 items-center "
-              />
-            </div>
-          </div> */}
-
           <BuyInputSection
             topLeftLabel={`Pay`}
             topLeftValue={
@@ -205,19 +200,19 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-             topRightValue={formatTokenAmount(
+            topRightValue={formatTokenAmount(
               tokenFrom?.balance,
               tokenFrom?.decimals,
-               "",
-               {
-                 useCommas: true,
-               }
-             )}
-            // onClickTopRightLabel={onMaxClick}
+              "",
+              {
+                useCommas: true,
+              }
+            )}
+            onClickTopRightLabel={onMaxClick}
             inputValue={amountFrom}
             onInputValueChange={(e: any) => handleAmountChange(e.target.value)}
-            // showMaxButton={isNotMatchAvailableBalance}
-            // onClickMax={onMaxClick}
+            showMaxButton={isNotMatchAvailableBalance}
+            onClickMax={onMaxClick}
           >
             <TokenDropdown
               tokens={tokens}
@@ -246,16 +241,15 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-             topRightValue={formatTokenAmount(
-               tokenTo?.balance,
-               tokenTo?.decimals,
-               "",
-               {
-                 useCommas: true,
-               }
-             )}
+            topRightValue={formatTokenAmount(
+              tokenTo?.balance,
+              tokenTo?.decimals,
+              "",
+              {
+                useCommas: true,
+              }
+            )}
             inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 5)}
-            topRightValue={"0"}
             staticInput={true}
             showMaxButton={false}
             preventFocusOnLabelClick="right"

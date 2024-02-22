@@ -11,29 +11,63 @@ import { useNetwork } from "wagmi";
 import Loader from "../Loader/SpinnerLoader";
 import { TokenData, TokenInfo } from "@/domain/tokens/types";
 import { useTokenMarketData } from "@/hooks/useTokenMarketData";
+import StartDepositBanner from "../Cards/StartDepositBanner";
 
 type SpotTableProps = {
-  tokens: TokenInfo[]
+  tokens: TokenInfo[];
+  startIndex: number;
+  endIndex: number;
+  getLength: (length: number) => void;
+  handlePageChange: (page: number) => void;
 };
 
-export default function SpotTable({tokens}: SpotTableProps) {
+export default function SpotTable({
+  tokens,
+  startIndex,
+  endIndex,
+  getLength,
+  handlePageChange,
+}: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
-  const [tokensToQueryData, setTokensToQueryData] = useState<TokenInfo[]>()
-  const { tokenMarketsData, fetchData }= useTokenMarketData([])
+  const { tokenMarketsData, fetchData } = useTokenMarketData([]);
+  const [portfolioEmpty, setPortfolioEmpty] = useState(false);
 
-  useEffect(()=>{
-    if(tokensToQueryData && tokensToQueryData.length>0){
-      fetchData(tokensToQueryData)
+  const checkTokens = () => {
+    if (tokens && typeMember === "All") {
+      setLoading(true);
+      setPortfolioEmpty(false);
+      fetchData(tokens.slice(startIndex, endIndex));
+      getLength(tokens.length);
+    } else if (tokens && typeMember === "Portfolio") {
+      setLoading(true);
+      const tokensWithBalance = tokens.filter((tokenData: any) => {
+        return Number(tokenData.balance) !== 0;
+      });
+      if (tokensWithBalance.length !== 0) {
+        setPortfolioEmpty(false);
+        fetchData(tokensWithBalance.slice(startIndex, endIndex));
+      } else {
+        setPortfolioEmpty(true);
+      }
+      getLength(tokensWithBalance.length);
     }
-  },[tokensToQueryData])
+    setLoading(false);
+  };
 
-  useEffect(()=>{
-    if(tokens && tokens.length>0){
-      fetchData(tokens.slice(0,10))
-    }
-  },[tokens])
+  useEffect(() => {
+    checkTokens();
+  }, [tokens]);
+
+  useEffect(() => {
+    checkTokens();
+    handlePageChange(1);
+  }, [typeMember]);
+
+  useEffect(() => {
+    checkTokens();
+  }, [startIndex, endIndex]);
 
   const getTypeMember = (action: string) => {
     setTypeMember(action);
@@ -51,8 +85,8 @@ export default function SpotTable({tokens}: SpotTableProps) {
           actions={typesMembersTable}
           actionSelected={typeMember}
           getActionSelected={getTypeMember}
-          className="h-[30px] p-[4px] w-[130px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
-          paddingButton="py-[3px]"
+          className="h-[34px] p-[4px] w-[160px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
+          paddingButton="py-[5px]"
         />
       </div>
       {loading ? (
@@ -61,9 +95,21 @@ export default function SpotTable({tokens}: SpotTableProps) {
         </div>
       ) : (
         <div className="overflow-auto h-[590px]">
-          {tokenMarketsData && tokenMarketsData.length>0 && tokenMarketsData.map((token: TokenData, index: number) => (
-            <SpotTableCard asset={token} key={token.token.coinKey} index={index} />
-          ))}
+          {portfolioEmpty ? (
+            <StartDepositBanner />
+          ) : (
+            <>
+              {tokenMarketsData &&
+                tokenMarketsData.length > 0 &&
+                tokenMarketsData.map((token: TokenData, index: number) => (
+                  <SpotTableCard
+                    asset={token}
+                    key={token.token.coinKey}
+                    index={index}
+                  />
+                ))}
+            </>
+          )}
         </div>
       )}
     </div>

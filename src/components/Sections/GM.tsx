@@ -95,6 +95,7 @@ export default function GM() {
             />
           </div>
         }
+        page="Yield Section"
       />
     </main>
   );

@@ -1,4 +1,3 @@
-// import { Trans } from "@lingui/macro";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "../../config/chains";
 import { ethers } from "ethers";

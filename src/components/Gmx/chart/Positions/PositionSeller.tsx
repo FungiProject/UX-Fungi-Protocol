@@ -510,7 +510,7 @@ export function PositionSeller(p: Props) {
     //     spender: routerAddress,
     //   })
     // );
-
+    setIsSubmitting(true);
     const createSwapOrderOp = await createDecreaseOrderUserOp(
       chainId,
       subaccount,

@@ -111,7 +111,7 @@ export function PositionList(p: Props) {
               </div>
             </div>
           )}
-          <div className="h-[200px] overflow-auto">
+          <div className="h-[170px] overflow-auto">
             {" "}
             {!p.isLoading &&
               positions.map((position) => (

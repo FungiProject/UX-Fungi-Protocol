@@ -1,4 +1,3 @@
-// import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "../../../../config/chains";
 import {
   BASIS_POINTS_DIVISOR,

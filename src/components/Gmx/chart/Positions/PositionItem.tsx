@@ -622,7 +622,7 @@ export function PositionItem(p: Props) {
             </button>
           )}
         </div>
-        <div>
+        {/* <div>
           {!p.position.isOpening && !p.hideActions && (
             <PositionDropdown
               handleEditCollateral={p.onEditCollateralClick}
@@ -639,7 +639,7 @@ export function PositionItem(p: Props) {
               }
             />
           )}
-        </div>
+        </div> */}
       </div>
     );
   }

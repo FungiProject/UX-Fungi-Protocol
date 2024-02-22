@@ -1837,7 +1837,7 @@ export function TradeBox(p: Props) {
         optionLabels={tradeTypeLabels}
         option={tradeType}
         onChange={onSelectTradeType}
-        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
+        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold "
       />
       <Tab
         options={availableTradeModes}

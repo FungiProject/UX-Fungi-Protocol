@@ -75,7 +75,7 @@ export const useLiFiTx = (
       const callDataApprove = createApproveTokensUserOp({
         tokenAddress,
         spender,
-        amount: BigNumber.from(amount)
+        amount: BigNumber.from(amount),
       });
 
       const callDataLiFiTx = {

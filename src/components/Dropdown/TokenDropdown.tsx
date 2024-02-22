@@ -3,15 +3,15 @@ import { useState } from "react";
 // Heroicons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 // Types
-import { tokenType } from "@/types/Types";
+import { TokenInfo } from "@/domain/tokens/types";
 // Components
 import TokensModal from "../Modals/TokensModal";
 
 type TokenDropdownProps = {
-  getToken: (token: tokenType) => void;
-  tokens: tokenType[] | undefined;
-  token: tokenType | undefined;
-  oppositToken: tokenType | undefined;
+  getToken: (token: TokenInfo) => void;
+  tokens: TokenInfo[] | undefined;
+  token: TokenInfo | undefined;
+  oppositToken: TokenInfo | undefined;
   type: string;
   className: string;
   disabled?: boolean;
