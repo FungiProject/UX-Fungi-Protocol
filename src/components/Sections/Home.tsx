@@ -10,6 +10,8 @@ import useScAccountPositions from "@/domain/position/useScAccountPositions";
 
 import useScAccountSpotPosition from "@/domain/position/useScAccountSpotPosition";
 
+import StartDepositBanner from "../Cards/StartDepositBanner";
+
 type HomeProps = {
   getSelectedAction: (action: string) => void;
 };
@@ -20,8 +22,7 @@ export default function Home({ getSelectedAction }: HomeProps) {
   const [positionsLoaded, setPositionsLoaded] = useState(false);
 
   useEffect(() => {
-    positions.length !== 0 &&
-      totalCash !== undefined &&
+    totalCash !== undefined &&
       totalBalance !== undefined &&
       setPositionsLoaded(true);
   }, [positions, totalCash, totalBalance]);
@@ -33,16 +34,21 @@ export default function Home({ getSelectedAction }: HomeProps) {
           <>
             {!positionsLoaded ? (
               <div className="w-full h-full flex justify-center items-center">
-                {" "}
                 <SpinnerLoader />
               </div>
             ) : (
-              <HomeTable
-                positions={positions}
-                getSelectedAction={getSelectedAction}
-                balance={totalBalance}
-                cash={totalCash}
-              />
+              <>
+                {positions.length !== 0 ? (
+                  <HomeTable
+                    positions={positions}
+                    getSelectedAction={getSelectedAction}
+                    balance={totalBalance}
+                    cash={totalCash}
+                  />
+                ) : (
+                  <StartDepositBanner />
+                )}
+              </>
             )}
           </>
         }

@@ -101,9 +101,11 @@ export default function Spot() {
                   handlePageChange={handlePageChange}
                 />{" "}
                 <div className="flex justify-center items-center absolute inset-x-0 bottom-6 mx-10">
-                  <span className="absolute inset-x-0 bottom-2">
-                    Showing {startIndex + 1}-{endIndex} out of {length}
-                  </span>
+                  {length !== 0 && (
+                    <span className="absolute inset-x-0 bottom-2">
+                      Showing {startIndex + 1}-{endIndex} out of {length}
+                    </span>
+                  )}
                   <div className="absolute bottom-2">
                     {currentPage !== 1 && (
                       <button

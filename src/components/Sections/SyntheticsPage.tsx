@@ -481,7 +481,7 @@ export function SyntheticsPage(p) {
           </div>
         }
         secondary={
-          <div className="h-[690px] overflow-auto">
+          <div className="h-[730px] overflow-auto">
             <div className="Exchange-right">
               <div className="Exchange-swap-box">
                 <TradeBox

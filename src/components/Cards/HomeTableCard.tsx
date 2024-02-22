@@ -15,7 +15,7 @@ export default function HomeTableCard({
   getSelectedAction,
 }: HomeTableCardProps) {
   return (
-    <div className="border-t-1 border-gray-300 grid grid-cols-5 py-[24px] items-center text-xl font-medium">
+    <div className="border-b-1 border-gray-300 grid grid-cols-5 py-[24px] items-center text-xl font-medium">
       <div className="text-start ml-[40px]">{position.type}</div>
       <div className="text-center">
         {position.type === "Spot" ? "Nr. of tokens" : "Open positions"}

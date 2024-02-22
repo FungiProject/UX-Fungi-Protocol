@@ -49,6 +49,9 @@ export default function useScAccountSpotPosition() {
         totalValue: balanceInTotal,
         unPnL: "Coming Soon",
       });
+    } else {
+      setTotalCash(0);
+      setSpotPosition(null);
     }
   }, [tokensWithBalance]);
 

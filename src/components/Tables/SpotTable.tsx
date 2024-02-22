@@ -11,6 +11,7 @@ import { useNetwork } from "wagmi";
 import Loader from "../Loader/SpinnerLoader";
 import { TokenData, TokenInfo } from "@/domain/tokens/types";
 import { useTokenMarketData } from "@/hooks/useTokenMarketData";
+import StartDepositBanner from "../Cards/StartDepositBanner";
 
 type SpotTableProps = {
   tokens: TokenInfo[];
@@ -31,10 +32,12 @@ export default function SpotTable({
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
   const { tokenMarketsData, fetchData } = useTokenMarketData([]);
+  const [portfolioEmpty, setPortfolioEmpty] = useState(false);
 
   const checkTokens = () => {
     if (tokens && typeMember === "All") {
       setLoading(true);
+      setPortfolioEmpty(false);
       fetchData(tokens.slice(startIndex, endIndex));
       getLength(tokens.length);
     } else if (tokens && typeMember === "Portfolio") {
@@ -42,8 +45,12 @@ export default function SpotTable({
       const tokensWithBalance = tokens.filter((tokenData: any) => {
         return Number(tokenData.balance) !== 0;
       });
-
-      fetchData(tokensWithBalance.slice(startIndex, endIndex));
+      if (tokensWithBalance.length !== 0) {
+        setPortfolioEmpty(false);
+        fetchData(tokensWithBalance.slice(startIndex, endIndex));
+      } else {
+        setPortfolioEmpty(true);
+      }
       getLength(tokensWithBalance.length);
     }
     setLoading(false);
@@ -88,15 +95,21 @@ export default function SpotTable({
         </div>
       ) : (
         <div className="overflow-auto h-[590px]">
-          {tokenMarketsData &&
-            tokenMarketsData.length > 0 &&
-            tokenMarketsData.map((token: TokenData, index: number) => (
-              <SpotTableCard
-                asset={token}
-                key={token.token.coinKey}
-                index={index}
-              />
-            ))}
+          {portfolioEmpty ? (
+            <StartDepositBanner />
+          ) : (
+            <>
+              {tokenMarketsData &&
+                tokenMarketsData.length > 0 &&
+                tokenMarketsData.map((token: TokenData, index: number) => (
+                  <SpotTableCard
+                    asset={token}
+                    key={token.token.coinKey}
+                    index={index}
+                  />
+                ))}
+            </>
+          )}
         </div>
       )}
     </div>

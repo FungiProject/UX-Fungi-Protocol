@@ -1787,16 +1787,6 @@ export function ConfirmationBox(p: Props) {
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
 
-        {/* {needPayTokenApproval && fromToken && (
-          <>
-            <ApproveTokenButton
-              tokenAddress={fromToken.address}
-              tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
-              spenderAddress={getContract(chainId, "SyntheticsRouter")}
-            />
-          </>
-        )} */}
-
         <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
             variant="primary-action"

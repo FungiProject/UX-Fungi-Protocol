@@ -23,7 +23,7 @@ export default function HomeTable({
 }: HomeTableProps) {
   return (
     <div className="w-full h-[574px] bg-white rounded-lg overflow-hidden">
-      <div className="flex justify-between py-[35px] pl-[50px] pr-[22px]">
+      <div className="flex justify-between py-[35px] pl-[50px] pr-[22px] border-b-1">
         <div className="flex justify-between">
           <p className="mr-[76px] font-medium">
             <span className="text-gray-400 mb-[4px]">My Balance</span>
