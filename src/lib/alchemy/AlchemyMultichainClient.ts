@@ -1,5 +1,9 @@
 import { Alchemy, AlchemySettings, Network } from 'alchemy-sdk';
 import { getAlchemyNetwork } from '@/config/alchemyConfig';
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { getViemChain } from '@/config/chains';
+import { getApiKeyChain } from '@/config/alchemyConfig';
+
 /**
  * This is a wrapper around the Alchemy class that allows you to use the same
  * Alchemy object to make requests to multiple networks using different
@@ -18,7 +22,8 @@ export class AlchemyMultichainClient {
    *
    * @private
    */
-  private readonly instances: Map<Network, Alchemy> = new Map();
+  private readonly instancesClient: Map<Network, Alchemy> = new Map();
+  private readonly instancesScProvider: Map<number, AlchemyProvider> = new Map();
 
   /**
    * @param settings The settings to use for all networks.
@@ -41,23 +46,27 @@ export class AlchemyMultichainClient {
     return this.loadInstance(getAlchemyNetwork(chainId));
   }
 
-  /**
-   * Checks if an instance of `Alchemy` exists for the given `Network`. If not,
-   * it creates one and stores it in the `instances` map.
-   *
-   * @private
-   * @param network
-   */
+  forNetworkScProvider(chainId: number): AlchemyProvider | undefined {
+    return this.loadInstanceAlchemyScProvider(chainId);
+  }
+
   private loadInstance(network: Network): Alchemy | undefined {
-    if (!this.instances.has(network)) {
+    if (!this.instancesClient.has(network)) {
       // Use overrides if they exist -- otherwise use the default settings.
       const alchemySettings =
         this.overrides && this.overrides[network]
           ? { ...this.overrides[network], network }
           : { ...this.settings, network };
-      this.instances.set(network, new Alchemy(alchemySettings));
+      this.instancesClient.set(network, new Alchemy(alchemySettings));
     }
-    return this.instances.get(network);
+    return this.instancesClient.get(network);
+  }
+
+  private loadInstanceAlchemyScProvider(chainId: number): AlchemyProvider | undefined {
+    if (!this.instancesScProvider.has(chainId)) {
+      this.instancesScProvider.set(chainId, new AlchemyProvider({chain: getViemChain(chainId), apiKey: getApiKeyChain(chainId)}));
+    }
+    return this.instancesScProvider.get(chainId);
   }
 }
 

@@ -2,12 +2,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 // Headlessui
 import { Dialog, Transition } from "@headlessui/react";
-// Wagmi
-import { useSwitchNetwork, useNetwork } from "wagmi";
 // Next
 import Image from "next/image";
 // Types
 import { NetworkType } from "@/types/Types";
+import useWallet from "@/hooks/useWallet";
 
 interface SwitchNetworkModalInterface {
   getOpenModal: (openModal: boolean) => void;
@@ -21,8 +20,7 @@ export default function SwitchNetworkModal({
   previousNetwork,
 }: SwitchNetworkModalInterface) {
   const [open, setOpen] = useState(true);
-  const { chain } = useNetwork();
-  const { isLoading, switchNetwork, pendingChainId } = useSwitchNetwork();
+  const { chainId, switchNetwork, isLoading } = useWallet();
 
   const closeModal = (id: number) => {
     switchNetwork?.(id);
@@ -35,15 +33,15 @@ export default function SwitchNetworkModal({
 
   useEffect(() => {
     if (
-      (chain && chain.id === 80001) ||
-      (chain && chain.id === 42161) ||
-      (chain && chain.id === 1) ||
-      (chain && chain.id === 137)
+      (chainId === 80001) ||
+      (chainId === 42161) ||
+      (chainId === 1) ||
+      (chainId === 137)
     ) {
       setOpen(false);
       getOpenModal(false);
     }
-  }, [chain]);
+  }, [chainId, getOpenModal]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -83,7 +81,7 @@ export default function SwitchNetworkModal({
                   </div>
                   <button
                     disabled={
-                      !switchNetwork || previousNetwork.id === chain?.id
+                      !switchNetwork || previousNetwork.id === chainId
                     }
                     key={previousNetwork.id}
                     onClick={() => closeModal(previousNetwork.id)}
@@ -101,7 +99,7 @@ export default function SwitchNetworkModal({
                         />
                         <span>{previousNetwork.name}</span>
                       </div>
-                      {isLoading && pendingChainId === previousNetwork.id ? (
+                      {isLoading ? (
                         <span>Connecting...</span>
                       ) : (
                         <span>Connected</span>
@@ -111,7 +109,7 @@ export default function SwitchNetworkModal({
                   {restOfNetworks.map((network: NetworkType) => {
                     return (
                       <button
-                        disabled={!switchNetwork || network.id === chain?.id}
+                        disabled={!switchNetwork || network.id === chainId}
                         key={network.id}
                         onClick={() => closeModal(network.id)}
                         className="bg-gray-200 px-[24px] py-[16px] rounded-lg font-medium tracking-wide text-base flex mx-auto mt-4 items-center w-full"
@@ -128,12 +126,6 @@ export default function SwitchNetworkModal({
                             />
                             <span>{network.name}</span>
                           </div>
-
-                          {isLoading && pendingChainId === network.id ? (
-                            <span>Switching...</span>
-                          ) : (
-                            <span>Switch</span>
-                          )}
                         </div>
                       </button>
                     );

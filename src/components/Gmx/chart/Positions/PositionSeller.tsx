@@ -76,15 +76,14 @@ import {
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { museNeverExist } from "../../../../utils/gmx/lib/types";
 import { usePrevious } from "../../../../utils/gmx/lib/usePrevious";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
+import useWallet from "@/hooks/useWallet";
+import { useUserOperations } from "@/hooks/useUserOperations";
 
 export type Props = {
   position?: PositionInfo;
@@ -119,14 +118,13 @@ export function PositionSeller(p: Props) {
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
-  const { signer, account, scAccount } = useWallet();
-  const { login: openConnectModal, alchemyProvider } =
-    useAlchemyAccountKitContext();
+  const { login: openConnectModal, scAccount } = useWallet();
+  const { sendUserOperations} = useUserOperations();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } =
     usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo(undefined, chainId, scAccount);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
   const { savedAcceptablePriceImpactBuffer } = useSettings();
@@ -432,7 +430,7 @@ export function PositionSeller(p: Props) {
 
     const commonError = getCommonError({
       chainId,
-      isConnected: Boolean(account),
+      isConnected: Boolean(scAccount),
       hasOutdatedUi,
     });
 
@@ -462,7 +460,7 @@ export function PositionSeller(p: Props) {
       return `Creating Order...`;
     }
   }, [
-    account,
+    scAccount,
     chainId,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
@@ -546,7 +544,7 @@ export function PositionSeller(p: Props) {
 
     // userOps.push(createSwapOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, [createSwapOrderOp])
+    return sendUserOperations([createSwapOrderOp])
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }

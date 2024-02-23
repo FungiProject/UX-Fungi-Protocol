@@ -67,7 +67,7 @@ import {
 import { BigNumber } from "ethers";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import PercentageInput from "../Inputs/PercentageInput";
 import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
 import TooltipWithPortal from "../../common/Tooltip/TooltipWithPortal";
@@ -94,19 +94,18 @@ import {
   getPlusOrMinusSymbol,
   getPositiveOrNegativeClass,
 } from "../../../../utils/gmx/lib/utils";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../../common/Notifications/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { uniq } from "lodash";
 import { createSwapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createSwapOrderUserOp";
 import { createWrapOrUnwrapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createWrapOrUnwrapUserOp";
+import useWallet from "@/hooks/useWallet";
 
 export type Props = {
   isVisible: boolean;
@@ -199,10 +198,9 @@ export function ConfirmationBox(p: Props) {
   } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
-  const { signer, account, scAccount } = useWallet();
+  const { signer, account, scAccount, login } = useWallet();
+  const { sendUserOperations } = useUserOperations()
   const { chainId } = useChainId();
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
-  const { alchemyProvider } = useAlchemyAccountKitContext();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
@@ -521,7 +519,7 @@ export function ConfirmationBox(p: Props) {
     );
     userOps.push(createWrapOrUnwrapOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
 
     // return createWrapOrUnwrapTxn(chainId, signer, {
     //   amount: swapAmounts.amountIn,
@@ -569,7 +567,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createSwapOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
 
     // return createSwapOrderTxn(chainId, signer, subaccount, {
     //   account:scAccount,
@@ -641,7 +639,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   async function onSubmitDecreaseOrder() {
@@ -739,7 +737,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createDecreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   function onSubmit() {
@@ -748,7 +746,7 @@ export function ConfirmationBox(p: Props) {
     let txnPromise: Promise<any>;
 
     if (!account) {
-      openConnectModal?.();
+      login?.();
       return;
     } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();

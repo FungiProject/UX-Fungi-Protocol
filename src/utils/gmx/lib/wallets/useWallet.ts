@@ -1,19 +1,13 @@
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
-import { useAccount, useNetwork } from "wagmi";
+import useWalletFungi from "@/hooks/useWallet";
 
 export default function useWallet() {
-  const { address, isConnected, connector } = useAccount();
-  const { scaAddress } = useAlchemyAccountKitContext();
-  const { chain } = useNetwork();
-  //const { data: signer } = useSigner(); //TODO fungi
-  const signer = undefined;
+
+  const { chainId, scAccount, isConnected } = useWalletFungi();
 
   return {
-    scAccount: scaAddress,
-    account: address,
+    scAccount,
+    account: "", //TODO remove
     active: isConnected,
-    connector,
-    chainId: chain?.id,
-    signer: signer ?? undefined,
+    chainId,
   };
 }

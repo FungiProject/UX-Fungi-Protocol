@@ -1,8 +1,8 @@
 import React from "react";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import useWallet from "@/hooks/useWallet";
 
 export default function LoginButton() {
-  const { login, isLoading, isIdle } = useAlchemyAccountKitContext();
+  const {login, isConnected, isLoading} = useWallet()
 
   return (
     <>
@@ -10,7 +10,7 @@ export default function LoginButton() {
         onClick={() => login()}
         className="bg-main py-[9px] rounded-full font-bold text-white flex w-[160px] items-center justify-center"
       >
-        {isLoading ? "Loading..." : isIdle ? "Connect" : "Connecting..."}
+         {isLoading ? "Loading..." : isConnected ? "Connecting..." : "Connect"}
       </button>
     </>
   );

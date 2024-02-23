@@ -1,4 +1,4 @@
-import { AlchemyMultichainClient } from "@/lib/alchemy/AlchemyMultichainClient";
+import { Alchemy } from "alchemy-sdk";
 import { TokenInfo } from "./types";
 import { getTokenBalancesAlchemy } from "@/lib/alchemy/alchemyCalls";
 import { fillCoinGeckoTokenId } from "./useMarketData";
@@ -12,19 +12,18 @@ import { getLifiTokens } from "@/lib/lifi/getLifiTokens";
  * This function fetches token balances from Alchemy API for the specified `address` on the specified `chainId`.
  * It then generates an array of TokenInfo objects representing LifI tokens, filling in the balance for tokens owned by the provided address.
  *
- * @param {AlchemyMultichainClient} alchemyClient - The AlchemyMultichainClient instance used to make API requests.
+ * @param {Alchemy} alchemyClient - The AlchemyClient instance used to make API requests.
  * @param {number} chainId - The identifier of the blockchain chain.
  * @param {string} address - The address for which to retrieve token balances.
  * @returns {Promise<TokenInfo[] | undefined>} A Promise that resolves to an array of TokenInfo objects representing LifI tokens with balances for the specified address, or undefined if the balance data is unavailable.
  */
 export async function getAllTokensWithBalances(
-  alchemyClient: AlchemyMultichainClient,
+  alchemyClient: Alchemy,
   chainId: number,
   address: string
 ) {
   const balances = await getTokenBalancesAlchemy(
     alchemyClient,
-    chainId,
     address
   );
   if (!balances) return;

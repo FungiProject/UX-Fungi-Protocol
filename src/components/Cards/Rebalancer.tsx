@@ -6,21 +6,19 @@ import {
   getUserOpRebalance,
 } from "@/domain/tokens/useRebalance";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import SearchBar from "../Filters/SearchBar";
 import TokenCard from "./TokenCard";
 import { TokenInfo } from "@/domain/tokens/types";
 import { useTokenBalances } from "@/hooks/useTokensBalances";
 import { TokenInfoRebalanceInput } from "@/domain/tokens/types";
-import { useUserOperations } from "@/hooks/useUserOperations";
 type RebalancerProps = {
   tokens: TokenInfo[];
 };
 
 export default function Rebalancer({ tokens }: RebalancerProps) {
   const { chainId, scAccount } = useWallet();
-  const { alchemyProvider } = useAlchemyAccountKitContext();
   const [error, setError] = useState(false);
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [openSelector, setOpenSelector] = useState(false);

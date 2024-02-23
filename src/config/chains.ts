@@ -1,3 +1,5 @@
+import { arbitrum, polygon, mainnet, polygonMumbai} from "viem/chains";
+
 
 export const ETH_MAINNET: number = 1;
 export const ETH_SEPOLIA = 11155111;
@@ -17,3 +19,18 @@ export function isSupportedChainOrDefault(chainId: number): number {
 export function isSupportedChain(chainId: number): boolean {
     return SUPPORTED_CHAIN_IDS.includes(chainId);
 }
+
+export function getViemChain(chainId: number) {
+    switch (chainId) {
+      case ETH_MAINNET:
+        return mainnet;
+      case ARBITRUM:
+        return arbitrum;
+      case POLYGON:
+        return polygon;
+      case POLYGON_MUMBAI:
+        return polygonMumbai;
+      default:
+        throw new Error("Chain not supported");
+    }
+  }

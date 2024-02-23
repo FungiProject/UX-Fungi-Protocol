@@ -73,12 +73,11 @@ import {
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { usePrevious } from "../../../../utils/gmx/lib/usePrevious";
 import useIsMetamaskMobile from "../../../../utils/gmx/lib/wallets/useIsMetamaskMobile";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
+import useWallet from "@/hooks/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
 import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 
 export type Props = {
   position?: PositionInfo;
@@ -105,9 +104,7 @@ export function PositionEditor(p: Props) {
     allowedSlippage,
   } = p;
   const { chainId } = useChainId();
-  const { scAccount } = useWallet(); //TODO fungi
-  const { account, signer, active } = useWallet();
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { scAccount: account, login: openConnectModal  } = useWallet(); //TODO fungi
   const isMetamaskMobile = useIsMetamaskMobile();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
@@ -142,8 +139,6 @@ export function PositionEditor(p: Props) {
       fetcher: contractFetcher(signer, Token) as any,
     }
   );
-
-  const { alchemyProvider } = useAlchemyAccountKitContext();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -403,8 +398,6 @@ export function PositionEditor(p: Props) {
     position,
   ]);
 
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-
   async function onCreateIncreaseOrder() {
     if (
       !executionFee?.feeTokenAmount ||
@@ -412,8 +405,7 @@ export function PositionEditor(p: Props) {
       !markPrice ||
       !position?.indexToken ||
       !collateralDeltaAmount ||
-      !selectedCollateralAddress ||
-      !signer
+      !selectedCollateralAddress
     ) {
       return;
     }
@@ -460,8 +452,7 @@ export function PositionEditor(p: Props) {
       !markPrice ||
       !position?.indexToken ||
       !collateralDeltaAmount ||
-      !selectedCollateralAddress ||
-      !signer
+      !selectedCollateralAddress
     ) {
       return;
     }

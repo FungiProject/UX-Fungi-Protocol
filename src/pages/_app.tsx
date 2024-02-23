@@ -3,7 +3,6 @@ import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/Set
 import "@/styles/globals.css";
 import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
-import WalletProvider from "@/lib/wallets/WalletProvider";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TOAST_AUTO_CLOSE_TIME } from "@/utils/gmx/config/ui";
@@ -53,7 +52,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <SWRConfig
         value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
       >
-        <WalletProvider>
           <SettingsContextProvider>
             <SubaccountContextProvider>
               <SyntheticsEventsProvider>
@@ -63,7 +61,6 @@ export default function App({ Component, pageProps }: AppProps) {
               </SyntheticsEventsProvider>
             </SubaccountContextProvider>
           </SettingsContextProvider>{" "}
-        </WalletProvider>
         <ToastContainer
           limit={1}
           transition={Zoom}

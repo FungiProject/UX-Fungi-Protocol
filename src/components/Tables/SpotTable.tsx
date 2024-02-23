@@ -3,10 +3,6 @@ import React, { useEffect, useState } from "react";
 // Components
 import SpotTableCard from "../Cards/SpotTableCard";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
-// Types
-import { NetworkType, assetType } from "@/types/Types";
-// Wagmi
-import { useNetwork } from "wagmi";
 // Constants
 import Loader from "../Loader/SpinnerLoader";
 import { TokenData, TokenInfo } from "@/domain/tokens/types";

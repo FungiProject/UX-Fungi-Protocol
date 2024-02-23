@@ -1,4 +1,3 @@
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import Button from "../../common/Buttons/Button";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
 import Checkbox from "../../common/Checkbox/Checkbox";
@@ -113,13 +112,13 @@ import {
 } from "../../../../utils/gmx/lib/numbers";
 import { useSafeState } from "../../../../utils/gmx/lib/useSafeState";
 import useIsMetamaskMobile from "../../../../utils/gmx/lib/wallets/useIsMetamaskMobile";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
 import useUiFeeFactor from "../../../../utils/gmx/domain/synthetics/fees/utils/useUiFeeFactor";
 import { museNeverExist } from "../../../../utils/gmx/lib/types";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
+import useWallet from "@/hooks/useWallet";
 
 export type Props = {
   tradeType: TradeType;
@@ -208,7 +207,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     isMarket,
   } = tradeFlags;
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { login: openConnectModal, scAccount: account } = useWallet()
   const {
     swapTokens,
     indexTokens,
@@ -233,11 +232,10 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo(undefined, chainId, account);
 
   const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();

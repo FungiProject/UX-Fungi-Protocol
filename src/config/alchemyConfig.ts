@@ -8,13 +8,23 @@ import {
 } from "@/config/chains";
 import { Network } from "alchemy-sdk";
 
+
 const ALCHEMY_API_KEYS = {
   [ARBITRUM]: "wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt",
   [POLYGON]: "D10Zw8Iea33Vssr-oGS-VJwONZNrkUzr",
 };
 
+const ALCHEMY_URL = {
+  [ARBITRUM]: "https://arb-mainnet.g.alchemy.com/v2/",
+  [POLYGON]: "https://polygon-mainnet.g.alchemy.com/v2/"
+}
+
 export function getApiKeyChain(chainId: number) {
   return ALCHEMY_API_KEYS[chainId];
+}
+
+export function getAlchemyApiUrl(chainId: number) {
+  return ALCHEMY_URL[chainId];
 }
 
 export function getProviderDefaultSettings(chainId: number) {
@@ -44,3 +54,4 @@ export function getAlchemyNetwork(chainId: number): Network {
       throw new Error("Chain not supported");
   }
 }
+

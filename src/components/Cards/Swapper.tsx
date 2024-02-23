@@ -2,16 +2,15 @@
 import React, { useEffect, useState } from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
 import Button from "../Gmx/common/Buttons/Button";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { useUserOperations } from "@/hooks/useUserOperations";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { TokenInfo } from "@/domain/tokens/types";
+import useWallet from "@/hooks/useWallet";
 
 type SwapperProps = {
   tokens: TokenInfo[];
@@ -21,7 +20,8 @@ type SwapperProps = {
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
 
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { login: openConnectModal } = useWallet()
+  const {sendUserOperations} = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -32,7 +32,6 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
   );
-  const { sendUserOperations } = useUserOperations();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [tx, sendTx] = useLiFiTx(

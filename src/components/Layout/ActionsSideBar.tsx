@@ -5,8 +5,6 @@ import LogoutButton from "../Buttons/LogoutButton";
 import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 import LoginButton from "../Buttons/LoginButton";
 import Home from "../Sections/Home";
-// Wagmi
-import { useAccount } from "wagmi";
 // Constants
 import { networks, navigation } from "../../../constants/Constants";
 // Types
@@ -25,13 +23,14 @@ import { useChainId } from "@/utils/gmx/lib/chains";
 import { SyntheticsFallbackPage } from "../Sections/SyntheticsFallbackPage";
 import Credit from "../Sections/Credit";
 import Nfts from "../Sections/Nfts";
+import useWallet from "@/hooks/useWallet";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
 };
 
 export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
-  const { isConnected } = useAccount();
+  const { isConnected } = useWallet();
   const { chainId } = useChainId();
   const [actionSelected, setActionSelected] = useState<string>("Home");
   const [connected, setConnected] = useState(false);

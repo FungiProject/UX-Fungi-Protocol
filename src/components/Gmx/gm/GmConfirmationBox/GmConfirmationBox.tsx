@@ -17,12 +17,11 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "@/utils/gmx/config/factors";
 import { useSyntheticsEvents } from "@/utils/gmx/context/SyntheticsEvents";
 import { useState } from "react";
 import { useKey } from "react-use";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
+import useWallet from "@/hooks/useWallet";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { createWithdrawalUserOp } from "@/utils/gmx/domain/synthetics/markets/createWithdrawalUserOp";
 import { createDepositUserOp } from "@/utils/gmx/domain/synthetics/markets/createDepositUserOp";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 
 type Props = {
@@ -70,7 +69,7 @@ export function GmConfirmationBox({
   shouldDisableValidation,
 }: Props) {
   const { scAccount } = useWallet(); //TODO fungi
-  const { alchemyProvider } = useAlchemyAccountKitContext();
+  const { sendUserOperations } = useUserOperations()
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
 
@@ -311,7 +310,7 @@ export function GmConfirmationBox({
 
     userOps.push(depositUserOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   async function onCreateWithdrawal() {
@@ -349,7 +348,7 @@ export function GmConfirmationBox({
 
     userOps.push(withdrawalUserOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   return (

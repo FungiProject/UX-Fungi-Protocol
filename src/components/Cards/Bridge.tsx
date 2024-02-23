@@ -8,16 +8,15 @@ import axios from "axios";
 import Arbitrum from "../../../public/ArbitrumTokens/Arbitrum.svg";
 // Types
 import { TokenInfo } from "@/domain/tokens/types";
-import { NetworkType, tokenType } from "@/types/Types";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { NetworkType } from "@/types/Types";
+import useWallet from "@/hooks/useWallet";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
 import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import Button from "../Gmx/common/Buttons/Button";
 import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 
 type BridgeProps = {
@@ -28,8 +27,8 @@ type BridgeProps = {
 export default function Bridge({ tokens, chainId }: BridgeProps) {
   const { scAccount } = useWallet();
 
-  const { alchemyProvider, login: openConnectModal } =
-    useAlchemyAccountKitContext();
+  const { login } = useWallet();
+  const { sendUserOperations } = useUserOperations()
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -184,7 +183,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     let txnPromise: Promise<any>;
 
     if (!scAccount) {
-      openConnectModal?.();
+      login();
       return;
     } else {
       txnPromise = onSubmitSwap();
@@ -210,7 +209,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(alchemyProvider, chainId, resultTx);
+    await sendUserOperations(resultTx)
   };
 
   const handleAmountChange = (amount: number) => {

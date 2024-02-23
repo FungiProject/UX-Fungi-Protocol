@@ -52,7 +52,6 @@ import { useAvailableTokenOptions } from "../../../../utils/gmx/domain/synthetic
 import TokenWithIcon from "../../common/TokenIcon/TokenWithIcon";
 import { useSearchParams } from "next/navigation";
 import { getGmSwapError } from "../../../../utils/gmx/domain/synthetics/trade/utils/validation";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import useSortedMarketsWithIndexToken from "../../../../utils/gmx/domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getDepositAmounts } from "../../../../utils/gmx/domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "../../../../utils/gmx/domain/synthetics/trade/utils/withdrawal";
@@ -72,7 +71,7 @@ import useUiFeeFactor from "../../../../utils/gmx/domain/synthetics/fees/utils/u
 import { getCommonError } from "../../../../utils/gmx/domain/synthetics/trade/utils/validation";
 import { PoolSelector } from "../../common/PoolSelector/PoolSelector";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import useWallet from "@/hooks/useWallet";
 import ExchangeInfoRow from "../../chart/ExchangeInfoRow/ExchangeInfoRow";
 import { GmFees } from "../GmFees/GmFees";
 import Button from "../../common/Buttons/Button";
@@ -144,7 +143,7 @@ export function GmSwapBox(p: Props) {
 
   const queryParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
+  const { login: openConnectModal } = useWallet();
 
   const marketAddress = p.selectedMarketAddress;
 

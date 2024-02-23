@@ -114,7 +114,7 @@ export const networks = [
   //   image: Arbitrum.src,
   //   symbol: "ARB Goerli",
   // },
-  // { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
+   { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
   // {
   //   name: "Polygon Mumbai",
   //   id: 80001,

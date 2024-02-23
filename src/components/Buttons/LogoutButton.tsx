@@ -3,22 +3,17 @@ import React, { useState } from "react";
 // Next
 import Image from "next/image";
 import { useRouter } from "next/router";
-// Wagmi
-import { useDisconnect } from "wagmi";
-// Images
+import useWallet from "@/hooks/useWallet";
 import Chain from "../../../public/Chain.svg";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+
 
 export default function LogoutButton() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
-  const { disconnect } = useDisconnect();
-  //const { address } = useAccount();
-  const { scaAddress: address } = useAlchemyAccountKitContext();
+  const { logout, scAccount } = useWallet();
   const router = useRouter();
 
   const logingOut = async () => {
-    disconnect();
+    logout();
     router.push("/");
   };
 
@@ -30,7 +25,7 @@ export default function LogoutButton() {
       onMouseLeave={() => setIsHovered(false)}
     >
       {!isHovered ? (
-        <>{address ? address.substring(0, 10) + "..." : <></>}</>
+        <>{scAccount ? scAccount.substring(0, 10) + "..." : <></>}</>
       ) : (
         <>
           <span>Disconnect</span>{" "}
