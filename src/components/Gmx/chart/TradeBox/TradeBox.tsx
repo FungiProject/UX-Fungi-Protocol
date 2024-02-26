@@ -207,7 +207,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     isMarket,
   } = tradeFlags;
-  const { login: openConnectModal, scAccount: account } = useWallet()
+  const { login: openConnectModal, scAccount: account } = useWallet();
   const {
     swapTokens,
     indexTokens,
@@ -235,7 +235,7 @@ export function TradeBox(p: Props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const userReferralInfo = useUserReferralInfo(undefined, chainId, account);
+  const userReferralInfo = useUserReferralInfo(chainId, account);
 
   const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();

@@ -27,7 +27,7 @@ export default function useTokensWithBalance() {
         setTokensWithBalance(tokensWithBalance);
       }
     };
-    console.log(scAccount);
+
     fetchTokens();
   }, [alchemyClient, chainId, scAccount]);
 

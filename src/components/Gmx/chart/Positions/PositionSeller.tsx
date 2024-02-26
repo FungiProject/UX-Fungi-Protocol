@@ -119,12 +119,12 @@ export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
   const { login: openConnectModal, scAccount } = useWallet();
-  const { sendUserOperations} = useUserOperations();
+  const { sendUserOperations } = useUserOperations();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } =
     usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(undefined, chainId, scAccount);
+  const userReferralInfo = useUserReferralInfo(chainId, scAccount);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
   const { savedAcceptablePriceImpactBuffer } = useSettings();

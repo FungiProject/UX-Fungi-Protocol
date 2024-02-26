@@ -38,7 +38,7 @@ export async function simulateExecuteOrderTxn(
   p: SimulateExecuteOrderParams
 ) {
   const dataStoreAddress = getContract(chainId, "DataStore");
-  const provider = getProvider(undefined, chainId);
+  const provider = getProvider(chainId);
   const dataStore = new ethers.Contract(
     dataStoreAddress,
     DataStore.abi,

@@ -40,8 +40,7 @@ export function updateOrderTxn(
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(
         getContract(chainId, "ExchangeRouter"),
-        ExchangeRouter.abi,
-        signer
+        ExchangeRouter.abi
       );
 
   const orderVaultAddress = getContract(chainId, "OrderVault");

@@ -163,7 +163,13 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
 
             <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
               {tokensCopy.map((token: TokenInfo) => {
-                return <TokenCard token={token} onClick={onAddToken} />;
+                return (
+                  <TokenCard
+                    token={token}
+                    onClick={onAddToken}
+                    key={token.coinKey}
+                  />
+                );
               })}
             </div>
           </div>
