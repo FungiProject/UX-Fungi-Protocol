@@ -1,5 +1,12 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_GOERLI,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BSС_MAINNET,
+  BSС_TESTNET,
+} from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -240,7 +247,6 @@ const CONTRACTS = {
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
-
   [AVALANCHE_FUJI]: {
     Vault: AddressZero,
     Router: AddressZero,

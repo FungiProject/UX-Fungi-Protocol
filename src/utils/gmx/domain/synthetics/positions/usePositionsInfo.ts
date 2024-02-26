@@ -46,12 +46,10 @@ export function usePositionsInfo(
     skipLocalReferralCode = false,
   } = p;
 
-  const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(
-    signer,
     chainId,
     account,
     skipLocalReferralCode

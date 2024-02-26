@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { BigNumber, BigNumberish, Signer, ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -205,12 +205,11 @@ export async function setAffiliateTier(
   chainId: number,
   affiliate: string,
   tierId: number,
-  signer,
   opts
 ) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const timelockAddress = getContract(chainId, "Timelock");
-  const contract = new ethers.Contract(timelockAddress, Timelock.abi, signer);
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi);
   return callContract(
     chainId,
     contract,
@@ -220,18 +219,12 @@ export async function setAffiliateTier(
   );
 }
 
-export async function registerReferralCode(
-  chainId,
-  referralCode,
-  signer,
-  opts
-) {
+export async function registerReferralCode(chainId, referralCode, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
   const contract = new ethers.Contract(
     referralStorageAddress,
-    ReferralStorage.abi,
-    signer
+    ReferralStorage.abi
   );
   return callContract(
     chainId,
@@ -242,18 +235,12 @@ export async function registerReferralCode(
   );
 }
 
-export async function setTraderReferralCodeByUser(
-  chainId,
-  referralCode,
-  signer,
-  opts
-) {
+export async function setTraderReferralCodeByUser(chainId, referralCode, opts) {
   const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(
     referralStorageAddress,
-    ReferralStorage.abi,
-    signer
+    ReferralStorage.abi
   );
   const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {

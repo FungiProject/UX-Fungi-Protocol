@@ -383,7 +383,7 @@ export function useSubaccount(
     )
       return null;
 
-    const provider = getProvider(undefined, chainId);
+    const provider = getProvider(chainId);
     const wallet = new ethers.Wallet(privateKey, provider);
     const signer = wallet.connect(provider);
 
