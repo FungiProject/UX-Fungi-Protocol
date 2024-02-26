@@ -1,5 +1,4 @@
 import { useState } from "react";
-//import { getCallDataApprove } from "./getCallDataApprove";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { Hex } from "viem";
 import axios from "axios";
@@ -36,7 +35,7 @@ export const useLiFiTx = (
       });
 
       const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
-      let quote;
+      let quote: any;
       try {
         const responses = await Promise.all(
           orders.map((order) => {

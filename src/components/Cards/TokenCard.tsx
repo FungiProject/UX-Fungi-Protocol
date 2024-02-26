@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { tokenType } from "@/types/Types";
+import React from "react";
 import { TokenInfo } from "@/domain/tokens/types";
 import { BigNumber } from "alchemy-sdk";
 import { ethers } from "ethers";
@@ -10,7 +9,6 @@ type TokenCardProps = {
 };
 
 export default function TokenCard({ token, onClick }: TokenCardProps) {
-
   return (
     <button
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
@@ -32,7 +30,9 @@ export default function TokenCard({ token, onClick }: TokenCardProps) {
       </div>
       {token.balance && !token.balance.eq(BigNumber.from(0)) ? (
         <div>
-          {Number(ethers.utils.formatUnits(token.balance,token.decimals)).toFixed(5)}
+          {Number(
+            ethers.utils.formatUnits(token.balance, token.decimals)
+          ).toFixed(5)}
         </div>
       ) : (
         <div>0</div>

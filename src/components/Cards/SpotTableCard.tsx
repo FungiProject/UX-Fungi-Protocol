@@ -2,8 +2,6 @@
 import React from "react";
 // Next
 import Image from "next/image";
-// Types
-import { assetType } from "@/types/Types";
 // Utils
 import formatNumber from "@/utils/formatNumber";
 import { networks } from "../../../constants/Constants";
