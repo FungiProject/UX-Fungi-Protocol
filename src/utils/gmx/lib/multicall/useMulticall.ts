@@ -1,5 +1,10 @@
 import useSWR, { SWRConfiguration } from "swr";
-import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+import {
+  CacheKey,
+  MulticallRequestConfig,
+  MulticallResult,
+  SkipKey,
+} from "./types";
 import { executeMulticall } from "./utils";
 import { SWRGCMiddlewareConfig } from "../swrMiddlewares";
 import useWallet from "../wallets/useWallet";
@@ -14,7 +19,10 @@ import useWallet from "../wallets/useWallet";
  * @param params.request - contract calls config or callback which returns it
  * @param params.parseResponse - optional callback to pre-process and format the response
  */
-export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
+export function useMulticall<
+  TConfig extends MulticallRequestConfig<any>,
+  TResult = MulticallResult<TConfig>
+>(
   chainId: number,
   name: string,
   params: {
@@ -23,12 +31,17 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
-    parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
+    parseResponse?: (
+      result: MulticallResult<TConfig>,
+      chainId: number,
+      key: CacheKey
+    ) => TResult;
   }
 ) {
-  const { signer } = useWallet();
-
-  let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
+  let swrFullKey =
+    Array.isArray(params.key) && chainId && name
+      ? [chainId, name, ...params.key]
+      : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
     clearUnusedKeys: params.clearUnusedKeys,
@@ -53,7 +66,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           throw new Error(`Multicall request is empty`);
         }
 
-        const response = await executeMulticall(chainId, signer, request);
+        const response = await executeMulticall(chainId, request);
 
         if (!response) {
           throw new Error(`Multicall response is empty`);

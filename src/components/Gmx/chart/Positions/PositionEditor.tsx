@@ -104,14 +104,14 @@ export function PositionEditor(p: Props) {
     allowedSlippage,
   } = p;
   const { chainId } = useChainId();
-  const { scAccount: account, login: openConnectModal  } = useWallet(); //TODO fungi
+  const { scAccount, login: openConnectModal } = useWallet(); //TODO fungi
   const isMetamaskMobile = useIsMetamaskMobile();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo(chainId, scAccount);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const isVisible = Boolean(position);
@@ -124,21 +124,21 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { data: tokenAllowance } = useSWR<BigNumber>(
-    position
-      ? [
-          active,
-          chainId,
-          position.collateralTokenAddress,
-          "allowance",
-          account,
-          routerAddress,
-        ]
-      : null,
-    {
-      fetcher: contractFetcher(signer, Token) as any,
-    }
-  );
+  // const { data: tokenAllowance } = useSWR<BigNumber>(
+  //   position
+  //     ? [
+  //         active,
+  //         chainId,
+  //         position.collateralTokenAddress,
+  //         "allowance",
+  //         scAccount,
+  //         routerAddress,
+  //       ]
+  //     : null,
+  //   {
+  //     fetcher: contractFetcher(Token) as any,
+  //   }
+  // );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -194,10 +194,10 @@ export function PositionEditor(p: Props) {
 
   const needCollateralApproval =
     isDeposit &&
-    tokenAllowance &&
+    // tokenAllowance &&
     collateralDeltaAmount &&
-    selectedCollateralAddress !== ethers.constants.AddressZero &&
-    collateralDeltaAmount.gt(tokenAllowance);
+    selectedCollateralAddress !== ethers.constants.AddressZero;
+  //  && collateralDeltaAmount.gt(tokenAllowance);
 
   const minCollateralUsdForLeverage = position
     ? getMinCollateralUsdForLeverage(position)
@@ -349,7 +349,7 @@ export function PositionEditor(p: Props) {
   const error = useMemo(() => {
     const commonError = getCommonError({
       chainId,
-      isConnected: Boolean(account),
+      isConnected: Boolean(scAccount),
       hasOutdatedUi,
     });
 
@@ -382,7 +382,7 @@ export function PositionEditor(p: Props) {
       return `Creating Order...`;
     }
   }, [
-    account,
+    scAccount,
     chainId,
     collateralDeltaAmount,
     collateralDeltaUsd,
@@ -497,7 +497,7 @@ export function PositionEditor(p: Props) {
 
   function onSubmit() {
     setIsSubmitting(true);
-    if (!account) {
+    if (!scAccount) {
       openConnectModal?.();
       return;
     }

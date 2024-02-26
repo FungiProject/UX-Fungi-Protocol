@@ -198,15 +198,15 @@ export function ConfirmationBox(p: Props) {
   } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
-  const { signer, account, scAccount, login } = useWallet();
-  const { sendUserOperations } = useUserOperations()
+  const { scAccount, login } = useWallet();
+  const { sendUserOperations } = useUserOperations();
   const { chainId } = useChainId();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(chainId, scAccount);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] =
     useState(false);
@@ -265,17 +265,17 @@ export function ConfirmationBox(p: Props) {
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
   const positionKey = useMemo(() => {
-    if (!account || !marketInfo || !collateralToken) {
+    if (!scAccount || !marketInfo || !collateralToken) {
       return undefined;
     }
 
     return getPositionKey(
-      account,
+      scAccount,
       marketInfo.marketTokenAddress,
       collateralToken.address,
       isLong
     );
-  }, [account, collateralToken, isLong, marketInfo]);
+  }, [scAccount, collateralToken, isLong, marketInfo]);
 
   const positionOrders = useMemo(() => {
     if (!positionKey || !ordersData) {
@@ -487,15 +487,15 @@ export function ConfirmationBox(p: Props) {
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  function onCancelOrderClick(key: string): void {
-    if (!signer) return;
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: [key],
-      setPendingTxns: p.setPendingTxns,
-      isLastSubaccountAction,
-      detailsMsg: cancelOrdersDetailsMessage,
-    });
-  }
+  // function onCancelOrderClick(key: string): void {
+  //   if (!signer) return;
+  //   cancelOrdersTxn(chainId, signer, subaccount, {
+  //     orderKeys: [key],
+  //     setPendingTxns: p.setPendingTxns,
+  //     isLastSubaccountAction,
+  //     detailsMsg: cancelOrdersDetailsMessage,
+  //   });
+  // }
 
   async function onSubmitWrapOrUnwrap() {
     if (!scAccount || !swapAmounts || !fromToken) {
@@ -745,7 +745,7 @@ export function ConfirmationBox(p: Props) {
 
     let txnPromise: Promise<any>;
 
-    if (!account) {
+    if (!scAccount) {
       login?.();
       return;
     } else if (isWrapOrUnwrap) {
@@ -870,9 +870,9 @@ export function ConfirmationBox(p: Props) {
             displayDecimals: toToken?.priceDecimals,
           })}{" "}
         </p>
-        <button type="button" onClick={() => onCancelOrderClick(order.key)}>
+        {/* <button type="button" onClick={() => onCancelOrderClick(order.key)}>
           Cancel
-        </button>
+        </button> */}
       </li>
     );
   }

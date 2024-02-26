@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function ApproveTokenButton(p: Props) {
-  const { signer, chainId } = useWallet();
+  const { chainId } = useWallet();
   const [isApproving, setIsApproving] = useState(false);
   const [isApproveSubmitted, setIsApproveSubmitted] = useState(false);
 
@@ -27,7 +27,6 @@ export function ApproveTokenButton(p: Props) {
 
     approveTokens({
       setIsApproving,
-      signer,
       tokenAddress: tokenAddress,
       spender: p.spenderAddress,
       pendingTxns: [],

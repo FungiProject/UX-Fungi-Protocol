@@ -67,7 +67,7 @@ export function SyntheticsPage(p) {
     openSettings,
   } = p;
   const { chainId } = useChainId();
-  const { signer, account, scAccount } = useWallet();
+  const { account, scAccount } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } =
     useMarketsInfo(chainId);
 
@@ -268,29 +268,29 @@ export function SyntheticsPage(p) {
     setClosingPositionKey(undefined);
   }, []);
 
-  const onPositionEditorClose = useCallback(() => {
-    setEditingPositionKey(undefined);
-  }, []);
+  // const onPositionEditorClose = useCallback(() => {
+  //   setEditingPositionKey(undefined);
+  // }, []);
 
-  function onCancelOrdersClick() {
-    if (!signer) return;
-    setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: selectedOrdersKeysArr,
-      setPendingTxns: setPendingTxns,
-      isLastSubaccountAction,
-      detailsMsg: cancelOrdersDetailsMessage,
-    })
-      .then(async (tx) => {
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          setSelectedOrdersKeys({});
-        }
-      })
-      .finally(() => {
-        setIsCancelOrdersProcessig(false);
-      });
-  }
+  // function onCancelOrdersClick() {
+  //   if (!signer) return;
+  //   setIsCancelOrdersProcessig(true);
+  //   cancelOrdersTxn(chainId, signer, subaccount, {
+  //     orderKeys: selectedOrdersKeysArr,
+  //     setPendingTxns: setPendingTxns,
+  //     isLastSubaccountAction,
+  //     detailsMsg: cancelOrdersDetailsMessage,
+  //   })
+  //     .then(async (tx) => {
+  //       const receipt = await tx.wait();
+  //       if (receipt.status === 1) {
+  //         setSelectedOrdersKeys({});
+  //       }
+  //     })
+  //     .finally(() => {
+  //       setIsCancelOrdersProcessig(false);
+  //     });
+  // }
 
   useEffect(() => {
     const chartTokenData = getByKey(tokensData, chartToken?.address);
@@ -635,7 +635,7 @@ export function SyntheticsPage(p) {
         onClose={() => setIsClaiming(false)}
         setPendingTxns={setPendingTxns}
       />
-      <SettleAccruedFundingFeeModal
+      {/* <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}
         positionsInfoData={positionsInfoData}
@@ -647,7 +647,7 @@ export function SyntheticsPage(p) {
           setGettingPendingFeePositionKeys([]);
           setIsSettling(false);
         }, [])}
-      />
+      /> */}
     </div>
   );
 }

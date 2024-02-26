@@ -1,12 +1,12 @@
-import { Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import { getFallbackProvider, getProvider } from "../rpc";
 
 export const contractFetcher =
-  <T>(signer: Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
+  <T>(contractInfo: any, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(signer, chainId);
+    const provider = getProvider(chainId);
 
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 

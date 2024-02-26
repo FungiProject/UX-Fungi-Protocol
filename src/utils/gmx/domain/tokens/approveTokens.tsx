@@ -1,4 +1,4 @@
-import { Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import Token from "../../../../../abis/Token.json";
 import { getChainName, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
@@ -7,10 +7,8 @@ import ExternalLink from "../../../../components/Gmx/common/ExternalLink/Externa
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 
-
 type Params = {
   setIsApproving: (val: boolean) => void;
-  signer: Signer | undefined;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -24,7 +22,7 @@ type Params = {
 
 export function approveTokens({
   setIsApproving,
-  signer,
+
   tokenAddress,
   spender,
   chainId,
@@ -36,7 +34,7 @@ export function approveTokens({
   includeMessage,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+  const contract = new ethers.Contract(tokenAddress, Token.abi);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract
@@ -94,5 +92,3 @@ export function approveTokens({
       setIsApproving(false);
     });
 }
-
-

@@ -30,7 +30,7 @@ type Props = {
 
 export function ClaimModal(p: Props) {
   const { isVisible, onClose, setPendingTxns, marketsInfoData } = p;
-  const { account, signer } = useWallet();
+  const { account } = useWallet();
   const { chainId } = useChainId();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,7 +119,7 @@ export function ClaimModal(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !signer) return;
+    if (!account) return;
 
     const fundingMarketAddresses: string[] = [];
     const fundingTokenAddresses: string[] = [];
@@ -138,7 +138,7 @@ export function ClaimModal(p: Props) {
 
     setIsSubmitting(true);
 
-    claimCollateralTxn(chainId, signer, {
+    claimCollateralTxn(chainId, {
       account,
       fundingFees: {
         marketAddresses: fundingMarketAddresses,

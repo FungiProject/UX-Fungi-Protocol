@@ -12,13 +12,12 @@ type Params = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function claimCollateralTxn(chainId: number, signer: Signer, p: Params) {
+export function claimCollateralTxn(chainId: number, p: Params) {
   const { setPendingTxns, fundingFees, account } = p;
 
   const contract = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    signer
+    ExchangeRouter.abi
   );
 
   return callContract(

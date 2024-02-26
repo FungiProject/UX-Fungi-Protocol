@@ -34,7 +34,7 @@ type Props = {
 export function OrderList(p: Props) {
   const { marketsInfoData, tokensData, positionsData } = p;
   const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { scAccount } = useWallet();
 
   const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
@@ -74,19 +74,19 @@ export function OrderList(p: Props) {
     p.setSelectedOrdersKeys?.(allSelectedOrders);
   }
 
-  function onCancelOrder(key: string) {
-    if (!signer) return;
-    setCanellingOrdersKeys((prev) => [...prev, key]);
+  // function onCancelOrder(key: string) {
+  //   if (!scAccount) return;
+  //   setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: [key],
-      setPendingTxns: p.setPendingTxns,
-      isLastSubaccountAction,
-      detailsMsg: cancelOrdersDetailsMessage,
-    }).finally(() =>
-      setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
-    );
-  }
+  //   cancelOrdersTxn(chainId, signer, subaccount, {
+  //     orderKeys: [key],
+  //     setPendingTxns: p.setPendingTxns,
+  //     isLastSubaccountAction,
+  //     detailsMsg: cancelOrdersDetailsMessage,
+  //   }).finally(() =>
+  //     setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
+  //   );
+  // }
 
   return (
     <>
@@ -106,7 +106,7 @@ export function OrderList(p: Props) {
                 isSelected={p.selectedOrdersKeys?.[order.key]}
                 onSelectOrder={() => onSelectOrder(order.key)}
                 isCanceling={canellingOrdersKeys.includes(order.key)}
-                onCancelOrder={() => onCancelOrder(order.key)}
+                // onCancelOrder={() => onCancelOrder(order.key)}
                 onEditOrder={() => setEditingOrderKey(order.key)}
                 marketsInfoData={marketsInfoData}
                 positionsInfoData={positionsData}
@@ -160,7 +160,7 @@ export function OrderList(p: Props) {
                   isLarge={true}
                   onSelectOrder={() => onSelectOrder(order.key)}
                   isCanceling={canellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order.key)}
+                  // onCancelOrder={() => onCancelOrder(order.key)}
                   onEditOrder={() => setEditingOrderKey(order.key)}
                   hideActions={p.hideActions}
                   marketsInfoData={marketsInfoData}
