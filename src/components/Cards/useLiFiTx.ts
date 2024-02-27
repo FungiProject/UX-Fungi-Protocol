@@ -2,7 +2,8 @@ import { useState } from "react";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { Hex } from "viem";
 import axios from "axios";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { UserOperation } from "@/lib/userOperations/types";
 
 export const useLiFiTx = (
   type: string,
@@ -70,21 +71,27 @@ export const useLiFiTx = (
       const spender: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
+    
+      const userOps: UserOperation[] = []
 
-      const callDataApprove = createApproveTokensUserOp({
-        tokenAddress,
-        spender,
-        amount: BigNumber.from(amount),
-      });
+      if(tokenAddress != ethers.constants.AddressZero){
+        const approveUserOp = createApproveTokensUserOp({
+          tokenAddress,
+          spender,
+          amount: BigNumber.from(amount),
+        });
+        userOps.push(approveUserOp);
+      }
 
-      const callDataLiFiTx = {
+      userOps.push({
         target: quote.transactionRequest.to,
         data: quote.transactionRequest.data,
-      };
+        value: tokenAddress == ethers.constants.AddressZero ? BigInt(amount) : undefined
+      })
 
       setStatus({ disabled: true, text: "Enter an amount" });
 
-      return [callDataApprove, callDataLiFiTx];
+      return userOps;
     } catch (error) {
       setStatus({ disabled: true, text: "Enter an amount" });
       console.error(error);
