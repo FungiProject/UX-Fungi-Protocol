@@ -121,7 +121,7 @@ export function FungiGlobalContextProvider({
   }, [alchemyScaProvider]);
 
   const connectProviderToAccount = useCallback(
-    (signer: MagicSigner) => {
+    (signer) => {
       if (!alchemyScaProvider) {
         return;
       }
