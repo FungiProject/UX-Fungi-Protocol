@@ -103,7 +103,7 @@ export function OrderEditor(p: Props) {
 
     const oldAcceptablePrice = positionOrder.acceptablePrice;
     const oldTriggerPrice = positionOrder.triggerPrice;
-    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || 0;
+    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || BigNumber.from(0);
     const acceptablePriceImpactBps = getBasisPoints(
       priceDelta,
       oldTriggerPrice

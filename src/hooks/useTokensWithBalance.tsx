@@ -7,9 +7,8 @@ import React, { useEffect, useState } from "react";
 export default function useTokensWithBalance() {
   const { chainId, scAccount } = useWallet();
   const { alchemyClient } = useGlobalContext();
-  const [tokensWithBalance, setTokensWithBalance] = useState<TokenInfo[] | []>(
-    []
-  );
+  const [tokensWithBalance, setTokensWithBalance] = useState<TokenInfo[]>([]);
+  
   useEffect(() => {
     const fetchTokens = async () => {
       if (alchemyClient && chainId && scAccount) {

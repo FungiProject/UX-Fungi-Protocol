@@ -50,7 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <main>
       <FungiGlobalContextProvider>
       <SWRConfig
-        value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
+        value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware as any] }}
       >
           <SettingsContextProvider>
             <SubaccountContextProvider>

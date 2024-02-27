@@ -12,12 +12,12 @@ export default function useScAccountSpotPosition() {
   const cashTokensSymbols = ["USDC", "USDC.e", "DAI", "USDT"];
   useEffect(() => {
     if (tokensWithBalance.length !== 0) {
-      const balanceInTotal = tokensWithBalance.reduce((acc, prev) => {
+      const balanceInTotal = tokensWithBalance.reduce((acc, current) => {
         return (
           acc +
           Number(
-            (Number(prev.balance) / 10 ** Number(prev.decimals)) *
-              Number(prev.priceUSD)
+            (Number(current.balance) / 10 ** Number(current.decimals)) *
+              Number(current.priceUSD)
           )
         );
       }, 0);
