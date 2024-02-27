@@ -52,9 +52,9 @@ export class MagicMultichainClient {
       // Use overrides if they exist -- otherwise use the default settings.
       const magicSettings =
         this.overrides && this.overrides[chainId]
-          ? { ...this.overrides[chainId], chainId }
+          ? { ...this.overrides[chainId], chainId}
           : { ...this.settings, chainId };
-      this.instances.set(chainId, new MagicSigner(magicSettings));
+      this.instances.set(chainId, new MagicSigner({apiKey: magicSettings.apiKey!}));
     }
     return this.instances.get(chainId);
   }

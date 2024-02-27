@@ -16,7 +16,8 @@ export function getMagicDefaultSettings(): MagicSDKParams {
 export function getMagicMultichainSetting(): Partial<Record<number, MagicSDKParams>> {
     return SUPPORTED_CHAIN_IDS.reduce((acc, chain) => {
         acc[chain] = {
-            apiKey: getMagicApiKey(), options: {
+            apiKey: getMagicApiKey(), 
+            options: {
                 network: {
                     rpcUrl: getAlchemyApiUrl(chain) + getApiKeyChain(chain),
                     chainId: chain
