@@ -121,7 +121,7 @@ export function FungiGlobalContextProvider({
   }, [alchemyScaProvider]);
 
   const connectProviderToAccount = useCallback(
-    (signer) => {
+    (signer: SmartAccountSigner) => {
       if (!alchemyScaProvider) {
         return;
       }
@@ -167,7 +167,7 @@ export function FungiGlobalContextProvider({
     });
 
     //setIsLoggedIn(true);
-    connectProviderToAccount(signer);
+    connectProviderToAccount(signer as SmartAccountSigner);
 
     setScaAddress(await alchemyScaProvider?.getAddress());
     setIsConnected(true);
