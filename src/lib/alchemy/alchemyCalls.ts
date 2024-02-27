@@ -1,7 +1,7 @@
-import { Alchemy } from "alchemy-sdk";
+import { Alchemy, TokenBalance } from "alchemy-sdk";
 import { ethers } from "ethers";
 
-export async function getTokenBalancesAlchemy(alchemyClient: Alchemy, address: string) {
+export async function getTokenBalancesAlchemy(alchemyClient: Alchemy, address: string): Promise<TokenBalance[] | undefined> {
     if(!alchemyClient || !address){
         return
     }
@@ -10,7 +10,7 @@ export async function getTokenBalancesAlchemy(alchemyClient: Alchemy, address: s
    const ethBalance = await alchemyClient.core.getBalance(address)
 
    if(ethBalance && ethBalance.gt("0")) {
-       response?.tokenBalances.push({contractAddress: ethers.constants.AddressZero, tokenBalance: ethBalance.toString()})
+       response?.tokenBalances.push({contractAddress: ethers.constants.AddressZero, tokenBalance: ethBalance.toString(), error: null})
    }
 
 
