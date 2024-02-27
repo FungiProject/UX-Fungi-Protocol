@@ -9,17 +9,12 @@ import {
 } from "react";
 import { MagicSigner } from "@alchemy/aa-signers/magic";
 import { AlchemyMultichainClient } from "@/lib/alchemy/AlchemyMultichainClient";
-import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 import {
   getProviderMultichainSetting,
   getProviderDefaultSettings,
 } from "@/config/alchemyConfig";
 import { Alchemy } from "alchemy-sdk";
 import { ARBITRUM } from "@/config/chains";
-import {
-  getMagicDefaultSettings,
-  getMagicMultichainSetting,
-} from "@/config/magicConfig";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import {
   SmartAccountSigner,
@@ -31,10 +26,11 @@ import {
   getDefaultLightAccountFactoryAddress,
 } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
+import { createMagicSigner } from "@/lib/magic/createMagicSigner";
 
 export type FungiGlobalContextType = {
   alchemyClient?: Alchemy;
-  magicClient?: MagicSigner;
+  magicClient?: Promise<MagicSigner | null>;
   alchemyScaProvider: AlchemyProvider | undefined;
   scaAddress?: Address;
   chain: number;
@@ -58,13 +54,11 @@ export function FungiGlobalContextProvider({
 }) {
   const [alchemyMultichainClient, setAlchemyMultichainClient] =
     useState<AlchemyMultichainClient>();
-  const [magicMultichainClient, setMagicMultichainClient] =
-    useState<MagicMultichainClient>();
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
   const [alchemyScaProvider, setAlchemyScaProvider] =
     useState<AlchemyProvider>();
-  const [magicClient, setMagicClient] = useState<MagicSigner>();
+  const [magicClient, setMagicClient] = useState<Promise<MagicSigner | null>>(() => createMagicSigner());
 
   const [scaAddress, setScaAddress] = useState<Address>();
   const [chain, setChain] = useState(ARBITRUM);
@@ -80,13 +74,12 @@ export function FungiGlobalContextProvider({
     );
     setAlchemyMultichainClient(multichainProv);
 
-    const defaultMagicSettings = getMagicDefaultSettings();
-    const overridesMagicSettings = getMagicMultichainSetting();
-    const magicMultichain = new MagicMultichainClient(
-      defaultMagicSettings,
-      overridesMagicSettings
-    );
-    setMagicMultichainClient(magicMultichain);
+    /*(async ()=>{
+      const magicSigner = await createMagicSigner()
+
+      setMagicClient(magicSigner as SmartAccountSigner);
+    })()*/
+  
   }, []);
 
   useEffect(() => {
@@ -100,15 +93,10 @@ export function FungiGlobalContextProvider({
           alchemyMultichainClient?.forNetworkScProvider(chain)
         );
       }
-
-      if (magicMultichainClient) {
-        setMagicClient(magicMultichainClient.forNetwork(chain));
-      }
     }
   }, [
     chain,
     alchemyMultichainClient,
-    magicMultichainClient,
     alchemyScaProvider,
   ]);
 
