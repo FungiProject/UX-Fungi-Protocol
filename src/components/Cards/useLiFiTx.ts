@@ -75,19 +75,24 @@ export const useLiFiTx = (
       const userOps: UserOperation[] = []
 
       if(tokenAddress != ethers.constants.AddressZero){
-        const approveUserOp = createApproveTokensUserOp({
+        userOps.push(createApproveTokensUserOp({
           tokenAddress,
           spender,
           amount: BigNumber.from(amount),
-        });
-        userOps.push(approveUserOp);
-      }
+        }));
 
-      userOps.push({
-        target: quote.transactionRequest.to,
-        data: quote.transactionRequest.data,
-        value: tokenAddress == ethers.constants.AddressZero ? BigInt(amount) : undefined
-      })
+        userOps.push({
+          target: quote.transactionRequest.to,
+          data: quote.transactionRequest.data,
+          value: tokenAddress == ethers.constants.AddressZero ? BigInt(amount) : undefined
+        })
+      } else {
+        userOps.push({
+          target: quote.transactionRequest.to,
+          data: quote.transactionRequest.data,
+          value: BigInt(amount)
+        })
+      }
 
       setStatus({ disabled: true, text: "Enter an amount" });
 

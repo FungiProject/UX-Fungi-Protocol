@@ -159,8 +159,6 @@ export function FungiGlobalContextProvider({
   const login = useCallback(async () => {
     const signer = await magicClient;
 
-    console.log(signer)
-
     if (signer == null) {
       throw new Error("Magic not initialized");
     }
