@@ -14,6 +14,14 @@ import Image from "next/image";
 import Link from "next/link";
 // Images
 import Logo from "../../../public/Logo.svg";
+import User from "../../../public/User.svg";
+import SendIcon from "../../../public/SendIcon.svg";
+import SettingsIcon from "../../../public/SettingsIcon.svg";
+import WithdrawIcon from "../../../public/WithdrawIcon.svg";
+import DepositIcon from "../../../public/DepositIcon.svg";
+import LogOutIcon from "../../../public/LogOutIcon.svg";
+import TransactionIcon from "../../../public/TransactionIcon.svg";
+
 import Spot from "../Sections/Spot";
 import History from "../Sections/History";
 import { SyntheticsPage } from "../Sections/SyntheticsPage";
@@ -24,16 +32,22 @@ import { SyntheticsFallbackPage } from "../Sections/SyntheticsFallbackPage";
 import Credit from "../Sections/Credit";
 import Nfts from "../Sections/Nfts";
 import useWallet from "@/hooks/useWallet";
+import { XMarkIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import { UserIcon } from "@heroicons/react/24/solid";
+import ProfileSelectionButton from "../Buttons/ProfileSelectionButton";
+import { useRouter } from "next/router";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
 };
 
 export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
-  const { isConnected } = useWallet();
+  const { isConnected, scAccount, logout } = useWallet();
   const { chainId } = useChainId();
+  const router = useRouter();
   const [actionSelected, setActionSelected] = useState<string>("Home");
   const [connected, setConnected] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const getSelectedAction = (action: string) => {
     setActionSelected(action);
@@ -86,8 +100,61 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   }, [isHistory]);
 
   useEffect(() => {
-    isConnected && setConnected(true);
+    if (isConnected) {
+      setConnected(true);
+    } else {
+      setConnected(false);
+    }
   }, [isConnected]);
+
+  const logingOut = async () => {
+    logout();
+    setOpenMenu(false);
+    router.push("/");
+  };
+
+  const handle = async () => {
+    console.log("//TODO Fungi");
+  };
+
+  const profileActions = [
+    {
+      title: "Send",
+      image: SendIcon.src,
+      status: false,
+      onClick: handle,
+    },
+    {
+      title: "Withdraw",
+      image: WithdrawIcon.src,
+      status: false,
+      onClick: handle,
+    },
+    {
+      title: "Transactions",
+      image: TransactionIcon.src,
+      status: false,
+      onClick: handle,
+    },
+    {
+      title: "Deposit",
+      image: DepositIcon.src,
+      status: false,
+      onClick: handle,
+    },
+    {
+      title: "Settings",
+      image: SettingsIcon.src,
+      status: false,
+      onClick: handle,
+    },
+    {
+      title: "Log Out",
+      image: LogOutIcon.src,
+      status: true,
+      onClick: logingOut,
+    },
+  ];
 
   // useEffect(() => {
   //   if (
@@ -122,9 +189,67 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
 
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
             {connected ? (
-              <div className="flex items-center">
-                <ChangeNetworkDropdown isModal={false} networks={networks} />{" "}
-                <LogoutButton />
+              <div>
+                <button onClick={() => setOpenMenu(true)}>
+                  <img src={User.src} />
+                </button>
+                {openMenu && (
+                  <div className="bg-white rounded-lg px-4 py-2 absolute top-0 -right-[25px] h-[392px] w-[392px] shadow-input">
+                    <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
+                      <button
+                        type="button"
+                        className="rounded-md bg-white hover:text-gray-700 text-black focus:outline-none"
+                        onClick={() => setOpenMenu(false)}
+                      >
+                        <span className="sr-only">Close</span>
+                        <XMarkIcon
+                          className="h-[25px] w-[25px]"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </div>
+                    <div className="flex flex-col justify-center p-[36px] text-center">
+                      <p className="text-xl mb-[18px]">Your Fungi Account</p>
+                      <button
+                        className="shadow-input py-1 px-0.5 rounded-lg flex w-fit mx-auto items-center"
+                        onClick={() =>
+                          navigator.clipboard.writeText(scAccount as string)
+                        }
+                      >
+                        {" "}
+                        <UserIcon
+                          className="h-[18px] w-[18px]"
+                          aria-hidden="true"
+                        />
+                        <span className="mx-[9px]">
+                          {scAccount?.substring(0, 10) + "..."}
+                        </span>{" "}
+                        <DocumentDuplicateIcon
+                          className="h-[18px] w-[18px]"
+                          aria-hidden="true"
+                        />
+                      </button>
+                      <div className="grid grid-cols-3 gap-x-[54px] gap-y-[30px] mt-[34px]">
+                        {profileActions.map((action) => {
+                          return (
+                            <ProfileSelectionButton
+                              title={action.title}
+                              image={action.image}
+                              status={action.status}
+                              onClick={action.onClick}
+                              key={action.title}
+                            />
+                          );
+                        })}
+                      </div>
+                      {/* <ChangeNetworkDropdown
+                      isModal={false}
+                      networks={networks}
+                    />{" "}
+                    <LogoutButton /> */}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <LoginButton />

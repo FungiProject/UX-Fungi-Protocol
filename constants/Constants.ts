@@ -11,6 +11,7 @@ import CreditActive from "../public/CreditActive.svg";
 import CreditDesactive from "../public/CreditDesactive.svg";
 import NFTActive from "../public/NFTActive.svg";
 import NFTDesactive from "../public/NFTDesactive.svg";
+
 // Arbitrum Tokens
 import Chainlink from "../public/ArbitrumTokens/Chainlink.jpeg";
 import Polygon from "../public/MainnetTokens/Polygon.svg";
@@ -114,7 +115,7 @@ export const networks = [
   //   image: Arbitrum.src,
   //   symbol: "ARB Goerli",
   // },
-   { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
+  { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
   // {
   //   name: "Polygon Mumbai",
   //   id: 80001,
