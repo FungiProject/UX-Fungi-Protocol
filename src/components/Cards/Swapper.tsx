@@ -33,14 +33,14 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     undefined
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+    
   const [tx, sendTx] = useLiFiTx(
     "Swap",
     network,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
-    tokenFrom?.coinKey,
+    tokenFrom?.address,
     network,
-    tokenTo?.coinKey,
+    tokenTo?.address,
     fromAddress,
     toAddress,
     slippage
@@ -60,6 +60,8 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     } else {
       setAmountToReceive(0);
     }
+
+    console.log(tokenFrom)
   }, [amountFrom, tokenFrom, tokenTo]);
 
   useEffect(() => {

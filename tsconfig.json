@@ -15,7 +15,8 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@alchemy/aa-signers/magic": ["./node_modules/@alchemy/aa-signers"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
