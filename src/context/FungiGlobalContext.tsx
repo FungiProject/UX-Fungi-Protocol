@@ -27,6 +27,7 @@ import {
 } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
 import { createMagicSigner } from "@/lib/magic/createMagicSigner";
+import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 
 export type FungiGlobalContextType = {
   alchemyClient?: Alchemy;
@@ -54,11 +55,13 @@ export function FungiGlobalContextProvider({
 }) {
   const [alchemyMultichainClient, setAlchemyMultichainClient] =
     useState<AlchemyMultichainClient>();
+  const [magicMultichainClient, setMagicMultichainClient] =
+    useState<MagicMultichainClient>();
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
   const [alchemyScaProvider, setAlchemyScaProvider] =
     useState<AlchemyProvider>();
-  const [magicClient, setMagicClient] = useState<Promise<MagicSigner | null>>(() => createMagicSigner());
+  const [magicClient, setMagicClient] = useState<Promise<MagicSigner | undefined>>();
 
   const [scaAddress, setScaAddress] = useState<Address>();
   const [chain, setChain] = useState(ARBITRUM);
@@ -74,12 +77,16 @@ export function FungiGlobalContextProvider({
     );
     setAlchemyMultichainClient(multichainProv);
 
+    const magicMultichain = new MagicMultichainClient();
+    setMagicMultichainClient(magicMultichain);
+    setMagicClient(magicMultichain.forNetwork(ARBITRUM));
+
     /*(async ()=>{
       const magicSigner = await createMagicSigner()
 
       setMagicClient(magicSigner as SmartAccountSigner);
     })()*/
-  
+
   }, []);
 
   useEffect(() => {
@@ -87,11 +94,19 @@ export function FungiGlobalContextProvider({
       if (alchemyMultichainClient) {
         setAlchemyClient(
           alchemyMultichainClient?.forNetwork(chain) ||
-            alchemyMultichainClient?.forNetwork(ARBITRUM)
+          alchemyMultichainClient?.forNetwork(ARBITRUM)
         );
         setAlchemyScaProvider(
           alchemyMultichainClient?.forNetworkScProvider(chain)
         );
+      }
+
+      if (magicMultichainClient) {
+        const magicForNetwork = magicMultichainClient.forNetwork(chain);
+        if (magicForNetwork) {
+          setMagicClient(magicForNetwork);
+          login()
+        }
       }
     }
   }, [
@@ -143,6 +158,8 @@ export function FungiGlobalContextProvider({
 
   const login = useCallback(async () => {
     const signer = await magicClient;
+
+    console.log(signer)
 
     if (signer == null) {
       throw new Error("Magic not initialized");
