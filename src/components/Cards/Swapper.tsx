@@ -20,8 +20,8 @@ type SwapperProps = {
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
 
-  const { login: openConnectModal } = useWallet()
-  const {sendUserOperations} = useUserOperations();
+  const { login: openConnectModal } = useWallet();
+  const { sendUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -33,7 +33,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     undefined
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
   const [tx, sendTx] = useLiFiTx(
     "Swap",
     network,
@@ -60,8 +60,6 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     } else {
       setAmountToReceive(0);
     }
-
-    console.log(tokenFrom)
   }, [amountFrom, tokenFrom, tokenTo]);
 
   useEffect(() => {

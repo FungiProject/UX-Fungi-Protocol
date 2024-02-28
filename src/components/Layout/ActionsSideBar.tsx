@@ -242,12 +242,11 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                             />
                           );
                         })}
-                      </div>
-                      {/* <ChangeNetworkDropdown
-                      isModal={false}
-                      networks={networks}
-                    />{" "}
-                    <LogoutButton /> */}
+                      </div>{" "}
+                      <ChangeNetworkDropdown
+                        isModal={false}
+                        networks={networks}
+                      />{" "}
                     </div>
                   </div>
                 )}

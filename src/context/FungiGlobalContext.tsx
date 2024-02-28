@@ -58,8 +58,10 @@ export function FungiGlobalContextProvider({
     useState<MagicMultichainClient>();
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
-  const [alchemyScaProvider, setAlchemyScaProvider] =useState<AlchemyProvider>();
-  const [magicClient, setMagicClient] = useState<Promise<MagicSigner | undefined>>();
+  const [alchemyScaProvider, setAlchemyScaProvider] =
+    useState<AlchemyProvider>();
+  const [magicClient, setMagicClient] =
+    useState<Promise<MagicSigner | undefined>>();
 
   const [scaAddress, setScaAddress] = useState<Address>();
   const [chain, setChain] = useState(ARBITRUM);
@@ -78,7 +80,6 @@ export function FungiGlobalContextProvider({
     const magicMultichain = new MagicMultichainClient();
     setMagicMultichainClient(magicMultichain);
     setMagicClient(magicMultichain.forNetwork(ARBITRUM));
-
   }, []);
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export function FungiGlobalContextProvider({
       if (alchemyMultichainClient) {
         setAlchemyClient(
           alchemyMultichainClient?.forNetwork(chain) ||
-          alchemyMultichainClient?.forNetwork(ARBITRUM)
+            alchemyMultichainClient?.forNetwork(ARBITRUM)
         );
         setAlchemyScaProvider(
           alchemyMultichainClient?.forNetworkScProvider(chain)
@@ -101,11 +102,7 @@ export function FungiGlobalContextProvider({
         }
       }
     }
-  }, [
-    chain,
-    alchemyMultichainClient,
-    alchemyScaProvider,
-  ]);
+  }, [chain, alchemyMultichainClient, alchemyScaProvider]);
 
   useEffect(() => {
     (async () => {
@@ -147,25 +144,28 @@ export function FungiGlobalContextProvider({
     return disconnectedProvider;
   }, [alchemyScaProvider]);
 
-  const login2 = useCallback(async (magicClient2) => {
-    const signer = await magicClient2;
+  const login2 = useCallback(
+    async (magicClient2) => {
+      const signer = await magicClient2;
 
-    if (signer == null) {
-      throw new Error("Magic not initialized");
-    }
+      if (signer == null) {
+        throw new Error("Magic not initialized");
+      }
 
-    await signer.authenticate({
-      authenticate: async () => {
-        await signer.inner.wallet.connectWithUI();
-      },
-    });
+      await signer.authenticate({
+        authenticate: async () => {
+          await signer.inner.wallet.connectWithUI();
+        },
+      });
 
-    //setIsLoggedIn(true);
-    connectProviderToAccount(signer as SmartAccountSigner);
+      //setIsLoggedIn(true);
+      connectProviderToAccount(signer as SmartAccountSigner);
 
-    setScaAddress(await alchemyScaProvider?.getAddress());
-    setIsConnected(true);
-  }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
+      setScaAddress(await alchemyScaProvider?.getAddress());
+      setIsConnected(true);
+    },
+    [magicClient, connectProviderToAccount, alchemyScaProvider]
+  );
 
   const login = useCallback(async () => {
     const signer = await magicClient;

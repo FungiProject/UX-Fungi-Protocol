@@ -10,7 +10,6 @@ export default function useScAccountPositions() {
   const [totalBalance, setTotalBalance] = useState<number>();
 
   const checkExits = (type: string) => {
-    console.log(positions.some((element) => element.type === type));
     return positions.some((element) => element.type === type);
   };
 

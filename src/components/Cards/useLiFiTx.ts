@@ -71,30 +71,32 @@ export const useLiFiTx = (
       const spender: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
-    
-      const userOps: UserOperation[] = []
 
-      if(tokenAddress != ethers.constants.AddressZero){
-        userOps.push(createApproveTokensUserOp({
-          tokenAddress,
-          spender,
-          amount: BigNumber.from(amount),
-        }));
+      const userOps: UserOperation[] = [];
+
+      if (tokenAddress != ethers.constants.AddressZero) {
+        userOps.push(
+          createApproveTokensUserOp({
+            tokenAddress,
+            spender,
+            amount: BigNumber.from(amount),
+          })
+        );
 
         userOps.push({
           target: quote.transactionRequest.to,
           data: quote.transactionRequest.data,
-        })
+        });
       } else {
         userOps.push({
           target: quote.transactionRequest.to,
           data: quote.transactionRequest.data,
-          value: BigInt(amount)
-        })
+          value: BigInt(amount),
+        });
       }
 
       setStatus({ disabled: true, text: "Enter an amount" });
-
+      console.log(userOps);
       return userOps;
     } catch (error) {
       setStatus({ disabled: true, text: "Enter an amount" });

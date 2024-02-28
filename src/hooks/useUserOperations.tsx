@@ -18,12 +18,10 @@ export function useUserOperations() {
       if (!alchemyScaProvider) {
         return;
       }
-
       const txHash = await sendUserOperationAlchemy(
         alchemyScaProvider,
         userOperations
       );
-
       const txUrl = getExplorerUrl(chainId!) + "tx/" + txHash;
       const sentMsg = `Transaction sent.`;
 
@@ -37,11 +35,15 @@ export function useUserOperations() {
       );
     } catch (e) {
       console.error(e);
-
+      console.log("error");
       //TODO
-      //const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, undefined);
-      //helperToast.error(failMsg, { autoClose: autoCloseToast });
-      //throw e;
+      // const { failMsg, autoCloseToast } = getErrorMessage(
+      //   chainId,
+      //   e,
+      //   undefined
+      // );
+      // helperToast.error(failMsg, { autoClose: autoCloseToast });
+      throw e;
     }
   };
 

@@ -52,7 +52,9 @@ export default function Home({ getSelectedAction }: HomeProps) {
             )}
           </>
         }
-        secondary={<ResultsChart personalBalance={0} />}
+        secondary={
+          <>{totalBalance && <ResultsChart personalBalance={totalBalance} />}</>
+        }
         page="Home Section"
       />
     </main>

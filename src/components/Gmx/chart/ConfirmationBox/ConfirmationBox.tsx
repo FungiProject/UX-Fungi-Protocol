@@ -568,22 +568,6 @@ export function ConfirmationBox(p: Props) {
     userOps.push(createSwapOrderOp);
 
     return sendUserOperations(userOps);
-
-    // return createSwapOrderTxn(chainId, signer, subaccount, {
-    //   account:scAccount,
-    //   fromTokenAddress: fromToken.address,
-    //   fromTokenAmount: swapAmounts.amountIn,
-    //   swapPath: swapAmounts.swapPathStats?.swapPath,
-    //   toTokenAddress: toToken.address,
-    //   orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
-    //   minOutputAmount: swapAmounts.minOutputAmount,
-    //   referralCode: referralCodeForTxn,
-    //   executionFee: executionFee.feeTokenAmount,
-    //   allowedSlippage,
-    //   tokensData,
-    //   setPendingTxns,
-    //   setPendingOrder,
-    // });
   }
 
   async function onSubmitIncreaseOrder() {
@@ -607,6 +591,8 @@ export function ConfirmationBox(p: Props) {
         spender: routerAddress,
       })
     );
+
+    await sendUserOperations(userOps);
 
     const createIncreaseOrderOp = await createIncreaseOrderUserOp(
       chainId,
@@ -639,7 +625,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(userOps);
+    return sendUserOperations([createIncreaseOrderOp]);
   }
 
   async function onSubmitDecreaseOrder() {

@@ -3,7 +3,7 @@ import { UserOperation } from "./types";
 
 export async function sendUserOperations(
   alchemyProvider: AlchemyProvider,
-  userOperations: UserOperation[],
+  userOperations: UserOperation[]
 ) {
   try {
     if (userOperations.length === 0) {
