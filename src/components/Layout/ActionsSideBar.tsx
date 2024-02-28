@@ -93,6 +93,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
 
   useEffect(() => {
     getViewComponent();
+    setOpenMenu(false);
   }, [actionSelected]);
 
   useEffect(() => {
@@ -194,7 +195,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                   <img src={User.src} />
                 </button>
                 {openMenu && (
-                  <div className="bg-white rounded-lg px-4 py-2 absolute top-0 -right-[25px] h-[392px] w-[392px] shadow-input">
+                  <div className="bg-white rounded-lg px-4 py-2 absolute top-0 -right-[25px] h-[392px] w-[392px] shadow-input z-50">
                     <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                       <button
                         type="button"
