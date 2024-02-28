@@ -84,7 +84,6 @@ export const useLiFiTx = (
         userOps.push({
           target: quote.transactionRequest.to,
           data: quote.transactionRequest.data,
-          value: tokenAddress == ethers.constants.AddressZero ? BigInt(amount) : undefined
         })
       } else {
         userOps.push({
