@@ -30,7 +30,6 @@ import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 
 export type FungiGlobalContextType = {
   alchemyClient?: Alchemy;
-  magicClient?: Promise<MagicSigner | null>;
   alchemyScaProvider: AlchemyProvider | undefined;
   scaAddress?: Address;
   chain: number;
@@ -98,13 +97,13 @@ export function FungiGlobalContextProvider({
         const magicForNetwork = magicMultichainClient.forNetwork(chain);
         if (magicForNetwork) {
           setMagicClient(magicForNetwork);
-          login2(magicForNetwork);
         }
       }
     }
   }, [chain, alchemyMultichainClient, alchemyScaProvider]);
 
   useEffect(() => {
+    console.log(alchemyScaProvider);
     (async () => {
       if (alchemyScaProvider?.isConnected()) {
         setScaAddress(await alchemyScaProvider?.getAddress());
@@ -128,7 +127,6 @@ export function FungiGlobalContextProvider({
           rpcClient: provider,
         });
       });
-      setAlchemyScaProvider(connectedProvider);
       return connectedProvider;
     },
     [alchemyScaProvider, chain]
@@ -144,28 +142,6 @@ export function FungiGlobalContextProvider({
     return disconnectedProvider;
   }, [alchemyScaProvider]);
 
-  const login2 = useCallback(
-    async (magicClient2) => {
-      const signer = await magicClient2;
-
-      if (signer == null) {
-        throw new Error("Magic not initialized");
-      }
-
-      await signer.authenticate({
-        authenticate: async () => {
-          await signer.inner.wallet.connectWithUI();
-        },
-      });
-
-      //setIsLoggedIn(true);
-      connectProviderToAccount(signer as SmartAccountSigner);
-
-      setScaAddress(await alchemyScaProvider?.getAddress());
-      setIsConnected(true);
-    },
-    [magicClient, connectProviderToAccount, alchemyScaProvider]
-  );
 
   const login = useCallback(async () => {
     const signer = await magicClient;
@@ -181,8 +157,9 @@ export function FungiGlobalContextProvider({
     });
 
     //setIsLoggedIn(true);
-    connectProviderToAccount(signer as SmartAccountSigner);
+    const connectedProvider = connectProviderToAccount(signer as SmartAccountSigner);
 
+    setAlchemyScaProvider(connectedProvider);
     setScaAddress(await alchemyScaProvider?.getAddress());
     setIsConnected(true);
   }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
@@ -210,7 +187,6 @@ export function FungiGlobalContextProvider({
   const state: FungiGlobalContextType = useMemo(() => {
     return {
       alchemyClient,
-      magicClient,
       alchemyScaProvider,
       scaAddress,
       chain,
@@ -222,7 +198,6 @@ export function FungiGlobalContextProvider({
     };
   }, [
     alchemyClient,
-    magicClient,
     scaAddress,
     switchNetwork,
     login,
