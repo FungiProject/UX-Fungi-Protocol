@@ -1,6 +1,5 @@
 "use client";
 import { getMagicApiKey } from "@/config/magicConfig";
-import { SUPPORTED_CHAIN_IDS } from "@/config/chains";
 import { getAlchemyApiUrl, getApiKeyChain } from "@/config/alchemyConfig";
 import { MagicSigner } from "@alchemy/aa-signers/magic";
 

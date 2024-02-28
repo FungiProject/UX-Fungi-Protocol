@@ -26,7 +26,6 @@ import {
   getDefaultLightAccountFactoryAddress,
 } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
-import { createMagicSigner } from "@/lib/magic/createMagicSigner";
 import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 
 export type FungiGlobalContextType = {
@@ -59,8 +58,7 @@ export function FungiGlobalContextProvider({
     useState<MagicMultichainClient>();
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
-  const [alchemyScaProvider, setAlchemyScaProvider] =
-    useState<AlchemyProvider>();
+  const [alchemyScaProvider, setAlchemyScaProvider] =useState<AlchemyProvider>();
   const [magicClient, setMagicClient] = useState<Promise<MagicSigner | undefined>>();
 
   const [scaAddress, setScaAddress] = useState<Address>();
@@ -81,12 +79,6 @@ export function FungiGlobalContextProvider({
     setMagicMultichainClient(magicMultichain);
     setMagicClient(magicMultichain.forNetwork(ARBITRUM));
 
-    /*(async ()=>{
-      const magicSigner = await createMagicSigner()
-
-      setMagicClient(magicSigner as SmartAccountSigner);
-    })()*/
-
   }, []);
 
   useEffect(() => {
@@ -105,7 +97,7 @@ export function FungiGlobalContextProvider({
         const magicForNetwork = magicMultichainClient.forNetwork(chain);
         if (magicForNetwork) {
           setMagicClient(magicForNetwork);
-          login()
+          login2(magicForNetwork);
         }
       }
     }
@@ -139,7 +131,6 @@ export function FungiGlobalContextProvider({
           rpcClient: provider,
         });
       });
-
       setAlchemyScaProvider(connectedProvider);
       return connectedProvider;
     },
@@ -155,6 +146,26 @@ export function FungiGlobalContextProvider({
     setAlchemyScaProvider(disconnectedProvider);
     return disconnectedProvider;
   }, [alchemyScaProvider]);
+
+  const login2 = useCallback(async (magicClient2) => {
+    const signer = await magicClient2;
+
+    if (signer == null) {
+      throw new Error("Magic not initialized");
+    }
+
+    await signer.authenticate({
+      authenticate: async () => {
+        await signer.inner.wallet.connectWithUI();
+      },
+    });
+
+    //setIsLoggedIn(true);
+    connectProviderToAccount(signer as SmartAccountSigner);
+
+    setScaAddress(await alchemyScaProvider?.getAddress());
+    setIsConnected(true);
+  }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
 
   const login = useCallback(async () => {
     const signer = await magicClient;
