@@ -1,5 +1,4 @@
 import { UserOperation } from "./types";
-
 import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
 
 export async function sendUserOperations(
@@ -13,18 +12,10 @@ export async function sendUserOperations(
       return;
     }
 
-    console.log(userOperations[0].target!)
-    console.log(userOperations[0].data!)
-
     const { hash: uoHash } = await alchemyProvider.sendUserOperation({
-      uo: userOperations.length> 1 ? userOperations : userOperations[0],
+      account: alchemyProvider.account!,
+      uo: userOperations.length> 1 ? userOperations:userOperations[0],
     });
-
-    //console.log(uoHash)
-
-    //const uo = await alchemyProvider.sendUserOperation({uo: { ...userOperations[0]}});
-
-    console.log(uoHash)
 
     const txHash = await alchemyProvider.waitForUserOperationTransaction({
       hash: uoHash,

@@ -11,7 +11,9 @@ export const POLYGON_MUMBAI: number = 80001;
 
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, ARBITRUM_SEPOLIA, POLYGON];
+export const SUPPORTED_CHAIN_IDS = [ARBITRUM, 
+  //ARBITRUM_SEPOLIA, 
+  POLYGON];
 
 export function isSupportedChainOrDefault(chainId: number): number {
     return SUPPORTED_CHAIN_IDS.includes(chainId) ? chainId : DEFAULT_CHAIN_ID

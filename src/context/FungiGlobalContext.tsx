@@ -17,10 +17,10 @@ import { Alchemy } from "alchemy-sdk";
 import { ARBITRUM } from "@/config/chains";
 import { getApiKeyChain } from "@/config/alchemyConfig";
 import { createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
-import { getDefaultLightAccountFactoryAddress } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
 import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
+
 
 import {
   type Address,
@@ -57,7 +57,7 @@ export function FungiGlobalContextProvider({
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
   const [alchemyScaProvider, setAlchemyScaProvider] =
-    useState< AlchemySmartAccountClient>();
+    useState<AlchemySmartAccountClient>();
   const [magicClient, setMagicClient] =
     useState<Promise<MagicSigner | undefined>>();
 
@@ -120,9 +120,6 @@ export function FungiGlobalContextProvider({
   const connectProviderToAccount = useCallback(
     async (signer: SmartAccountSigner) => {
       console.log("FungiGlobalContext: connectProviderToAccount")
-      /*if (!alchemyScaProvider) {
-        return;
-      }*/
 
       const connectedProvider = await createModularAccountAlchemyClient({
         apiKey: getApiKeyChain(chain),
@@ -133,20 +130,12 @@ export function FungiGlobalContextProvider({
       console.log(connectedProvider)
       setAlchemyScaProvider(connectedProvider);
       
-      /*const connectedProvider = alchemyScaProvider.connect((provider) => {
-        return new LightSmartContractAccount({
-          entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-          chain: getViemChain(chain),
-          owner: signer,
-          factoryAddress: "0x00004EC70002a32400f8ae005A26081065620D20",
-          rpcClient: provider,
-        });
-      });*/
       return connectedProvider;
     },
     [alchemyScaProvider, chain]
   );
 
+  //TODO ya no sirve?
   const disconnectProviderFromAccount = useCallback(() => {
     if (!alchemyScaProvider) {
       return;
