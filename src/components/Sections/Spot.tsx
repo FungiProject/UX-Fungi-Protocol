@@ -143,7 +143,7 @@ export default function Spot() {
         }
         secondary={
           <div className="px-[32px] pt-[24px]">
-            {chainId !== undefined && (
+            {tokens.length > 0 && chainId !== undefined && (
               <>
                 <ActionsSwitcher
                   actions={["Swap", "Bridge", "Rebalance"]}

@@ -71,6 +71,11 @@ export function FungiGlobalContextProvider({
     );
     setAlchemyMultichainClient(multichainProv);
 
+    setAlchemyClient(
+      multichainProv?.forNetwork(chain) ||
+      multichainProv?.forNetwork(ARBITRUM)
+    );
+
     const magicMultichain = new MagicMultichainClient();
     setMagicMultichainClient(magicMultichain);
     setMagicClient(magicMultichain.forNetwork(ARBITRUM));
