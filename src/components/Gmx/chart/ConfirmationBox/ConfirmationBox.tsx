@@ -592,8 +592,6 @@ export function ConfirmationBox(p: Props) {
       })
     );
 
-    await sendUserOperations(userOps);
-
     const createIncreaseOrderOp = await createIncreaseOrderUserOp(
       chainId,
       subaccount,
@@ -625,7 +623,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations([createIncreaseOrderOp]);
+    return sendUserOperations(userOps);
   }
 
   async function onSubmitDecreaseOrder() {

@@ -157,22 +157,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
     },
   ];
 
-  // useEffect(() => {
-  //   if (
-  //     chain &&
-  //     (chain.id === arbitrum.id ||
-  //       chain.id === polygonMumbai.id ||
-  //       chain.id === mainnet.id ||
-  //       chain.id === polygon.id ||
-  //       chain.id === arbitrumGoerli.id ||
-  //       chain.id === sepolia.id)
-  //   ) {
-  //     const prev = networks.filter((network) => network.id === chain?.id);
-
-  //     setPreviousNetwork(prev[0]);
-  //   }
-  // }, [chain]);
-
   return (
     <div>
       <div className="flex shrink-0 items-center gap-x-4 z-50 mt-[40px]">
@@ -243,10 +227,10 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
                           );
                         })}
                       </div>{" "}
-                      <ChangeNetworkDropdown
+                      {/* <ChangeNetworkDropdown
                         isModal={false}
                         networks={networks}
-                      />{" "}
+                      /> */}
                     </div>
                   </div>
                 )}

@@ -13,6 +13,7 @@ export const useLiFiTx = (
   toChain: string | undefined,
   toToken: string | undefined,
   fromAddress: string | undefined,
+  fromSymbol: string | undefined,
   toAddress?: string | undefined,
   slippage?: string
 ) => {
@@ -32,7 +33,7 @@ export const useLiFiTx = (
     try {
       setStatus({
         disabled: true,
-        text: `${type === "Swap" ? "Swapping" : "Bridging"} ${fromToken}`,
+        text: `${type === "Swap" ? "Swapping" : "Bridging"} ${fromSymbol}`,
       });
 
       const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
