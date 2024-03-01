@@ -9,7 +9,11 @@ import { getChainIdLifi } from "./getChainIdLifi";
  * @returns {Promise<TokenInfo[]>} A Promise that resolves to an array of TokenInfo objects representing the supported tokens.
  */
 export const getLifiTokens = async ( chainId: number): Promise<TokenInfo[]> => {
-  
+
+    if(!chainId){
+        return []
+    }
+
     const result = await axios.get(
          `https://li.quest/v1/tokens?chains=${getChainIdLifi(chainId)}`
      );

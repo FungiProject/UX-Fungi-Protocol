@@ -1,6 +1,7 @@
 import {
   SUPPORTED_CHAIN_IDS,
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   ETH_MAINNET,
   POLYGON,
   POLYGON_MUMBAI,
@@ -10,13 +11,15 @@ import { Network } from "alchemy-sdk";
 
 
 const ALCHEMY_API_KEYS = {
-  [ARBITRUM]: "XNOllM8mXWeYjLZhagD-6el5SX4CnhnQ",
+  [ARBITRUM]: "wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt",
   [POLYGON]: "D10Zw8Iea33Vssr-oGS-VJwONZNrkUzr",
+  [ARBITRUM_SEPOLIA]: "EIeMw-aBVJDyYoBC0BwwlbsHw9j36kbw"
 };
 
 const ALCHEMY_URL = {
   [ARBITRUM]: "https://arb-mainnet.g.alchemy.com/v2/",
-  [POLYGON]: "https://polygon-mainnet.g.alchemy.com/v2/"
+  [POLYGON]: "https://polygon-mainnet.g.alchemy.com/v2/",
+  [ARBITRUM_SEPOLIA]: "https://arb-sepolia.g.alchemy.com/v2/"
 }
 
 export function getApiKeyChain(chainId: number) {
@@ -44,6 +47,8 @@ export function getAlchemyNetwork(chainId: number): Network {
   switch (chainId) {
     case ETH_MAINNET:
       return Network.ETH_MAINNET;
+    case ARBITRUM_SEPOLIA:
+      return Network.ARB_SEPOLIA;
     case ARBITRUM:
       return Network.ARB_MAINNET;
     case POLYGON:

@@ -109,6 +109,7 @@ export const networks = [
   //   symbol: "ETH Sepolia",
   // },
   { name: "Arbitrum One", id: 42161, image: Arbitrum.src, symbol: "ARB" },
+  { name: "Arbitrum Sepolia", id: 421614, image: Arbitrum.src, symbol: "ARB" },
   // {
   //   name: "Arbitrum Goerli",
   //   id: 421613,

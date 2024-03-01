@@ -16,9 +16,6 @@ import {
 import { Alchemy } from "alchemy-sdk";
 import { ARBITRUM } from "@/config/chains";
 import { getApiKeyChain } from "@/config/alchemyConfig";
-import {
-  getDefaultEntryPointAddress,
-} from "@alchemy/aa-core";
 import { createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
 import { getDefaultLightAccountFactoryAddress } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
@@ -26,17 +23,8 @@ import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
 
 import {
-  FailedToGetStorageSlotError,
-  createBundlerClient,
-  getAccountAddress,
-  getVersion060EntryPoint,
-  toSmartContractAccount,
   type Address,
-  type Hex,
-  type SmartAccountSigner,
-  type SmartContractAccountWithSigner,
-  type ToSmartContractAccountParams,
-  type UpgradeToAndCallParams,
+  type SmartAccountSigner
 } from "@alchemy/aa-core";
 
 export type FungiGlobalContextType = {
@@ -110,10 +98,13 @@ export function FungiGlobalContextProvider({
         const magicForNetwork = magicMultichainClient.forNetwork(chain);
         if (magicForNetwork) {
           setMagicClient(magicForNetwork);
+          (async ()=> {
+           await login()
+          })()
         }
       }
     }
-  }, [chain, alchemyScaProvider]);
+  }, [chain]);
 
   useEffect(() => {
     (async () => {
@@ -182,8 +173,13 @@ export function FungiGlobalContextProvider({
     });
 
     await connectProviderToAccount(signer as SmartAccountSigner);
-    
-    setScaAddress(alchemyScaProvider?.account?.address);
+
+    let signerAddress
+    (async ()=>{
+      signerAddress = await signer.getAddress();
+    })()
+
+    setScaAddress(alchemyScaProvider?.getAddress({account: signerAddress}));
     setIsConnected(true);
   }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
 

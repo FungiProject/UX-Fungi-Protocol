@@ -1,4 +1,4 @@
-import { ARBITRUM, POLYGON, ETH_MAINNET } from "../../config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, POLYGON, ETH_MAINNET } from "../../config/chains";
 
 export const LIFI_CHAINS = {
     [ARBITRUM]: {
@@ -31,5 +31,5 @@ export const LIFI_CHAINS = {
 }
 
 export function getChainIdLifi(chainId: number){
-    return LIFI_CHAINS[chainId].key
+    return LIFI_CHAINS[chainId]?.key || null
 }

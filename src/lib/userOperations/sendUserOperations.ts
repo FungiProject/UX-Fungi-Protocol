@@ -13,17 +13,23 @@ export async function sendUserOperations(
       return;
     }
 
-    const uo = await alchemyProvider.sendUserOperation({
-      uo: {
-        target: userOperations[0].target!,
-        data: userOperations[0].data!,
-      },
+    console.log(userOperations[0].target!)
+    console.log(userOperations[0].data!)
+
+    const { hash: uoHash } = await alchemyProvider.sendUserOperation({
+      uo: userOperations.length> 1 ? userOperations : userOperations[0],
     });
 
-    //const uo = await alchemyProvider.sendUserOperation({uo: { userOperations[0]}});
+    //console.log(uoHash)
 
-    const txHash = await alchemyProvider.waitForUserOperationTransaction(
-      uo.hash
+    //const uo = await alchemyProvider.sendUserOperation({uo: { ...userOperations[0]}});
+
+    console.log(uoHash)
+
+    const txHash = await alchemyProvider.waitForUserOperationTransaction({
+      hash: uoHash,
+      confirmations: 1
+      }
     );
 
     return txHash;
