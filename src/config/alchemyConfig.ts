@@ -10,7 +10,7 @@ import { Network } from "alchemy-sdk";
 
 
 const ALCHEMY_API_KEYS = {
-  [ARBITRUM]: "wa9SqZ2OET5sVzUtzMZUu-WGuwx85Xdt",
+  [ARBITRUM]: "XNOllM8mXWeYjLZhagD-6el5SX4CnhnQ",
   [POLYGON]: "D10Zw8Iea33Vssr-oGS-VJwONZNrkUzr",
 };
 

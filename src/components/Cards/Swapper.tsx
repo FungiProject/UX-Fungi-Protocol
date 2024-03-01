@@ -11,6 +11,8 @@ import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { TokenInfo } from "@/domain/tokens/types";
 import useWallet from "@/hooks/useWallet";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
+import { BigNumber } from "ethers";
 
 type SwapperProps = {
   tokens: TokenInfo[];
@@ -130,6 +132,14 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     } else {
       txnPromise = onSubmitSwap();
     }
+  }
+
+  async function onSubmit2() {
+    setIsSubmitting(true);
+
+    const uo = createApproveTokensUserOp({tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf", amount: BigNumber.from(1000000)});
+
+    await sendUserOperations([uo], "OK");
   }
 
   const onSubmitSwap = async () => {
@@ -274,6 +284,15 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
         disabled={submitButtonState.disabled}
       >
         {submitButtonState.text}
+      </Button>
+      <Button
+         variant="primary-action"
+         className={`mt-4 ${
+           submitButtonState.disabled ? "opacity-50" : ""
+         } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+         onClick={onSubmit2}
+         >
+        Test
       </Button>
     </main>
   );

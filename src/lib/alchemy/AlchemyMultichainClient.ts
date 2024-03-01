@@ -1,6 +1,5 @@
 import { Alchemy, AlchemySettings, Network } from 'alchemy-sdk';
 import { getAlchemyNetwork } from '@/config/alchemyConfig';
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { getViemChain } from '@/config/chains';
 import { getApiKeyChain } from '@/config/alchemyConfig';
 
@@ -23,7 +22,7 @@ export class AlchemyMultichainClient {
    * @private
    */
   private readonly instancesClient: Map<Network, Alchemy> = new Map();
-  private readonly instancesScProvider: Map<number, AlchemyProvider> = new Map();
+  //private readonly instancesScProvider: Map<number, AlchemyProvider> = new Map();
 
   /**
    * @param settings The settings to use for all networks.
@@ -46,9 +45,9 @@ export class AlchemyMultichainClient {
     return this.loadInstance(getAlchemyNetwork(chainId));
   }
 
-  forNetworkScProvider(chainId: number): AlchemyProvider | undefined {
+  /*forNetworkScProvider(chainId: number): AlchemyProvider | undefined {
     return this.loadInstanceAlchemyScProvider(chainId);
-  }
+  }*/
 
   private loadInstance(network: Network): Alchemy | undefined {
     if (!this.instancesClient.has(network)) {
@@ -62,12 +61,12 @@ export class AlchemyMultichainClient {
     return this.instancesClient.get(network);
   }
 
-  private loadInstanceAlchemyScProvider(chainId: number): AlchemyProvider | undefined {
+  /*private loadInstanceAlchemyScProvider(chainId: number): AlchemyProvider | undefined {
     if (!this.instancesScProvider.has(chainId)) {
       this.instancesScProvider.set(chainId, new AlchemyProvider({chain: getViemChain(chainId), apiKey: getApiKeyChain(chainId)}));
     }
     return this.instancesScProvider.get(chainId);
-  }
+  }*/
 }
 
 /** AlchemySettings with the `network` param omitted in order to avoid confusion. */

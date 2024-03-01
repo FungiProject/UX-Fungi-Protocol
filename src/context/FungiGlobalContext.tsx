@@ -15,22 +15,33 @@ import {
 } from "@/config/alchemyConfig";
 import { Alchemy } from "alchemy-sdk";
 import { ARBITRUM } from "@/config/chains";
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { getApiKeyChain } from "@/config/alchemyConfig";
 import {
-  SmartAccountSigner,
   getDefaultEntryPointAddress,
-  Address,
 } from "@alchemy/aa-core";
-import {
-  LightSmartContractAccount,
-  getDefaultLightAccountFactoryAddress,
-} from "@alchemy/aa-accounts";
+import { createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
+import { getDefaultLightAccountFactoryAddress } from "@alchemy/aa-accounts";
 import { getViemChain } from "@/config/chains";
 import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
+import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
+
+import {
+  FailedToGetStorageSlotError,
+  createBundlerClient,
+  getAccountAddress,
+  getVersion060EntryPoint,
+  toSmartContractAccount,
+  type Address,
+  type Hex,
+  type SmartAccountSigner,
+  type SmartContractAccountWithSigner,
+  type ToSmartContractAccountParams,
+  type UpgradeToAndCallParams,
+} from "@alchemy/aa-core";
 
 export type FungiGlobalContextType = {
   alchemyClient?: Alchemy;
-  alchemyScaProvider: AlchemyProvider | undefined;
+  alchemyScaProvider: any | undefined;
   scaAddress?: Address;
   chain: number;
   switchNetwork: (number) => void;
@@ -58,7 +69,7 @@ export function FungiGlobalContextProvider({
 
   const [alchemyClient, setAlchemyClient] = useState<Alchemy>();
   const [alchemyScaProvider, setAlchemyScaProvider] =
-    useState<AlchemyProvider>();
+    useState< AlchemySmartAccountClient>();
   const [magicClient, setMagicClient] =
     useState<Promise<MagicSigner | undefined>>();
 
@@ -68,6 +79,7 @@ export function FungiGlobalContextProvider({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+
     const defaultAlchemySettings = getProviderDefaultSettings(ARBITRUM);
     const overridesAlchemySettings = getProviderMultichainSetting();
     const multichainProv = new AlchemyMultichainClient(
@@ -82,15 +94,16 @@ export function FungiGlobalContextProvider({
   }, []);
 
   useEffect(() => {
+    console.log("FungiGlobalContext: change chain")
     if (chain) {
       if (alchemyMultichainClient) {
         setAlchemyClient(
           alchemyMultichainClient?.forNetwork(chain) ||
             alchemyMultichainClient?.forNetwork(ARBITRUM)
         );
-        setAlchemyScaProvider(
+        /*setAlchemyScaProvider(
           alchemyMultichainClient?.forNetworkScProvider(chain)
-        );
+        );*/
       }
 
       if (magicMultichainClient) {
@@ -100,33 +113,44 @@ export function FungiGlobalContextProvider({
         }
       }
     }
-  }, [chain, alchemyMultichainClient, alchemyScaProvider]);
+  }, [chain, alchemyScaProvider]);
 
   useEffect(() => {
-    console.log(alchemyScaProvider);
     (async () => {
-      if (alchemyScaProvider?.isConnected()) {
-        setScaAddress(await alchemyScaProvider?.getAddress());
+      if(alchemyScaProvider){
+        console.log(alchemyScaProvider.account?.address)
+        if (alchemyScaProvider) {
+          setScaAddress(alchemyScaProvider.account?.address);
+        }
       }
     })();
   }, [alchemyScaProvider]);
 
   const connectProviderToAccount = useCallback(
-    (signer: SmartAccountSigner) => {
-      if (!alchemyScaProvider) {
+    async (signer: SmartAccountSigner) => {
+      console.log("FungiGlobalContext: connectProviderToAccount")
+      /*if (!alchemyScaProvider) {
         return;
-      }
-      const connectedProvider = alchemyScaProvider.connect((provider) => {
+      }*/
+
+      const connectedProvider = await createModularAccountAlchemyClient({
+        apiKey: getApiKeyChain(chain),
+        chain: getViemChain(chain),
+        signer,
+      });
+
+      console.log(connectedProvider)
+      setAlchemyScaProvider(connectedProvider);
+      
+      /*const connectedProvider = alchemyScaProvider.connect((provider) => {
         return new LightSmartContractAccount({
-          entryPointAddress: getDefaultEntryPointAddress(getViemChain(chain)),
+          entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
           chain: getViemChain(chain),
           owner: signer,
-          factoryAddress: getDefaultLightAccountFactoryAddress(
-            getViemChain(chain)
-          ),
+          factoryAddress: "0x00004EC70002a32400f8ae005A26081065620D20",
           rpcClient: provider,
         });
-      });
+      });*/
       return connectedProvider;
     },
     [alchemyScaProvider, chain]
@@ -136,7 +160,7 @@ export function FungiGlobalContextProvider({
     if (!alchemyScaProvider) {
       return;
     }
-    const disconnectedProvider = alchemyScaProvider.disconnect();
+    const disconnectedProvider = alchemyScaProvider;
 
     setAlchemyScaProvider(disconnectedProvider);
     return disconnectedProvider;
@@ -144,6 +168,7 @@ export function FungiGlobalContextProvider({
 
 
   const login = useCallback(async () => {
+    console.log("FungiGlobalContext: login")
     const signer = await magicClient;
 
     if (signer == null) {
@@ -156,11 +181,9 @@ export function FungiGlobalContextProvider({
       },
     });
 
-    //setIsLoggedIn(true);
-    const connectedProvider = connectProviderToAccount(signer as SmartAccountSigner);
-
-    setAlchemyScaProvider(connectedProvider);
-    setScaAddress(await alchemyScaProvider?.getAddress());
+    await connectProviderToAccount(signer as SmartAccountSigner);
+    
+    setScaAddress(alchemyScaProvider?.account?.address);
     setIsConnected(true);
   }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
 

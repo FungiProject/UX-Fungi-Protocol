@@ -18,6 +18,7 @@ export function useUserOperations() {
       if (!alchemyScaProvider) {
         return;
       }
+
       const txHash = await sendUserOperationAlchemy(
         alchemyScaProvider,
         userOperations
@@ -43,7 +44,7 @@ export function useUserOperations() {
       //   undefined
       // );
       // helperToast.error(failMsg, { autoClose: autoCloseToast });
-      throw e;
+      //throw e;
     }
   };
 

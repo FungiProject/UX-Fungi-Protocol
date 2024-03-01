@@ -1,4 +1,5 @@
-import { arbitrum, polygon, mainnet, polygonMumbai} from "viem/chains";
+import { arbitrum, polygon, polygonMumbai, mainnet,} from "@alchemy/aa-core";
+
 
 
 export const ETH_MAINNET: number = 1;
