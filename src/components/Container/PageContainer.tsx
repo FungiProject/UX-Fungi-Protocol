@@ -30,7 +30,7 @@ export default function PageContainer({
           <div className="col-span-3 flex items-center justify-center flex-col">
             <h1 className="text-4xl">
               {keepWorking
-                ? `${page} is comming soon!`
+                ? `${page} is coming soon!`
                 : `Log in or sign up to access the ${page}!`}
             </h1>
             <Image
