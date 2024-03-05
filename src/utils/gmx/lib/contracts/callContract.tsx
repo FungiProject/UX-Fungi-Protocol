@@ -23,7 +23,6 @@ export async function callContract(
     setPendingTxns?: (txns: any) => void;
   }
 ) {
-  const { showNotification } = useNotification();
   try {
     if (
       !Array.isArray(params) &&
@@ -52,22 +51,6 @@ export async function callContract(
 
     const res = await contract[method](...params, txnOpts);
 
-    if (!opts.hideSentMsg) {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      const sentMsg = opts.sentMsg || `Transaction sent.`;
-      showNotification({
-        message: (
-          <div>
-            {sentMsg} <ExternalLink href={txUrl}>View status.</ExternalLink>
-            <br />
-            {opts.detailsMsg && <br />}
-            {opts.detailsMsg}
-          </div>
-        ),
-        type: "success",
-      });
-    }
-
     if (opts.setPendingTxns) {
       const message = opts.hideSuccessMsg
         ? undefined
@@ -82,15 +65,7 @@ export async function callContract(
 
     return res;
   } catch (e: any) {
-    const { failMsg, autoCloseToast } = getErrorMessage(
-      chainId,
-      e,
-      opts?.failMsg
-    );
-    showNotification({
-      message: `${failMsg}`,
-      type: "error",
-    });
+    console.log(e);
 
     throw e;
   }

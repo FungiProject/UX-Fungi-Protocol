@@ -50,7 +50,6 @@ export async function simulateExecuteOrderTxn(
     ExchangeRouter.abi,
     provider
   );
-  const { showNotification } = useNotification();
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce.add(1);
@@ -139,10 +138,6 @@ export async function simulateExecuteOrderTxn(
         </div>
       );
     }
-    showNotification({
-      message: `${msg}`,
-      type: "error",
-    });
 
     throw txnError;
   }
