@@ -3,7 +3,6 @@ import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/Set
 import "@/styles/globals.css";
 import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { REFERRAL_CODE_QUERY_PARAM } from "@/utils/gmx/lib/legacy";
 import { encodeReferralCode } from "@/utils/gmx/domain/referrals";
