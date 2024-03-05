@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import Token from "../../../../../abis/Token.json";
-import { getChainName, getExplorerUrl } from "../../config/chains";
+import { getChainName } from "../../config/chains";
 import { InfoTokens, TokenInfo } from "./types";
-import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 
@@ -78,10 +77,6 @@ export function approveTokens({
       } else {
         failMsg = `Approval failed`;
       }
-      showNotification({
-        message: `${failMsg}`,
-        type: "success",
-      });
     })
     .finally(() => {
       setIsApproving(false);
