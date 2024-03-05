@@ -19,7 +19,6 @@ import {
 import { isMarketOrderType } from "../../../../utils/gmx/domain/synthetics/orders";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { useToastAutoClose } from "../../../../hooks/useToastAutoClose";
 
 type Props = {
   toastTimestamp: number;
@@ -198,8 +197,6 @@ export function FeesSettlementStatusNotification({
       </>
     );
   }, [keyByOrder, marketInfoByKey, orderStatusByOrder, orders]);
-
-  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className={"StatusNotification"}>

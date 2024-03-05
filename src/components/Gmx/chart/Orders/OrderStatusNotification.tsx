@@ -26,7 +26,6 @@ import {
 } from "../../../../utils/gmx/lib/numbers";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { useToastAutoClose } from "../../../../hooks/useToastAutoClose";
 
 type Props = {
   toastTimestamp: number;
@@ -259,8 +258,6 @@ export function OrderStatusNotification({
       toastTimestamp,
     ]
   );
-
-  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className={"StatusNotification"}>
