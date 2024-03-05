@@ -40,10 +40,11 @@ import {
 import { TradeMode } from "../../utils/gmx/domain/synthetics/trade";
 import { useSelectedTradeOption } from "../../utils/gmx/domain/synthetics/trade/useSelectedTradeOption";
 import { getMidPrice } from "../../utils/gmx/domain/tokens";
-import { helperToast } from "../../utils/gmx/lib/helperToast";
+
 import useWallet from "../../utils/gmx/lib/wallets/useWallet";
 import PageContainer from "@/components/Container/PageContainer";
 import { PositionSeller } from "../Gmx/chart/Positions/PositionSeller";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 enum ListSection {
   Positions = "Positions",
@@ -70,7 +71,7 @@ export function SyntheticsPage(p) {
   const { account, scAccount } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } =
     useMarketsInfo(chainId);
-
+  const { showNotification } = useNotification();
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(
     chainId,
     {
@@ -334,7 +335,10 @@ export function SyntheticsPage(p) {
         <span>market selected</span>.
       </div>
     );
-    helperToast.success(message);
+    showNotification({
+      message: message,
+      type: "success",
+    });
   }
 
   function handleSettlePositionFeesClick(positionKey: PositionInfo["key"]) {

@@ -23,7 +23,6 @@ import {
 } from "react";
 import Tab from "../../common/Tab/Tab";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
-import { helperToast } from "../../../../utils/gmx/lib/helperToast";
 import BuyInputSection from "../../common/BuyInputSection/BuyInputSection";
 import {
   formatUsd,
@@ -77,6 +76,7 @@ import { GmFees } from "../GmFees/GmFees";
 import Button from "../../common/Buttons/Button";
 import { Token } from "@/utils/gmx/domain/tokens";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -114,19 +114,14 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
   return [Mode.Pair];
 };
 
-function showMarketToast(market) {
+function showMarketToast(market, showNotification) {
   if (!market) return;
   const indexName = getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
-  helperToast.success(
-    <div>
-      <div className="inline-flex">
-        GM:&nbsp;<span>{indexName}</span>
-        <span className="subtext gm-toast">[{poolName}]</span>
-      </div>{" "}
-      <span>selected in order form</span>
-    </div>
-  );
+  showNotification({
+    message: `GM: ${indexName} ${[{ poolName }]} selected in order form`,
+    type: "success",
+  });
 }
 
 export function GmSwapBox(p: Props) {
@@ -146,7 +141,7 @@ export function GmSwapBox(p: Props) {
   const { login: openConnectModal } = useWallet();
 
   const marketAddress = p.selectedMarketAddress;
-
+  const { showNotification } = useNotification();
   const { chainId } = useChainId();
   const { scAccount } = useWallet();
 
@@ -880,15 +875,12 @@ export function GmSwapBox(p: Props) {
           onSelectMarket(marketInfo?.marketTokenAddress);
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
-          helperToast.success(
-            <div>
-              <div className="inline-flex">
-                GM:&nbsp;<span>{indexName}</span>
-                <span className="subtext gm-toast">[{poolName}]</span>
-              </div>{" "}
-              <span>selected in order form</span>
-            </div>
-          );
+          showNotification({
+            message: `GM: ${indexName} ${[
+              { poolName },
+            ]} selected in order form`,
+            type: "success",
+          });
         }
 
         if (queryParams.get("scroll") === "1") {
@@ -1018,7 +1010,7 @@ export function GmSwapBox(p: Props) {
                     showBalances
                     onSelectMarket={(marketInfo) => {
                       onMarketChange(marketInfo.marketTokenAddress);
-                      showMarketToast(marketInfo);
+                      showMarketToast(marketInfo, showNotification);
                     }}
                   />
                 }
@@ -1278,7 +1270,7 @@ export function GmSwapBox(p: Props) {
                 onSelectMarket={(marketInfo) => {
                   setIndexName(getMarketIndexName(marketInfo));
                   onMarketChange(marketInfo.marketTokenAddress);
-                  showMarketToast(marketInfo);
+                  showMarketToast(marketInfo, showNotification);
                 }}
               />
             </BuyInputSection>
@@ -1302,7 +1294,7 @@ export function GmSwapBox(p: Props) {
                     showBalances
                     onSelectMarket={(marketInfo) => {
                       onMarketChange(marketInfo.marketTokenAddress);
-                      showMarketToast(marketInfo);
+                      showMarketToast(marketInfo, showNotification);
                     }}
                   />
                 }

@@ -16,7 +16,6 @@ import { REFERRAL_CODE_KEY } from "../../../config/localStorage";
 import { isAddress } from "ethers/lib/utils";
 import { contractFetcher } from "../../../lib/contracts/contractFetcher";
 import { callContract } from "../../../lib/contracts/callContract";
-import { helperToast } from "../../../lib/helperToast";
 import { isAddressZero, isHashZero } from "../../../lib/legacy";
 import { basisPointsToFloat } from "../../../lib/numbers";
 import { getProvider } from "../../../lib/rpc";
@@ -242,10 +241,11 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, opts) {
     referralStorageAddress,
     ReferralStorage.abi
   );
+
   const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {
     const errorMsg = "Referral code does not exist";
-    helperToast.error(errorMsg);
+
     return Promise.reject(errorMsg);
   }
   return callContract(

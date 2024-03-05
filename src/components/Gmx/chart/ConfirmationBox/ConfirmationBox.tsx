@@ -79,7 +79,6 @@ import {
 } from "../../../../utils/gmx/context/SubaccountContext/SubaccountContext";
 import { AvailableMarketsOptions } from "../../../../utils/gmx/domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "../../../../utils/gmx/domain/synthetics/trade/usePriceImpactWarningState";
-import { helperToast } from "../../../../utils/gmx/lib/helperToast";
 import {
   bigNumberify,
   formatAmount,
@@ -106,6 +105,7 @@ import { uniq } from "lodash";
 import { createSwapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createSwapOrderUserOp";
 import { createWrapOrUnwrapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createWrapOrUnwrapUserOp";
 import useWallet from "@/hooks/useWallet";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export type Props = {
   isVisible: boolean;
@@ -197,7 +197,7 @@ export function ConfirmationBox(p: Props) {
     isIncrease,
   } = tradeFlags;
   const { indexToken } = marketInfo || {};
-
+  const { showNotification } = useNotification();
   const { scAccount, login } = useWallet();
   const { sendUserOperations } = useUserOperations();
   const { chainId } = useChainId();
@@ -538,7 +538,10 @@ export function ConfirmationBox(p: Props) {
       !executionFee ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -581,7 +584,10 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -639,7 +645,10 @@ export function ConfirmationBox(p: Props) {
       !tokensData ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 

@@ -13,8 +13,9 @@ import {
 } from "../tokens";
 import { BigNumber, ethers } from "ethers";
 import { getErrorMessage } from "../../../lib/contracts/transactionErrors";
-import { helperToast } from "../../../lib/helperToast";
+
 import { getProvider } from "../../../lib/rpc";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -49,7 +50,7 @@ export async function simulateExecuteOrderTxn(
     ExchangeRouter.abi,
     provider
   );
-
+  const { showNotification } = useNotification();
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce.add(1);
@@ -138,8 +139,10 @@ export async function simulateExecuteOrderTxn(
         </div>
       );
     }
-
-    helperToast.error(msg);
+    showNotification({
+      message: `${msg}`,
+      type: "error",
+    });
 
     throw txnError;
   }

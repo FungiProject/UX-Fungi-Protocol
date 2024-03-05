@@ -12,12 +12,12 @@ import { NetworkType } from "@/types/Types";
 import useWallet from "@/hooks/useWallet";
 import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
-import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import Button from "../Gmx/common/Buttons/Button";
 import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 type BridgeProps = {
   tokens: TokenInfo[];
@@ -26,9 +26,9 @@ type BridgeProps = {
 
 export default function Bridge({ tokens, chainId }: BridgeProps) {
   const { scAccount } = useWallet();
-
+  const { showNotification } = useNotification();
   const { login } = useWallet();
-  const { sendUserOperations } = useUserOperations()
+  const { sendUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -203,13 +203,21 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       slippage === undefined ||
       typeof sendTx !== "function"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(resultTx)
+    await sendUserOperations(resultTx).then(() =>
+      showNotification({
+        message: "Bridge complete",
+        type: "success",
+      })
+    );
   };
 
   const handleAmountChange = (amount: number) => {

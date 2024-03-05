@@ -5,7 +5,6 @@ import TokenDropdown from "../Dropdown/TokenDropdown";
 import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
 import Button from "../Gmx/common/Buttons/Button";
-import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
@@ -13,6 +12,7 @@ import { TokenInfo } from "@/domain/tokens/types";
 import useWallet from "@/hooks/useWallet";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { BigNumber } from "ethers";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 type SwapperProps = {
   tokens: TokenInfo[];
@@ -21,7 +21,7 @@ type SwapperProps = {
 
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
-
+  const { showNotification } = useNotification();
   const { login: openConnectModal } = useWallet();
   const { sendUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
@@ -159,7 +159,10 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       slippage === undefined ||
       typeof sendTx !== "function"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -290,7 +293,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       >
         {submitButtonState.text}
       </Button>
-      <Button
+      {/* <Button
         variant="primary-action"
         className={`mt-4 ${
           submitButtonState.disabled ? "opacity-50" : ""
@@ -298,7 +301,7 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
         onClick={onSubmit2}
       >
         Test
-      </Button>
+      </Button> */}
     </main>
   );
 }

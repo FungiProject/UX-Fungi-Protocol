@@ -1,10 +1,10 @@
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "../../config/chains";
 import { BigNumber, Contract } from "ethers";
-import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { ReactNode } from "react";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export async function callContract(
   chainId: number,
@@ -23,6 +23,7 @@ export async function callContract(
     setPendingTxns?: (txns: any) => void;
   }
 ) {
+  const { showNotification } = useNotification();
   try {
     if (
       !Array.isArray(params) &&
@@ -54,15 +55,17 @@ export async function callContract(
     if (!opts.hideSentMsg) {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       const sentMsg = opts.sentMsg || `Transaction sent.`;
-
-      helperToast.success(
-        <div>
-          {sentMsg} <ExternalLink href={txUrl}>View status.</ExternalLink>
-          <br />
-          {opts.detailsMsg && <br />}
-          {opts.detailsMsg}
-        </div>
-      );
+      showNotification({
+        message: (
+          <div>
+            {sentMsg} <ExternalLink href={txUrl}>View status.</ExternalLink>
+            <br />
+            {opts.detailsMsg && <br />}
+            {opts.detailsMsg}
+          </div>
+        ),
+        type: "success",
+      });
     }
 
     if (opts.setPendingTxns) {
@@ -84,8 +87,11 @@ export async function callContract(
       e,
       opts?.failMsg
     );
+    showNotification({
+      message: `${failMsg}`,
+      type: "error",
+    });
 
-    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }

@@ -200,17 +200,20 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
         <span>0%</span> <span className="text-center">50%</span>{" "}
         <span className="text-end">100%</span>
       </div>
-      {selectedTokens &&
-        selectedTokens.length > 0 &&
-        selectedTokens.map((token) => (
-          <TokenCardRebalance
-            selectedTokens={selectedTokens}
-            token={token}
-            onRemove={onRemoveToken}
-            onPercentageChange={onPercentageChange}
-            key={token.coinKey}
-          />
-        ))}{" "}
+      <div className="h-[40vh] overflow-auto">
+        {selectedTokens &&
+          selectedTokens.length > 0 &&
+          selectedTokens.map((token) => (
+            <TokenCardRebalance
+              selectedTokens={selectedTokens}
+              token={token}
+              onRemove={onRemoveToken}
+              onPercentageChange={onPercentageChange}
+              key={token.coinKey}
+            />
+          ))}{" "}
+      </div>
+
       <div>
         <Button
           variant="primary-action"

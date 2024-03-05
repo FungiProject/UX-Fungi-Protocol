@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
 import Token from "../../../../../abis/Token.json";
 import { getChainName, getExplorerUrl } from "../../config/chains";
-import { helperToast } from "../../lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -37,17 +37,22 @@ export function approveTokens({
   const contract = new ethers.Contract(tokenAddress, Token.abi);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
+  const { showNotification } = useNotification();
   contract
     .approve(spender, ethers.constants.MaxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
-        <div>
-          Approval submitted!{" "}
-          <ExternalLink href={txUrl}>View status.</ExternalLink>
-          <br />
-        </div>
-      );
+      showNotification({
+        message: (
+          <div>
+            Approval submitted!{" "}
+            <ExternalLink href={txUrl}>View status.</ExternalLink>
+            <br />
+          </div>
+        ),
+        type: "success",
+      });
+
       if (onApproveSubmitted) {
         onApproveSubmitted();
       }
@@ -86,7 +91,10 @@ export function approveTokens({
       } else {
         failMsg = `Approval failed`;
       }
-      helperToast.error(failMsg);
+      showNotification({
+        message: `${failMsg}`,
+        type: "success",
+      });
     })
     .finally(() => {
       setIsApproving(false);

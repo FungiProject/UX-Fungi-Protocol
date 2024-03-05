@@ -3,9 +3,7 @@ import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/Set
 import "@/styles/globals.css";
 import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
 import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
-import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { TOAST_AUTO_CLOSE_TIME } from "@/utils/gmx/config/ui";
 import { useEffect } from "react";
 import { REFERRAL_CODE_QUERY_PARAM } from "@/utils/gmx/lib/legacy";
 import { encodeReferralCode } from "@/utils/gmx/domain/referrals";
@@ -15,15 +13,7 @@ import { useHistory } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { swrGCMiddleware } from "@/lib/swrMiddlewares";
 import { FungiGlobalContextProvider } from "@/context/FungiGlobalContext";
-
-const Zoom = cssTransition({
-  enter: "zoomIn",
-  exit: "zoomOut",
-  appendPosition: false,
-  collapse: true,
-  collapseDuration: 200,
-  duration: 200,
-});
+import { NotificationContextProvider } from "@/context/NotificationContextProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const history = useHistory();
@@ -48,32 +38,29 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <main>
-      <FungiGlobalContextProvider>
-      <SWRConfig
-        value={{ refreshInterval: 50000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware as any] }}
-      >
-          <SettingsContextProvider>
-            <SubaccountContextProvider>
-              <SyntheticsEventsProvider>
-                <main className="font-dmSans">
-                  <Component {...pageProps} />
-                </main>
-              </SyntheticsEventsProvider>
-            </SubaccountContextProvider>
-          </SettingsContextProvider>{" "}
-        <ToastContainer
-          limit={1}
-          transition={Zoom}
-          position="bottom-right"
-          autoClose={TOAST_AUTO_CLOSE_TIME}
-          hideProgressBar={true}
-          newestOnTop={false}
-          closeOnClick={false}
-          draggable={false}
-          pauseOnHover
-        />
-      </SWRConfig>
-      </FungiGlobalContextProvider>
+      {" "}
+      <NotificationContextProvider>
+        <FungiGlobalContextProvider>
+          <SWRConfig
+            value={{
+              refreshInterval: 50000,
+              refreshWhenHidden: false,
+              refreshWhenOffline: false,
+              use: [swrGCMiddleware as any],
+            }}
+          >
+            <SettingsContextProvider>
+              <SubaccountContextProvider>
+                <SyntheticsEventsProvider>
+                  <main className="font-dmSans">
+                    <Component {...pageProps} />
+                  </main>
+                </SyntheticsEventsProvider>
+              </SubaccountContextProvider>
+            </SettingsContextProvider>{" "}
+          </SWRConfig>
+        </FungiGlobalContextProvider>{" "}
+      </NotificationContextProvider>
       <script
         async
         src="/charting_library/charting_library.standalone.js"

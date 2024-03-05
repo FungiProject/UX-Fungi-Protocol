@@ -80,10 +80,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
-import { helperToast } from "@/utils/gmx/lib/helperToast";
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 import useWallet from "@/hooks/useWallet";
 import { useUserOperations } from "@/hooks/useUserOperations";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export type Props = {
   position?: PositionInfo;
@@ -161,7 +161,7 @@ export function PositionSeller(p: Props) {
   ] = useState<BigNumber>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { showNotification } = useNotification();
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
@@ -498,7 +498,11 @@ export function PositionSeller(p: Props) {
       !decreaseAmounts?.acceptablePrice ||
       !orderType
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
+
       return Promise.resolve();
     }
 

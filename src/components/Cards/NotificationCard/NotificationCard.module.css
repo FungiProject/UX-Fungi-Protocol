@@ -1,0 +1,27 @@
+.progress {
+    height: 10px;
+    width: 100%;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    animation: progressBarAnimation 5.1s linear, deleteRadiusRight 0.2s ease forwards;
+}
+
+@keyframes progressBarAnimation {
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+    }
+}
+
+@keyframes deleteRadiusRight {
+    from {
+        border-bottom-right-radius: 20px;
+    }
+
+    to {
+        border-bottom-right-radius: 0px;
+    }
+}

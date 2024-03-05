@@ -42,7 +42,7 @@ import {
   getMarketPoolName,
 } from "../../../../utils/gmx/domain/synthetics/markets";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
-import { helperToast } from "../../../../utils/gmx/lib/helperToast";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export type Props = {
   tradePageVersion: number;
@@ -84,7 +84,7 @@ export function TVChart({
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
-
+  const { showNotification } = useNotification();
   let [period, setPeriod] = useLocalStorageSerializeKey(
     [chainId, "Chart-period-v2"],
     DEFAULT_PERIOD
@@ -215,16 +215,12 @@ export function TVChart({
       if (marketInfo && nextTradeType) {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
-        helperToast.success(
-          <div>
-            <span>{nextTradeType === TradeType.Long ? `Long` : `Short`}</span>{" "}
-            <div className="inline-flex">
-              <span>{indexName}</span>
-              <span className="subtext gm-toast">[{poolName}]</span>
-            </div>{" "}
-            <span>market selected</span>
-          </div>
-        );
+        showNotification({
+          message: `${
+            nextTradeType === TradeType.Long ? `Long` : `Short`
+          }${indexName} ${[{ poolName }]} market selected`,
+          type: "success",
+        });
       }
     }
   }
