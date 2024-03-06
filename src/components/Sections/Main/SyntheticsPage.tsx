@@ -1,49 +1,49 @@
 import cx from "classnames";
-import { ClaimModal } from "../Gmx/chart/Claims/ClaimModal";
-import { Claims } from "../Gmx/chart/Claims/Claims";
-import { OrderList } from "../Gmx/chart/Orders/OrderList";
-import { PositionList } from "../Gmx/chart/Positions/PositionList";
-import { TVChart } from "../Gmx/chart/TV/TVChart";
-import { TradeBox } from "../Gmx/chart/TradeBox/TradeBox";
-import { TradeHistory } from "../Gmx/chart/TradeInfo/TradeHistory";
-import Tab from "../Gmx/common/Tab/Tab";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "../../utils/gmx/config/factors";
-import { getSyntheticsListSectionKey } from "../../utils/gmx/config/localStorage";
-import { getToken } from "../../utils/gmx/config/tokens";
-import { isSwapOrderType } from "../../utils/gmx/domain/synthetics/orders";
-import { cancelOrdersTxn } from "../../utils/gmx/domain/synthetics/orders/cancelOrdersTxn";
-import { useOrdersInfo } from "../../utils/gmx/domain/synthetics/orders/useOrdersInfo";
+import { ClaimModal } from "../../Gmx/chart/Claims/ClaimModal";
+import { Claims } from "../../Gmx/chart/Claims/Claims";
+import { OrderList } from "../../Gmx/chart/Orders/OrderList";
+import { PositionList } from "../../Gmx/chart/Positions/PositionList";
+import { TVChart } from "../../Gmx/chart/TV/TVChart";
+import { TradeBox } from "../../Gmx/chart/TradeBox/TradeBox";
+import { TradeHistory } from "../../Gmx/chart/TradeInfo/TradeHistory";
+import Tab from "../../Gmx/common/Tab/Tab";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "../../../utils/gmx/config/factors";
+import { getSyntheticsListSectionKey } from "../../../utils/gmx/config/localStorage";
+import { getToken } from "../../../utils/gmx/config/tokens";
+import { isSwapOrderType } from "../../../utils/gmx/domain/synthetics/orders";
+import { cancelOrdersTxn } from "../../../utils/gmx/domain/synthetics/orders/cancelOrdersTxn";
+import { useOrdersInfo } from "../../../utils/gmx/domain/synthetics/orders/useOrdersInfo";
 import {
   PositionInfo,
   getPositionKey,
-} from "../../utils/gmx/domain/synthetics/positions";
-import { usePositionsInfo } from "../../utils/gmx/domain/synthetics/positions/usePositionsInfo";
-import { useChainId } from "../../utils/gmx/lib/chains";
-import { getPageTitle } from "../../utils/gmx/lib/legacy";
-import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localstorage";
-import { formatUsd } from "../../utils/gmx/lib/numbers";
-import { getByKey } from "../../utils/gmx/lib/objects";
+} from "../../../utils/gmx/domain/synthetics/positions";
+import { usePositionsInfo } from "../../../utils/gmx/domain/synthetics/positions/usePositionsInfo";
+import { useChainId } from "../../../utils/gmx/lib/chains";
+import { getPageTitle } from "../../../utils/gmx/lib/legacy";
+import { useLocalStorageSerializeKey } from "../../../utils/gmx/lib/localstorage";
+import { formatUsd } from "../../../utils/gmx/lib/numbers";
+import { getByKey } from "../../../utils/gmx/lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useMarketsInfo } from "../../utils/gmx/domain/synthetics/markets";
-import { SettleAccruedFundingFeeModal } from "../Gmx/chart/SettleAccrued/SettleAccruedFundingFeeModal";
+import { useMarketsInfo } from "../../../utils/gmx/domain/synthetics/markets";
+import { SettleAccruedFundingFeeModal } from "../../Gmx/chart/SettleAccrued/SettleAccruedFundingFeeModal";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
-} from "../../utils/gmx/context/SubaccountContext/SubaccountContext";
+} from "../../../utils/gmx/context/SubaccountContext/SubaccountContext";
 import {
   getMarketIndexName,
   getMarketPoolName,
   getTotalClaimableFundingUsd,
-} from "../../utils/gmx/domain/synthetics/markets";
-import { TradeMode } from "../../utils/gmx/domain/synthetics/trade";
-import { useSelectedTradeOption } from "../../utils/gmx/domain/synthetics/trade/useSelectedTradeOption";
-import { getMidPrice } from "../../utils/gmx/domain/tokens";
+} from "../../../utils/gmx/domain/synthetics/markets";
+import { TradeMode } from "../../../utils/gmx/domain/synthetics/trade";
+import { useSelectedTradeOption } from "../../../utils/gmx/domain/synthetics/trade/useSelectedTradeOption";
+import { getMidPrice } from "../../../utils/gmx/domain/tokens";
 
-import useWallet from "../../utils/gmx/lib/wallets/useWallet";
+import useWallet from "../../../utils/gmx/lib/wallets/useWallet";
 import PageContainer from "@/components/Container/PageContainer";
-import { PositionSeller } from "../Gmx/chart/Positions/PositionSeller";
+import { PositionSeller } from "../../Gmx/chart/Positions/PositionSeller";
 import { useNotification } from "@/context/NotificationContextProvider";
 
 enum ListSection {

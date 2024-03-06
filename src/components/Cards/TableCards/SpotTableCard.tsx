@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 // Utils
 import formatNumber from "@/utils/formatNumber";
-import { networks } from "../../../constants/Constants";
+import { networks } from "../../../../constants/Constants";
 import { TokenData } from "@/domain/tokens/types";
 
 type AssetsTableCardProps = {

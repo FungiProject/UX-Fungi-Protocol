@@ -1,9 +1,9 @@
 import React from "react";
-import ActionsButton from "../Buttons/ActionsButton";
+import ActionsButton from "../../Buttons/ActionsButton";
 // Next
 import Image from "next/image";
 // Images
-import Logo from "../../../public/Logo.svg";
+import Logo from "../../../../public/profile/Logo.svg";
 
 export default function StartDepositBanner() {
   return (

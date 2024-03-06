@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { sleep } from "../../utils/gmx/lib/sleep";
+import { sleep } from "../../../utils/gmx/lib/sleep";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
   AVALANCHE,
   AVALANCHE_FUJI,
   getChainName,
-} from "../../utils/gmx/config/chains";
-import { switchNetwork } from "../../utils/gmx/lib/wallets";
-import { isDevelopment } from "../../utils/gmx/config/env";
-import useWallet from "../../utils/gmx/lib/wallets/useWallet";
+} from "../../../utils/gmx/config/chains";
+import { switchNetwork } from "../../../utils/gmx/lib/wallets";
+import { isDevelopment } from "../../../utils/gmx/config/env";
+import useWallet from "../../../utils/gmx/lib/wallets/useWallet";
 
 export function SyntheticsFallbackPage() {
   const { active } = useWallet();

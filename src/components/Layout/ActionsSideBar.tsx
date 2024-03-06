@@ -2,7 +2,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 // Components
 import LoginButton from "../Buttons/LoginButton";
-import Home from "../Sections/Home";
+import Home from "../Sections/Main/Home";
 // Constants
 import { navigation } from "../../../constants/Constants";
 // Types
@@ -10,18 +10,18 @@ import { navigationType } from "@/types/Types";
 // Next
 import Image from "next/image";
 // Images
-import Logo from "../../../public/Logo.svg";
-import User from "../../../public/User.svg";
+import Logo from "../../../public/profile/Logo.svg";
+import User from "../../../public/profile/User.svg";
 
-import Spot from "../Sections/Spot";
-import History from "../Sections/History";
-import { SyntheticsPage } from "../Sections/SyntheticsPage";
-import GM from "../Sections/GM";
+import Spot from "../Sections/Main/Spot";
+import History from "../Sections/Main/History";
+import { SyntheticsPage } from "../Sections/Main/SyntheticsPage";
+import GM from "../Sections/Main/GM";
 import { getIsSyntheticsSupported } from "@/utils/gmx/config/features";
 import { useChainId } from "@/utils/gmx/lib/chains";
-import { SyntheticsFallbackPage } from "../Sections/SyntheticsFallbackPage";
-import Credit from "../Sections/Credit";
-import Nfts from "../Sections/Nfts";
+import { SyntheticsFallbackPage } from "../Sections/Fallbacks/SyntheticsFallbackPage";
+import Credit from "../Sections/Main/Credit";
+import Nfts from "../Sections/Main/Nfts";
 import useWallet from "@/hooks/useWallet";
 
 import ProfileModal from "../Modals/ProfileModal";

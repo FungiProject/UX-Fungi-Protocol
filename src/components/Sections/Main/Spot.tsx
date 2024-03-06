@@ -1,13 +1,13 @@
 // React
 import React, { useState } from "react";
 // Components
-import PageContainer from "../Container/PageContainer";
-import SpotTable from "../Tables/SpotTable";
-import Swapper from "../Cards/Swapper";
-import ActionsSwitcher from "../Switchers/ActionsSwitcher";
-import Bridge from "../Cards/Bridge";
-import Rebalancer from "../Cards/Rebalancer";
-import Loader from "../Loader/SpinnerLoader";
+import PageContainer from "../../Container/PageContainer";
+import SpotTable from "../../Tables/SpotTable";
+import Swapper from "../../Cards/Swapper";
+import ActionsSwitcher from "../../Switchers/ActionsSwitcher";
+import Bridge from "../../Cards/Bridge";
+import Rebalancer from "../../Cards/Rebalancer";
+import Loader from "../../Loader/SpinnerLoader";
 // Hooks
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useTokensInfo } from "@/hooks/useTokensInfo";

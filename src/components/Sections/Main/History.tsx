@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Spinner from "../Loader/SpinnerLoader";
+import Spinner from "../../Loader/SpinnerLoader";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,

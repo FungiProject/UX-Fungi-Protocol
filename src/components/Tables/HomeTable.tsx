@@ -1,7 +1,7 @@
 // React
 import React from "react";
 // Components
-import HomeTableCard from "../Cards/HomeTableCard";
+import HomeTableCard from "../Cards/TableCards/HomeTableCard";
 import ActionsButton from "../Buttons/ActionsButton";
 // Utils
 import formatNumber from "@/utils/formatNumber";

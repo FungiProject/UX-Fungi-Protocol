@@ -8,12 +8,12 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import ProfileSelectionButton from "../Buttons/ProfileSelectionButton";
 import { useRouter } from "next/router";
 
-import SendIcon from "../../../public/SendIcon.svg";
-import SettingsIcon from "../../../public/SettingsIcon.svg";
-import WithdrawIcon from "../../../public/WithdrawIcon.svg";
-import DepositIcon from "../../../public/DepositIcon.svg";
-import LogOutIcon from "../../../public/LogOutIcon.svg";
-import TransactionIcon from "../../../public/TransactionIcon.svg";
+import SendIcon from "../../../public/profile/SendIcon.svg";
+import SettingsIcon from "../../../public/profile/SettingsIcon.svg";
+import WithdrawIcon from "../../../public/profile/WithdrawIcon.svg";
+import DepositIcon from "../../../public/profile/DepositIcon.svg";
+import LogOutIcon from "../../../public/profile/LogOutIcon.svg";
+import TransactionIcon from "../../../public/profile/TransactionIcon.svg";
 import useWallet from "@/hooks/useWallet";
 import { useNotification } from "@/context/NotificationContextProvider";
 

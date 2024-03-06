@@ -3,7 +3,7 @@ import React from "react";
 // Hooks
 import useWindowSize from "@/hooks/useWindowSize";
 // Components
-import ErrorPage from "@/components/Sections/ErrorPage";
+import ErrorPage from "@/components/Sections/Fallbacks/ErrorPage";
 import ActionsSideBar from "@/components/Layout/ActionsSideBar";
 
 export default function HomePage() {

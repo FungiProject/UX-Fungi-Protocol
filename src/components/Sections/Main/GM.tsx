@@ -1,18 +1,18 @@
 import React, { useState, useRef } from "react";
-import PageContainer from "../Container/PageContainer";
-import { MarketStats } from "../Gmx/gm/MarketStats/MarketStats";
+import PageContainer from "../../Container/PageContainer";
+import { MarketStats } from "../../Gmx/gm/MarketStats/MarketStats";
 import {
   useMarketTokensData,
   useMarketsInfo,
-} from "../../utils/gmx/domain/synthetics/markets";
-import { useMarketTokensAPR } from "../../utils/gmx/domain/synthetics/markets/useMarketTokensAPR";
-import { getTokenData } from "../../utils/gmx/domain/synthetics/tokens";
-import { getByKey } from "../../utils/gmx/lib/objects";
-import { useLocalStorageSerializeKey } from "../../utils/gmx/lib/localstorage";
-import { getSyntheticsDepositMarketKey } from "../../utils/gmx/config/localStorage";
-import { useChainId } from "../../utils/gmx/lib/chains";
+} from "../../../utils/gmx/domain/synthetics/markets";
+import { useMarketTokensAPR } from "../../../utils/gmx/domain/synthetics/markets/useMarketTokensAPR";
+import { getTokenData } from "../../../utils/gmx/domain/synthetics/tokens";
+import { getByKey } from "../../../utils/gmx/lib/objects";
+import { useLocalStorageSerializeKey } from "../../../utils/gmx/lib/localstorage";
+import { getSyntheticsDepositMarketKey } from "../../../utils/gmx/config/localStorage";
+import { useChainId } from "../../../utils/gmx/lib/chains";
 import { useSearchParams } from "next/navigation";
-import { GmSwapBox, Operation, Mode } from "../Gmx/gm/GmSwapBox/GmSwapBox";
+import { GmSwapBox, Operation, Mode } from "../../Gmx/gm/GmSwapBox/GmSwapBox";
 
 type HomeProps = {
   getSelectedAction: (action: string) => void;

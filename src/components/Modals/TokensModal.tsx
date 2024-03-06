@@ -9,7 +9,7 @@ import SearchBar from "../Filters/SearchBar";
 import { TokenInfo } from "@/domain/tokens/types";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import TokenCard from "../Cards/TokenCard";
+import TokenCard from "../Cards/TokenCards/TokenCard";
 
 interface TokensModalProps {
   getOpenModal: (openModal: boolean) => void;

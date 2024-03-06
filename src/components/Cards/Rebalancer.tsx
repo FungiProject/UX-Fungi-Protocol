@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "../Gmx/common/Buttons/Button";
-import TokenCardRebalance from "./TokenCardRebalance";
+import TokenCardRebalance from "./TokenCards/TokenCardRebalance";
 import {
   computeRebalance,
   getUserOpRebalance,
@@ -9,7 +9,7 @@ import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useUserOperations } from "@/hooks/useUserOperations";
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import SearchBar from "../Filters/SearchBar";
-import TokenCard from "./TokenCard";
+import TokenCard from "./TokenCards/TokenCard";
 import { TokenInfo } from "@/domain/tokens/types";
 import { useTokenBalances } from "@/hooks/useTokensBalances";
 import { TokenInfoRebalanceInput } from "@/domain/tokens/types";

@@ -1,5 +1,5 @@
 import React from "react";
-import PageContainer from "../Container/PageContainer";
+import PageContainer from "../../Container/PageContainer";
 
 export default function Nfts() {
   return (

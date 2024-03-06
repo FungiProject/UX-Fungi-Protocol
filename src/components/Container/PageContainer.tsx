@@ -5,7 +5,7 @@ import Image from "next/image";
 // Utils
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 // Images
-import Logo from "../../../public/Logo.svg";
+import Logo from "../../../public/profile/Logo.svg";
 
 type PageContainerProps = {
   main: ReactElement;

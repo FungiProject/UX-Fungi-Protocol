@@ -1,13 +1,13 @@
 // React
 import React, { useEffect, useState } from "react";
 // Components
-import SpotTableCard from "../Cards/SpotTableCard";
+import SpotTableCard from "../Cards/TableCards/SpotTableCard";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 // Constants
 import Loader from "../Loader/SpinnerLoader";
 import { TokenData, TokenInfo } from "@/domain/tokens/types";
 import { useTokenMarketData } from "@/hooks/useTokenMarketData";
-import StartDepositBanner from "../Cards/StartDepositBanner";
+import StartDepositBanner from "../Sections/Fallbacks/StartDepositBanner";
 
 type SpotTableProps = {
   tokens: TokenInfo[];

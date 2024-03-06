@@ -3,7 +3,7 @@ import React from "react";
 // Next
 import Image from "next/image";
 // Images
-import Logo from "../../../public/Logo.svg";
+import Logo from "../../../../public/profile/Logo.svg";
 
 export default function ErrorPage() {
   return (

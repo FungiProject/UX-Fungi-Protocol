@@ -1,16 +1,16 @@
 // React
 import React, { useEffect, useState } from "react";
 // Components
-import PageContainer from "../Container/PageContainer";
-import HomeTable from "../Tables/HomeTable";
+import PageContainer from "../../Container/PageContainer";
+import HomeTable from "../../Tables/HomeTable";
 
-import ResultsChart from "../Chart/ResultsChart";
-import SpinnerLoader from "../Loader/SpinnerLoader";
+import ResultsChart from "../../Chart/ResultsChart";
+import SpinnerLoader from "../../Loader/SpinnerLoader";
 import useScAccountPositions from "@/domain/position/useScAccountPositions";
 
 import useScAccountSpotPosition from "@/domain/position/useScAccountSpotPosition";
 
-import StartDepositBanner from "../Cards/StartDepositBanner";
+import StartDepositBanner from "../Fallbacks/StartDepositBanner";
 
 type HomeProps = {
   getSelectedAction: (action: string) => void;
