@@ -38,28 +38,28 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <main>
       {" "}
-      <NotificationContextProvider>
-        <FungiGlobalContextProvider>
-          <SWRConfig
-            value={{
-              refreshInterval: 50000,
-              refreshWhenHidden: false,
-              refreshWhenOffline: false,
-              use: [swrGCMiddleware as any],
-            }}
-          >
-            <SettingsContextProvider>
-              <SubaccountContextProvider>
+      <FungiGlobalContextProvider>
+        <SWRConfig
+          value={{
+            refreshInterval: 50000,
+            refreshWhenHidden: false,
+            refreshWhenOffline: false,
+            use: [swrGCMiddleware as any],
+          }}
+        >
+          <SettingsContextProvider>
+            <SubaccountContextProvider>
+              <NotificationContextProvider>
                 <SyntheticsEventsProvider>
                   <main className="font-dmSans">
                     <Component {...pageProps} />
                   </main>
                 </SyntheticsEventsProvider>
-              </SubaccountContextProvider>
-            </SettingsContextProvider>{" "}
-          </SWRConfig>
-        </FungiGlobalContextProvider>{" "}
-      </NotificationContextProvider>
+              </NotificationContextProvider>
+            </SubaccountContextProvider>
+          </SettingsContextProvider>{" "}
+        </SWRConfig>
+      </FungiGlobalContextProvider>{" "}
       <script
         async
         src="/charting_library/charting_library.standalone.js"

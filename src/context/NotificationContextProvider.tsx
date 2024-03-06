@@ -37,10 +37,16 @@ export function NotificationContextProvider({ children }: ProviderProps) {
   const [notification, setNotification] = useState<NotificationType | null>(
     null
   );
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   const showNotification = (notification: NotificationType) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
     setNotification(notification);
-    setTimeout(() => {
+
+    timeoutId = setTimeout(() => {
       setNotification(null);
     }, 5000);
   };
@@ -52,6 +58,7 @@ export function NotificationContextProvider({ children }: ProviderProps) {
         <Notification
           message={notification.message}
           color={getColorForType(notification.type)}
+          type={notification.type}
         />
       )}
     </NotificationContext.Provider>

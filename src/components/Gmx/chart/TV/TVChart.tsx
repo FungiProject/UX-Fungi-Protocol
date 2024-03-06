@@ -211,14 +211,16 @@ export function TVChart({
     if (marketTokenAddress) {
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
       const nextTradeType = tradeType ?? currentTradeType;
+
       if (nextTradeType === TradeType.Swap) return;
       if (marketInfo && nextTradeType) {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
+
         showNotification({
           message: `${
             nextTradeType === TradeType.Long ? `Long` : `Short`
-          }${indexName} ${[{ poolName }]} market selected`,
+          } ${indexName} - ${poolName} market selected`,
           type: "success",
         });
       }

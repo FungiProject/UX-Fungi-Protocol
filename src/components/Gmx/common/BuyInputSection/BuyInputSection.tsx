@@ -3,7 +3,7 @@ import {
   INPUT_LABEL_SEPARATOR,
   PERCENTAGE_SUGGESTIONS,
 } from "../../../../utils/gmx/config/ui";
-import NumberInput from "../../gm/NumberInput/NumberInput";
+import NumberInput from "../Inputs/NumberInput";
 
 type Props = {
   topLeftLabel: string;

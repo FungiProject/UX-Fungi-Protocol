@@ -131,7 +131,19 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       openConnectModal?.();
       return;
     } else {
-      txnPromise = onSubmitSwap();
+      txnPromise = onSubmitSwap()
+        .then(() => {
+          showNotification({
+            message: "Swap successfully executed",
+            type: "success",
+          });
+        })
+        .catch((e) => {
+          showNotification({
+            message: "Error submitting swap",
+            type: "error",
+          });
+        });
     }
   }
 

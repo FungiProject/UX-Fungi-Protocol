@@ -119,7 +119,7 @@ function showMarketToast(market, showNotification) {
   const indexName = getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
   showNotification({
-    message: `GM: ${indexName} ${[{ poolName }]} selected in order form`,
+    message: `GM: ${indexName} - ${poolName} selected in order form`,
     type: "success",
   });
 }
@@ -876,9 +876,7 @@ export function GmSwapBox(p: Props) {
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
           showNotification({
-            message: `GM: ${indexName} ${[
-              { poolName },
-            ]} selected in order form`,
+            message: `GM: ${indexName} - ${poolName} selected in order form`,
             type: "success",
           });
         }
