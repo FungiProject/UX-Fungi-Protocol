@@ -97,7 +97,7 @@ export const useLiFiTx = (
       }
 
       setStatus({ disabled: true, text: "Enter an amount" });
-      console.log(userOps);
+
       return userOps;
     } catch (error) {
       setStatus({ disabled: true, text: "Enter an amount" });

@@ -11,6 +11,8 @@ import CreditActive from "../public/CreditActive.svg";
 import CreditDesactive from "../public/CreditDesactive.svg";
 import NFTActive from "../public/NFTActive.svg";
 import NFTDesactive from "../public/NFTDesactive.svg";
+import Arbitrum from "../public/Arbitrum.svg";
+import Polygon from "../public/Polygon.svg";
 
 export const navigation = [
   {

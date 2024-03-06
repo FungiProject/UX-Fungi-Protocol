@@ -72,8 +72,7 @@ export function FungiGlobalContextProvider({
     setAlchemyMultichainClient(multichainProv);
 
     setAlchemyClient(
-      multichainProv?.forNetwork(chain) ||
-      multichainProv?.forNetwork(ARBITRUM)
+      multichainProv?.forNetwork(chain) || multichainProv?.forNetwork(ARBITRUM)
     );
 
     const magicMultichain = new MagicMultichainClient();
@@ -82,7 +81,6 @@ export function FungiGlobalContextProvider({
   }, []);
 
   useEffect(() => {
-    console.log("FungiGlobalContext: change chain");
     if (chain) {
       if (alchemyMultichainClient) {
         setAlchemyClient(
@@ -109,7 +107,6 @@ export function FungiGlobalContextProvider({
   useEffect(() => {
     (async () => {
       if (alchemyScaProvider) {
-        console.log(alchemyScaProvider.account?.address);
         if (alchemyScaProvider) {
           setScaAddress(alchemyScaProvider.account?.address);
         }
@@ -119,15 +116,12 @@ export function FungiGlobalContextProvider({
 
   const connectProviderToAccount = useCallback(
     async (signer: SmartAccountSigner) => {
-      console.log("FungiGlobalContext: connectProviderToAccount");
-
       const connectedProvider = await createModularAccountAlchemyClient({
         apiKey: getApiKeyChain(chain),
         chain: getViemChain(chain),
         signer,
       });
 
-      console.log(connectedProvider);
       setAlchemyScaProvider(connectedProvider);
 
       return connectedProvider;
@@ -147,7 +141,6 @@ export function FungiGlobalContextProvider({
   }, [alchemyScaProvider]);
 
   const login = useCallback(async () => {
-    console.log("FungiGlobalContext: login");
     const signer = await magicClient;
 
     if (signer == null) {

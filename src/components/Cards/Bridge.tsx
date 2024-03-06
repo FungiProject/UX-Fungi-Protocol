@@ -5,7 +5,7 @@ import TokenDropdown from "../Dropdown/TokenDropdown";
 // Axios
 import axios from "axios";
 // Constants
-import Arbitrum from "../../../public/ArbitrumTokens/Arbitrum.svg";
+import Arbitrum from "../../../public/Arbitrum.svg";
 // Types
 import { TokenInfo } from "@/domain/tokens/types";
 import { NetworkType } from "@/types/Types";
