@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGlobalContext } from "@/context/FungiGlobalContext";
+import { useGlobalContext } from "@/context/FungiContextProvider";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { TokenInfo } from "@/domain/tokens/types";
 import { getAllTokensWithBalances } from "@/domain/tokens/useInfoTokens";

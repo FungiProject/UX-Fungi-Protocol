@@ -9,19 +9,12 @@ import {
   NOTIFICATION_SUCCESS_COLOR,
   NOTIFICATION_WARNING_COLOR,
 } from "@/config/uiConfig";
-
-export type NotificationType = {
-  message: string | ReactNode;
-  type: "success" | "error" | "warning" | "info";
-};
-
-export type NotificationContextType = {
-  showNotification: (notification: NotificationType) => void;
-};
-
-export type ProviderProps = {
-  children: ReactNode;
-};
+// Types
+import {
+  NotificationType,
+  NotificationContextType,
+  ProviderProps,
+} from "./types";
 
 export const useNotification = () => {
   const context = useContext(NotificationContext);

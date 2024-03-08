@@ -11,10 +11,8 @@ import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { TokenInfo } from "@/domain/tokens/types";
 import useWallet from "@/hooks/useWallet";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useNotification } from "@/context/NotificationContextProvider";
-import { getContract } from "@/utils/gmx/config/contracts";
-import ExchangeRouter from "@/../abis/ExchangeRouter.json";
 
 type SwapperProps = {
   tokens: TokenInfo[];
@@ -150,34 +148,12 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   }
 
   async function onSubmit2() {
-    // const contractAddress = new ethers.Contract(
-    //   getContract(chainId, "ExchangeRouter"),
-    //   ExchangeRouter.abi
-    // );
-
-    // const contract = new ethers.Contract(
-    //   contractAddress.address,
-    //   ExchangeRouter.abi
-    // );
-
-    // const calldata = contract.interface.encodeFunctionData("setUiFeeFactor", [
-    //   "200000000000000000000000000",
-    // ]) as `0x${string}`;
-
-    // console.log(contractAddress.address);
-
-    // sendUserOperations([
-    //   { target: contractAddress.address as `0x${string}`, data: calldata },
-    // ]);
-
     setIsSubmitting(true);
-
     const uo = createApproveTokensUserOp({
       tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
       amount: BigNumber.from(1000000),
     });
-
     await sendUserOperations([uo], "OK");
   }
 

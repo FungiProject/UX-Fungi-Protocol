@@ -3,7 +3,7 @@ import { getExplorerUrl } from "@/utils/gmx/config/chains";
 import { UserOperation } from "@/lib/userOperations/types";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { sendUserOperations as sendUserOperationAlchemy } from "@/lib/userOperations/sendUserOperations";
-import { useGlobalContext } from "@/context/FungiGlobalContext";
+import { useGlobalContext } from "@/context/FungiContextProvider";
 import { useNotification } from "@/context/NotificationContextProvider";
 
 export function useUserOperations() {

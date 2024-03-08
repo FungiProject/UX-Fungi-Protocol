@@ -1,18 +1,27 @@
-import type { AppProps } from "next/app";
-import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/SettingsContextProvider";
-import "@/styles/globals.css";
-import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
-import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
+// React
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+// Next
+import type { AppProps } from "next/app";
+// Styles
+import "@/styles/globals.css";
+// Utils
 import { REFERRAL_CODE_QUERY_PARAM } from "@/utils/gmx/lib/legacy";
 import { encodeReferralCode } from "@/utils/gmx/domain/referrals";
 import { REFERRAL_CODE_KEY } from "@/utils/gmx/config/localStorage";
+import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
+import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
+import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/SettingsContextProvider";
+// Ethers
 import { ethers } from "ethers";
-import { useHistory } from "react-router-dom";
+// Swr
 import { SWRConfig } from "swr";
+// Lib
 import { swrGCMiddleware } from "@/lib/swrMiddlewares";
-import { FungiGlobalContextProvider } from "@/context/FungiGlobalContext";
+// Context
+import { FungiContextProvider } from "@/context/FungiContextProvider";
 import { NotificationContextProvider } from "@/context/NotificationContextProvider";
+import { ModalContextProvider } from "@/context/ModalContextProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const history = useHistory();
@@ -38,7 +47,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <main>
       {" "}
-      <FungiGlobalContextProvider>
+      <FungiContextProvider>
         <SWRConfig
           value={{
             refreshInterval: 50000,
@@ -50,16 +59,18 @@ export default function App({ Component, pageProps }: AppProps) {
           <SettingsContextProvider>
             <SubaccountContextProvider>
               <NotificationContextProvider>
-                <SyntheticsEventsProvider>
-                  <main className="font-dmSans">
-                    <Component {...pageProps} />
-                  </main>
-                </SyntheticsEventsProvider>
+                <ModalContextProvider>
+                  <SyntheticsEventsProvider>
+                    <main className="font-dmSans">
+                      <Component {...pageProps} />
+                    </main>
+                  </SyntheticsEventsProvider>{" "}
+                </ModalContextProvider>
               </NotificationContextProvider>
             </SubaccountContextProvider>
           </SettingsContextProvider>{" "}
         </SWRConfig>
-      </FungiGlobalContextProvider>{" "}
+      </FungiContextProvider>
       <script
         async
         src="/charting_library/charting_library.standalone.js"

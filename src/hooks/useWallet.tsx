@@ -1,4 +1,4 @@
-import { useGlobalContext } from "@/context/FungiGlobalContext";
+import { useGlobalContext } from "@/context/FungiContextProvider";
 
 export default function useWallet() {
   const {

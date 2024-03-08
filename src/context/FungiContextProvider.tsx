@@ -22,30 +22,16 @@ import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
 import { AlchemySmartAccountClient } from "@alchemy/aa-alchemy";
 
 import { type Address, type SmartAccountSigner } from "@alchemy/aa-core";
+// Types
+import { FungiContextType } from "./types";
 
-export type FungiGlobalContextType = {
-  alchemyClient?: Alchemy;
-  alchemyScaProvider: any | undefined;
-  scaAddress?: Address;
-  chain: number;
-  switchNetwork: (number) => void;
-  isConnected: boolean;
-  isLoading: boolean;
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-};
-
-export const FungiGlobalContext = createContext({} as FungiGlobalContextType);
+export const FungiContext = createContext({} as FungiContextType);
 
 export function useGlobalContext() {
-  return useContext(FungiGlobalContext) as FungiGlobalContextType;
+  return useContext(FungiContext) as FungiContextType;
 }
 
-export function FungiGlobalContextProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function FungiContextProvider({ children }: { children: ReactNode }) {
   const [alchemyMultichainClient, setAlchemyMultichainClient] =
     useState<AlchemyMultichainClient>();
   const [magicMultichainClient, setMagicMultichainClient] =
@@ -184,7 +170,7 @@ export function FungiGlobalContextProvider({
     setChain(chainId);
   }, []);
 
-  const state: FungiGlobalContextType = useMemo(() => {
+  const state: FungiContextType = useMemo(() => {
     return {
       alchemyClient,
       alchemyScaProvider,
@@ -209,8 +195,6 @@ export function FungiGlobalContextProvider({
   ]);
 
   return (
-    <FungiGlobalContext.Provider value={state}>
-      {children}
-    </FungiGlobalContext.Provider>
+    <FungiContext.Provider value={state}>{children}</FungiContext.Provider>
   );
 }
