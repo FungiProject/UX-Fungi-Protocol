@@ -9,7 +9,7 @@ export async function getTokensMarketData(
     const encodedIdsParam = encodeURIComponent(idsParam);
 
     const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodedIdsParam}&order=market_cap_desc&per_page=${idsParam.length}&page=1&sparkline=false&locale=en`
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodedIdsParam}&order=market_cap_desc&per_page=${idsParam.length}&page=1&sparkline=false&locale=en&x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API}`
     );
 
     return response.data;

@@ -11,7 +11,6 @@ export default function useTokensWithBalance() {
 
   useEffect(() => {
     const fetchTokens = async () => {
-      console.log(alchemyClient, chainId, scAccount);
       if (alchemyClient && chainId && scAccount) {
         const tokensInfo = await getAllTokensWithBalances(
           alchemyClient,
