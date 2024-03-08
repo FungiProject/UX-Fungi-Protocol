@@ -26,7 +26,7 @@ export type ModalType = {
 // Notification types
 
 export type NotificationType = {
-  message: string;
+  message: string | ReactNode;
   type: "success" | "error" | "warning" | "info";
 };
 
