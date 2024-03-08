@@ -19,7 +19,6 @@ import {
   getPositionPnlUsd,
 } from "./utils";
 import { usePositions } from "./usePositions";
-import useWallet from "../../../lib/wallets/useWallet";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 
 type PositionsInfoResult = {
