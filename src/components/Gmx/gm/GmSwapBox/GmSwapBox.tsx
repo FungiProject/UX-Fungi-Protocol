@@ -114,16 +114,6 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
   return [Mode.Pair];
 };
 
-function showMarketToast(market, showNotification) {
-  if (!market) return;
-  const indexName = getMarketIndexName(market);
-  const poolName = getMarketPoolName(market);
-  showNotification({
-    message: `GM: ${indexName} - ${poolName} selected in order form`,
-    type: "success",
-  });
-}
-
 export function GmSwapBox(p: Props) {
   const {
     operation,
@@ -873,12 +863,6 @@ export function GmSwapBox(p: Props) {
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
-          const indexName = getMarketIndexName(marketInfo);
-          const poolName = getMarketPoolName(marketInfo);
-          showNotification({
-            message: `GM: ${indexName} - ${poolName} selected in order form`,
-            type: "success",
-          });
         }
 
         if (queryParams.get("scroll") === "1") {
@@ -1008,7 +992,6 @@ export function GmSwapBox(p: Props) {
                     showBalances
                     onSelectMarket={(marketInfo) => {
                       onMarketChange(marketInfo.marketTokenAddress);
-                      showMarketToast(marketInfo, showNotification);
                     }}
                   />
                 }
@@ -1268,7 +1251,6 @@ export function GmSwapBox(p: Props) {
                 onSelectMarket={(marketInfo) => {
                   setIndexName(getMarketIndexName(marketInfo));
                   onMarketChange(marketInfo.marketTokenAddress);
-                  showMarketToast(marketInfo, showNotification);
                 }}
               />
             </BuyInputSection>
@@ -1292,7 +1274,6 @@ export function GmSwapBox(p: Props) {
                     showBalances
                     onSelectMarket={(marketInfo) => {
                       onMarketChange(marketInfo.marketTokenAddress);
-                      showMarketToast(marketInfo, showNotification);
                     }}
                   />
                 }
