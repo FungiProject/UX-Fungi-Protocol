@@ -19,7 +19,6 @@ import {
   getPositionPnlUsd,
 } from "./utils";
 import { usePositions } from "./usePositions";
-import useWallet from "../../../lib/wallets/useWallet";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 
 type PositionsInfoResult = {
@@ -46,12 +45,10 @@ export function usePositionsInfo(
     skipLocalReferralCode = false,
   } = p;
 
-  const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(
-    signer,
     chainId,
     account,
     skipLocalReferralCode

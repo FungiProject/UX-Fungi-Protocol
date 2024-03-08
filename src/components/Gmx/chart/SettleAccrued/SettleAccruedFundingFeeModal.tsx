@@ -48,9 +48,9 @@ export function SettleAccruedFundingFeeModal({
   positionsInfoData,
   setPendingTxns,
 }: Props) {
-  const { account, signer } = useWallet();
+  const { scAccount } = useWallet();
   const { chainId } = useChainId();
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo(chainId, scAccount);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -119,64 +119,64 @@ export function SettleAccruedFundingFeeModal({
   const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
   const subaccount = useSubaccount(executionFee ?? null);
 
-  const onSubmit = useCallback(() => {
-    if (!account || !signer || !chainId || !executionFee || !tokensData) return;
+  // const onSubmit = useCallback(() => {
+  //   if (!account || !signer || !chainId || !executionFee || !tokensData) return;
 
-    setIsSubmitting(true);
+  //   setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
-      chainId,
-      signer,
-      subaccount,
-      selectedPositions.map((position) => {
-        return {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: BigNumber.from(1), // FIXME ?
-          receiveTokenAddress: position.collateralToken.address,
-          swapPath: [],
-          sizeDeltaUsd: BigNumber.from(0),
-          sizeDeltaInTokens: BigNumber.from(0),
-          acceptablePrice: position.isLong
-            ? BigNumber.from(2).pow(256).sub(1)
-            : BigNumber.from(0),
-          triggerPrice: undefined,
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-          orderType: OrderType.MarketDecrease,
-          isLong: position.isLong,
-          minOutputUsd: BigNumber.from(0),
-          executionFee,
-          allowedSlippage,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          indexToken: position.indexToken,
-          tokensData,
-          skipSimulation: true,
-        };
-      }),
-      {
-        setPendingTxns,
-        setPendingFundingFeeSettlement,
-      }
-    )
-      .then(onClose)
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  }, [
-    account,
-    allowedSlippage,
-    chainId,
-    executionFee,
-    onClose,
-    selectedPositions,
-    setPendingFundingFeeSettlement,
-    setPendingTxns,
-    signer,
-    subaccount,
-    tokensData,
-    userReferralInfo?.referralCodeForTxn,
-  ]);
+  //   createDecreaseOrderTxn(
+  //     chainId,
+  //     signer,
+  //     subaccount,
+  //     selectedPositions.map((position) => {
+  //       return {
+  //         account,
+  //         marketAddress: position.marketAddress,
+  //         initialCollateralAddress: position.collateralTokenAddress,
+  //         initialCollateralDeltaAmount: BigNumber.from(1), // FIXME ?
+  //         receiveTokenAddress: position.collateralToken.address,
+  //         swapPath: [],
+  //         sizeDeltaUsd: BigNumber.from(0),
+  //         sizeDeltaInTokens: BigNumber.from(0),
+  //         acceptablePrice: position.isLong
+  //           ? BigNumber.from(2).pow(256).sub(1)
+  //           : BigNumber.from(0),
+  //         triggerPrice: undefined,
+  //         decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+  //         orderType: OrderType.MarketDecrease,
+  //         isLong: position.isLong,
+  //         minOutputUsd: BigNumber.from(0),
+  //         executionFee,
+  //         allowedSlippage,
+  //         referralCode: userReferralInfo?.referralCodeForTxn,
+  //         indexToken: position.indexToken,
+  //         tokensData,
+  //         skipSimulation: true,
+  //       };
+  //     }),
+  //     {
+  //       setPendingTxns,
+  //       setPendingFundingFeeSettlement,
+  //     }
+  //   )
+  //     .then(onClose)
+  //     .finally(() => {
+  //       setIsSubmitting(false);
+  //     });
+  // }, [
+  //   account,
+  //   allowedSlippage,
+  //   chainId,
+  //   executionFee,
+  //   onClose,
+  //   selectedPositions,
+  //   setPendingFundingFeeSettlement,
+  //   setPendingTxns,
+  //   signer,
+  //   subaccount,
+  //   tokensData,
+  //   userReferralInfo?.referralCodeForTxn,
+  // ]);
 
   const renderTooltipContent = useCallback(
     () => <span className="text-white">Accrued Funding Fee.</span>,
@@ -233,7 +233,7 @@ export function SettleAccruedFundingFeeModal({
         className="w-full"
         variant="primary-action"
         disabled={buttonDisabled}
-        onClick={onSubmit}
+        // onClick={onSubmit}
       >
         {buttonText}
       </Button>

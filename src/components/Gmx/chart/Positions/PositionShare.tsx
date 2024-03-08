@@ -5,7 +5,6 @@ import { BigNumber } from "ethers";
 import { toJpeg } from "html-to-image";
 import shareBgImg from "../../../../img/position-share-bg.png";
 import downloadImage from "../../../../utils/gmx/lib/dowloadImage";
-import { helperToast } from "../../../../utils/gmx/lib/helperToast";
 import {
   getRootShareApiUrl,
   getTwitterIntentURL,
@@ -18,6 +17,7 @@ import { RiFileDownloadLine } from "react-icons/ri";
 import { useCopyToClipboard } from "react-use";
 import Modal from "../../common/Modal/Modal";
 import { PositionShareCard } from "./PositionShareCard";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
@@ -63,6 +63,7 @@ function PositionShare({
   account,
   chainId,
 }: Props) {
+  const { showNotification } = useNotification();
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(
@@ -114,7 +115,10 @@ function PositionShare({
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url as string);
-    helperToast.success(`Link copied to clipboard.`);
+    showNotification({
+      message: "Link copied to clipboard.",
+      type: "error",
+    });
   }
 
   return (

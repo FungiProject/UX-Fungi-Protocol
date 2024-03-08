@@ -23,7 +23,6 @@ import {
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { getByKey } from "../../../../utils/gmx/lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { useToastAutoClose } from "../../../../hooks/useToastAutoClose";
 
 export type Props = {
   toastTimestamp: number;
@@ -281,8 +280,6 @@ export function GmStatusNotification({
       withdrawalStatuses,
     ]
   );
-
-  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className="StatusNotification">

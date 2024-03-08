@@ -1,11 +1,10 @@
-// import { Trans, t } from "@lingui/macro";
 import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "../../config/chains";
 import { BigNumber, Contract } from "ethers";
-import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { ReactNode } from "react";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export async function callContract(
   chainId: number,
@@ -52,20 +51,6 @@ export async function callContract(
 
     const res = await contract[method](...params, txnOpts);
 
-    if (!opts.hideSentMsg) {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      const sentMsg = opts.sentMsg || `Transaction sent.`;
-
-      helperToast.success(
-        <div>
-          {sentMsg} <ExternalLink href={txUrl}>View status.</ExternalLink>
-          <br />
-          {opts.detailsMsg && <br />}
-          {opts.detailsMsg}
-        </div>
-      );
-    }
-
     if (opts.setPendingTxns) {
       const message = opts.hideSuccessMsg
         ? undefined
@@ -80,13 +65,8 @@ export async function callContract(
 
     return res;
   } catch (e: any) {
-    const { failMsg, autoCloseToast } = getErrorMessage(
-      chainId,
-      e,
-      opts?.failMsg
-    );
+    console.log(e);
 
-    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }

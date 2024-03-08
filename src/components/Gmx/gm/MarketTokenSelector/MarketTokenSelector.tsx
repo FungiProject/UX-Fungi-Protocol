@@ -117,7 +117,6 @@ export default function MarketTokenSelector(props: Props) {
   );
 
   function handleSelectToken(marketTokenAddress: string) {
-    console.log(marketTokenAddress);
     /*history.push({
       pathname: "/pools",
       search: `?market=${marketTokenAddress}`,

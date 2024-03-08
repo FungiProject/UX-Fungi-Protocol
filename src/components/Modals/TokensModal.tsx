@@ -5,16 +5,17 @@ import { Dialog, Transition } from "@headlessui/react";
 // Components
 import SearchBar from "../Filters/SearchBar";
 // Types
-import { tokenType } from "@/types/Types";
+//import { tokenType } from "@/types/Types";
+import { TokenInfo } from "@/domain/tokens/types";
 // Heroicons
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import TokenCard from "../Cards/TokenCard";
+import TokenCard from "../Cards/TokenCards/TokenCard";
 
 interface TokensModalProps {
   getOpenModal: (openModal: boolean) => void;
-  getToken: (asset: tokenType) => void;
-  tokens: tokenType[];
-  oppositToken: tokenType | undefined;
+  getToken: (asset: TokenInfo) => void;
+  tokens: TokenInfo[];
+  oppositToken: TokenInfo | undefined;
 }
 
 export default function TokensModal({
@@ -25,7 +26,7 @@ export default function TokensModal({
 }: TokensModalProps) {
   const [open, setOpen] = useState(true);
   const [search, setSearch] = useState<string>("");
-  const [tokensArrayCopy, setTokensArrayCopy] = useState<tokenType[]>([
+  const [tokensArrayCopy, setTokensArrayCopy] = useState<TokenInfo[]>([
     ...tokens,
   ]);
 
@@ -38,7 +39,7 @@ export default function TokensModal({
     setSearch(query);
   };
 
-  const selectToken = (token: tokenType) => {
+  const selectToken = (token: TokenInfo) => {
     getToken(token);
     closeModal();
   };
@@ -48,7 +49,7 @@ export default function TokensModal({
 
     if (search.length !== 0) {
       copy = copy.filter(
-        (asset: tokenType) =>
+        (asset: TokenInfo) =>
           asset.name.toLowerCase().includes(search.toLowerCase()) ||
           asset.address.toLowerCase() === search.toLowerCase()
       );
@@ -59,7 +60,7 @@ export default function TokensModal({
 
   useEffect(() => {
     if (oppositToken) {
-      setTokensArrayCopy((prevTokens: tokenType[]) =>
+      setTokensArrayCopy((prevTokens: TokenInfo[]) =>
         prevTokens.filter((token) => token.name !== oppositToken.name)
       );
     }
@@ -91,7 +92,7 @@ export default function TokensModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 max-w-[400px] min-h-fit bg-white shadow-input">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 max-w-[480px] min-h-fit bg-white shadow-input">
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
@@ -121,11 +122,11 @@ export default function TokensModal({
                   </div>
 
                   <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
-                    {tokensArrayCopy.map((token: tokenType) => {
+                    {tokensArrayCopy.map((token: TokenInfo) => {
                       return (
                         <TokenCard
                           token={token}
-                          getToken={selectToken}
+                          onClick={selectToken}
                           key={token.address}
                         />
                       );

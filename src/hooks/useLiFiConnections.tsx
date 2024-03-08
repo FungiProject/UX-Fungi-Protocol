@@ -29,7 +29,7 @@ const useLiFiConnections = ({
           fromToken,
         },
       });
-      console.log(result.data.connections[0].toTokens);
+
       setConnections(result.data.connections[0].toTokens);
     };
 

@@ -6,7 +6,7 @@ import {
 } from "../../config/chains";
 import { bigNumberify } from "../numbers";
 import axios from "axios";
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
 
 export async function setGasPrice(
   provider: Provider,
@@ -60,7 +60,7 @@ export async function getGasLimit(
 }
 
 export async function getGasLimitApi(
-  alchemyProvider: AlchemyProvider,
+  alchemyProvider:  AlchemySmartAccountClient,
   sender: string
 ) {
   const response = await axios.post("/api/alchemy/estimateUserOpGas", {

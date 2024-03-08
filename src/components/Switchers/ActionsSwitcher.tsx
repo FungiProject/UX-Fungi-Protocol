@@ -25,8 +25,8 @@ export default function ActionsSwitcher({
             onClick={() => getActionSelected(action)}
             className={
               action === actionSelected
-                ? `bg-black text-white rounded-full ${paddingButton}`
-                : "bg-white"
+                ? `bg-black text-white rounded-full ${paddingButton} mx-2`
+                : "bg-white hover:bg-gray-100 hover:rounded-full hover:py-[5px]"
             }
           >
             {action}

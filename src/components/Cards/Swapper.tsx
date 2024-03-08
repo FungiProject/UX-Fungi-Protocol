@@ -2,30 +2,31 @@
 import React, { useEffect, useState } from "react";
 // Components
 import TokenDropdown from "../Dropdown/TokenDropdown";
-// Types
-import { tokenType } from "@/types/Types";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
 import Button from "../Gmx/common/Buttons/Button";
-import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { TokenInfo } from "@/domain/tokens/types";
+import useWallet from "@/hooks/useWallet";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
+import { BigNumber } from "ethers";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 type SwapperProps = {
-  tokens: tokenType[];
+  tokens: TokenInfo[];
   chainId: number;
 };
 
 export default function Swapper({ tokens, chainId }: SwapperProps) {
   const { scAccount } = useWallet();
-
-  const { alchemyProvider, login: openConnectModal } =
-    useAlchemyAccountKitContext();
+  const { showNotification } = useNotification();
+  const { login: openConnectModal } = useWallet();
+  const { sendUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
-  const [tokenFrom, setTokenFrom] = useState<tokenType | undefined>(undefined);
-  const [tokenTo, setTokenTo] = useState<tokenType | undefined>(undefined);
+  const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
+  const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
   const [network, setNetwork] = useState<string | undefined>(undefined);
   const [fromAddress, setFromAddress] = useState(scAccount);
   const [toAddress, setToAddress] = useState(scAccount);
@@ -34,14 +35,16 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     undefined
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [tx, sendTx] = useLiFiTx(
     "Swap",
     network,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
-    tokenFrom?.coinKey,
+    tokenFrom?.address,
     network,
-    tokenTo?.coinKey,
+    tokenTo?.address,
     fromAddress,
+    tokenFrom?.coinKey,
     toAddress,
     slippage
   );
@@ -49,6 +52,8 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     disabled: boolean;
     text: string | null;
   }>({ disabled: true, text: "Enter an amount" });
+
+  const isNotMatchAvailableBalance = tokenFrom?.balance?.gt(0);
 
   useEffect(() => {
     if (tokenFrom && tokenTo && amountFrom) {
@@ -126,8 +131,30 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       openConnectModal?.();
       return;
     } else {
-      txnPromise = onSubmitSwap();
+      txnPromise = onSubmitSwap()
+        .then(() => {
+          showNotification({
+            message: "Swap successfully executed",
+            type: "success",
+          });
+        })
+        .catch((e) => {
+          showNotification({
+            message: "Error submitting swap",
+            type: "error",
+          });
+        });
     }
+  }
+
+  async function onSubmit2() {
+    setIsSubmitting(true);
+    const uo = createApproveTokensUserOp({
+      tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
+      amount: BigNumber.from(1000000),
+    });
+    await sendUserOperations([uo], "OK");
   }
 
   const onSubmitSwap = async () => {
@@ -142,13 +169,16 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
       slippage === undefined ||
       typeof sendTx !== "function"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(alchemyProvider, chainId, resultTx);
+    await sendUserOperations(resultTx);
   };
 
   function onSwitchTokens() {
@@ -160,40 +190,33 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     setAmountFrom(amount);
   };
 
-  const getTokenTo = (token: tokenType) => {
+  const getTokenTo = (token: TokenInfo) => {
     setTokenTo(token);
   };
 
-  const getTokenFrom = (token: tokenType) => {
+  const getTokenFrom = (token: TokenInfo) => {
     setTokenFrom(token);
   };
+
+  function onMaxClick() {
+    if (tokenFrom?.balance) {
+      const formattedAmount = formatTokenAmount(
+        tokenFrom?.balance,
+        tokenFrom?.decimals,
+        "",
+        {
+          useCommas: true,
+        }
+      );
+
+      handleAmountChange(Number(formattedAmount));
+    }
+  }
 
   return (
     <main className="mt-[12px]">
       <div className="relative">
         <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
-          {/* <input
-            type="number"
-            step={0.0000001}
-            min={0}
-            className="outline-none placeholder:text-black"
-            placeholder="0.00"
-            value={amountFrom ?? ""}
-            onChange={(e: any) => handleAmountChange(e.target.value)}
-          />
-          <div className="flex flex-col text-sm font-medium">
-            <div className="flex flex-col text-sm font-medium">
-              <TokenDropdown
-                tokens={tokens}
-                getToken={getTokenFrom}
-                token={tokenFrom}
-                oppositToken={tokenTo}
-                type="From"
-                className="flex justify-between w-[125px] rounded-full font-semibold px-[12px] py-2.5 items-center "
-              />
-            </div>
-          </div> */}
-
           <BuyInputSection
             topLeftLabel={`Pay`}
             topLeftValue={
@@ -204,20 +227,19 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   fromToken?.balance,
-            //   fromToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
-            topRightValue={"0"}
-            // onClickTopRightLabel={onMaxClick}
+            topRightValue={formatTokenAmount(
+              tokenFrom?.balance,
+              tokenFrom?.decimals,
+              "",
+              {
+                useCommas: true,
+              }
+            )}
+            onClickTopRightLabel={onMaxClick}
             inputValue={amountFrom}
             onInputValueChange={(e: any) => handleAmountChange(e.target.value)}
-            // showMaxButton={isNotMatchAvailableBalance}
-            // onClickMax={onMaxClick}
+            showMaxButton={isNotMatchAvailableBalance}
+            onClickMax={onMaxClick}
           >
             <TokenDropdown
               tokens={tokens}
@@ -246,16 +268,15 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
                 : ""
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   toToken?.balance,
-            //   toToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
+            topRightValue={formatTokenAmount(
+              tokenTo?.balance,
+              tokenTo?.decimals,
+              "",
+              {
+                useCommas: true,
+              }
+            )}
             inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 5)}
-            topRightValue={"0"}
             staticInput={true}
             showMaxButton={false}
             preventFocusOnLabelClick="right"
@@ -279,10 +300,18 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}
-        // disabled={submitButtonState.disabled && !shouldDisableValidation}
       >
         {submitButtonState.text}
       </Button>
+      {/* <Button
+        variant="primary-action"
+        className={`mt-4 ${
+          submitButtonState.disabled ? "opacity-50" : ""
+        } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        onClick={onSubmit2}
+      >
+        Test
+      </Button> */}
     </main>
   );
 }

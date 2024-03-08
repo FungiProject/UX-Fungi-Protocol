@@ -5,32 +5,33 @@ import TokenDropdown from "../Dropdown/TokenDropdown";
 // Axios
 import axios from "axios";
 // Constants
-import Arbitrum from "../../../public/ArbitrumTokens/Arbitrum.svg";
+import Arbitrum from "../../../public/Arbitrum.svg";
 // Types
-import { NetworkType, tokenType } from "@/types/Types";
-import useWallet from "@/utils/gmx/lib/wallets/useWallet";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { TokenInfo } from "@/domain/tokens/types";
+import { NetworkType } from "@/types/Types";
+import useWallet from "@/hooks/useWallet";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { useLiFiTx } from "./useLiFiTx";
-import { helperToast } from "@/utils/gmx/lib/helperToast";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import Button from "../Gmx/common/Buttons/Button";
 import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
+import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 type BridgeProps = {
-  tokens: tokenType[];
+  tokens: TokenInfo[];
   chainId: number;
 };
 
 export default function Bridge({ tokens, chainId }: BridgeProps) {
   const { scAccount } = useWallet();
-
-  const { alchemyProvider, login: openConnectModal } =
-    useAlchemyAccountKitContext();
+  const { showNotification } = useNotification();
+  const { login } = useWallet();
+  const { sendUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
-  const [tokenFrom, setTokenFrom] = useState<tokenType | undefined>(undefined);
-  const [tokenTo, setTokenTo] = useState<tokenType | undefined>(undefined);
+  const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
+  const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
   const [networkFrom, setNetworkFrom] = useState<NetworkType | undefined>(
     undefined
   );
@@ -58,12 +59,16 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     toAddress,
     slippage
   );
+
   const [submitButtonState, setSubmitButtonState] = useState<{
     disabled: boolean;
     text: string | null;
   }>({ disabled: true, text: "Enter an amount" });
 
   const [connections, setConnections] = useState();
+
+  const isNotMatchAvailableFromBalance = tokenFrom?.balance?.gt(0);
+  const isNotMatchAvailableToBalance = tokenFrom?.balance?.gt(0);
 
   useEffect(() => {
     if (tokenFrom && tokenTo && amountFrom) {
@@ -178,7 +183,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     let txnPromise: Promise<any>;
 
     if (!scAccount) {
-      openConnectModal?.();
+      login();
       return;
     } else {
       txnPromise = onSubmitSwap();
@@ -198,24 +203,32 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       slippage === undefined ||
       typeof sendTx !== "function"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(alchemyProvider, chainId, resultTx);
+    await sendUserOperations(resultTx).then(() =>
+      showNotification({
+        message: "Bridge complete",
+        type: "success",
+      })
+    );
   };
 
   const handleAmountChange = (amount: number) => {
     setAmountFrom(amount);
   };
 
-  const getTokenTo = (token: tokenType) => {
+  const getTokenTo = (token: TokenInfo) => {
     setTokenTo(token);
   };
 
-  const getTokenFrom = (token: tokenType) => {
+  const getTokenFrom = (token: TokenInfo) => {
     setTokenFrom(token);
   };
 
@@ -225,6 +238,21 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   const getNetworkFrom = (network: NetworkType) => {
     setNetworkFrom(network);
+  };
+
+  const onMaxClickFrom = () => {
+    if (tokenFrom?.balance) {
+      const formattedAmount = formatTokenAmount(
+        tokenFrom?.balance,
+        tokenFrom?.decimals,
+        "",
+        {
+          useCommas: true,
+        }
+      );
+
+      setAmountFrom(Number(formattedAmount));
+    }
   };
 
   return (
@@ -256,20 +284,19 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
               </div>
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   fromToken?.balance,
-            //   fromToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
-            topRightValue={"0"}
-            // onClickTopRightLabel={onMaxClick}
+            topRightValue={formatTokenAmount(
+              tokenFrom?.balance,
+              tokenFrom?.decimals,
+              "",
+              {
+                useCommas: true,
+              }
+            )}
+            onClickTopRightLabel={onMaxClickFrom}
             inputValue={amountFrom}
             onInputValueChange={(e: any) => handleAmountChange(e.target.value)}
-            // showMaxButton={isNotMatchAvailableBalance}
-            // onClickMax={onMaxClick}
+            showMaxButton={isNotMatchAvailableFromBalance}
+            onClickMax={onMaxClickFrom}
           >
             <div className="flex flex-col">
               {/* Change to network selector */}
@@ -331,17 +358,16 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
               </>
             }
             topRightLabel={`Balance`}
-            // topRightValue={formatTokenAmount(
-            //   toToken?.balance,
-            //   toToken?.decimals,
-            //   "",
-            //   {
-            //     useCommas: true,
-            //   }
-            // )}
-            inputValue={amountToReceive?.toFixed(2)}
+            topRightValue={formatTokenAmount(
+              tokenTo?.balance,
+              tokenTo?.decimals,
+              "",
+              {
+                useCommas: true,
+              }
+            )}
+            inputValue={amountToReceive?.toFixed(4)}
             staticInput={true}
-            topRightValue={"0"}
             showMaxButton={false}
             preventFocusOnLabelClick="right"
           >

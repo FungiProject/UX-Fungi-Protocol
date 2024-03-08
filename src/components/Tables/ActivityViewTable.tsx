@@ -1,7 +1,7 @@
 // React
 import React from "react";
 // Components
-import ActivityTableCard from "../Cards/ActivityTableCard";
+import ActivityTableCard from "../Cards/TableCards/ActivityTableCard";
 
 type ActivityViewTableProps = {
   activities: any[];

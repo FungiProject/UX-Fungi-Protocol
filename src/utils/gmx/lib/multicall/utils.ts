@@ -17,7 +17,6 @@ import {
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { sleep } from "../sleep";
-import { Signer } from "ethers";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -81,7 +80,6 @@ const BATCH_CONFIGS = {
 
 export async function executeMulticall(
   chainId: number,
-  signer: Signer | undefined,
   request: MulticallRequestConfig<any>
 ) {
   const multicall = await Multicall.getInstance(chainId);

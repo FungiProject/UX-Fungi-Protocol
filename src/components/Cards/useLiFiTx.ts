@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { getCallDataApprove } from "./getCallDataApprove";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { Hex } from "viem";
 import axios from "axios";
+import { BigNumber, ethers } from "ethers";
+import { UserOperation } from "@/lib/userOperations/types";
 
 export const useLiFiTx = (
   type: string,
@@ -11,6 +13,7 @@ export const useLiFiTx = (
   toChain: string | undefined,
   toToken: string | undefined,
   fromAddress: string | undefined,
+  fromSymbol: string | undefined,
   toAddress?: string | undefined,
   slippage?: string
 ) => {
@@ -30,11 +33,11 @@ export const useLiFiTx = (
     try {
       setStatus({
         disabled: true,
-        text: `${type === "Swap" ? "Swapping" : "Bridging"} ${fromToken}`,
+        text: `${type === "Swap" ? "Swapping" : "Bridging"} ${fromSymbol}`,
       });
 
       const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
-      let quote;
+      let quote: any;
       try {
         const responses = await Promise.all(
           orders.map((order) => {
@@ -66,24 +69,36 @@ export const useLiFiTx = (
         console.error("Error obteniendo cotizaciones:", error);
       }
 
-      const approvee: Hex = quote.transactionRequest.to;
+      const spender: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
 
-      const callDataApprove = getCallDataApprove(
-        approvee,
-        tokenAddress,
-        amount
-      );
+      const userOps: UserOperation[] = [];
 
-      const callDataLiFiTx = {
-        target: quote.transactionRequest.to,
-        data: quote.transactionRequest.data,
-      };
+      if (tokenAddress != ethers.constants.AddressZero) {
+        userOps.push(
+          createApproveTokensUserOp({
+            tokenAddress,
+            spender,
+            amount: BigNumber.from(amount),
+          })
+        );
+
+        userOps.push({
+          target: quote.transactionRequest.to,
+          data: quote.transactionRequest.data,
+        });
+      } else {
+        userOps.push({
+          target: quote.transactionRequest.to,
+          data: quote.transactionRequest.data,
+          value: BigInt(amount),
+        });
+      }
 
       setStatus({ disabled: true, text: "Enter an amount" });
 
-      return [callDataApprove, callDataLiFiTx];
+      return userOps;
     } catch (error) {
       setStatus({ disabled: true, text: "Enter an amount" });
       console.error(error);

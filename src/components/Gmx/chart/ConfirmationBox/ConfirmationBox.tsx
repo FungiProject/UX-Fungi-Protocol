@@ -67,7 +67,7 @@ import {
 import { BigNumber } from "ethers";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
-import { useAlchemyAccountKitContext } from "@/lib/wallets/AlchemyAccountKitProvider";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import PercentageInput from "../Inputs/PercentageInput";
 import { SubaccountNavigationButton } from "../Navigation/SubaccountNavigationButton";
 import TooltipWithPortal from "../../common/Tooltip/TooltipWithPortal";
@@ -79,7 +79,6 @@ import {
 } from "../../../../utils/gmx/context/SubaccountContext/SubaccountContext";
 import { AvailableMarketsOptions } from "../../../../utils/gmx/domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "../../../../utils/gmx/domain/synthetics/trade/usePriceImpactWarningState";
-import { helperToast } from "../../../../utils/gmx/lib/helperToast";
 import {
   bigNumberify,
   formatAmount,
@@ -94,19 +93,19 @@ import {
   getPlusOrMinusSymbol,
   getPositiveOrNegativeClass,
 } from "../../../../utils/gmx/lib/utils";
-import useWallet from "../../../../utils/gmx/lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../../common/Notifications/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeInfo/TradeFeesRow";
-import { sendUserOperations } from "@/utils/gmx/lib/userOperations/sendUserOperations";
-import { createApproveTokensUserOp } from "@/utils/gmx/domain/tokens/approveTokensUserOp";
+import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { createDecreaseOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createDecreaseOrderUserOp";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { uniq } from "lodash";
 import { createSwapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createSwapOrderUserOp";
 import { createWrapOrUnwrapOrderUserOp } from "@/utils/gmx/domain/synthetics/orders/createWrapOrUnwrapUserOp";
+import useWallet from "@/hooks/useWallet";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export type Props = {
   isVisible: boolean;
@@ -198,17 +197,16 @@ export function ConfirmationBox(p: Props) {
     isIncrease,
   } = tradeFlags;
   const { indexToken } = marketInfo || {};
-
-  const { signer, account, scAccount } = useWallet();
+  const { showNotification } = useNotification();
+  const { scAccount, login } = useWallet();
+  const { sendUserOperations } = useUserOperations();
   const { chainId } = useChainId();
-  const { login: openConnectModal } = useAlchemyAccountKitContext();
-  const { alchemyProvider } = useAlchemyAccountKitContext();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(chainId, scAccount);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] =
     useState(false);
@@ -267,17 +265,17 @@ export function ConfirmationBox(p: Props) {
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
   const positionKey = useMemo(() => {
-    if (!account || !marketInfo || !collateralToken) {
+    if (!scAccount || !marketInfo || !collateralToken) {
       return undefined;
     }
 
     return getPositionKey(
-      account,
+      scAccount,
       marketInfo.marketTokenAddress,
       collateralToken.address,
       isLong
     );
-  }, [account, collateralToken, isLong, marketInfo]);
+  }, [scAccount, collateralToken, isLong, marketInfo]);
 
   const positionOrders = useMemo(() => {
     if (!positionKey || !ordersData) {
@@ -489,15 +487,15 @@ export function ConfirmationBox(p: Props) {
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  function onCancelOrderClick(key: string): void {
-    if (!signer) return;
-    cancelOrdersTxn(chainId, signer, subaccount, {
-      orderKeys: [key],
-      setPendingTxns: p.setPendingTxns,
-      isLastSubaccountAction,
-      detailsMsg: cancelOrdersDetailsMessage,
-    });
-  }
+  // function onCancelOrderClick(key: string): void {
+  //   if (!signer) return;
+  //   cancelOrdersTxn(chainId, signer, subaccount, {
+  //     orderKeys: [key],
+  //     setPendingTxns: p.setPendingTxns,
+  //     isLastSubaccountAction,
+  //     detailsMsg: cancelOrdersDetailsMessage,
+  //   });
+  // }
 
   async function onSubmitWrapOrUnwrap() {
     if (!scAccount || !swapAmounts || !fromToken) {
@@ -521,7 +519,7 @@ export function ConfirmationBox(p: Props) {
     );
     userOps.push(createWrapOrUnwrapOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
 
     // return createWrapOrUnwrapTxn(chainId, signer, {
     //   amount: swapAmounts.amountIn,
@@ -540,7 +538,10 @@ export function ConfirmationBox(p: Props) {
       !executionFee ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -569,23 +570,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createSwapOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
-
-    // return createSwapOrderTxn(chainId, signer, subaccount, {
-    //   account:scAccount,
-    //   fromTokenAddress: fromToken.address,
-    //   fromTokenAmount: swapAmounts.amountIn,
-    //   swapPath: swapAmounts.swapPathStats?.swapPath,
-    //   toTokenAddress: toToken.address,
-    //   orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
-    //   minOutputAmount: swapAmounts.minOutputAmount,
-    //   referralCode: referralCodeForTxn,
-    //   executionFee: executionFee.feeTokenAmount,
-    //   allowedSlippage,
-    //   tokensData,
-    //   setPendingTxns,
-    //   setPendingOrder,
-    // });
+    return sendUserOperations(userOps);
   }
 
   async function onSubmitIncreaseOrder() {
@@ -599,7 +584,10 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -641,7 +629,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   async function onSubmitDecreaseOrder() {
@@ -657,7 +645,10 @@ export function ConfirmationBox(p: Props) {
       !tokensData ||
       typeof allowedSlippage !== "number"
     ) {
-      helperToast.error(`Error submitting order`);
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
       return Promise.resolve();
     }
 
@@ -739,7 +730,7 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createDecreaseOrderOp);
 
-    return sendUserOperations(alchemyProvider, chainId, userOps);
+    return sendUserOperations(userOps);
   }
 
   function onSubmit() {
@@ -747,8 +738,8 @@ export function ConfirmationBox(p: Props) {
 
     let txnPromise: Promise<any>;
 
-    if (!account) {
-      openConnectModal?.();
+    if (!scAccount) {
+      login?.();
       return;
     } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
@@ -872,9 +863,9 @@ export function ConfirmationBox(p: Props) {
             displayDecimals: toToken?.priceDecimals,
           })}{" "}
         </p>
-        <button type="button" onClick={() => onCancelOrderClick(order.key)}>
+        {/* <button type="button" onClick={() => onCancelOrderClick(order.key)}>
           Cancel
-        </button>
+        </button> */}
       </li>
     );
   }
@@ -1786,16 +1777,6 @@ export function ConfirmationBox(p: Props) {
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
-
-        {/* {needPayTokenApproval && fromToken && (
-          <>
-            <ApproveTokenButton
-              tokenAddress={fromToken.address}
-              tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
-              spenderAddress={getContract(chainId, "SyntheticsRouter")}
-            />
-          </>
-        )} */}
 
         <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button

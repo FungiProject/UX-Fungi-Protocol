@@ -23,7 +23,6 @@ import {
   pushErrorNotification,
   pushSuccessNotification,
 } from "../../lib/contracts/notifications";
-import { helperToast } from "../../lib/helperToast";
 import { formatTokenAmount, formatUsd } from "../../lib/numbers";
 import { getByKey, setByKey, updateByKey } from "../../lib/objects";
 import { useHasLostFocus } from "../../lib/useHasPageLostFocus";
@@ -57,6 +56,7 @@ import {
 } from "./types";
 import { parseEventLogData } from "./utils";
 import useWallet from "../../lib/wallets/useWallet";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -87,6 +87,7 @@ export function SyntheticsEventsProvider({
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
+  const { showNotification } = useNotification();
 
   const hasLostFocus = useHasLostFocus({
     timeout: WS_LOST_FOCUS_TIMEOUT,
@@ -703,69 +704,82 @@ export function SyntheticsEventsProvider({
       positionIncreaseEvents,
       positionDecreaseEvents,
       setPendingOrder: (data: PendingOrderData) => {
-        const toastId = Date.now();
+        // const toastId = Date.now();
+        showNotification({
+          message: "Orded complete",
+          type: "success",
+        });
 
-        helperToast.success(
-          <OrderStatusNotification
-            pendingOrderData={data}
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
-            toastTimestamp={toastId}
-          />,
-          {
-            autoClose: false,
-            toastId,
-          }
-        );
+        // helperToast.success(
+        //   <OrderStatusNotification
+        //     pendingOrderData={data}
+        //     marketsInfoData={marketsInfoData}
+        //     tokensData={tokensData}
+        //     toastTimestamp={toastId}
+        //   />,
+        //   {
+        //     autoClose: false,
+        //     toastId,
+        //   }
+        // );
       },
       setPendingFundingFeeSettlement: (
         data: PendingFundingFeeSettlementData
       ) => {
-        const toastId = Date.now();
-
-        helperToast.success(
-          <FeesSettlementStatusNotification
-            orders={data.orders}
-            toastTimestamp={toastId}
-            marketsInfoData={marketsInfoData}
-          />,
-          {
-            autoClose: false,
-            toastId,
-          }
-        );
+        // const toastId = Date.now();
+        showNotification({
+          message: "Orded complete",
+          type: "success",
+        });
+        // helperToast.success(
+        //   <FeesSettlementStatusNotification
+        //     orders={data.orders}
+        //     toastTimestamp={toastId}
+        //     marketsInfoData={marketsInfoData}
+        //   />,
+        //   {
+        //     autoClose: false,
+        //     toastId,
+        //   }
+        // );
       },
       setPendingDeposit: (data: PendingDepositData) => {
-        const toastId = Date.now();
-
-        helperToast.success(
-          <GmStatusNotification
-            pendingDepositData={data}
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
-            toastTimestamp={toastId}
-          />,
-          {
-            autoClose: false,
-            toastId,
-          }
-        );
+        // const toastId = Date.now();
+        showNotification({
+          message: "Orded complete",
+          type: "success",
+        });
+        // helperToast.success(
+        //   <GmStatusNotification
+        //     pendingDepositData={data}
+        //     marketsInfoData={marketsInfoData}
+        //     tokensData={tokensData}
+        //     toastTimestamp={toastId}
+        //   />,
+        //   {
+        //     autoClose: false,
+        //     toastId,
+        //   }
+        // );
       },
       setPendingWithdrawal: (data: PendingWithdrawalData) => {
-        const toastId = Date.now();
-
-        helperToast.success(
-          <GmStatusNotification
-            pendingWithdrawalData={data}
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
-            toastTimestamp={toastId}
-          />,
-          {
-            autoClose: false,
-            toastId,
-          }
-        );
+        // const toastId = Date.now();
+        showNotification({
+          message: "Orded complete",
+          type: "success",
+        });
+        // helperToast.success(
+        //   <GmStatusNotification
+        //     pendingWithdrawalData={data}
+        //     marketsInfoData={marketsInfoData}
+        //     tokensData={tokensData}
+        //     toastTimestamp={toastId}
+        //   />,
+        //   {
+        //     autoClose: false,
+        //     toastId,
+        //   }
+        // );
       },
       async setPendingPosition(update: PendingPositionUpdate) {
         setPendingPositionsUpdates((old) =>

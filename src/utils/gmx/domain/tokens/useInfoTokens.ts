@@ -17,7 +17,6 @@ import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  signer: Signer | undefined,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
@@ -43,7 +42,7 @@ export function useInfoTokens(
       "getVaultTokenInfoV4",
     ],
     {
-      fetcher: contractFetcher(signer, VaultReader, [
+      fetcher: contractFetcher(VaultReader, [
         vaultAddress,
         positionRouterAddress,
         nativeTokenAddress,

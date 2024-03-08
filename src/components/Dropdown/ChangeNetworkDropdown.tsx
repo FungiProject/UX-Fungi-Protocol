@@ -8,8 +8,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { NetworkType } from "@/types/Types";
 // Next
 import Image from "next/image";
-// Wagmi
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import useWallet from "@/hooks/useWallet";
 
 type NetworkDropdownProps = {
   networks: NetworkType[];
@@ -21,17 +20,14 @@ export default function ChangeNetworkDropdown({
   isModal,
 }: NetworkDropdownProps) {
   const [chainSelected, setChainSelected] = useState<NetworkType>();
-  const { chain } = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
+  const { switchNetwork, chainId } = useWallet()
 
-  useEffect(() => {
-    if (chain) {
-      const chainSelected = networks.filter(
-        (network: NetworkType) => network.id === chain.id
-      );
-      setChainSelected(chainSelected[0]);
-    }
-  }, [chain, networks]);
+  useEffect(()=>{
+    const chainSelected = networks.filter(
+      (network: NetworkType) => network.id === chainId
+    );
+    setChainSelected(chainSelected[0]);
+  },[networks, chainId])
 
   return (
     <Menu
@@ -77,7 +73,7 @@ export default function ChangeNetworkDropdown({
               return (
                 <Menu.Item key={network.name}>
                   <button
-                    onClick={() => switchNetwork?.(network.id)}
+                    onClick={() => switchNetwork(network.id)}
                     className={`my-1 ${
                       isModal ? "" : "grid grid-cols-3"
                     } g justify-end align-end  items-center`}

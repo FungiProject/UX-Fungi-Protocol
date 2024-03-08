@@ -1,90 +1,69 @@
 // React
 import React, { useEffect, useState } from "react";
 // Components
-import SpotTableCard from "../Cards/SpotTableCard";
+import SpotTableCard from "../Cards/TableCards/SpotTableCard";
 import ActionsSwitcher from "../Switchers/ActionsSwitcher";
-// Axios
-import axios from "axios";
-// Types
-import { NetworkType, assetType } from "@/types/Types";
-// Wagmi
-import { useNetwork } from "wagmi";
 // Constants
-import { assetsArbitrum, assetsMainnet } from "../../../constants/Constants";
 import Loader from "../Loader/SpinnerLoader";
+import { TokenData, TokenInfo } from "@/domain/tokens/types";
+import { useTokenMarketData } from "@/hooks/useTokenMarketData";
+import StartDepositBanner from "../Sections/Fallbacks/StartDepositBanner";
 
 type SpotTableProps = {
-  tokens: any;
+  tokens: TokenInfo[];
+  startIndex: number;
+  endIndex: number;
+  getLength: (length: number) => void;
+  handlePageChange: (page: number) => void;
 };
 
-export default function SpotTable({ tokens }: SpotTableProps) {
+export default function SpotTable({
+  tokens,
+  startIndex,
+  endIndex,
+  getLength,
+  handlePageChange,
+}: SpotTableProps) {
   const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
-  const [assetsArrayCopy, setAssetsArrayCopy] = useState<assetType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedNetwork, setSelectedNetwork] = useState<NetworkType | null>(
-    null
-  );
+  const [loading, setLoading] = useState(false);
+  const { tokenMarketsData, fetchData } = useTokenMarketData([]);
+  const [portfolioEmpty, setPortfolioEmpty] = useState(false);
 
-  const { chain } = useNetwork();
-
-  const fetchData = async (sortByNetwork: boolean) => {
-    let copy: any[] = [];
-
-    if (!sortByNetwork) {
-      if (chain && chain.id === 42161) {
-        copy = assetsArbitrum;
-      } else if (chain && chain.id === 1) {
-        copy = assetsMainnet;
+  const checkTokens = () => {
+    if (tokens && typeMember === "All") {
+      setLoading(true);
+      setPortfolioEmpty(false);
+      fetchData(tokens.slice(startIndex, endIndex));
+      getLength(tokens.length);
+    } else if (tokens && typeMember === "Portfolio") {
+      setLoading(true);
+      const tokensWithBalance = tokens.filter((tokenData: any) => {
+        return Number(tokenData.balance) !== 0;
+      });
+      if (tokensWithBalance.length !== 0) {
+        setPortfolioEmpty(false);
+        fetchData(tokensWithBalance.slice(startIndex, endIndex));
+      } else {
+        setPortfolioEmpty(true);
       }
-    } else {
-      if (selectedNetwork && selectedNetwork.id === 42161) {
-        copy = assetsArbitrum;
-      } else if (selectedNetwork && selectedNetwork.id === 1) {
-        copy = assetsMainnet;
-      }
+      getLength(tokensWithBalance.length);
     }
-
-    const promises = copy.map(async (asset) => {
-      try {
-        console.log(`Fetching data for ${asset.coingeckoApi}`);
-        const response = await axios.get(
-          `https://api.coingecko.com/api/v3/coins/${asset.coingeckoApi}?x_cg_demo_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API}`
-        );
-        if (response.status === 200) {
-          const data = response.data;
-          asset.price = data?.market_data.current_price.usd;
-          asset.marketCap = data?.market_data.market_cap.usd;
-          asset.volumen24 = data?.market_data.total_volume.usd;
-        } else {
-          console.log("Error");
-        }
-      } catch (error) {
-        asset.price = 0;
-        asset.marketCap = 0;
-        asset.volumen24 = 0;
-      }
-    });
-
-    await Promise.all(promises).then(() => {
-      setAssetsArrayCopy(copy);
-      setLoading(false);
-    });
+    setLoading(false);
   };
 
   useEffect(() => {
-    return () => {
-      fetchData(false);
-    };
-  }, []);
+    checkTokens();
+  }, [tokens]);
 
   useEffect(() => {
-    fetchData(false);
-  }, [chain]);
+    checkTokens();
+    handlePageChange(1);
+  }, [typeMember]);
 
   useEffect(() => {
-    fetchData(true);
-  }, [selectedNetwork]);
+    checkTokens();
+  }, [startIndex, endIndex]);
 
   const getTypeMember = (action: string) => {
     setTypeMember(action);
@@ -102,8 +81,8 @@ export default function SpotTable({ tokens }: SpotTableProps) {
           actions={typesMembersTable}
           actionSelected={typeMember}
           getActionSelected={getTypeMember}
-          className="h-[30px] p-[4px] w-[130px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
-          paddingButton="py-[3px]"
+          className="h-[34px] p-[4px] w-[160px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
+          paddingButton="py-[5px]"
         />
       </div>
       {loading ? (
@@ -112,9 +91,21 @@ export default function SpotTable({ tokens }: SpotTableProps) {
         </div>
       ) : (
         <div className="overflow-auto h-[590px]">
-          {assetsArrayCopy.map((asset: assetType, index: number) => (
-            <SpotTableCard asset={asset} key={asset.name} index={index} />
-          ))}
+          {portfolioEmpty ? (
+            <StartDepositBanner />
+          ) : (
+            <>
+              {tokenMarketsData &&
+                tokenMarketsData.length > 0 &&
+                tokenMarketsData.map((token: TokenData, index: number) => (
+                  <SpotTableCard
+                    asset={token}
+                    key={token.token.coinKey}
+                    index={index}
+                  />
+                ))}
+            </>
+          )}
         </div>
       )}
     </div>

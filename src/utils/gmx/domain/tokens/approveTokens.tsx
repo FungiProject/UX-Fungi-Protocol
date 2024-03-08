@@ -1,16 +1,12 @@
-import { Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 import Token from "../../../../../abis/Token.json";
-import { getChainName, getExplorerUrl } from "../../config/chains";
-import { helperToast } from "../../lib/helperToast";
+import { getChainName } from "../../config/chains";
 import { InfoTokens, TokenInfo } from "./types";
-import ExternalLink from "../../../../components/Gmx/common/ExternalLink/ExternalLink";
 import { getNativeToken } from "../../config/tokens";
 import { Link } from "react-router-dom";
 
-
 type Params = {
   setIsApproving: (val: boolean) => void;
-  signer: Signer | undefined;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -24,7 +20,7 @@ type Params = {
 
 export function approveTokens({
   setIsApproving,
-  signer,
+
   tokenAddress,
   spender,
   chainId,
@@ -36,20 +32,13 @@ export function approveTokens({
   includeMessage,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+  const contract = new ethers.Contract(tokenAddress, Token.abi);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
+
   contract
     .approve(spender, ethers.constants.MaxUint256)
     .then(async (res) => {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
-        <div>
-          Approval submitted!{" "}
-          <ExternalLink href={txUrl}>View status.</ExternalLink>
-          <br />
-        </div>
-      );
       if (onApproveSubmitted) {
         onApproveSubmitted();
       }
@@ -88,11 +77,8 @@ export function approveTokens({
       } else {
         failMsg = `Approval failed`;
       }
-      helperToast.error(failMsg);
     })
     .finally(() => {
       setIsApproving(false);
     });
 }
-
-

@@ -75,7 +75,7 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { scAccount } = useWallet();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -103,7 +103,7 @@ export function OrderEditor(p: Props) {
 
     const oldAcceptablePrice = positionOrder.acceptablePrice;
     const oldTriggerPrice = positionOrder.triggerPrice;
-    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || 0;
+    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || BigNumber.from(0);
     const acceptablePriceImpactBps = getBasisPoints(
       priceDelta,
       oldTriggerPrice
@@ -404,31 +404,31 @@ export function OrderEditor(p: Props) {
     return {
       text: `Update ${orderTypeName} Order`,
       disabled: false,
-      onClick: onSubmit,
+      // onClick: onSubmit,
     };
   }
 
-  function onSubmit() {
-    if (!signer) return;
-    const positionOrder = p.order as PositionOrderInfo;
+  // function onSubmit() {
+  //   if (!scAccount) return;
+  //   const positionOrder = p.order as PositionOrderInfo;
 
-    setIsSubmitting(true);
+  //   setIsSubmitting(true);
 
-    updateOrderTxn(chainId, signer, subaccount, {
-      orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount || p.order.minOutputAmount,
-      executionFee: executionFee?.feeTokenAmount,
-      indexToken: indexToken,
-      setPendingTxns: p.setPendingTxns,
-    })
-      .then(() => p.onClose())
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  }
+  //   updateOrderTxn(chainId, signer, subaccount, {
+  //     orderKey: p.order.key,
+  //     sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
+  //     triggerPrice: triggerPrice || positionOrder.triggerPrice,
+  //     acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
+  //     minOutputAmount: minOutputAmount || p.order.minOutputAmount,
+  //     executionFee: executionFee?.feeTokenAmount,
+  //     indexToken: indexToken,
+  //     setPendingTxns: p.setPendingTxns,
+  //   })
+  //     .then(() => p.onClose())
+  //     .finally(() => {
+  //       setIsSubmitting(false);
+  //     });
+  // }
 
   const submitButtonState = getSubmitButtonState();
 

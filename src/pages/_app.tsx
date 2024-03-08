@@ -1,27 +1,27 @@
-import type { AppProps } from "next/app";
-import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/SettingsContextProvider";
-import "@/styles/globals.css";
-import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
-import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
-import WalletProvider from "@/lib/wallets/WalletProvider";
-import { cssTransition, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { TOAST_AUTO_CLOSE_TIME } from "@/utils/gmx/config/ui";
+// React
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+// Next
+import type { AppProps } from "next/app";
+// Styles
+import "@/styles/globals.css";
+// Utils
 import { REFERRAL_CODE_QUERY_PARAM } from "@/utils/gmx/lib/legacy";
 import { encodeReferralCode } from "@/utils/gmx/domain/referrals";
 import { REFERRAL_CODE_KEY } from "@/utils/gmx/config/localStorage";
+import { SubaccountContextProvider } from "@/utils/gmx/context/SubaccountContext/SubaccountContext";
+import { SyntheticsEventsProvider } from "@/utils/gmx/context/SyntheticsEvents";
+import { SettingsContextProvider } from "@/utils/gmx/context/SettingsContext/SettingsContextProvider";
+// Ethers
 import { ethers } from "ethers";
-import { useHistory } from "react-router-dom";
-
-const Zoom = cssTransition({
-  enter: "zoomIn",
-  exit: "zoomOut",
-  appendPosition: false,
-  collapse: true,
-  collapseDuration: 200,
-  duration: 200,
-});
+// Swr
+import { SWRConfig } from "swr";
+// Lib
+import { swrGCMiddleware } from "@/lib/swrMiddlewares";
+// Context
+import { FungiContextProvider } from "@/context/FungiContextProvider";
+import { NotificationContextProvider } from "@/context/NotificationContextProvider";
+import { ModalContextProvider } from "@/context/ModalContextProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
   const history = useHistory();
@@ -46,28 +46,31 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <main>
-      <WalletProvider>
-        <SettingsContextProvider>
-          <SubaccountContextProvider>
-            <SyntheticsEventsProvider>
-              <main className="font-dmSans">
-                <Component {...pageProps} />
-              </main>
-            </SyntheticsEventsProvider>
-          </SubaccountContextProvider>
-        </SettingsContextProvider>{" "}
-      </WalletProvider>
-      <ToastContainer
-        limit={1}
-        transition={Zoom}
-        position="bottom-right"
-        autoClose={TOAST_AUTO_CLOSE_TIME}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick={false}
-        draggable={false}
-        pauseOnHover
-      />
+      {" "}
+      <FungiContextProvider>
+        <SWRConfig
+          value={{
+            refreshInterval: 50000,
+            refreshWhenHidden: false,
+            refreshWhenOffline: false,
+            use: [swrGCMiddleware as any],
+          }}
+        >
+          <SettingsContextProvider>
+            <SubaccountContextProvider>
+              <NotificationContextProvider>
+                <ModalContextProvider>
+                  <SyntheticsEventsProvider>
+                    <main className="font-dmSans">
+                      <Component {...pageProps} />
+                    </main>
+                  </SyntheticsEventsProvider>{" "}
+                </ModalContextProvider>
+              </NotificationContextProvider>
+            </SubaccountContextProvider>
+          </SettingsContextProvider>{" "}
+        </SWRConfig>
+      </FungiContextProvider>
       <script
         async
         src="/charting_library/charting_library.standalone.js"

@@ -9,7 +9,7 @@ type Props = {
 export function ValueTransition(p: Props) {
   if (!p.to || p.to === p.from) return <>{p.from}</>;
   if (!p.from) return <>{p.to}</>;
-  console.log(p);
+
   return (
     <>
       <div className="flex items-center">

@@ -14,6 +14,7 @@ import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "../../../config/ui";
 import { Subaccount } from "../../../context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { UserOperation } from "@/utils/gmx/lib/userOperations/types";
 
 const { AddressZero } = ethers.constants;
 
@@ -37,7 +38,7 @@ export async function createSwapOrderUserOp(
   chainId: number,
   subaccount: Subaccount,
   p: createSwapOrderUserOpProps
-) {
+): Promise<UserOperation> {
   const exchangeRouter = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     ExchangeRouter.abi
@@ -45,6 +46,7 @@ export async function createSwapOrderUserOp(
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
+
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : exchangeRouter;
