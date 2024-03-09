@@ -147,17 +147,17 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
     }
   }
 
-  async function onSubmit2() {
-    setIsSubmitting(true);
+  // async function onSubmit2() {
+  //   setIsSubmitting(true);
 
-    const uo = createApproveTokensUserOp({
-      tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
-      amount: BigNumber.from(1000000),
-    });
+  //   const uo = createApproveTokensUserOp({
+  //     tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  //     spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
+  //     amount: BigNumber.from(1000000),
+  //   });
 
-    await sendUserOperations([uo], "OK");
-  }
+  //   await sendUserOperations([uo], "OK");
+  // }
 
   const onSubmitSwap = async () => {
     if (

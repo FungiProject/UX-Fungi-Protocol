@@ -5,6 +5,13 @@ import axios from "axios";
 import { BigNumber, ethers } from "ethers";
 import { UserOperation } from "@/lib/userOperations/types";
 
+type LiFiTxStatus = {
+  disabled: boolean;
+  text: string | null;
+};
+
+type SendLiFiTxFunction = () => Promise<UserOperation[] | undefined>;
+
 export const useLiFiTx = (
   type: string,
   fromChain: string | undefined,
@@ -16,11 +23,8 @@ export const useLiFiTx = (
   fromSymbol: string | undefined,
   toAddress?: string | undefined,
   slippage?: string
-) => {
-  const [status, setStatus] = useState<{
-    disabled: boolean;
-    text: string | null;
-  }>({ disabled: true, text: "Enter an amount" });
+): [LiFiTxStatus, SendLiFiTxFunction] => {
+  const [status, setStatus] = useState<LiFiTxStatus>({ disabled: true, text: "Enter an amount" });
 
   const getQuote = async (params) => {
     const response = await axios.get("https://li.quest/v1/quote", {
@@ -29,7 +33,7 @@ export const useLiFiTx = (
     return response.data;
   };
 
-  const sendLiFiTx = async () => {
+  const sendLiFiTx: SendLiFiTxFunction = async () => {
     try {
       setStatus({
         disabled: true,

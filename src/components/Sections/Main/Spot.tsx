@@ -8,6 +8,7 @@ import ActionsSwitcher from "../../Switchers/ActionsSwitcher";
 import Bridge from "../../Cards/Bridge";
 import Rebalancer from "../../Cards/Rebalancer";
 import Loader from "../../Loader/SpinnerLoader";
+import { DCA } from "../../Cards/DCA"; // Added DCA import
 // Hooks
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useTokensInfo } from "@/hooks/useTokensInfo";
@@ -146,19 +147,21 @@ export default function Spot() {
             {tokens.length > 0 && chainId !== undefined && (
               <>
                 <ActionsSwitcher
-                  actions={["Swap", "Bridge", "Rebalance"]}
+                  actions={["Swap", "Bridge", "Rebalance", "DCA"]} // Added "DCA" action
                   actionSelected={actionSelected}
                   getActionSelected={getActionSelected}
-                  className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
+                  className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-4 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold" // Changed grid-cols-3 to grid-cols-4
                   paddingButton="py-[5px]"
                 />
                 {actionSelected === "Rebalance" ? (
                   <Rebalancer tokens={tokens} />
                 ) : actionSelected === "Bridge" ? (
                   <Bridge tokens={tokens} chainId={chainId} />
-                ) : (
+                ) : actionSelected === "Swap" ? (
                   <Swapper tokens={tokens} chainId={chainId} />
-                )}
+                ) : actionSelected === "DCA" ? ( // Conditional rendering for DCA
+                  <DCA tokens={tokens} />
+                ) : null}
               </>
             )}
           </div>
