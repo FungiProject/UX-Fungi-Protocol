@@ -18,6 +18,7 @@ import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { useNotification } from "@/context/NotificationContextProvider";
+import { useLiFiConnections } from "@/hooks/useLiFiConnections";
 
 type BridgeProps = {
   tokens: TokenInfo[];
@@ -50,15 +51,17 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   const [tx, sendTx] = useLiFiTx(
     "Bridge",
-    networkFrom?.symbol,
+    networkFrom?.id || chainId ,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.coinKey,
-    networkTo?.symbol,
+    networkTo?.id,
     tokenTo?.coinKey,
     fromAddress,
+    tokenFrom?.coinKey,
     toAddress,
     slippage
   );
+
 
   const [submitButtonState, setSubmitButtonState] = useState<{
     disabled: boolean;
@@ -145,32 +148,18 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   }, [chainId]);
 
   useEffect(() => {
-    const getConnections = async (
-      fromChain: string,
-      toChain: string,
-      fromToken: string
-    ) => {
-      const result = await axios.get("https://li.quest/v1/connections", {
-        params: {
-          fromChain,
-          toChain,
-          fromToken,
-        },
-      });
+    if (!networkFrom || !networkTo || !tokenFrom) {
+      return
+    }
 
-      setConnections(result.data.connections[0].toTokens);
+    const getConnections = async () => {
+      const result = await useLiFiConnections({ fromChainId: Number(networkFrom!.id), toChainId: networkTo.id, fromToken: tokenFrom.symbol })
+      console.log(result)
+      setConnections(result);
       setConnectionsLoading(false);
-    };
+    }
 
-    return () => {
-      if (
-        networkFrom !== undefined &&
-        networkTo !== undefined &&
-        tokenFrom !== undefined
-      ) {
-        getConnections(networkFrom.symbol, networkTo.symbol, tokenFrom.symbol);
-      }
-    };
+    getConnections();
   }, [networkFrom, networkTo, tokenFrom, amountFrom]);
 
   useEffect(() => {
@@ -212,12 +201,19 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(resultTx).then(() =>
+    try {
+      await sendUserOperations(resultTx);
       showNotification({
         message: "Bridge complete",
         type: "success",
-      })
-    );
+      });
+    } catch (error) {
+      console.error("Error al ejecutar sendUserOperations:", error);
+      showNotification({
+        message: "Error al completar la operación",
+        type: "error",
+      });
+    }
   };
 
   const handleAmountChange = (amount: number) => {
@@ -263,8 +259,8 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
             topLeftLabel={`Pay`}
             topLeftValue={
               amountFrom !== 0 &&
-              amountFrom !== undefined &&
-              tokenTo !== undefined
+                amountFrom !== undefined &&
+                tokenTo !== undefined
                 ? `$${(amountFrom * Number(tokenFrom?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -318,8 +314,8 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
             topLeftLabel={`Receive`}
             topLeftValue={
               amountToReceive !== 0 &&
-              amountToReceive !== undefined &&
-              tokenTo !== undefined
+                amountToReceive !== undefined &&
+                tokenTo !== undefined
                 ? `$${(amountToReceive * Number(tokenTo?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -389,13 +385,12 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       </div>
       <Button
         variant="primary-action"
-        className={`mt-4 ${
-          submitButtonState.disabled ? "opacity-50" : ""
-        } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
+          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}
-        // disabled={submitButtonState.disabled && !shouldDisableValidation}
+      // disabled={submitButtonState.disabled && !shouldDisableValidation}
       >
         {submitButtonState.text}
       </Button>

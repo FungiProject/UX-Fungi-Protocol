@@ -39,10 +39,10 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
 
   const [tx, sendTx] = useLiFiTx(
     "Swap",
-    network,
+    chainId,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.address,
-    network,
+    chainId,
     tokenTo?.address,
     fromAddress,
     tokenFrom?.coinKey,

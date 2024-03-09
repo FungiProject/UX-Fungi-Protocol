@@ -4,13 +4,14 @@ import { Hex } from "viem";
 import axios from "axios";
 import { BigNumber, ethers } from "ethers";
 import { UserOperation } from "@/lib/userOperations/types";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
 
 export const useLiFiTx = (
   type: string,
-  fromChain: string | undefined,
+  fromChainId: number,
   fromAmount: string | undefined,
   fromToken: string | undefined,
-  toChain: string | undefined,
+  toChainId: number | undefined,
   toToken: string | undefined,
   fromAddress: string | undefined,
   fromSymbol: string | undefined,
@@ -39,13 +40,16 @@ export const useLiFiTx = (
       const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
       let quote: any;
       try {
+        const fromChainLifi = getChainIdLifi(fromChainId);
+        const toChainLifi = getChainIdLifi(toChainId || 0);
+
         const responses = await Promise.all(
           orders.map((order) => {
             return getQuote({
-              fromChain,
+              fromChain: fromChainLifi,
               fromAmount,
               fromToken,
-              toChain,
+              toChain: toChainLifi,
               toToken,
               fromAddress,
               toAddress,

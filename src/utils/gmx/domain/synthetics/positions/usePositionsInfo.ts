@@ -3,7 +3,7 @@ import { BigNumber } from "ethers";
 import { MAX_ALLOWED_LEVERAGE } from "../../../config/factors";
 import { getBasisPoints } from "../../../lib/numbers";
 import { getByKey } from "../../../lib/objects";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { MarketsInfoData } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";

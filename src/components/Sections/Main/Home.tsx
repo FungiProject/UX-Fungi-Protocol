@@ -7,9 +7,7 @@ import HomeTable from "../../Tables/HomeTable";
 import ResultsChart from "../../Chart/ResultsChart";
 import SpinnerLoader from "../../Loader/SpinnerLoader";
 import useScAccountPositions from "@/domain/position/useScAccountPositions";
-
 import useScAccountSpotPosition from "@/domain/position/useScAccountSpotPosition";
-
 import StartDepositBanner from "../Fallbacks/StartDepositBanner";
 
 type HomeProps = {

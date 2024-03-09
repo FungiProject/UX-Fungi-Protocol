@@ -1,50 +1,41 @@
-// React
-import { useState, useEffect } from "react";
-// Axios
 import axios from "axios";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
+import { from } from "@apollo/client";
 
 type useLiFiTokensProps = {
-  fromChain: string | undefined;
-  toChain: string | undefined;
-  fromToken: string | undefined;
+  fromChainId: number;
+  toChainId: number;
+  fromToken: string;
 };
 
-const useLiFiConnections = ({
-  fromChain,
-  toChain,
+export const useLiFiConnections = async ({
+  fromChainId,
+  toChainId,
   fromToken,
 }: useLiFiTokensProps) => {
-  const [connections, setConnections] = useState();
 
-  useEffect(() => {
-    const getConnections = async (
-      fromChain: string,
-      toChain: string,
-      fromToken: string
-    ) => {
-      const result = await axios.get("https://li.quest/v1/connections", {
-        params: {
-          fromChain,
-          toChain,
-          fromToken,
-        },
-      });
+  try {
+    const fromChainLifi = getChainIdLifi(fromChainId);
+    const toChainLifi = getChainIdLifi(toChainId);
 
-      setConnections(result.data.connections[0].toTokens);
-    };
+    console.log(fromChainLifi);
+    console.log(toChainLifi);
+    console.log(fromToken);
 
-    return () => {
-      if (
-        fromChain !== undefined &&
-        toChain !== undefined &&
-        fromToken !== undefined
-      ) {
-        getConnections(fromChain, toChain, fromToken);
-      }
-    };
-  }, []);
+    const result = await axios.get("https://li.quest/v1/connections", {
+      params: {
+        fromChain: fromChainLifi,
+        toChain: toChainLifi,
+        fromToken,
+      },
+    });
 
-  return { connections };
+    return result.data.connections[0].toTokens
+
+  } catch (error) {
+    console.log(error);
+    console.log("Error getting connections from lifi")
+  }
+
 };
 
-export default useLiFiConnections;

@@ -54,7 +54,7 @@ export default function AssetsTableCard({ asset, setTokenFrom }: AssetsTableCard
               alt="Logo"
               src={network.image}
               className={index === 1 ? "-mx-2.5" : ""}
-              key={network}
+              key={asset.token.address + index}
             />
           );
         })}

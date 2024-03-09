@@ -36,7 +36,7 @@ export const LIFI_CHAINS = {
         "id": 10,
         "mainnet": true,
         "logoURI": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/optimism.svg",
-      },        
+    },        
 }
 
 export function getChainIdLifi(chainId: number){
