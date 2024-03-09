@@ -13,6 +13,7 @@ import NFTActive from "../public/navbar/NFTActive.svg";
 import NFTDesactive from "../public/navbar/NFTDesactive.svg";
 import Arbitrum from "../public/Arbitrum.svg";
 import Polygon from "../public/Polygon.svg";
+import Optimism from "../public/Optimism.svg";
 
 export const navigation = [
   {
@@ -62,14 +63,15 @@ export const networks = [
   //   symbol: "ETH Sepolia",
   // },
   { name: "Arbitrum One", id: 42161, image: Arbitrum.src, symbol: "ARB" },
-  { name: "Arbitrum Sepolia", id: 421614, image: Arbitrum.src, symbol: "ARB" },
+  //{ name: "Arbitrum Sepolia", id: 421614, image: Arbitrum.src, symbol: "ARB" },
+  { name: "Optimism", id: 10, image: Optimism.src, symbol: "OP" },
   // {
   //   name: "Arbitrum Goerli",
   //   id: 421613,
   //   image: Arbitrum.src,
   //   symbol: "ARB Goerli",
   // },
-  { name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
+  //{ name: "Polygon", id: 137, image: Polygon.src, symbol: "POL" },
   // {
   //   name: "Polygon Mumbai",
   //   id: 80001,

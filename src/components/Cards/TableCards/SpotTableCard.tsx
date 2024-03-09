@@ -3,16 +3,17 @@ import React from "react";
 // Next
 import Image from "next/image";
 // Utils
-import formatNumber from "@/utils/formatNumber";
+import {formatNumber, formatAmount, formatAmountToUsd} from "@/utils/formatNumber";
 import { networks } from "../../../../constants/Constants";
 import { TokenData } from "@/domain/tokens/types";
 
 type AssetsTableCardProps = {
   asset: TokenData;
   index: number;
+  setTokenFrom: (TokenInfo) => void;
 };
 
-export default function AssetsTableCard({ asset }: AssetsTableCardProps) {
+export default function AssetsTableCard({ asset, setTokenFrom }: AssetsTableCardProps) {
   return (
     <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center fadeInAnimation border-l-4 hover:border-l-main border-l-white cursor-pointer">
       <div className="flex items-center col-span-2">
@@ -29,18 +30,18 @@ export default function AssetsTableCard({ asset }: AssetsTableCardProps) {
       </div>
       <div className="text-center">
         $
-        {asset?.tokenData?.price !== undefined &&
-          formatNumber(asset.tokenData.price || 0)}
+        {asset?.token?.priceUSD !== undefined &&
+          Number(asset?.token?.priceUSD).toFixed(2)}
       </div>
       <div className="text-center">
         $
-        {asset?.tokenData?.marketCap !== undefined &&
-          formatNumber(asset.tokenData.marketCap || 0)}
+        {asset?.token.balance !== undefined &&
+          formatAmount(asset?.token?.balance.toString() || "0", asset?.token?.decimals).slice(0,9)}
       </div>
       <div className="text-center">
         $
-        {asset?.tokenData?.volumen24 !== undefined &&
-          formatNumber(asset.tokenData.volumen24 || 0)}
+        {asset?.token.balance !== undefined &&
+        formatAmountToUsd(asset?.token?.balance.toString() || "0", asset?.token?.decimals, Number(asset?.token?.priceUSD))}
       </div>
       <div className="flex justify-center">
         {/* TODO: Change to tokens network */}
@@ -59,7 +60,7 @@ export default function AssetsTableCard({ asset }: AssetsTableCardProps) {
         })}
       </div>
       <div className="justify-center flex">
-        <button className="rounded-full bg-main px-[16px] py-[8px] w-[75px] text-center text-white mr-[15px] hover:bg-mainHover text-xs">
+        <button className="rounded-full bg-main px-[16px] py-[8px] w-[75px] text-center text-white mr-[15px] hover:bg-mainHover text-xs" onClick={()=>setTokenFrom(asset.token)}>
           Swap
         </button>
       </div>

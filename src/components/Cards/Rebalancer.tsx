@@ -36,25 +36,29 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   };
 
   const onAddToken = (token: TokenInfo) => {
-    setSelectedTokens([
-      ...selectedTokens,
-      {
-        ...token,
-        percentage: 0,
-      },
-    ]);
-    const updatedTokensOptions = tokensCopy.filter(
-      (option) => option.coinKey !== token.coinKey
-    );
-    setTokensCopy(updatedTokensOptions);
+    if(isSelected(token)){
+      onRemoveToken(token);
+    } else {
+      setSelectedTokens([
+        ...selectedTokens,
+        {
+          ...token,
+          percentage: 0,
+        },
+      ]);
+    }
   };
+
+  const isSelected = (token: TokenInfo) => {
+    return !!selectedTokens.find(t=> t.address == token.address)
+  }
 
   const onRemoveToken = (token: TokenInfo) => {
     const updatedTokens = selectedTokens.filter(
       (selectedToken) => selectedToken.coinKey !== token.coinKey
     );
     setSelectedTokens([...updatedTokens]);
-    setTokensCopy([{ ...token }, ...tokensCopy]);
+    //setTokensCopy([{ ...token }, ...tokensCopy]);
   };
 
   const onPercentageChange = (coinKey: string, percentage: number) => {
@@ -165,6 +169,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
               {tokensCopy.map((token: TokenInfo) => {
                 return (
                   <TokenCard
+                    isSelected={isSelected(token)}
                     token={token}
                     onClick={onAddToken}
                     key={token.coinKey}

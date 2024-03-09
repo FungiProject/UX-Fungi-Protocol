@@ -118,17 +118,8 @@ function getRebalanceSwaps(
   balancesToken: TokenInfoTotalUsd[],
   rebalances: TokenInfoRebalanceInput[]
 ): RebalanceSwap[] {
-  //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
-  const balanceTokensSorted = balancesToken.sort((a, b) => {
-    if (a.totalValueUsd && b.totalValueUsd) {
-      return b.totalValueUsd - a.totalValueUsd;
-    } else {
-      return 0;
-    }
-  });
-  const rebalancesSorted = rebalances.sort(
-    (a, b) => b.percentage - a.percentage
-  );
+
+  const { balanceTokensSorted, rebalancesSorted } = sortTokenBalanceAndRebalance(balancesToken, rebalances);
 
   //Añadimos el campo usdAvailable que será el que lleve la cuenta de la cantidad que falta sin userOp
   interface BalanceTokenParamsWithUsdAvailable extends TokenInfoTotalUsd {
@@ -144,7 +135,12 @@ function getRebalanceSwaps(
 
   rebalancesSorted.forEach((rebalance) => {
     let amountUsdByPercentaje = totalUsd * (rebalance.percentage / 100); //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
+    
+    //buscamos primero si tenemos balance del token de rebalance para no hacer swap innecesarios
+    const balanceTokenExist = balanceTokensMap.find(t=>t.address == rebalance.address);
 
+
+    ///// si no existe balance de ese token
     for (let i = 0; i < balanceTokensMap.length; i++) {
       const balanceToken = balanceTokensMap[i];
       if (amountUsdByPercentaje === 0) {
@@ -188,10 +184,35 @@ function getRebalanceSwaps(
           amountUsdByPercentaje = 0;
         }
       }
-    }
+  }
   });
 
   return swaps;
+}
+
+function sortTokenBalanceAndRebalance( 
+  balancesToken: TokenInfoTotalUsd[],
+  rebalances: TokenInfoRebalanceInput[] ) {
+
+  //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
+  const balanceTokensSorted = balancesToken.sort((a, b) => {
+    if (a.totalValueUsd && b.totalValueUsd) {
+      return b.totalValueUsd - a.totalValueUsd;
+    } else {
+      return 0;
+    }
+  });
+
+  // Construimos rebalancesSorted basándonos en el orden de los tokens en balanceTokensSorted
+   const rebalancesSorted: TokenInfoRebalanceInput[] = [];
+   for (const tokenInfo of balanceTokensSorted) {
+     const rebalance = rebalances.find(rebalance => rebalance.address === tokenInfo.address);
+     if (rebalance) {
+       rebalancesSorted.push(rebalance);
+     }
+   }
+ 
+   return { balanceTokensSorted, rebalancesSorted };
 }
 
 

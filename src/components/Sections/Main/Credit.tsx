@@ -8,7 +8,7 @@ export default function Credit() {
         main={<div>Credit</div>}
         secondary={<div>Credit</div>}
         page="Credit Section"
-        keepWorking={true}
+        keepWorkingMessage="Credit is coming soon!"
       />
     </main>
   );

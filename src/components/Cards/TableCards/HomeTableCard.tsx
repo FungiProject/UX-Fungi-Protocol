@@ -3,7 +3,7 @@ import React from "react";
 // Types
 import { PositionInfo } from "@/domain/position/types";
 // Utils
-import formatNumber from "@/utils/formatNumber";
+import {formatNumber} from "@/utils/formatNumber";
 
 type HomeTableCardProps = {
   position: PositionInfo;
@@ -18,17 +18,17 @@ export default function HomeTableCard({
     <div className="border-b-1 border-gray-300 grid grid-cols-5 py-[24px] items-center text-xl font-medium">
       <div className="text-start ml-[40px]">{position.type}</div>
       <div className="text-center">
-        {position.type === "Spot" ? "Nr. of tokens" : "Open positions"}
+        {position.type === "Spot" ? "Tokens" : "Positions"}
         <br></br>
         {position.numberPositions}
       </div>{" "}
       <div className="text-center">
         {" "}
-        {position.type === "Spot" ? "Value of tokens" : "Collateral in"}
+        {position.type === "Spot" ? "Balance" : "Collateral"}
         <br></br>${formatNumber(position.totalValue)}
       </div>{" "}
       <div className="text-center">
-        <span>Unrealized PnL</span>
+        <span>24h%</span>
         <br></br>
         {typeof position.unPnL === "string" ? (
           <span>{position.unPnL}</span>

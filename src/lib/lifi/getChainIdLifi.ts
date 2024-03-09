@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, POLYGON, ETH_MAINNET } from "../../config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, POLYGON, ETH_MAINNET, OPTIMISM } from "../../config/chains";
 
 export const LIFI_CHAINS = {
     [ARBITRUM]: {
@@ -27,7 +27,16 @@ export const LIFI_CHAINS = {
         "id": 137,
         "mainnet": true,
         "logoURI": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/polygon.svg",
-      },          
+    },  
+    [OPTIMISM]:     {
+        "key": "opt",
+        "chainType": "EVM",
+        "name": "Optimism",
+        "coin": "ETH",
+        "id": 10,
+        "mainnet": true,
+        "logoURI": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/optimism.svg",
+      },        
 }
 
 export function getChainIdLifi(chainId: number){

@@ -15,6 +15,7 @@ type SpotTableProps = {
   endIndex: number;
   getLength: (length: number) => void;
   handlePageChange: (page: number) => void;
+  setTokenFrom: (TokenInfo) => void;
 };
 
 export default function SpotTable({
@@ -23,8 +24,8 @@ export default function SpotTable({
   endIndex,
   getLength,
   handlePageChange,
+  setTokenFrom
 }: SpotTableProps) {
-  const typesMembersTable = ["Portfolio", "All"];
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
   const { tokenMarketsData, fetchData } = useTokenMarketData([]);
@@ -74,16 +75,16 @@ export default function SpotTable({
       <div className="grid grid-cols-7 pb-[26px] text-xl font-medium pr-[14px] border-b-1 border-gray-300 flex items-center">
         <div className="text-center col-span-2">Name</div>{" "}
         <div className="text-center">Price</div>{" "}
-        <div className="text-center">Market Cap</div>{" "}
-        <div className="text-center">Volume (24h)</div>{" "}
+        <div className="text-center">Amount</div>{" "}
+        <div className="text-center">Balance</div>{" "}
         <div className="text-center">Networks</div>
-        <ActionsSwitcher
+        {/*<ActionsSwitcher
           actions={typesMembersTable}
           actionSelected={typeMember}
           getActionSelected={getTypeMember}
           className="h-[34px] p-[4px] w-[160px] rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-xs"
           paddingButton="py-[5px]"
-        />
+  />*/}
       </div>
       {loading ? (
         <div className="w-full h-[500px] flex items-center justify-center">
@@ -99,6 +100,7 @@ export default function SpotTable({
                 tokenMarketsData.length > 0 &&
                 tokenMarketsData.map((token: TokenData, index: number) => (
                   <SpotTableCard
+                    setTokenFrom={setTokenFrom}
                     asset={token}
                     key={token.token.coinKey}
                     index={index}

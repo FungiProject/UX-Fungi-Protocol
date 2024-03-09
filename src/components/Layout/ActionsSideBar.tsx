@@ -23,8 +23,9 @@ import { SyntheticsFallbackPage } from "../Sections/Fallbacks/SyntheticsFallback
 import Credit from "../Sections/Main/Credit";
 import Nfts from "../Sections/Main/Nfts";
 import useWallet from "@/hooks/useWallet";
-
+import { networks } from "../../../constants/Constants";
 import ProfileModal from "../Modals/ProfileModal";
+import ChangeNetworkDropdown from "../Dropdown/ChangeNetworkDropdown";
 
 type ActionsSideBarProps = {
   isHistory: boolean;
@@ -117,11 +118,16 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
 
           <div className="relative flex flex-1 justify-end items-center gap-x-4">
             {connected ? (
-              <div>
-                <button onClick={() => setOpenMenu(true)}>
-                  <img src={User.src} />
-                </button>
-                {openMenu && <ProfileModal getOpenModal={getOpenModal} />}
+              <div className="flex flex-row items-center">
+                <div>
+                  <button onClick={() => setOpenMenu(true)}>
+                    <img src={User.src} />
+                  </button>
+                  {openMenu && <ProfileModal getOpenModal={getOpenModal} />}
+                </div>
+                <div className="ml-3">
+                  <ChangeNetworkDropdown networks={networks}/>
+                </div>
               </div>
             ) : (
               <LoginButton />

@@ -19,19 +19,37 @@ import { getApiKeyChain } from "@/config/alchemyConfig";
 import { createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
 import { getViemChain } from "@/config/chains";
 import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
-import { AlchemySmartAccountClient } from "@alchemy/aa-alchemy";
+import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
 
-import { type Address, type SmartAccountSigner } from "@alchemy/aa-core";
-// Types
-import { FungiContextType } from "./types";
 
-export const FungiContext = createContext({} as FungiContextType);
+import {
+  type Address,
+  type SmartAccountSigner
+} from "@alchemy/aa-core";
+
+export type FungiGlobalContextType = {
+  alchemyClient?: Alchemy;
+  alchemyScaProvider: any | undefined;
+  scaAddress?: Address;
+  chain: number;
+  switchNetwork: (number) => void;
+  isConnected: boolean;
+  isLoading: boolean;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+export const FungiGlobalContext = createContext({} as FungiGlobalContextType);
 
 export function useGlobalContext() {
-  return useContext(FungiContext) as FungiContextType;
+  return useContext(FungiGlobalContext) as FungiGlobalContextType;
 }
 
-export function FungiContextProvider({ children }: { children: ReactNode }) {
+export function FungiGlobalContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [alchemyMultichainClient, setAlchemyMultichainClient] =
     useState<AlchemyMultichainClient>();
   const [magicMultichainClient, setMagicMultichainClient] =
@@ -49,6 +67,7 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+
     const defaultAlchemySettings = getProviderDefaultSettings(ARBITRUM);
     const overridesAlchemySettings = getProviderMultichainSetting();
     const multichainProv = new AlchemyMultichainClient(
@@ -58,7 +77,8 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
     setAlchemyMultichainClient(multichainProv);
 
     setAlchemyClient(
-      multichainProv?.forNetwork(chain) || multichainProv?.forNetwork(ARBITRUM)
+      multichainProv?.forNetwork(chain) ||
+      multichainProv?.forNetwork(ARBITRUM)
     );
 
     const magicMultichain = new MagicMultichainClient();
@@ -67,6 +87,7 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    console.log("FungiGlobalContext: change chain")
     if (chain) {
       if (alchemyMultichainClient) {
         setAlchemyClient(
@@ -82,25 +103,38 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
         const magicForNetwork = magicMultichainClient.forNetwork(chain);
         if (magicForNetwork) {
           setMagicClient(magicForNetwork);
-          (async () => {
-            await login();
-          })();
+          (async ()=> {
+           await login()
+          })()
         }
       }
     }
   }, [chain]);
 
+  useEffect(() => {
+    (async () => {
+      if(alchemyScaProvider){
+        console.log(alchemyScaProvider.account?.address)
+        if (alchemyScaProvider) {
+          setScaAddress(alchemyScaProvider.account?.address);
+        }
+      }
+    })();
+  }, [alchemyScaProvider]);
 
   const connectProviderToAccount = useCallback(
     async (signer: SmartAccountSigner) => {
+      console.log("FungiGlobalContext: connectProviderToAccount")
+
       const connectedProvider = await createModularAccountAlchemyClient({
         apiKey: getApiKeyChain(chain),
         chain: getViemChain(chain),
         signer,
       });
 
+      console.log(connectedProvider)
       setAlchemyScaProvider(connectedProvider);
-
+      
       return connectedProvider;
     },
     [alchemyScaProvider, chain]
@@ -117,7 +151,9 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
     return disconnectedProvider;
   }, [alchemyScaProvider]);
 
+
   const login = useCallback(async () => {
+    console.log("FungiGlobalContext: login")
     const signer = await magicClient;
 
     if (signer == null) {
@@ -130,14 +166,14 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
       },
     });
 
-    const connectedProvider = await connectProviderToAccount(signer as SmartAccountSigner);
+    await connectProviderToAccount(signer as SmartAccountSigner);
 
-    let signerAddress;
-    (async () => {
+    let signerAddress
+    (async ()=>{
       signerAddress = await signer.getAddress();
-    })();
+    })()
 
-    setScaAddress(connectedProvider?.getAddress());
+    setScaAddress(alchemyScaProvider?.getAddress({account: signerAddress}));
     setIsConnected(true);
   }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
 
@@ -161,7 +197,7 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
     setChain(chainId);
   }, []);
 
-  const state: FungiContextType = useMemo(() => {
+  const state: FungiGlobalContextType = useMemo(() => {
     return {
       alchemyClient,
       alchemyScaProvider,
@@ -186,6 +222,8 @@ export function FungiContextProvider({ children }: { children: ReactNode }) {
   ]);
 
   return (
-    <FungiContext.Provider value={state}>{children}</FungiContext.Provider>
+    <FungiGlobalContext.Provider value={state}>
+      {children}
+    </FungiGlobalContext.Provider>
   );
 }

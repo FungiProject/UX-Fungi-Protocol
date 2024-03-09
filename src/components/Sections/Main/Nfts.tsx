@@ -8,7 +8,7 @@ export default function Nfts() {
         main={<div>Credit</div>}
         secondary={<div>Credit</div>}
         page="NFTs Section"
-        keepWorking={true}
+        keepWorkingMessage="NFTs are coming soon!"
       />
     </main>
   );
