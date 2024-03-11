@@ -19,42 +19,42 @@ export async function fillCoinGeckoTokenId(
 }
 
 export async function getTokenMarketData(chainId: number, tokens: TokenInfo[]) {
-  await fillCoinGeckoTokenId(chainId, tokens); //TODO deberia llamarse cuando se forma el tokenInfo
+  // await fillCoinGeckoTokenId(chainId, tokens); //TODO deberia llamarse cuando se forma el tokenInfo
+  console.log(tokens);
+  // const coingeckoIds = tokens.map((token) => token.coinGeckoId);
 
-  const coingeckoIds = tokens.map((token) => token.coinGeckoId);
+  // if (coingeckoIds.length === 0) {
+  //   return;
+  // }
 
-  if (coingeckoIds.length === 0) {
-    return;
-  }
+  // const coingeckoIdsClean = tokens
+  //   .map((token) => token.coinGeckoId)
+  //   .filter((id) => id !== "" && id !== null && id !== undefined);
 
-  const coingeckoIdsClean = tokens
-    .map((token) => token.coinGeckoId)
-    .filter((id) => id !== "" && id !== null && id !== undefined);
-
-  const tokensDataCoinGecko = await getTokensMarketData(
-    coingeckoIdsClean as string[]
-  );
+  // const tokensDataCoinGecko = await getTokensMarketData(
+  //   coingeckoIdsClean as string[]
+  // );
 
   const tokensData: TokenData[] = [];
 
-  if (tokensDataCoinGecko) {
-    tokens.forEach((token) => {
-      const tokenDataCG = tokensDataCoinGecko.find(
-        (t) => t.id === token.coinGeckoId
-      );
+  // if (tokensDataCoinGecko) {
+  tokens.forEach((token) => {
+    // const tokenDataCG = tokensDataCoinGecko.find(
+    //   (t) => t.id === token.coinGeckoId
+    // );
 
-      let newToken: TokenData = { token: token, tokenData: undefined };
+    let newToken: TokenData = { token: token, tokenData: undefined };
 
-      if (tokenDataCG && newToken) {
-        newToken.tokenData = {
-          price: tokenDataCG.current_price,
-          marketCap: tokenDataCG.market_cap,
-          volumen24: tokenDataCG.total_volume,
-        };
-      }
-      tokensData.push(newToken);
-    });
-  }
+    // if (tokenDataCG && newToken) {
+    //   newToken.tokenData = {
+    //     price: tokenDataCG.current_price,
+    //     marketCap: tokenDataCG.market_cap,
+    //     volumen24: tokenDataCG.total_volume,
+    //   };
+    // }
+    tokensData.push(newToken);
+  });
+  // }
 
   return tokensData;
 }

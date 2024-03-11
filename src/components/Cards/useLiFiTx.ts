@@ -27,6 +27,7 @@ export const useLiFiTx = (
     const response = await axios.get("https://li.quest/v1/quote", {
       params,
     });
+
     return response.data;
   };
 
@@ -64,13 +65,16 @@ export const useLiFiTx = (
         });
 
         quote = filteredResponses.reduce((maxResponse, response) => {
-          return response.estimate.toAmountMin >
-            maxResponse.estimate.toAmountMin
+          return response.estimate.toAmountUSD -
+            response.estimate.gasCosts[0].toAmountUSD >
+            maxResponse.estimate.toAmountUSD -
+              maxResponse.estimate.gasCosts[0].toAmountUSD
             ? response
             : maxResponse;
         }, filteredResponses[0]);
+        console.log(quote);
       } catch (error) {
-        console.error("Error obteniendo cotizaciones:", error);
+        console.error("Error obteining quotes:", error);
       }
 
       const spender: Hex = quote.transactionRequest.to;

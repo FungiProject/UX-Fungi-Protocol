@@ -36,7 +36,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   };
 
   const onAddToken = (token: TokenInfo) => {
-    if(isSelected(token)){
+    if (isSelected(token)) {
       onRemoveToken(token);
     } else {
       setSelectedTokens([
@@ -50,8 +50,8 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   };
 
   const isSelected = (token: TokenInfo) => {
-    return !!selectedTokens.find(t=> t.address == token.address)
-  }
+    return !!selectedTokens.find((t) => t.address == token.address);
+  };
 
   const onRemoveToken = (token: TokenInfo) => {
     const updatedTokens = selectedTokens.filter(
@@ -165,7 +165,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
               />
             </div>
 
-            <div className="px-[18px] w-full my-4 overflow-y-auto h-[520px]">
+            <div className="px-[18px] w-full my-4 overflow-y-auto h-[47vh]">
               {tokensCopy.map((token: TokenInfo) => {
                 return (
                   <TokenCard

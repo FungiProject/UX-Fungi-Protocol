@@ -1,5 +1,5 @@
 //React
-import React, { ReactElement } from "react";
+import React, { ReactElement, ReactNode } from "react";
 // Next
 import Image from "next/image";
 // Utils
@@ -11,7 +11,7 @@ type PageContainerProps = {
   main: ReactElement;
   secondary: ReactElement;
   page: string;
-  keepWorkingMessage?: string;
+  keepWorkingMessage?: string | ReactNode;
 };
 
 export default function PageContainer({
@@ -24,13 +24,14 @@ export default function PageContainer({
 
   return (
     <>
-      {" "}
       {scAccount === undefined || keepWorkingMessage ? (
         <main className="grid grid-cols-3 mt-[20px] w-full h-[740px] bg-white rounded-lg overflow-hidden">
           <div className="col-span-3 flex items-center justify-center flex-col">
             <h1 className="text-4xl">
               {keepWorkingMessage
-                ? `${keepWorkingMessage}`
+                ? typeof keepWorkingMessage === "string"
+                  ? `${keepWorkingMessage}`
+                  : keepWorkingMessage
                 : `Log in or sign up to access the ${page}!`}
             </h1>
             <Image

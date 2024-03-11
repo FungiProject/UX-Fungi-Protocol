@@ -24,8 +24,6 @@ import { NotificationContextProvider } from "@/context/NotificationContextProvid
 import { ModalContextProvider } from "@/context/ModalContextProvider";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const history = useHistory();
-
   useEffect(() => {
     let referralCode = REFERRAL_CODE_QUERY_PARAM;
 
@@ -33,16 +31,9 @@ export default function App({ Component, pageProps }: AppProps) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
-        const queryParams = new URLSearchParams(location.search);
-        if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
-          queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
-          history.replace({
-            search: queryParams.toString(),
-          });
-        }
       }
     }
-  }, [history]);
+  }, []);
 
   return (
     <main>

@@ -13,14 +13,9 @@ export const useLiFiConnections = async ({
   toChainId,
   fromToken,
 }: useLiFiTokensProps) => {
-
   try {
     const fromChainLifi = getChainIdLifi(fromChainId);
     const toChainLifi = getChainIdLifi(toChainId);
-
-    console.log(fromChainLifi);
-    console.log(toChainLifi);
-    console.log(fromToken);
 
     const result = await axios.get("https://li.quest/v1/connections", {
       params: {
@@ -30,12 +25,9 @@ export const useLiFiConnections = async ({
       },
     });
 
-    return result.data.connections[0].toTokens
-
+    return result.data.connections[0].toTokens;
   } catch (error) {
     console.log(error);
-    console.log("Error getting connections from lifi")
+    console.log("Error getting connections from lifi");
   }
-
 };
-

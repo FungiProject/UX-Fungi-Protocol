@@ -24,7 +24,7 @@ export default function SpotTable({
   endIndex,
   getLength,
   handlePageChange,
-  setTokenFrom
+  setTokenFrom,
 }: SpotTableProps) {
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
@@ -91,7 +91,7 @@ export default function SpotTable({
           <Loader />
         </div>
       ) : (
-        <div className="overflow-auto h-[590px]">
+        <div className="overflow-auto h-[50vh]">
           {portfolioEmpty ? (
             <StartDepositBanner />
           ) : (

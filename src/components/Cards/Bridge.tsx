@@ -41,7 +41,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   );
   const [fromAddress, setFromAddress] = useState(scAccount);
   const [toAddress, setToAddress] = useState(scAccount);
-  const [slippage, setSlippage] = useState("0.1");
+  const [slippage, setSlippage] = useState("0.001");
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
   );
@@ -51,7 +51,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   const [tx, sendTx] = useLiFiTx(
     "Bridge",
-    networkFrom?.id || chainId ,
+    networkFrom?.id || chainId,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.coinKey,
     networkTo?.id,
@@ -61,7 +61,6 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     toAddress,
     slippage
   );
-
 
   const [submitButtonState, setSubmitButtonState] = useState<{
     disabled: boolean;
@@ -123,6 +122,12 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
         disabled: true,
       });
     }
+    // if (amountFrom && Number(amountFrom * Number(tokenFrom?.priceUSD)) < 12) {
+    //   setSubmitButtonState({
+    //     text: "Min amount: $12",
+    //     disabled: true,
+    //   });
+    // }
   }, [
     scAccount,
     amountFrom,
@@ -149,15 +154,18 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   useEffect(() => {
     if (!networkFrom || !networkTo || !tokenFrom) {
-      return
+      return;
     }
 
     const getConnections = async () => {
-      const result = await useLiFiConnections({ fromChainId: Number(networkFrom!.id), toChainId: networkTo.id, fromToken: tokenFrom.symbol })
-      console.log(result)
+      const result = await useLiFiConnections({
+        fromChainId: Number(networkFrom!.id),
+        toChainId: networkTo.id,
+        fromToken: tokenFrom.symbol,
+      });
       setConnections(result);
       setConnectionsLoading(false);
-    }
+    };
 
     getConnections();
   }, [networkFrom, networkTo, tokenFrom, amountFrom]);
@@ -202,7 +210,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     const resultTx: any = await sendTx();
 
     try {
-      await sendUserOperations(resultTx);
+      // await sendUserOperations(resultTx);
       showNotification({
         message: "Bridge complete",
         type: "success",
@@ -210,7 +218,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     } catch (error) {
       console.error("Error al ejecutar sendUserOperations:", error);
       showNotification({
-        message: "Error al completar la operación",
+        message: "Error in the bridge",
         type: "error",
       });
     }
@@ -254,13 +262,13 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   return (
     <main className="mt-[12px]">
       <div className="relative">
-        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[150px]">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[15vh]">
           <BuyInputSection
             topLeftLabel={`Pay`}
             topLeftValue={
               amountFrom !== 0 &&
-                amountFrom !== undefined &&
-                tokenTo !== undefined
+              amountFrom !== undefined &&
+              tokenTo !== undefined
                 ? `$${(amountFrom * Number(tokenFrom?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -314,8 +322,8 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
             topLeftLabel={`Receive`}
             topLeftValue={
               amountToReceive !== 0 &&
-                amountToReceive !== undefined &&
-                tokenTo !== undefined
+              amountToReceive !== undefined &&
+              tokenTo !== undefined
                 ? `$${(amountToReceive * Number(tokenTo?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -385,15 +393,21 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       </div>
       <Button
         variant="primary-action"
-        className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
-          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        className={`mt-4 ${
+          submitButtonState.disabled ? "opacity-50" : ""
+        } w-full bg-main rounded-xl py-3 text-white font-semibold`}
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}
-      // disabled={submitButtonState.disabled && !shouldDisableValidation}
+        // disabled={submitButtonState.disabled && !shouldDisableValidation}
       >
         {submitButtonState.text}
       </Button>
+      <div className="text-sm px-2 mt-4 text-gray-400">
+        The Bridge is operated by LI.FI, and we cannot take responsibility for
+        any issues. For support related to the bridge, please refer to the LI.FI
+        Discord server.
+      </div>
     </main>
   );
 }

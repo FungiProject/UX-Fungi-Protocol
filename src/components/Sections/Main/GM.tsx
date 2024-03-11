@@ -79,7 +79,7 @@ export default function GM() {
           />
         }
         secondary={
-          <div className="h-[690px] overflow-auto">
+          <div className="h-[75vh] overflow-auto">
             <GmSwapBox
               selectedMarketAddress={selectedMarketKey}
               markets={markets}

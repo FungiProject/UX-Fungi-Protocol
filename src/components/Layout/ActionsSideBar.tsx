@@ -32,8 +32,7 @@ type ActionsSideBarProps = {
 };
 
 export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
-  const { isConnected } = useWallet();
-  const { chainId } = useChainId();
+  const { isConnected, chainId } = useWallet();
   const [actionSelected, setActionSelected] = useState<string>("Home");
   const [connected, setConnected] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -62,7 +61,11 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
         setPage(<Credit />);
         break;
       case "Yield":
-        setPage(<GM />);
+        {
+          getIsSyntheticsSupported(chainId)
+            ? setPage(<GM />)
+            : setPage(<SyntheticsFallbackPage />);
+        }
         break;
       case "NFTs":
         setPage(<Nfts />);
@@ -87,7 +90,7 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   useEffect(() => {
     getViewComponent();
     setOpenMenu(false);
-  }, [actionSelected]);
+  }, [actionSelected, chainId]);
 
   useEffect(() => {
     isHistory && setActionSelected("Transaction History");
@@ -102,9 +105,9 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
   }, [isConnected]);
 
   return (
-    <div>
-      <div className="flex shrink-0 items-center gap-x-4 z-50 mt-[40px]">
-        <div className="flex flex-1 gap-x-1 self-stretch lg:gap-x-3 z-5 ml-[75px] mr-[25px]">
+    <div className="overflow-auto">
+      <div className="flex shrink-0 items-center gap-x-4 z-50 mt-[20px] mb-16">
+        <div className="flex flex-1 gap-x-1 self-stretch lg:gap-x-3 z-5 ml-[75px] mr-[25px] items-center justify-between">
           <div className="flex items-center">
             <Image
               width={62}
@@ -115,18 +118,46 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
             />
             <h1 className="text-4xl font-bold ml-[20px]">{actionSelected}</h1>
           </div>
-
-          <div className="relative flex flex-1 justify-end items-center gap-x-4">
+          {!isHistory && (
+            <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm">
+              {navigation.map((link: navigationType) => {
+                return (
+                  <button
+                    key={link.href}
+                    onClick={() => setActionSelected(link.name)}
+                    className={
+                      link.name === actionSelected
+                        ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center mx-1`
+                        : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px] mx-1"
+                    }
+                  >
+                    <Image
+                      width={20}
+                      height={20}
+                      alt="Logo"
+                      src={
+                        link.name === actionSelected
+                          ? link.imageActive
+                          : link.imageDesactive
+                      }
+                      aria-hidden="true"
+                      className="mr-3 "
+                    />
+                    {link.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div className="relative flex items-center">
             {connected ? (
               <div className="flex flex-row items-center">
+                <ChangeNetworkDropdown networks={networks} />
                 <div>
                   <button onClick={() => setOpenMenu(true)}>
                     <img src={User.src} />
                   </button>
                   {openMenu && <ProfileModal getOpenModal={getOpenModal} />}
-                </div>
-                <div className="ml-3">
-                  <ChangeNetworkDropdown networks={networks}/>
                 </div>
               </div>
             ) : (
@@ -135,37 +166,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
           </div>
         </div>
       </div>
-      {!isHistory && (
-        <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm mt-[24px]">
-          {navigation.map((link: navigationType) => {
-            return (
-              <button
-                key={link.href}
-                onClick={() => setActionSelected(link.name)}
-                className={
-                  link.name === actionSelected
-                    ? `bg-black text-white rounded-full py-[8px] flex items-center justify-center mx-1`
-                    : "bg-white flex items-center justify-center hover:bg-gray-100 hover:rounded-full hover:py-[8px] mx-1"
-                }
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  alt="Logo"
-                  src={
-                    link.name === actionSelected
-                      ? link.imageActive
-                      : link.imageDesactive
-                  }
-                  aria-hidden="true"
-                  className="mr-3 "
-                />
-                {link.name}
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       <main>{page}</main>
     </div>
