@@ -122,12 +122,12 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
         disabled: true,
       });
     }
-    // if (amountFrom && Number(amountFrom * Number(tokenFrom?.priceUSD)) < 12) {
-    //   setSubmitButtonState({
-    //     text: "Min amount: $12",
-    //     disabled: true,
-    //   });
-    // }
+    if (amountFrom && Number(amountFrom * Number(tokenFrom?.priceUSD)) < 12) {
+      setSubmitButtonState({
+        text: "Min amount: $12",
+        disabled: true,
+      });
+    }
   }, [
     scAccount,
     amountFrom,
