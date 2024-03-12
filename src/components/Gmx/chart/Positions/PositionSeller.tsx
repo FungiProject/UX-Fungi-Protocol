@@ -506,12 +506,6 @@ export function PositionSeller(p: Props) {
       return Promise.resolve();
     }
 
-    // const userOps = tokensToApprove.map((address: string) =>
-    //   createApproveTokensUserOp({
-    //     tokenAddress: address,
-    //     spender: routerAddress,
-    //   })
-    // );
     setIsSubmitting(true);
     const createSwapOrderOp = await createDecreaseOrderUserOp(
       chainId,

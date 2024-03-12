@@ -207,7 +207,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     isMarket,
   } = tradeFlags;
-  const { login: openConnectModal, scAccount: account } = useWallet();
+  const { login, scAccount } = useWallet();
   const {
     swapTokens,
     indexTokens,
@@ -235,7 +235,7 @@ export function TradeBox(p: Props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const userReferralInfo = useUserReferralInfo(chainId, account);
+  const userReferralInfo = useUserReferralInfo(chainId, scAccount);
 
   const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
@@ -814,7 +814,7 @@ export function TradeBox(p: Props) {
   const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
       chainId,
-      isConnected: Boolean(account),
+      isConnected: Boolean(scAccount),
       hasOutdatedUi,
     });
 
@@ -914,7 +914,7 @@ export function TradeBox(p: Props) {
     return { buttonErrorText, tooltipContent };
   }, [
     chainId,
-    account,
+    scAccount,
     hasOutdatedUi,
     isSwap,
     isIncrease,
@@ -954,13 +954,13 @@ export function TradeBox(p: Props) {
   ]);
 
   const isSubmitButtonDisabled = useMemo(() => {
-    if (!account) {
+    if (!scAccount) {
       return false;
     }
     if (buttonErrorText) {
       return true;
     }
-  }, [buttonErrorText, account]);
+  }, [buttonErrorText, scAccount]);
 
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
@@ -993,8 +993,8 @@ export function TradeBox(p: Props) {
   ]);
 
   function onSubmit() {
-    if (!account) {
-      openConnectModal?.();
+    if (!scAccount) {
+      login?.();
       return;
     }
 
