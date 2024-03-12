@@ -116,7 +116,6 @@ export default function ActionsSideBar({ isHistory }: ActionsSideBarProps) {
               src={Logo.src}
               aria-hidden="true"
             />
-            <h1 className="text-4xl font-bold ml-[20px]">{actionSelected}</h1>
           </div>
           {!isHistory && (
             <div className="h-[44px] p-[4px] w-[800px] rounded-full grid grid-cols-6 bg-white items-center text-center shadow-xl text-sm">
