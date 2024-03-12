@@ -102,7 +102,7 @@ export function MarketStats(p: Props) {
   const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
 
   return (
-    <>
+    <div className="h-[75vh] overflow-auto">
       <div className="my-[20px] ml-[70px]">
         <MarketTokenSelector
           marketTokensData={marketTokensData}
@@ -112,7 +112,7 @@ export function MarketStats(p: Props) {
           currentMarketInfo={marketInfo}
         />
       </div>
-      <div className=" border-t-1">
+      <div className="border-t-1">
         <div className="pl-[70px] pt-[5px]">
           <CardRow
             label={`Market`}
@@ -384,6 +384,6 @@ export function MarketStats(p: Props) {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }

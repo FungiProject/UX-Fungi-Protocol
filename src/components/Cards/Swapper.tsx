@@ -17,9 +17,10 @@ import { useNotification } from "@/context/NotificationContextProvider";
 type SwapperProps = {
   tokens: TokenInfo[];
   chainId: number;
+  tokenFrom?: TokenInfo;
 };
 
-export default function Swapper({ tokens, chainId }: SwapperProps) {
+export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: SwapperProps) {
   const { scAccount } = useWallet();
   const { showNotification } = useNotification();
   const { login: openConnectModal } = useWallet();
@@ -38,10 +39,10 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
 
   const [tx, sendTx] = useLiFiTx(
     "Swap",
-    network,
+    chainId,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.address,
-    network,
+    chainId,
     tokenTo?.address,
     fromAddress,
     tokenFrom?.coinKey,
@@ -54,6 +55,10 @@ export default function Swapper({ tokens, chainId }: SwapperProps) {
   }>({ disabled: true, text: "Enter an amount" });
 
   const isNotMatchAvailableBalance = tokenFrom?.balance?.gt(0);
+
+  useEffect(()=>{
+    setTokenFrom(tokenFromTable);
+  },[tokenFromTable])
 
   useEffect(() => {
     if (tokenFrom && tokenTo && amountFrom) {

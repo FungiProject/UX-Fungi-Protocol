@@ -10,6 +10,7 @@ import {
 import { switchNetwork } from "../../../utils/gmx/lib/wallets";
 import { isDevelopment } from "../../../utils/gmx/config/env";
 import useWallet from "../../../utils/gmx/lib/wallets/useWallet";
+import PageContainer from "@/components/Container/PageContainer";
 
 export function SyntheticsFallbackPage() {
   const { active } = useWallet();
@@ -23,51 +24,16 @@ export function SyntheticsFallbackPage() {
   if (!isLoaded) return null;
 
   return (
-    <div className="page-layout">
-      <div className="page-not-found-container">
-        <div className="page-not-found">
-          <h2>V2 doesn't currently support this network</h2>
-
-          <p className="go-back">
-            <div>
-              <span>Switch to:</span>
-            </div>
-
-            <br />
-            <div
-              className="clickable underline"
-              onClick={() => switchNetwork(ARBITRUM, active)}
-            >
-              {getChainName(ARBITRUM)}
-            </div>
-
-            <div
-              className="clickable underline"
-              onClick={() => switchNetwork(AVALANCHE, active)}
-            >
-              {getChainName(AVALANCHE)}
-            </div>
-
-            {isDevelopment() && (
-              <>
-                <div
-                  className="clickable underline"
-                  onClick={() => switchNetwork(AVALANCHE_FUJI, active)}
-                >
-                  {getChainName(AVALANCHE_FUJI)}
-                </div>
-
-                <div
-                  className="clickable underline"
-                  onClick={() => switchNetwork(ARBITRUM_GOERLI, active)}
-                >
-                  {getChainName(ARBITRUM_GOERLI)}
-                </div>
-              </>
-            )}
-          </p>
+    <PageContainer
+      main={<div>Credit</div>}
+      secondary={<div>Credit</div>}
+      page="Credit Section"
+      keepWorkingMessage={
+        <div className="text-center">
+          <span>V2 doesn't currently support this network.</span>
+          <div className="mt-2">Switch to Arbitrum.</div>
         </div>
-      </div>
-    </div>
+      }
+    />
   );
 }

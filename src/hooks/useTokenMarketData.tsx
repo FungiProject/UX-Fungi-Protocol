@@ -24,6 +24,7 @@ export function useTokenMarketData(tokensInfo: TokenInfo[]) {
       tokensInfo.length > 0
     ) {
       const tokensData = await getTokenMarketData(chainId, tokensInfo);
+
       if (!tokensData) {
         return;
       }

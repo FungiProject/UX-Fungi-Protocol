@@ -4,7 +4,7 @@ import React from "react";
 import HomeTableCard from "../Cards/TableCards/HomeTableCard";
 import ActionsButton from "../Buttons/ActionsButton";
 // Utils
-import formatNumber from "@/utils/formatNumber";
+import {formatNumber} from "@/utils/formatNumber";
 import { PositionInfo } from "@/domain/position/types";
 import SpinnerLoader from "../Loader/SpinnerLoader";
 

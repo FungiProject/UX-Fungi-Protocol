@@ -18,6 +18,7 @@ import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { useNotification } from "@/context/NotificationContextProvider";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
 
 type BridgeProps = {
   tokens: TokenInfo[];
@@ -40,7 +41,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   );
   const [fromAddress, setFromAddress] = useState(scAccount);
   const [toAddress, setToAddress] = useState(scAccount);
-  const [slippage, setSlippage] = useState("0.1");
+  const [slippage, setSlippage] = useState("0.001");
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
   );
@@ -50,12 +51,13 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   const [tx, sendTx] = useLiFiTx(
     "Bridge",
-    networkFrom?.symbol,
+    networkFrom?.id || chainId,
     (Number(amountFrom) * 10 ** Number(tokenFrom?.decimals)).toString(),
     tokenFrom?.coinKey,
-    networkTo?.symbol,
+    networkTo?.id,
     tokenTo?.coinKey,
     fromAddress,
+    tokenFrom?.coinKey,
     toAddress,
     slippage
   );
@@ -120,6 +122,12 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
         disabled: true,
       });
     }
+    if (amountFrom && Number(amountFrom * Number(tokenFrom?.priceUSD)) < 12) {
+      setSubmitButtonState({
+        text: "Min amount: $12",
+        disabled: true,
+      });
+    }
   }, [
     scAccount,
     amountFrom,
@@ -145,32 +153,35 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   }, [chainId]);
 
   useEffect(() => {
-    const getConnections = async (
-      fromChain: string,
-      toChain: string,
-      fromToken: string
-    ) => {
-      const result = await axios.get("https://li.quest/v1/connections", {
-        params: {
-          fromChain,
-          toChain,
-          fromToken,
-        },
-      });
+    if (!networkFrom || !networkTo || !tokenFrom) {
+      return;
+    }
 
-      setConnections(result.data.connections[0].toTokens);
+    const getConnections = async () => {
+      let connections;
+      try {
+        const fromChainLifi = getChainIdLifi(Number(networkFrom!.id));
+        const toChainLifi = getChainIdLifi(networkTo.id);
+
+        const result = await axios.get("https://li.quest/v1/connections", {
+          params: {
+            fromChain: fromChainLifi,
+            toChain: toChainLifi,
+            tokenFrom: tokenFrom.symbol,
+          },
+        });
+
+        connections = result.data.connections[0].toTokens;
+      } catch (error) {
+        console.log(error);
+        console.log("Error getting connections from lifi");
+      }
+
+      setConnections(connections);
       setConnectionsLoading(false);
     };
 
-    return () => {
-      if (
-        networkFrom !== undefined &&
-        networkTo !== undefined &&
-        tokenFrom !== undefined
-      ) {
-        getConnections(networkFrom.symbol, networkTo.symbol, tokenFrom.symbol);
-      }
-    };
+    getConnections();
   }, [networkFrom, networkTo, tokenFrom, amountFrom]);
 
   useEffect(() => {
@@ -212,12 +223,19 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(resultTx).then(() =>
+    try {
+      // await sendUserOperations(resultTx);
       showNotification({
         message: "Bridge complete",
         type: "success",
-      })
-    );
+      });
+    } catch (error) {
+      console.error("Error al ejecutar sendUserOperations:", error);
+      showNotification({
+        message: "Error in the bridge",
+        type: "error",
+      });
+    }
   };
 
   const handleAmountChange = (amount: number) => {
@@ -258,7 +276,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
   return (
     <main className="mt-[12px]">
       <div className="relative">
-        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[150px]">
+        <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[15vh]">
           <BuyInputSection
             topLeftLabel={`Pay`}
             topLeftValue={
@@ -399,6 +417,11 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       >
         {submitButtonState.text}
       </Button>
+      <div className="text-sm px-2 mt-4 text-gray-400">
+        The Bridge is operated by LI.FI, and we cannot take responsibility for
+        any issues. For support related to the bridge, please refer to the LI.FI
+        Discord server.
+      </div>
     </main>
   );
 }

@@ -51,7 +51,7 @@ export default function useScAccountPerpsPosition() {
         unPnL: pnlInTotal,
       });
     }
-  }, [positionsInfoData]);
+  }, [positionsInfoData, isPositionsLoading]);
 
   return { perpsBalance, perpsPosition };
 }

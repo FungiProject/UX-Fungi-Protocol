@@ -372,7 +372,7 @@ export function SyntheticsPage(p) {
     <div className="Exchange page-layout overflow-auto">
       <PageContainer
         main={
-          <div className="Exchange-left">
+          <div className="Exchange-left h-[77vh] overflow-auto">
             <TVChart
               tokensData={tokensData}
               savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -406,7 +406,7 @@ export function SyntheticsPage(p) {
                   option={listSection}
                   onChange={(section) => setListSection(section)}
                   type="inline"
-                  className="h-[40px] p-[4px] ml-6 w-2/4 rounded-full grid grid-cols-4 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
+                  className="h-[40px] p-[4px] ml-6 w-3/4 xl:w-2/4 rounded-full grid grid-cols-4 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold"
                 />
                 {/* <div className="align-right Exchange-should-show-position-lines">
                   {selectedOrdersKeysArr.length > 0 && (
@@ -485,7 +485,7 @@ export function SyntheticsPage(p) {
           </div>
         }
         secondary={
-          <div className="h-[730px] overflow-auto">
+          <div className="h-[75vh] overflow-auto">
             <div className="Exchange-right">
               <div className="Exchange-swap-box">
                 <TradeBox

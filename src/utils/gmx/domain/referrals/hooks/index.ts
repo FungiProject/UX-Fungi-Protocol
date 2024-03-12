@@ -79,9 +79,12 @@ export function useUserReferralInfo(
     chainId,
     codeOwner
   );
+  
   const finalDiscountShare = customDiscountShare?.gt(0)
-    ? customDiscountShare
-    : discountShare;
+  ? customDiscountShare
+  : discountShare;
+
+
   if (
     !userReferralCode ||
     !userReferralCodeString ||
@@ -90,10 +93,10 @@ export function useUserReferralInfo(
     !totalRebate ||
     !finalDiscountShare ||
     !referralCodeForTxn
-  ) {
-    return undefined;
-  }
-
+    ) {
+      return undefined;
+    }
+    
   return {
     userReferralCode,
     userReferralCodeString,

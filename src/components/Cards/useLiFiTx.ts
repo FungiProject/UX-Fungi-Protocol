@@ -4,13 +4,14 @@ import { Hex } from "viem";
 import axios from "axios";
 import { BigNumber, ethers } from "ethers";
 import { UserOperation } from "@/lib/userOperations/types";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
 
 export const useLiFiTx = (
   type: string,
-  fromChain: string | undefined,
+  fromChainId: number,
   fromAmount: string | undefined,
   fromToken: string | undefined,
-  toChain: string | undefined,
+  toChainId: number | undefined,
   toToken: string | undefined,
   fromAddress: string | undefined,
   fromSymbol: string | undefined,
@@ -26,6 +27,7 @@ export const useLiFiTx = (
     const response = await axios.get("https://li.quest/v1/quote", {
       params,
     });
+
     return response.data;
   };
 
@@ -39,13 +41,16 @@ export const useLiFiTx = (
       const orders = ["FASTEST", "CHEAPEST", "SAFEST", "RECOMMENDED"];
       let quote: any;
       try {
+        const fromChainLifi = getChainIdLifi(fromChainId);
+        const toChainLifi = getChainIdLifi(toChainId || 0);
+
         const responses = await Promise.all(
           orders.map((order) => {
             return getQuote({
-              fromChain,
+              fromChain: fromChainLifi,
               fromAmount,
               fromToken,
-              toChain,
+              toChain: toChainLifi,
               toToken,
               fromAddress,
               toAddress,
@@ -60,13 +65,16 @@ export const useLiFiTx = (
         });
 
         quote = filteredResponses.reduce((maxResponse, response) => {
-          return response.estimate.toAmountMin >
-            maxResponse.estimate.toAmountMin
+          return response.estimate.toAmountUSD -
+            response.estimate.gasCosts[0].toAmountUSD >
+            maxResponse.estimate.toAmountUSD -
+              maxResponse.estimate.gasCosts[0].toAmountUSD
             ? response
             : maxResponse;
         }, filteredResponses[0]);
+        console.log(quote);
       } catch (error) {
-        console.error("Error obteniendo cotizaciones:", error);
+        console.error("Error obteining quotes:", error);
       }
 
       const spender: Hex = quote.transactionRequest.to;

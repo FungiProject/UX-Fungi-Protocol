@@ -12,10 +12,12 @@ import Loader from "../../Loader/SpinnerLoader";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useTokensInfo } from "@/hooks/useTokensInfo";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { TokenInfo } from "@/domain/tokens/types";
 
 export default function Spot() {
   const { chainId } = useWallet();
   const { tokens } = useTokensInfo();
+  const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>();
   const [actionSelected, setActionSelected] = useState("Swap");
 
   const [length, setLength] = useState(tokens.length);
@@ -99,8 +101,9 @@ export default function Spot() {
                   endIndex={endIndex}
                   getLength={getLength}
                   handlePageChange={handlePageChange}
+                  setTokenFrom={setTokenFrom}
                 />{" "}
-                <div className="flex justify-center items-center absolute inset-x-0 bottom-6 mx-10">
+                <div className="flex justify-center items-center absolute inset-x-0 2xl:bottom-6 bottom-10 mx-10">
                   {length !== 0 && (
                     <span className="absolute inset-x-0 bottom-2">
                       Showing {startIndex + 1}-{endIndex} out of {length}
@@ -157,7 +160,11 @@ export default function Spot() {
                 ) : actionSelected === "Bridge" ? (
                   <Bridge tokens={tokens} chainId={chainId} />
                 ) : (
-                  <Swapper tokens={tokens} chainId={chainId} />
+                  <Swapper
+                    tokens={tokens}
+                    chainId={chainId}
+                    tokenFrom={tokenFrom}
+                  />
                 )}
               </>
             )}

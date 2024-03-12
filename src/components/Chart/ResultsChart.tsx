@@ -5,7 +5,7 @@ import Image from "next/image";
 // Images
 import Chart from "../../../public/Chart.svg";
 // Utils
-import formatNumber from "@/utils/formatNumber";
+import {formatNumber} from "@/utils/formatNumber";
 
 type ResultsChartProps = {
   personalBalance: number;
