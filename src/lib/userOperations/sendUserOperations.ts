@@ -7,7 +7,7 @@ export async function sendUserOperations(
 ) {
   try {
 
-    console.log(userOperations)
+    // console.log(userOperations)
     if (userOperations.length === 0) {
       return;
     }
