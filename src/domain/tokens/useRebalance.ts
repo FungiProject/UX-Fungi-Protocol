@@ -207,6 +207,9 @@ function getRebalanceSwaps(
     }
   });
 
+  console.log("Swaps generados");
+  console.log(swaps);
+
   return swaps;
 }
 
