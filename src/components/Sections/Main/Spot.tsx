@@ -8,7 +8,7 @@ import ActionsSwitcher from "../../Switchers/ActionsSwitcher";
 import Bridge from "../../Cards/Bridge";
 import Rebalancer from "../../Cards/Rebalancer";
 import Loader from "../../Loader/SpinnerLoader";
-import { DCA } from "../../Cards/DCA"; // Added DCA import
+import DCA from "../../Cards/DCA"; // Added DCA import
 // Hooks
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { useTokensInfo } from "@/hooks/useTokensInfo";
@@ -160,7 +160,7 @@ export default function Spot() {
                 ) : actionSelected === "Swap" ? (
                   <Swapper tokens={tokens} chainId={chainId} />
                 ) : actionSelected === "DCA" ? ( // Conditional rendering for DCA
-                  <DCA tokens={tokens} />
+                  <DCA tokens={tokens} chainId={chainId}/>
                 ) : null}
               </>
             )}

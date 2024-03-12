@@ -10,8 +10,8 @@ import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { TokenInfo } from "@/domain/tokens/types";
 import useWallet from "@/hooks/useWallet";
-import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
-import { BigNumber } from "ethers";
+// import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
+// import { BigNumber } from "ethers";
 import { useNotification } from "@/context/NotificationContextProvider";
 
 type SwapperProps = {
