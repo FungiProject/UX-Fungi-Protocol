@@ -87,18 +87,23 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
 
     setIsSubmitting(true);
 
-    const rebalances = computeRebalance(tokensBalances, selectedTokens);
-    const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
+    try {
+      const rebalances = computeRebalance(tokensBalances, selectedTokens);
+      const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
 
-    let txnPromise = sendUserOperations(userOps);
+      let txnPromise = sendUserOperations(userOps);
 
-    txnPromise
-      .then(() => {
-        //onSubmitted();
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+      txnPromise
+        .then(() => {
+          //onSubmitted();
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    } catch (error) {
+      console.log("Error generate user ops")
+      console.log(error);
+    }
   }
 
   const submitButtonState = useMemo(() => {
@@ -222,9 +227,8 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       <div>
         <Button
           variant="primary-action"
-          className={`mt-4 ${
-            submitButtonState.disabled ? "opacity-50" : ""
-          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+          className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
+            } w-full bg-main rounded-xl py-3 text-white font-semibold`}
           type="submit"
           onClick={onSubmit}
           disabled={submitButtonState.disabled}

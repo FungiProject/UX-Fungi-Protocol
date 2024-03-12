@@ -66,7 +66,7 @@ export async function getUserOpRebalance(
   const userOps: UserOperation[] = [];
   swaps.forEach((swap, index) => {
     //need approve if is not native
-    if(swap.tokenIn !== ethers.constants.AddressZero) {
+    if (swap.tokenIn !== ethers.constants.AddressZero) {
       //Approve
       userOps.push(
         createApproveTokensUserOp({
@@ -88,13 +88,13 @@ export async function getUserOpRebalance(
 }
 
 //Obtiene el valor en usd del monto total del balance de este token
-function computeTokensUsd(balances: TokenInfo[]):TokenInfoTotalUsd[]  {
+function computeTokensUsd(balances: TokenInfo[]): TokenInfoTotalUsd[] {
 
-  const balancesUsdValue: TokenInfoTotalUsd[] = balances.map(token=>{
+  const balancesUsdValue: TokenInfoTotalUsd[] = balances.map(token => {
     return {
       ...token,
       totalValueUsd: Number(token.priceUSD) *
-      Number(ethers.utils.formatUnits(token.balance || "0", token.decimals))
+        Number(ethers.utils.formatUnits(token.balance || "0", token.decimals))
     }
   })
 
@@ -134,16 +134,12 @@ function getRebalanceSwaps(
   let swaps: RebalanceSwap[] = [];
 
   rebalancesSorted.forEach((rebalance) => {
+
     let amountUsdByPercentaje = totalUsd * (rebalance.percentage / 100); //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
-    
-    //buscamos primero si tenemos balance del token de rebalance para no hacer swap innecesarios
-    const balanceTokenExist = balanceTokensMap.find(t=>t.address == rebalance.address);
 
-
-    ///// si no existe balance de ese token
     for (let i = 0; i < balanceTokensMap.length; i++) {
       const balanceToken = balanceTokensMap[i];
-      if (amountUsdByPercentaje === 0) {
+      if (amountUsdByPercentaje === 0 || balanceToken.address == rebalance.address) {
         break;
       }
 
@@ -154,7 +150,7 @@ function getRebalanceSwaps(
             amountIn: ethers.utils
               .parseUnits(
                 (
-                  (balanceToken.usdAvailable / Number(balanceToken.priceUSD!)).toFixed(15)
+                  (balanceToken.usdAvailable / Number(balanceToken.priceUSD!)).toFixed(5)
                 ).toString(),
                 balanceToken.decimals
               )
@@ -168,13 +164,7 @@ function getRebalanceSwaps(
         } else if (amountUsdByPercentaje > 0) {
           swaps.push({
             tokenIn: balanceToken.address,
-            amountIn: ethers.utils
-              .parseUnits(
-                (
-                  (amountUsdByPercentaje / Number(balanceToken.priceUSD!)).toFixed(15)
-                ).toString(),
-                balanceToken.decimals
-              )
+            amountIn: ethers.utils.parseUnits(((amountUsdByPercentaje / Number(balanceToken.priceUSD!)).toFixed(5)).toString(), balanceToken.decimals)
               .toString(),
             tokenOut: rebalance.address,
           });
@@ -184,15 +174,15 @@ function getRebalanceSwaps(
           amountUsdByPercentaje = 0;
         }
       }
-  }
+    }
   });
 
   return swaps;
 }
 
-function sortTokenBalanceAndRebalance( 
+function sortTokenBalanceAndRebalance(
   balancesToken: TokenInfoTotalUsd[],
-  rebalances: TokenInfoRebalanceInput[] ) {
+  rebalances: TokenInfoRebalanceInput[]) {
 
   //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
   const balanceTokensSorted = balancesToken.sort((a, b) => {
@@ -204,15 +194,15 @@ function sortTokenBalanceAndRebalance(
   });
 
   // Construimos rebalancesSorted basándonos en el orden de los tokens en balanceTokensSorted
-   const rebalancesSorted: TokenInfoRebalanceInput[] = [];
-   for (const tokenInfo of balanceTokensSorted) {
-     const rebalance = rebalances.find(rebalance => rebalance.address === tokenInfo.address);
-     if (rebalance) {
-       rebalancesSorted.push(rebalance);
-     }
-   }
- 
-   return { balanceTokensSorted, rebalancesSorted };
+  const rebalancesSorted: TokenInfoRebalanceInput[] = [];
+  for (const tokenInfo of balanceTokensSorted) {
+    const rebalance = rebalances.find(rebalance => rebalance.address === tokenInfo.address);
+    if (rebalance) {
+      rebalancesSorted.push(rebalance);
+    }
+  }
+
+  return { balanceTokensSorted, rebalancesSorted };
 }
 
 
