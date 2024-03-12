@@ -18,7 +18,7 @@ import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
 import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { useNotification } from "@/context/NotificationContextProvider";
-import { useLiFiConnections } from "@/hooks/useLiFiConnections";
+import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
 
 type BridgeProps = {
   tokens: TokenInfo[];
@@ -158,12 +158,26 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     }
 
     const getConnections = async () => {
-      const result = await useLiFiConnections({
-        fromChainId: Number(networkFrom!.id),
-        toChainId: networkTo.id,
-        fromToken: tokenFrom.symbol,
-      });
-      setConnections(result);
+      let connections;
+      try {
+        const fromChainLifi = getChainIdLifi(Number(networkFrom!.id));
+        const toChainLifi = getChainIdLifi(networkTo.id);
+
+        const result = await axios.get("https://li.quest/v1/connections", {
+          params: {
+            fromChain: fromChainLifi,
+            toChain: toChainLifi,
+            tokenFrom: tokenFrom.symbol,
+          },
+        });
+
+        connections = result.data.connections[0].toTokens;
+      } catch (error) {
+        console.log(error);
+        console.log("Error getting connections from lifi");
+      }
+
+      setConnections(connections);
       setConnectionsLoading(false);
     };
 

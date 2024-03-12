@@ -7,11 +7,15 @@ import CheckMark from "../../../img/check-mark.svg";
 
 type TokenCardProps = {
   token: TokenInfo;
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick: (token: TokenInfo) => void;
 };
 
-export default function TokenCard({ token, onClick, isSelected }: TokenCardProps) {
+export default function TokenCard({
+  token,
+  onClick,
+  isSelected,
+}: TokenCardProps) {
   return (
     <button
       className="px-4 py-2 rounded-xl w-full hover:bg-gray-100 flex justify-between items-center my-0.5 text-start"
@@ -40,13 +44,15 @@ export default function TokenCard({ token, onClick, isSelected }: TokenCardProps
       ) : (
         <div>0</div>
       )}
-      {isSelected &&   (<Image
-            height={20}
-            width={20}
-            alt="Token checked"
-            src={CheckMark.src}
-            className="ml-[12px]"
-          />)}
+      {isSelected && (
+        <Image
+          height={20}
+          width={20}
+          alt="Token checked"
+          src={CheckMark.src}
+          className="ml-[12px]"
+        />
+      )}
     </button>
   );
 }
