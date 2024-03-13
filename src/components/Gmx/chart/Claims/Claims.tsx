@@ -32,7 +32,7 @@ export function Claims({
   positionsInfoData,
 }: Props) {
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { scAccount } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
@@ -42,7 +42,7 @@ export function Claims({
     pageSize: PAGE_SIZE,
   });
 
-  const isEmpty = !account || claimActions?.length === 0;
+  const isEmpty = !scAccount || claimActions?.length === 0;
 
   const handleClaimClick = useCallback(() => {
     setIsClaiming(true);
@@ -56,7 +56,7 @@ export function Claims({
 
   return (
     <div className="TradeHistory">
-      {account && isLoading && (
+      {scAccount && isLoading && (
         <div className="TradeHistoryRow App-box">Loading...</div>
       )}
       <div
@@ -64,14 +64,14 @@ export function Claims({
           "flex-column": isMobile,
         })}
       >
-        {account && !isLoading && (
+        {scAccount && !isLoading && (
           <SettleAccruedCard
             positionsInfoData={positionsInfoData}
             onSettleClick={handleSettleClick}
             style={isMobile ? undefined : { marginRight: 4 }}
           />
         )}
-        {account && !isLoading && (
+        {scAccount && !isLoading && (
           <ClaimableCard
             marketsInfoData={marketsInfoData}
             onClaimClick={handleClaimClick}

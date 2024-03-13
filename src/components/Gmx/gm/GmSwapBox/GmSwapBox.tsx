@@ -1082,7 +1082,7 @@ export function GmSwapBox(p: Props) {
                 />
               ) : (
                 <div className="selected-token">
-                  <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
+                  <TokenWithIcon symbol={firstToken?.symbol} displaySize={24} />
                 </div>
               )}
             </BuyInputSection>
@@ -1160,7 +1160,7 @@ export function GmSwapBox(p: Props) {
                 <div className="selected-token">
                   <TokenWithIcon
                     symbol={secondToken?.symbol}
-                    displaySize={20}
+                    displaySize={24}
                   />
                 </div>
               </BuyInputSection>

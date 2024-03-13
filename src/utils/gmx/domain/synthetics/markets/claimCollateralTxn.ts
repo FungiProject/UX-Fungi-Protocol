@@ -4,7 +4,7 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "../../../lib/contracts/callContract";
 
 type Params = {
-  account: string;
+  scAccount: string;
   fundingFees: {
     marketAddresses: string[];
     tokenAddresses: string[];
@@ -13,7 +13,7 @@ type Params = {
 };
 
 export function claimCollateralTxn(chainId: number, p: Params) {
-  const { setPendingTxns, fundingFees, account } = p;
+  const { setPendingTxns, fundingFees, scAccount } = p;
 
   const contract = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
@@ -24,7 +24,7 @@ export function claimCollateralTxn(chainId: number, p: Params) {
     chainId,
     contract,
     "claimFundingFees",
-    [fundingFees.marketAddresses, fundingFees.tokenAddresses, account],
+    [fundingFees.marketAddresses, fundingFees.tokenAddresses, scAccount],
     {
       sentMsg: `Funding Claimed`,
       successMsg: `Success claimings`,

@@ -72,7 +72,6 @@ export const useLiFiTx = (
             ? response
             : maxResponse;
         }, filteredResponses[0]);
-        console.log(quote);
       } catch (error) {
         console.error("Error obteining quotes:", error);
       }

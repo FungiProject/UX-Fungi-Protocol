@@ -79,6 +79,7 @@ export default function MarketTokenSelector(props: Props) {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
       const mintableInfo = getMintableMarketTokens(marketInfo, market);
       const sellableInfo = getSellableMarketToken(marketInfo, market);
+
       const apr = getByKey(marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(
         marketsTokensIncentiveAprData,
@@ -147,7 +148,7 @@ export default function MarketTokenSelector(props: Props) {
                         <TokenIcon
                           className=""
                           symbol={iconName}
-                          displaySize={32}
+                          displaySize={40}
                           importSize={24}
                         />
                         <div className="ml-2">
