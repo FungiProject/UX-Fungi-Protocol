@@ -29,6 +29,9 @@ export function computeRebalance(
     rebalances
   );
 
+  console.log("Swaps calculados Rebalance");
+  console.log(swaps);
+
   return swaps;
 }
 
@@ -131,51 +134,81 @@ function getRebalanceSwaps(
       usdAvailable: a.totalValueUsd || 0,
     }));
 
+  //Añadimos el campo usdRemain que será el que lleve la cuenta de la cantidad que falta para rellenar el rebalance. Al inicio va a ser el porcentaje convertido a usd, //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
+  interface TokenInfoRebalanceInputWithUsdRemain extends TokenInfoTotalUsd {
+    amountUsdByPercentaje: number;
+  }
+  const rebalancesSortedWithUsdRemain: TokenInfoRebalanceInputWithUsdRemain[] =
+    rebalancesSorted.map((a) => ({
+      ...a,
+      amountUsdByPercentaje: totalUsd * (a.percentage / 100),
+    }));
+
   let swaps: RebalanceSwap[] = [];
 
-  rebalancesSorted.forEach((rebalance) => {
 
-    let amountUsdByPercentaje = totalUsd * (rebalance.percentage / 100); //cantidad en usd que corresponde al porcentaje del rebalanceo, ira menguando conforme se generan las userop
+  //Primero vamos a buscar si hay algún token que tengamos en balance y que exista en rebalance para no generar swap innecesarios. Por lo que vamos a buscar ese balance y restarselo al amountUsdByPercentaje
+  rebalancesSortedWithUsdRemain.forEach((rebalance) => {
+    const index = balanceTokensMap.findIndex(t => t.address == rebalance.address);
+    if (index != -1) {
+      if (rebalance.amountUsdByPercentaje > balanceTokensMap[index].usdAvailable) {
+        rebalance.amountUsdByPercentaje = rebalance.amountUsdByPercentaje - balanceTokensMap[index].usdAvailable;
+        balanceTokensMap[index].usdAvailable = 0;
+      } else if (rebalance.amountUsdByPercentaje > 0) {
+        balanceTokensMap[index].usdAvailable = balanceTokensMap[index].usdAvailable - rebalance.amountUsdByPercentaje;
+        rebalance.amountUsdByPercentaje = 0;
+      }
+    }
+  })
+
+  rebalancesSortedWithUsdRemain.forEach((rebalance) => {
 
     for (let i = 0; i < balanceTokensMap.length; i++) {
-      const balanceToken = balanceTokensMap[i];
-      if (amountUsdByPercentaje === 0 || balanceToken.address == rebalance.address) {
+      balanceTokensMap[i];
+      if (rebalance.amountUsdByPercentaje === 0) {
         break;
       }
 
-      if (balanceToken.usdAvailable > 0) {
-        if (amountUsdByPercentaje > balanceToken.usdAvailable) {
-          swaps.push({
-            tokenIn: balanceToken.address,
-            amountIn: ethers.utils
-              .parseUnits(
-                (
-                  (balanceToken.usdAvailable / Number(balanceToken.priceUSD!)).toFixed(5)
-                ).toString(),
-                balanceToken.decimals
-              )
-              .toString(),
-            tokenOut: rebalance.address,
-          });
+      if (balanceTokensMap[i].usdAvailable > 0) {
+        if (rebalance.amountUsdByPercentaje > balanceTokensMap[i].usdAvailable) {
+          if (balanceTokensMap[i].address != rebalance.address) {
+            swaps.push({
+              tokenIn: balanceTokensMap[i].address,
+              amountIn: ethers.utils
+                .parseUnits(
+                  (
+                    (balanceTokensMap[i].usdAvailable / Number(balanceTokensMap[i].priceUSD!)).toFixed(5)
+                  ).toString(),
+                  balanceTokensMap[i].decimals
+                )
+                .toString(),
+              tokenOut: rebalance.address,
+            });
+          }
 
-          balanceToken.usdAvailable = 0;
-          amountUsdByPercentaje =
-            amountUsdByPercentaje - balanceToken.usdAvailable;
-        } else if (amountUsdByPercentaje > 0) {
-          swaps.push({
-            tokenIn: balanceToken.address,
-            amountIn: ethers.utils.parseUnits(((amountUsdByPercentaje / Number(balanceToken.priceUSD!)).toFixed(5)).toString(), balanceToken.decimals)
-              .toString(),
-            tokenOut: rebalance.address,
-          });
+          rebalance.amountUsdByPercentaje =
+            rebalance.amountUsdByPercentaje - balanceTokensMap[i].usdAvailable;
+          balanceTokensMap[i].usdAvailable = 0;
+        } else if (rebalance.amountUsdByPercentaje > 0) {
+          if (balanceTokensMap[i].address != rebalance.address) {
+            swaps.push({
+              tokenIn: balanceTokensMap[i].address,
+              amountIn: ethers.utils.parseUnits(((rebalance.amountUsdByPercentaje / Number(balanceTokensMap[i].priceUSD!)).toFixed(5)).toString(), balanceTokensMap[i].decimals)
+                .toString(),
+              tokenOut: rebalance.address,
+            });
+          }
 
-          balanceToken.usdAvailable =
-            balanceToken.usdAvailable - amountUsdByPercentaje;
-          amountUsdByPercentaje = 0;
+          balanceTokensMap[i].usdAvailable =
+            balanceTokensMap[i].usdAvailable - rebalance.amountUsdByPercentaje;
+          rebalance.amountUsdByPercentaje = 0;
         }
       }
     }
   });
+
+  console.log("Swaps generados");
+  console.log(swaps);
 
   return swaps;
 }
@@ -198,6 +231,13 @@ function sortTokenBalanceAndRebalance(
   for (const tokenInfo of balanceTokensSorted) {
     const rebalance = rebalances.find(rebalance => rebalance.address === tokenInfo.address);
     if (rebalance) {
+      rebalancesSorted.push(rebalance);
+    }
+  }
+
+  // Agregar los rebalances que no se encontraron al final de rebalancesSorted
+  for (const rebalance of rebalances) {
+    if (!rebalancesSorted.includes(rebalance)) {
       rebalancesSorted.push(rebalance);
     }
   }

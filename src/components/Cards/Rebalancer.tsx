@@ -81,13 +81,14 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
   }, [selectedTokens]);
 
   async function onSubmit() {
-    if (!tokensBalances || !selectedTokens || !chainId) {
+    if (!tokensBalances || !selectedTokens || !chainId || !scAccount) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+
       const rebalances = computeRebalance(tokensBalances, selectedTokens);
       const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
 
