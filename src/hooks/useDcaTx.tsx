@@ -1,16 +1,17 @@
-// src/hooks/useDcaTx.tsx
 import { useContext } from 'react';
 import useWallet from './useWallet';
 import { useNotification } from '@/context/NotificationContextProvider';
 import { UserOperation } from '@/lib/userOperations/types';
 import { sendUserOperations as sendUserOperationAlchemy } from '@/lib/userOperations/sendUserOperations';
-import MEAN_FINANCE_ABI from '../../abis/DCAHub.json'
+import MEAN_FINANCE_ABI from '../../abis/DCAHub.json';
 import { ethers } from 'ethers';
+import { useGlobalContext } from "@/context/FungiGlobalContext";
 
 export const useDcaTx = () => {
     const DCAHub = '0xA5AdC5484f9997fBF7D405b9AA62A7d88883C345';
     const { scAccount } = useWallet();
     const { showNotification } = useNotification();
+    const { alchemyScaProvider } = useGlobalContext();
 
     const prepareDcaOperations = async ({ sellToken, buyToken, amount, amountOfSwaps, swapInterval, scAccount }) => {
         // ABI for the Mean Fianace DCA Hub contract's deposit method
@@ -31,5 +32,17 @@ export const useDcaTx = () => {
         return userOperations;
     };
 
-    return { prepareDcaOperations };
+    const executeDcaOperation = async (userOperations) => {
+        try {
+            // Assuming sendUserOperationAlchemy is adaptable for DCA operations
+            await sendUserOperationAlchemy(userOperations, alchemyScaProvider);
+            showNotification({ message: "DCA operation executed successfully.", type: "success" });
+        } catch (error) {
+            console.error(error);
+            showNotification({ message: "Failed to execute DCA operation.", type: "error" });
+            throw error;
+        }
+    };
+
+    return { prepareDcaOperations, executeDcaOperation };
 };
