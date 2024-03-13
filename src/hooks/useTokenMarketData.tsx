@@ -9,6 +9,7 @@ export function useTokenMarketData(tokensInfo: TokenInfo[]) {
   const [tokenMarketsData, setTokensMarketData] = useState<TokenData[] | []>(
     []
   );
+  const [isLoading, setIsLoading] = useState(true);
   const { alchemyClient } = useGlobalContext();
 
   useEffect(() => {
@@ -16,6 +17,8 @@ export function useTokenMarketData(tokensInfo: TokenInfo[]) {
   }, [alchemyClient, chainId, scAccount]);
 
   const fetchData = async (tokensInfo: TokenInfo[]) => {
+    setIsLoading(true);
+
     if (
       alchemyClient &&
       chainId &&
@@ -28,9 +31,13 @@ export function useTokenMarketData(tokensInfo: TokenInfo[]) {
       if (!tokensData) {
         return;
       }
+
       setTokensMarketData(tokensData);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
-  return { tokenMarketsData, fetchData };
+  return { tokenMarketsData, fetchData, isLoading };
 }

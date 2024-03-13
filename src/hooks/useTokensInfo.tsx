@@ -31,7 +31,7 @@ export function useTokensInfo() {
       }
     };
     fetchData();
-  }, [alchemyClient, chainId, scAccount]);
+  }, [alchemyClient]);
 
   return { tokens };
 }

@@ -22,13 +22,11 @@ export async function getAllTokensWithBalances(
   chainId: number,
   address: string
 ) {
-  const balances = await getTokenBalancesAlchemy(
-    alchemyClient,
-    address
-  );
+  const balances = await getTokenBalancesAlchemy(alchemyClient, address);
+
   if (!balances) return;
   const tokens = await getLifiTokensWithBalance(chainId, balances);
-  fillCoinGeckoTokenId(chainId, tokens);
+
   return tokens;
 }
 
