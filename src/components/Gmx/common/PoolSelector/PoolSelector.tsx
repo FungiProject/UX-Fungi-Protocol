@@ -320,7 +320,7 @@ export function PoolSelector({
                   : marketInfo?.indexToken.symbol
               }
               importSize={40}
-              displaySize={20}
+              displaySize={24}
             />
           )}
           {displayPoolLabel(marketInfo)}

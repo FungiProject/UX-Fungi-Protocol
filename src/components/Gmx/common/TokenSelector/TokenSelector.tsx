@@ -315,7 +315,7 @@ export default function TokenSelector(props: Props) {
                 className="mx-3"
                 symbol={tokenInfo.symbol}
                 importSize={24}
-                displaySize={20}
+                displaySize={24}
               />
             )}
             <span className="Token-symbol-text">{tokenInfo.symbol}</span>

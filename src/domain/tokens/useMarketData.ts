@@ -20,7 +20,7 @@ export async function fillCoinGeckoTokenId(
 
 export async function getTokenMarketData(chainId: number, tokens: TokenInfo[]) {
   // await fillCoinGeckoTokenId(chainId, tokens); //TODO deberia llamarse cuando se forma el tokenInfo
-  console.log(tokens);
+
   // const coingeckoIds = tokens.map((token) => token.coinGeckoId);
 
   // if (coingeckoIds.length === 0) {

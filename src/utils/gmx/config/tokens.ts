@@ -256,6 +256,74 @@ export const TOKENS: { [chainId: number]: Token[] } = {
         "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
     },
+    {
+      name: "Wrapped BNB (LayerZero)",
+      symbol: "BNB",
+      assetSymbol: "WBNB (LayerZero)",
+      address: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      decimals: 18,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bnb",
+      coingeckoSymbol: "BNB",
+      explorerUrl:
+        "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+    },
+    {
+      name: "Cosmos",
+      symbol: "ATOM",
+      assetSymbol: "ATOM",
+      address: "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
+      decimals: 6,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/1481/standard/cosmos_hub.png?1696502525",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/cosmos-hub",
+      coingeckoSymbol: "ATOM",
+      isSynthetic: true,
+    },
+    {
+      name: "Near",
+      symbol: "NEAR",
+      assetSymbol: "NEAR",
+      address: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+      decimals: 24,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/10365/standard/near.jpg?1696510367",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/near",
+      coingeckoSymbol: "NEAR",
+      isSynthetic: true,
+    },
+    {
+      name: "Aave",
+      symbol: "AAVE",
+      assetSymbol: "AAVE",
+      address: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      decimals: 18,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/aave",
+      coingeckoSymbol: "AAVE",
+    },
+    {
+      name: "Wrapped AVAX (Wormhole)",
+      symbol: "AVAX",
+      assetSymbol: "WAVAX (Wormhole)",
+      address: "0x565609fAF65B92F7be02468acF86f8979423e514",
+      decimals: 18,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
+      coingeckoSymbol: "AVAX",
+    },
+    {
+      name: "Optimism",
+      symbol: "OP",
+      address: "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+      decimals: 18,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/optimism",
+    },
   ],
   [AVALANCHE]: [
     {

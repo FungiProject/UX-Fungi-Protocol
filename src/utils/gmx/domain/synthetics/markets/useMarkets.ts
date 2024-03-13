@@ -15,7 +15,6 @@ type MarketsResult = {
 const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
-
   const { data } = useMulticall(chainId, "useMarketsData", {
     key: [],
 
@@ -48,6 +47,7 @@ export function useMarkets(chainId: number): MarketsResult {
               chainId,
               convertTokenAddress(chainId, marketValues.indexToken, "native")
             );
+
             const longToken = getToken(chainId, marketValues.longToken);
             const shortToken = getToken(chainId, marketValues.shortToken);
 
