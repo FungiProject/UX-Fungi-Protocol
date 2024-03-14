@@ -16,6 +16,7 @@ import LogOutIcon from "../../../public/profile/LogOutIcon.svg";
 import TransactionIcon from "../../../public/profile/TransactionIcon.svg";
 import useWallet from "@/hooks/useWallet";
 import { useNotification } from "@/context/NotificationContextProvider";
+import SendModal from "../Modals/SendModal";
 
 interface ProfileModalProps {
   getOpenModal: (openModal: boolean) => void;
@@ -150,6 +151,7 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
                           />
                         );
                       })}
+                      {isSendModalOpen && <SendModal isOpen={isSendModalOpen} onClose={() => setIsSendModalOpen(false)} />}
                     </div>{" "}
                   </div>
                 </div>
