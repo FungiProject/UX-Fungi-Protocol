@@ -52,7 +52,7 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
     {
       title: "Send",
       image: SendIcon.src,
-      status: false,
+      status: true,
       onClick: openSendModal,
     },
     {
