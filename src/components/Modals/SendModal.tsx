@@ -8,15 +8,26 @@ const SendModal = ({ isOpen, onClose }) => {
     const [tokenAddress, setTokenAddress] = useState<string>('');
     const [amount, setAmount] = useState<string>('');
     const [recipient, setRecipient] = useState<string>('');
-    const [status, sendTransfer] = useERC20Transfer(`0x${tokenAddress}`, BigNumber.from(amount), `0x${recipient}`);
+    const { sendTransfer } = useERC20Transfer(
+        `0x${tokenAddress}`,
+        amount ? BigNumber.from(amount) : BigNumber.from(0), // Ensure amount is not empty
+        `0x${recipient}`
+    );
 
     const handleSend = async () => {
-        if (!tokenAddress || BigNumber.from(amount).isZero() || !recipient) {
-            alert('Please fill in all fields');
-            return;
+        // Ensure all fields are filled and amount is a valid number before sending
+        if (!tokenAddress || amount === '' || BigNumber.from(amount).isZero() || !recipient) {
+        alert('Please fill in all fields with valid information.');
+        return;
         }
-        // Ensure you perform runtime validations or type assertions here if necessary
-        // await sendTransfer();
+    
+        // Convert amount to BigNumber and execute transfer safely
+        try {
+        await sendTransfer(); // Assuming sendTransfer handles the transaction
+        } catch (error) {
+        console.error("Transfer failed:", error);
+        // Handle the error appropriately
+        }
     };
 
     return (

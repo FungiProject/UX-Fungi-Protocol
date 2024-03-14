@@ -36,5 +36,5 @@ export const useERC20Transfer = (tokenIn: Hex, amountIn: BigNumber, recipient: H
         }
     };
 
-    return [status, sendTransfer];
+    return { sendTransfer };
 };
