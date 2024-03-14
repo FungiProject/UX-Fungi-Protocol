@@ -96,7 +96,6 @@ export default function Spot() {
             {tokens.length > 0 ? (
               <div className="flex flex-col items-center mt-4 relative h-full">
                 <SpotTable
-                  tokens={tokens}
                   startIndex={startIndex}
                   endIndex={endIndex}
                   getLength={getLength}
@@ -156,7 +155,7 @@ export default function Spot() {
                   paddingButton="py-[5px]"
                 />
                 {actionSelected === "Rebalance" ? (
-                  <Rebalancer tokens={tokens} />
+                  <Rebalancer />
                 ) : actionSelected === "Bridge" ? (
                   <Bridge tokens={tokens} chainId={chainId} />
                 ) : (

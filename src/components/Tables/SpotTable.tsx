@@ -2,33 +2,33 @@
 import React, { useEffect, useState } from "react";
 // Components
 import SpotTableCard from "../Cards/TableCards/SpotTableCard";
-import ActionsSwitcher from "../Switchers/ActionsSwitcher";
 // Constants
 import Loader from "../Loader/SpinnerLoader";
 import { TokenData, TokenInfo } from "@/domain/tokens/types";
 import { useTokenMarketData } from "@/hooks/useTokenMarketData";
 import StartDepositBanner from "../Sections/Fallbacks/StartDepositBanner";
+import { useTokensInfo } from "@/hooks/useTokensInfo";
+import SpotTableCardFallback from "../Cards/Fallbacks/SpotTableCardFallback";
 
 type SpotTableProps = {
-  tokens: TokenInfo[];
   startIndex: number;
   endIndex: number;
   getLength: (length: number) => void;
   handlePageChange: (page: number) => void;
-  setTokenFrom: (TokenInfo) => void;
+  setTokenFrom: (token: TokenInfo) => void;
 };
 
 export default function SpotTable({
-  tokens,
   startIndex,
   endIndex,
   getLength,
   handlePageChange,
   setTokenFrom,
 }: SpotTableProps) {
+  const { tokens } = useTokensInfo();
   const [typeMember, setTypeMember] = useState<string>("Portfolio");
   const [loading, setLoading] = useState(false);
-  const { tokenMarketsData, fetchData } = useTokenMarketData([]);
+  const { tokenMarketsData, fetchData, isLoading } = useTokenMarketData([]);
   const [portfolioEmpty, setPortfolioEmpty] = useState(false);
 
   const checkTokens = () => {
@@ -42,6 +42,7 @@ export default function SpotTable({
       const tokensWithBalance = tokens.filter((tokenData: any) => {
         return Number(tokenData.balance) !== 0;
       });
+
       if (tokensWithBalance.length !== 0) {
         setPortfolioEmpty(false);
         fetchData(tokensWithBalance.slice(startIndex, endIndex));
@@ -96,16 +97,26 @@ export default function SpotTable({
             <StartDepositBanner />
           ) : (
             <>
-              {tokenMarketsData &&
-                tokenMarketsData.length > 0 &&
-                tokenMarketsData.map((token: TokenData, index: number) => (
-                  <SpotTableCard
-                    setTokenFrom={setTokenFrom}
-                    asset={token}
-                    key={token.token.coinKey}
-                    index={index}
-                  />
-                ))}
+              {!isLoading ? (
+                <>
+                  {tokenMarketsData &&
+                    tokenMarketsData.length > 0 &&
+                    tokenMarketsData.map((token: TokenData, index: number) => (
+                      <SpotTableCard
+                        setTokenFrom={setTokenFrom}
+                        asset={token}
+                        key={token.token.coinKey}
+                        index={index}
+                      />
+                    ))}{" "}
+                </>
+              ) : (
+                <div>
+                  {[1, 2, 3, 4, 5].map((index: number) => {
+                    return <SpotTableCardFallback key={index} />;
+                  })}
+                </div>
+              )}
             </>
           )}
         </div>

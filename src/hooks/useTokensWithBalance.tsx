@@ -21,9 +21,11 @@ export default function useTokensWithBalance() {
         if (!tokensInfo) {
           return;
         }
+
         const tokensWithBalance = tokensInfo.filter((tokenData: any) => {
           return Number(tokenData.balance) !== 0;
         });
+
         setTokensWithBalance(tokensWithBalance);
       }
     };

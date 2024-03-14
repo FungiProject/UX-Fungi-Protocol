@@ -13,13 +13,12 @@ import TokenCard from "./TokenCards/TokenCard";
 import { TokenInfo } from "@/domain/tokens/types";
 import { useTokenBalances } from "@/hooks/useTokensBalances";
 import { TokenInfoRebalanceInput } from "@/domain/tokens/types";
-type RebalancerProps = {
-  tokens: TokenInfo[];
-};
+import { useTokensInfo } from "@/hooks/useTokensInfo";
 
-export default function Rebalancer({ tokens }: RebalancerProps) {
+export default function Rebalancer() {
   const { chainId, scAccount } = useWallet();
   const [error, setError] = useState(false);
+  const { tokens } = useTokensInfo();
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [openSelector, setOpenSelector] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +26,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
     TokenInfoRebalanceInput[]
   >([]);
   const [search, setSearch] = useState<string>("");
-  const [tokensCopy, setTokensCopy] = useState<TokenInfo[]>([...tokens]);
+  const [tokensCopy, setTokensCopy] = useState<TokenInfo[] | null>(null);
   const { tokensBalances } = useTokenBalances();
   const { sendUserOperations } = useUserOperations();
 
@@ -48,6 +47,10 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       ]);
     }
   };
+
+  useEffect(() => {
+    setTokensCopy(tokens);
+  }, [tokens]);
 
   const isSelected = (token: TokenInfo) => {
     return !!selectedTokens.find((t) => t.address == token.address);
@@ -80,6 +83,24 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
     setTotalPercentage(sum);
   }, [selectedTokens]);
 
+  useEffect(() => {
+    let copy = [...tokens];
+
+    if (search.length !== 0) {
+      copy = copy.filter(
+        (asset: TokenInfo) =>
+          asset.name.toLowerCase().includes(search.toLowerCase()) ||
+          asset.address.toLowerCase() === search.toLowerCase()
+      );
+    }
+
+    setTokensCopy(copy);
+  }, [search]);
+
+  useEffect(() => {
+    setSearch("");
+  }, [openSelector]);
+
   async function onSubmit() {
     if (!tokensBalances || !selectedTokens || !chainId || !scAccount) {
       return;
@@ -88,7 +109,6 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
     setIsSubmitting(true);
 
     try {
-
       const rebalances = computeRebalance(tokensBalances, selectedTokens);
       const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
 
@@ -102,7 +122,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
           setIsSubmitting(false);
         });
     } catch (error) {
-      console.log("Error generate user ops")
+      console.log("Error generate user ops");
       console.log(error);
     }
   }
@@ -172,16 +192,17 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
             </div>
 
             <div className="px-[18px] w-full my-4 overflow-y-auto h-[47vh]">
-              {tokensCopy.map((token: TokenInfo) => {
-                return (
-                  <TokenCard
-                    isSelected={isSelected(token)}
-                    token={token}
-                    onClick={onAddToken}
-                    key={token.coinKey}
-                  />
-                );
-              })}
+              {tokensCopy &&
+                tokensCopy.map((token: TokenInfo, index: number) => {
+                  return (
+                    <TokenCard
+                      isSelected={isSelected(token)}
+                      token={token}
+                      onClick={onAddToken}
+                      key={index}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -191,6 +212,7 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
           <button
             className="flex justify-between border-1 rounded-xl font-semibold px-[12px] py-2.5 items-center w-[300px]"
             onClick={() => setOpenSelector(true)}
+            disabled={tokensCopy ? false : true}
           >
             <span>Select tokens</span>{" "}
             <ChevronDownIcon
@@ -214,13 +236,13 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       <div className="h-[40vh] overflow-auto">
         {selectedTokens &&
           selectedTokens.length > 0 &&
-          selectedTokens.map((token) => (
+          selectedTokens.map((token, index: number) => (
             <TokenCardRebalance
               selectedTokens={selectedTokens}
               token={token}
               onRemove={onRemoveToken}
               onPercentageChange={onPercentageChange}
-              key={token.coinKey}
+              key={index}
             />
           ))}{" "}
       </div>
@@ -228,8 +250,9 @@ export default function Rebalancer({ tokens }: RebalancerProps) {
       <div>
         <Button
           variant="primary-action"
-          className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
-            } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+          className={`mt-4 ${
+            submitButtonState.disabled ? "opacity-50" : ""
+          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
           type="submit"
           onClick={onSubmit}
           disabled={submitButtonState.disabled}
