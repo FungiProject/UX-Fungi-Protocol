@@ -2,7 +2,7 @@ import Token from "@/../abis/Token.json";
 import { ethers, BigNumber } from "ethers";
 import { UserOperation } from "../../lib/userOperations/types";
 
-type Params = {
+export type Params = {
   tokenAddress: string;
   spender: string;
   amount?: BigNumber;
