@@ -23,43 +23,66 @@ const SendModal = ({ isOpen, onClose }) => {
     
         // Convert amount to BigNumber and execute transfer safely
         try {
-        await sendTransfer(); // Assuming sendTransfer handles the transaction
+            await sendTransfer(); // Assuming sendTransfer handles the transaction
         } catch (error) {
-        console.error("Transfer failed:", error);
+            console.error("Transfer failed:", error);
         // Handle the error appropriately
         }
     };
 
     return (
         <Dialog open={isOpen} onClose={onClose} className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                {/* Modal content goes here */}
-                <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
-                    <h2 style={{ marginBottom: '15px' }}>Send Tokens</h2>
-                    <input
-                        type="text"
-                        placeholder="Token Address"
-                        value={tokenAddress}
-                        onChange={(e) => setTokenAddress(e.target.value)}
-                        style={{ marginBottom: '10px' }}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Amount"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)} // Directly setting string value
-                        style={{ marginBottom: '10px' }}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Recipient Address"
-                        value={recipient}
-                        onChange={(e) => setRecipient(e.target.value)}
-                        style={{ marginBottom: '15px' }}
-                    />
-                    <button onClick={handleSend} style={{ padding: '10px', backgroundColor: 'blue', color: 'white', borderRadius: '5px' }}>
-                        Send
-                    </button>
+            <div className="flex items-center justify-center min-h-screen">
+                <div style={{
+                backgroundColor: 'white',
+                padding: '20px',
+                borderRadius: '10px',
+                position: 'relative', 
+                width: 'auto', 
+                margin: 'auto' 
+            }}>
+                <button
+                    onClick={onClose}
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '10px',
+                    }}
+                >
+                    X
+                </button>
+                    {/* Modal content goes here */}
+                    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
+                        <h2 style={{ marginBottom: '15px' }}>Send Tokens</h2>
+                        <input
+                            type="text"
+                            placeholder="Token Address"
+                            value={tokenAddress}
+                            onChange={(e) => setTokenAddress(e.target.value)}
+                            style={{ marginBottom: '10px' }}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Amount"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)} // Directly setting string value
+                            style={{ marginBottom: '10px' }}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Recipient Address"
+                            value={recipient}
+                            onChange={(e) => setRecipient(e.target.value)}
+                            style={{ marginBottom: '15px' }}
+                        />
+                        <button onClick={handleSend} style={{ padding: '10px', backgroundColor: 'blue', color: 'white', borderRadius: '5px' }}>
+                            Send
+                        </button>
+                    </div>
                 </div>
             </div>
         </Dialog>

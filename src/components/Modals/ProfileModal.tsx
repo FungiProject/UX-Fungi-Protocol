@@ -42,6 +42,7 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
 
   const openSendModal = async () => {
     setIsSendModalOpen(true);
+    // setOpen(false);
   };
 
   const handle = async () => {
