@@ -24,6 +24,7 @@ interface ProfileModalProps {
 export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
   const { scAccount, logout } = useWallet();
   const [open, setOpen] = useState(true);
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const router = useRouter();
   const { showNotification } = useNotification();
 
@@ -38,6 +39,10 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
     router.push("/");
   };
 
+  const openSendModal = async () => {
+    setIsSendModalOpen(true);
+  };
+
   const handle = async () => {
     console.log("//TODO Fungi");
   };
@@ -47,7 +52,7 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
       title: "Send",
       image: SendIcon.src,
       status: false,
-      onClick: handle,
+      onClick: openSendModal,
     },
     {
       title: "Withdraw",

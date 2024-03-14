@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { createApproveTokensUserOp, Params } from "@/lib/userOperations/getApproveUserOp";
 import { getCallDataTransfer } from "@/lib/userOperations/getCallDataTransfer";
-import { sendUserOperations } from "@/lib/userOperations/sendUserOperations";
+import { useUserOperations } from "@/hooks/useUserOperations";
 import { Hex } from "@alchemy/aa-core";
+import { TokenInfo } from "@/domain/tokens/types";
 import { AlchemySmartAccountClient } from "@alchemy/aa-alchemy";
 import { BigNumber } from 'alchemy-sdk';
 
-export const useERC20Transfer = (provider: AlchemySmartAccountClient, tokenIn: Hex, amountIn: BigNumber, recipient: Hex) => {
+export const useERC20Transfer = (tokenIn: Hex, amountIn: BigNumber, recipient: Hex) => {
     const [status, setStatus] = useState<{ loading: boolean, error: string | null, success: string | null }>({ loading: false, error: null, success: null });
 
+    const { sendUserOperations } = useUserOperations();
     // Pass the arguments to the Params type in a variable
     const params: Params = {
         tokenAddress: tokenIn,
@@ -24,7 +26,8 @@ export const useERC20Transfer = (provider: AlchemySmartAccountClient, tokenIn: H
             const callDataTransfer = getCallDataTransfer(recipient, tokenIn, amountIn);
 
             console.log(callDataApprove, callDataTransfer);
-            await sendUserOperations(provider, [callDataApprove, callDataTransfer]);
+            // This component already has the provider, so no need to pass it as an argument
+            await sendUserOperations([callDataApprove, callDataTransfer]);
 
             setStatus({ loading: false, error: null, success: 'Transfer successful!' });
         } catch (error) {
