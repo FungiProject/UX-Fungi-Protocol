@@ -13,6 +13,7 @@ import { useNotification } from "@/context/NotificationContextProvider";
 
 // Custom hook for interacting with Mean Finance for DCA (not provided, needs to be implemented)
 import { useDcaTx } from "@/hooks/useDcaTx"
+import { exec } from "child_process";
 
 type DCAProps = {
   tokens: TokenInfo[];
@@ -22,13 +23,13 @@ type DCAProps = {
 export default function DCA({ tokens, chainId }: DCAProps) {
   const { scAccount } = useWallet();
   const { showNotification } = useNotification();
-  const { prepareDcaOperations } = useDcaTx();
+  const { prepareDcaOperations, executeDcaOperation } = useDcaTx();
   const { sendUserOperations } = useUserOperations();
 
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [sellToken, setSellToken] = useState<TokenInfo | undefined>(undefined);
   const [buyToken, setBuyToken] = useState<TokenInfo | undefined>(undefined);
-  const [duration, setDuration] = useState(7);
+  const [duration, setDuration] = useState(2);
   const [swapInterval, setSwapInterval] = useState('1 day'); // Set default swap interval
   const [amountToReceive, setAmountToReceive] = useState<number | undefined>(
     undefined
@@ -121,6 +122,8 @@ export default function DCA({ tokens, chainId }: DCAProps) {
     const totalDurationInSeconds = duration * 86400; // Convert duration to seconds
     const amountOfSwaps = Math.floor(totalDurationInSeconds / swapIntervalSeconds);
 
+    console.log("DCA submit parameters:", {sellToken: sellToken.address, buyToken: buyToken.address, amount, amountOfSwaps, swapInterval: swapIntervalSeconds, scAccount: scaAddress});
+
     try {
       const dcaOperations = await prepareDcaOperations({
         sellToken: sellToken.address,
@@ -131,12 +134,16 @@ export default function DCA({ tokens, chainId }: DCAProps) {
         scAccount: scaAddress,
       });
 
-      await sendUserOperations(dcaOperations);
+      console.log("DCA operation: ", dcaOperations);
+
+      // await executeDcaOperation(dcaOperations);
       showNotification({ message: "DCA position opened successfully!", type: "success" });
     } catch (error) {
       console.error(error);
       showNotification({ message: "Failed to open DCA position.", type: "error" });
-    }
+    } finally {
+      console.log("Attempted DCA operation");
+  }
   };
 
   // This function will update both the duration and the number of swaps

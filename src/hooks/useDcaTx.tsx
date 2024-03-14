@@ -3,7 +3,7 @@ import useWallet from './useWallet';
 import { useNotification } from '@/context/NotificationContextProvider';
 import { UserOperation } from '@/lib/userOperations/types';
 import { sendUserOperations as sendUserOperationAlchemy } from '@/lib/userOperations/sendUserOperations';
-import MEAN_FINANCE_ABI from '../../abis/DCAHub.json';
+import DCAHubArtifact from '../../abis/DCAHub.json';
 import { ethers } from 'ethers';
 import { useGlobalContext } from "@/context/FungiGlobalContext";
 
@@ -14,28 +14,46 @@ export const useDcaTx = () => {
     const { alchemyScaProvider } = useGlobalContext();
 
     const prepareDcaOperations = async ({ sellToken, buyToken, amount, amountOfSwaps, swapInterval, scAccount }) => {
-        // ABI for the Mean Fianace DCA Hub contract's deposit method
-        const depositMethodAbi = ["function deposit(address from, address to, uint256 amount, uint32 amountOfSwaps, uint32 swapInterval, address owner, IDCAPermissionManager.PermissionSet[] calldata permissions) returns (uint256 positionId)"];
+        console.log("Preparing DCA Operations with parameters:", {sellToken, buyToken, amount, amountOfSwaps, swapInterval, scAccount});
+        try {
+            const contractABI = DCAHubArtifact.abi;
+            const contractInterface = new ethers.utils.Interface(contractABI);
+    
+            console.log("Contract interface:", contractInterface);
+    
+            // Note: Ensure all parameters are in the correct format
+            const depositData = contractInterface.encodeFunctionData("deposit", [
+                sellToken, // Token to sell
+                buyToken, // Token to buy
+                ethers.utils.parseUnits(amount.toString(), "ether"), // Amount of 'from' token for each swap
+                amountOfSwaps, // Total number of swaps
+                swapInterval, // Swap interval in seconds
+                scAccount, // Owner of the DCA position
+                [], // Permissions, adjust according to your contract's needs
+            ]);
+    
+            console.log("Encoded deposit data:", depositData);
 
-        // Creating an instance of ethers utils Interface with the deposit ABI
-        const depositInterface = new ethers.utils.Interface(depositMethodAbi);
+            const userOperations: UserOperation[] = [{
+                target: DCAHub,
+                value: ethers.BigNumber.from(0).toBigInt(),
+                data: `0x${depositData}`, // Add the prefix '0x' to the depositData
+            }];
 
-        // Encoding the data for the deposit function call
-        const depositData = depositInterface.encodeFunctionData("deposit", [sellToken, buyToken, amount, amountOfSwaps, swapInterval, scAccount, []]);
-
-        const userOperations: UserOperation[] = [{
-            target: DCAHub, // Ensure DCAHub address is in the correct format
-            value: BigInt(0), // Convert the value to a bigint
-            data: `0x${depositData}` // Ensure the data is in the correct format
-        }];
-        
-        return userOperations;
+            console.log("Prepared DCA operations:", userOperations);
+            
+            return userOperations;
+        } catch (error) {
+            console.error("Error preparing DCA operations:", error);
+            showNotification({ message: "Failed to prepare DCA operations. Please check input values and try again.", type: "error" });
+            throw error;
+        }
     };
 
     const executeDcaOperation = async (userOperations) => {
         try {
             // Assuming sendUserOperationAlchemy is adaptable for DCA operations
-            await sendUserOperationAlchemy(userOperations, alchemyScaProvider);
+            await sendUserOperationAlchemy(alchemyScaProvider, userOperations);
             showNotification({ message: "DCA operation executed successfully.", type: "success" });
         } catch (error) {
             console.error(error);
