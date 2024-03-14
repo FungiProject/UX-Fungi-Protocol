@@ -112,8 +112,8 @@ export default function SpotTable({
                 </>
               ) : (
                 <div>
-                  {[1, 2, 3, 4, 5].map(() => {
-                    return <SpotTableCardFallback />;
+                  {[1, 2, 3, 4, 5].map((index: number) => {
+                    return <SpotTableCardFallback key={index} />;
                   })}
                 </div>
               )}
