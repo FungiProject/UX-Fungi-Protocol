@@ -16,6 +16,7 @@ import LogOutIcon from "../../../public/profile/LogOutIcon.svg";
 import TransactionIcon from "../../../public/profile/TransactionIcon.svg";
 import useWallet from "@/hooks/useWallet";
 import { useNotification } from "@/context/NotificationContextProvider";
+import SendModal from "../Modals/SendModal";
 
 interface ProfileModalProps {
   getOpenModal: (openModal: boolean) => void;
@@ -24,6 +25,7 @@ interface ProfileModalProps {
 export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
   const { scAccount, logout } = useWallet();
   const [open, setOpen] = useState(true);
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const router = useRouter();
   const { showNotification } = useNotification();
 
@@ -38,6 +40,11 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
     router.push("/");
   };
 
+  const openSendModal = async () => {
+    setIsSendModalOpen(true);
+    // setOpen(false);
+  };
+
   const handle = async () => {
     console.log("//TODO Fungi");
   };
@@ -46,8 +53,8 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
     {
       title: "Send",
       image: SendIcon.src,
-      status: false,
-      onClick: handle,
+      status: true,
+      onClick: openSendModal,
     },
     {
       title: "Withdraw",
@@ -145,6 +152,7 @@ export default function ProfileModal({ getOpenModal }: ProfileModalProps) {
                           />
                         );
                       })}
+                      {isSendModalOpen && <SendModal isOpen={isSendModalOpen} onClose={() => setIsSendModalOpen(false)} />}
                     </div>{" "}
                   </div>
                 </div>
