@@ -34,7 +34,6 @@ export default function AssetsTableCard({ asset, setTokenFrom }: AssetsTableCard
           Number(asset?.token?.priceUSD).toFixed(2)}
       </div>
       <div className="text-center">
-        $
         {asset?.token.balance !== undefined &&
           formatAmount(asset?.token?.balance.toString() || "0", asset?.token?.decimals).slice(0,9)}
       </div>
