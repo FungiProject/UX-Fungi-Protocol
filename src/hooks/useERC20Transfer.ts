@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { getCallDataTransfer } from "@/lib/userOperations/getCallDataTransfer";
-import { Hex } from "@alchemy/aa-core";
 import { BigNumber } from 'alchemy-sdk';
 import { UserOperation } from "@/lib/userOperations/types"; // Import UserOperation type
 import { ethers } from 'ethers';
 
-export const useERC20Transfer = (tokenIn: Hex, amountIn: BigNumber, recipient: Hex) => {
+export const useERC20Transfer = (tokenIn: string, amountIn: BigNumber, recipient: string) => {
     const [status, setStatus] = useState<{
         disabled: boolean;
         text: string | null;
@@ -32,28 +31,18 @@ export const useERC20Transfer = (tokenIn: Hex, amountIn: BigNumber, recipient: H
             } else {
                 userOps.push(getCallDataTransfer(recipient, tokenIn, amountIn));
             }
-            console.log("Sending transfer...");
-
             // Generate approve call data
             const approveOperation = createApproveTokensUserOp({
                 tokenAddress: tokenIn,
                 spender: recipient,
                 amount: amountIn,
             });
-            console.log("Approve operation:", approveOperation);
-
             // Generate transfer call data
             const transferOperation = getCallDataTransfer(recipient, tokenIn, amountIn);
-            console.log("Transfer operation:", transferOperation);
-
             // Verify the operations are correctly formed
             if (!approveOperation || !transferOperation) {
                 throw new Error("Failed to generate call data for approve and/or transfer.");
             }
-
-            // Submit user operations
-            // await sendUserOperations(userOperations);
-
             setStatus({ disabled: true, text: "Enter an amount" });
 
             return userOps;

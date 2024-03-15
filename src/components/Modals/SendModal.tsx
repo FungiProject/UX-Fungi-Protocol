@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useERC20Transfer } from '@/hooks/useERC20Transfer';
 import { BigNumber } from 'alchemy-sdk';
 import { useNotification } from "@/context/NotificationContextProvider";
-// import { sendUserOperation } from '@alchemy/aa-core';
 import { useUserOperations } from "@/hooks/useUserOperations";
-import { Hex } from "@alchemy/aa-core";
 
 const SendModal = ({ isOpen, onClose }) => {
-    const [tokenAddress, setTokenAddress] = useState<Hex>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
+    const [tokenAddress, setTokenAddress] = useState<string>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
     const [amount, setAmount] = useState<string>('1000000');
-    const [recipient, setRecipient] = useState<Hex>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');
+    const [recipient, setRecipient] = useState<string>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');
     const { showNotification } = useNotification();
     const [status, sendTransfer] = useERC20Transfer(tokenAddress, BigNumber.from(amount), recipient);
     const { sendUserOperations } = useUserOperations();
@@ -47,7 +45,7 @@ const SendModal = ({ isOpen, onClose }) => {
                     maxWidth: '90%',
                     margin: 'auto',
                     transition: 'all 0.3s ease',
-                    background: 'linear-gradient(to right, #6a11cb 0%, #2575fc 100%)',
+                    background: '#FFF',
                     color: '#000'
                 }}>
                     <button
@@ -59,7 +57,7 @@ const SendModal = ({ isOpen, onClose }) => {
                             background: 'transparent',
                             border: 'none',
                             cursor: 'pointer',
-                            color: '#FFF',
+                            color: '#000',
                             fontSize: '16px'
                         }}
                     >
@@ -72,21 +70,21 @@ const SendModal = ({ isOpen, onClose }) => {
                             placeholder="Token Address"
                             value={tokenAddress}
                             onChange={(e: any) => setTokenAddress(e.target.value)}
-                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' }}
+                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' , backgroundColor: '#f5f5f5', margin: '10px'}}
                         />
                         <input
                             type="text"
                             placeholder="Amount"
                             value={amount}
                             onChange={(e: any) => setAmount(e.target.value)}
-                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' }}
+                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px'}}
                         />
                         <input
                             type="text"
                             placeholder="Recipient Address"
                             value={recipient}
                             onChange={(e: any) => setRecipient(e.target.value)}
-                            style={{ marginBottom: '15px', padding: '10px', borderRadius: '5px' }}
+                            style={{ marginBottom: '15px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px' }}
                         />
                         <button onClick={handleSend} style={{
                             padding: '10px 20px',
