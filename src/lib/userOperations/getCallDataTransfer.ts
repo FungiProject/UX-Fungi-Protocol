@@ -1,16 +1,15 @@
 import { abiERC20 } from "../../../abis/abis.json";
 import { ethers } from "ethers";
 import { UserOperationCallData } from "@alchemy/aa-core";
-import { Hex } from "@alchemy/aa-core";
 
 /**
  * Generates call data for the ERC20 transfer function.
- * @param {Hex} recipientAddress - The address of the recipient.
- * @param {Hex} tokenAddress - The address of the token contract.
+ * @param {string} recipientAddress - The address of the recipient.
+ * @param {string} tokenAddress - The address of the token contract.
  * @param {string | ethers.BigNumber} amount - The amount to transfer, as a string or BigNumber.
- * @returns {Exclude<UserOperationCallData, Hex>} - The call data for the transfer function.
+ * @returns {Exclude<UserOperationCallData, string>} - The call data for the transfer function.
  */
-export function getCallDataTransfer(recipientAddress: string, tokenAddress: string, amount: string | ethers.BigNumber): Exclude<UserOperationCallData, Hex> {
+export function getCallDataTransfer(recipientAddress: string, tokenAddress: string, amount: string | ethers.BigNumber): Exclude<UserOperationCallData, string> {
     // Ensure amount is treated as a BigNumber
     const amountBigNumber = ethers.BigNumber.isBigNumber(amount) ? amount : ethers.BigNumber.from(amount);
 
