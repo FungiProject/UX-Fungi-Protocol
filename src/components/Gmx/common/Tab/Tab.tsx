@@ -6,7 +6,6 @@ export default function Tab(props) {
     option,
     setOption,
     onChange,
-    type = "block",
     className,
     optionLabels,
     icons,

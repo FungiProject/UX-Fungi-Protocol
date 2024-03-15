@@ -104,7 +104,7 @@ export default function BuyInputSection(props: Props) {
             {!staticInput && !bridgeComponent && (
               <NumberInput
                 value={inputValue}
-                className="outline-none placeholder:text-black"
+                className="outline-none placeholder:text-black text-2xl overflow-hidden"
                 inputRef={inputRef}
                 onValueChange={onUserInput}
                 onFocus={handleOnFocus}
@@ -113,7 +113,7 @@ export default function BuyInputSection(props: Props) {
               />
             )}
             {staticInput && !bridgeComponent && (
-              <div className="InputSection-static-input">{inputValue}</div>
+              <div className="text-2xl">{inputValue}</div>
             )}
           </div>
           <div className="flex">{children}</div>
@@ -124,7 +124,7 @@ export default function BuyInputSection(props: Props) {
               {!staticInput && (
                 <NumberInput
                   value={inputValue}
-                  className="outline-none placeholder:text-black ml-2"
+                  className="outline-none placeholder:text-black ml-2 text-2xl"
                   inputRef={inputRef}
                   onValueChange={onUserInput}
                   onFocus={handleOnFocus}
@@ -133,7 +133,7 @@ export default function BuyInputSection(props: Props) {
                 />
               )}
               {staticInput && (
-                <div className="InputSection-static-input ml-2">
+                <div className="InputSection-static-input ml-2 text-2xl">
                   {inputValue}
                 </div>
               )}

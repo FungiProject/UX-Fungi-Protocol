@@ -6,7 +6,6 @@ import { MarketInfo } from "../markets";
 export enum TradeType {
   Long = "Long",
   Short = "Short",
-  Swap = "Swap",
 }
 
 export enum TradeMode {
