@@ -5,10 +5,10 @@ import Image from "next/image";
 // Images
 import Chart from "../../../public/Chart.svg";
 // Utils
-import {formatNumber} from "@/utils/formatNumber";
+import { formatNumber } from "@/utils/formatNumber";
 
 type ResultsChartProps = {
-  personalBalance: number;
+  personalBalance: number | undefined;
 };
 
 export default function ResultsChart({ personalBalance }: ResultsChartProps) {
@@ -20,9 +20,11 @@ export default function ResultsChart({ personalBalance }: ResultsChartProps) {
     <main className="h-[574px] flex flex-col mt-[24px]">
       <div className="flex justify-between">
         <div className=" flex flex-col">
-          <span className="text-xl ml-[30px]">
-            ${formatNumber(personalBalance)}
-          </span>
+          {personalBalance && (
+            <span className="text-xl ml-[30px]">
+              ${formatNumber(personalBalance)}
+            </span>
+          )}
         </div>
         <div className="text-xs items-center flex mr-[12px]">
           {timeButtons.map((time: string) => {

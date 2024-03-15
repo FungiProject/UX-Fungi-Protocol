@@ -73,12 +73,11 @@ export default function SpotTable({
 
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[24px] bg-white rounded-lg">
-      <div className="grid grid-cols-7 pb-[26px] text-xl font-medium pr-[14px] border-b-1 border-gray-300 flex items-center">
+      <div className="grid grid-cols-6 pb-[26px] text-xl font-medium border-b-1 border-gray-300 flex items-center">
         <div className="text-center col-span-2">Name</div>{" "}
         <div className="text-center">Price</div>{" "}
         <div className="text-center">Amount</div>{" "}
         <div className="text-center">Balance</div>{" "}
-        <div className="text-center">Networks</div>
         {/*<ActionsSwitcher
           actions={typesMembersTable}
           actionSelected={typeMember}

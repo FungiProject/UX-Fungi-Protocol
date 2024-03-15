@@ -3,7 +3,11 @@ import React from "react";
 // Next
 import Image from "next/image";
 // Utils
-import {formatNumber, formatAmount, formatAmountToUsd} from "@/utils/formatNumber";
+import {
+  formatNumber,
+  formatAmount,
+  formatAmountToUsd,
+} from "@/utils/formatNumber";
 import { networks } from "../../../../constants/Constants";
 import { TokenData } from "@/domain/tokens/types";
 
@@ -13,10 +17,13 @@ type AssetsTableCardProps = {
   setTokenFrom: (TokenInfo) => void;
 };
 
-export default function AssetsTableCard({ asset, setTokenFrom }: AssetsTableCardProps) {
+export default function AssetsTableCard({
+  asset,
+  setTokenFrom,
+}: AssetsTableCardProps) {
   return (
-    <div className="border-b-1 border-gray-300 grid grid-cols-7 py-[22px] items-center fadeInAnimation border-l-4 hover:border-l-main border-l-white cursor-pointer">
-      <div className="flex items-center col-span-2">
+    <div className="border-b-1 border-gray-300 grid grid-cols-6 py-[22px] items-center fadeInAnimation border-l-4 hover:border-l-main border-l-white cursor-pointer">
+      <div className="flex items-center col-span-2 w-full pl-[2vw]">
         <img
           width={40}
           height={40}
@@ -34,33 +41,26 @@ export default function AssetsTableCard({ asset, setTokenFrom }: AssetsTableCard
           Number(asset?.token?.priceUSD).toFixed(2)}
       </div>
       <div className="text-center">
-        $
         {asset?.token.balance !== undefined &&
-          formatAmount(asset?.token?.balance.toString() || "0", asset?.token?.decimals).slice(0,9)}
+          formatAmount(
+            asset?.token?.balance.toString() || "0",
+            asset?.token?.decimals
+          ).slice(0, 9)}
       </div>
       <div className="text-center">
         $
         {asset?.token.balance !== undefined &&
-        formatAmountToUsd(asset?.token?.balance.toString() || "0", asset?.token?.decimals, Number(asset?.token?.priceUSD))}
-      </div>
-      <div className="flex justify-center">
-        {/* TODO: Change to tokens network */}
-        {networks.map((network: any, index: number) => {
-          return (
-            <Image
-              style={{ zIndex: `${index * 10}` }}
-              width={35}
-              height={35}
-              alt="Logo"
-              src={network.image}
-              className={index === 1 ? "-mx-2.5" : ""}
-              key={asset.token.address + index}
-            />
-          );
-        })}
+          formatAmountToUsd(
+            asset?.token?.balance.toString() || "0",
+            asset?.token?.decimals,
+            Number(asset?.token?.priceUSD)
+          )}
       </div>
       <div className="justify-center flex">
-        <button className="rounded-full bg-main px-[16px] py-[8px] w-[75px] text-center text-white mr-[15px] hover:bg-mainHover text-xs" onClick={()=>setTokenFrom(asset.token)}>
+        <button
+          className="rounded-full bg-main px-[16px] py-[8px] text-center text-white hover:bg-mainHover text-xs"
+          onClick={() => setTokenFrom(asset.token)}
+        >
           Swap
         </button>
       </div>
