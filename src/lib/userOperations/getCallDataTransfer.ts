@@ -15,6 +15,6 @@ export function getCallDataTransfer(recipientAddress: Hex, tokenAddress: Hex, am
     const amountBigNumber = ethers.BigNumber.isBigNumber(amount) ? amount : ethers.BigNumber.from(amount);
 
     const calldata = new ethers.utils.Interface(abiERC20).encodeFunctionData("transfer", [recipientAddress, amountBigNumber]) as `0x${string}`;
-
-    return { target: tokenAddress, data: calldata }; // Ensure the target is the tokenAddress, not recipientAddress
+    console.log("calldata", calldata);
+    return { target: tokenAddress as `0x${string}`, data: calldata }; // Ensure the target is the tokenAddress, not recipientAddress
 }

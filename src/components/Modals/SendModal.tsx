@@ -1,30 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useERC20Transfer } from '@/hooks/useERC20Transfer';
 import { BigNumber } from 'alchemy-sdk';
+import { useNotification } from "@/context/NotificationContextProvider";
+// import { sendUserOperation } from '@alchemy/aa-core';
+import { useUserOperations } from "@/hooks/useUserOperations";
+import { Hex } from "@alchemy/aa-core";
 
 const SendModal = ({ isOpen, onClose }) => {
-    const [tokenAddress, setTokenAddress] = useState<string>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
+    const [tokenAddress, setTokenAddress] = useState<Hex>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
     const [amount, setAmount] = useState<string>('1000000');
-    const [recipient, setRecipient] = useState<string>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');
-    const [ status, sendTransfer ] = useERC20Transfer(
-        `0x${tokenAddress}`,
-        amount ? BigNumber.from(amount) : BigNumber.from(0),
-        `0x${recipient}`
-    );
+    const [recipient, setRecipient] = useState<Hex>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');
+    const { showNotification } = useNotification();
+    const [status, sendTransfer] = useERC20Transfer(tokenAddress, BigNumber.from(amount), recipient);
+    const { sendUserOperations } = useUserOperations();
 
     const handleSend = async () => {
-        if (!tokenAddress || amount === '' || BigNumber.from(amount).isZero() || !recipient) {
-            alert('Please fill in all fields with valid information.');
-            return;
+        if (
+            tokenAddress === undefined ||
+            amount === undefined ||
+            recipient === undefined ||
+            typeof sendTransfer !== "function"
+        ) {
+            showNotification({
+                message: "Error sending tokens",
+                type: "error",
+            });
+            return Promise.resolve();
         }
+        const resultTx: any = await sendTransfer();
 
-        try {
-            await sendTransfer;
-            console.log('Status:', status);
-        } catch (error) {
-            console.error("Transfer failed:", error);
-        }
+        await sendUserOperations(resultTx);
     };
 
     return (
@@ -65,21 +71,21 @@ const SendModal = ({ isOpen, onClose }) => {
                             type="text"
                             placeholder="Token Address"
                             value={tokenAddress}
-                            onChange={(e) => setTokenAddress(e.target.value)}
+                            onChange={(e: any) => setTokenAddress(e.target.value)}
                             style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' }}
                         />
                         <input
                             type="text"
                             placeholder="Amount"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e: any) => setAmount(e.target.value)}
                             style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' }}
                         />
                         <input
                             type="text"
                             placeholder="Recipient Address"
                             value={recipient}
-                            onChange={(e) => setRecipient(e.target.value)}
+                            onChange={(e: any) => setRecipient(e.target.value)}
                             style={{ marginBottom: '15px', padding: '10px', borderRadius: '5px' }}
                         />
                         <button onClick={handleSend} style={{

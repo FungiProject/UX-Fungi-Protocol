@@ -1,39 +1,67 @@
 import { useState } from 'react';
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { getCallDataTransfer } from "@/lib/userOperations/getCallDataTransfer";
-import { useUserOperations } from "@/hooks/useUserOperations";
 import { Hex } from "@alchemy/aa-core";
-import { TokenInfo } from "@/domain/tokens/types";
-import { AlchemySmartAccountClient } from "@alchemy/aa-alchemy";
 import { BigNumber } from 'alchemy-sdk';
+import { UserOperation } from "@/lib/userOperations/types"; // Import UserOperation type
+import { ethers } from 'ethers';
 
 export const useERC20Transfer = (tokenIn: Hex, amountIn: BigNumber, recipient: Hex) => {
-    const [status, setStatus] = useState<{ loading: boolean, error: string | null, success: string | null }>({ loading: false, error: null, success: null });
-
-    const { sendUserOperations } = useUserOperations();
+    const [status, setStatus] = useState<{
+        disabled: boolean;
+        text: string | null;
+      }>({ disabled: true, text: "Enter an amount" });
 
     const sendTransfer = async () => {
         try {
-            setStatus({ loading: true, error: null, success: null });
+            setStatus({
+                disabled: true,
+                text: "Transferring...",
+              });
+            const userOps: UserOperation[] = [];
 
-            const callDataApprove = createApproveTokensUserOp({
+            if (tokenIn != ethers.constants.AddressZero) {
+                userOps.push(
+                    createApproveTokensUserOp({
+                        tokenAddress: tokenIn,
+                        spender: recipient,
+                        amount: amountIn,
+                    })
+                );
+                userOps.push(getCallDataTransfer(recipient, tokenIn, amountIn));
+            } else {
+                userOps.push(getCallDataTransfer(recipient, tokenIn, amountIn));
+            }
+            console.log("Sending transfer...");
+
+            // Generate approve call data
+            const approveOperation = createApproveTokensUserOp({
                 tokenAddress: tokenIn,
                 spender: recipient,
                 amount: amountIn,
             });
-            console.log("callDataApprove", callDataApprove);
-            const callDataTransfer = getCallDataTransfer(recipient, tokenIn, amountIn);
+            console.log("Approve operation:", approveOperation);
 
-            console.log("callDataTransfer", callDataTransfer);
-            // This component already has the provider, so no need to pass it as an argument
-            await sendUserOperations([callDataApprove, callDataTransfer]);
+            // Generate transfer call data
+            const transferOperation = getCallDataTransfer(recipient, tokenIn, amountIn);
+            console.log("Transfer operation:", transferOperation);
 
-            setStatus({ loading: false, error: null, success: 'Transfer successful!' });
+            // Verify the operations are correctly formed
+            if (!approveOperation || !transferOperation) {
+                throw new Error("Failed to generate call data for approve and/or transfer.");
+            }
+
+            // Submit user operations
+            // await sendUserOperations(userOperations);
+
+            setStatus({ disabled: true, text: "Enter an amount" });
+
+            return userOps;
         } catch (error) {
+            setStatus({ disabled: true, text: "Enter an amount" });
             console.error(error);
-            setStatus({ loading: false, error: 'Transfer failed. Please try again.', success: null });
         }
     };
 
-    return [ status, sendTransfer ];
+    return [status, sendTransfer];
 };

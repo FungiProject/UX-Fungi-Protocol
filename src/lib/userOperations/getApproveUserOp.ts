@@ -13,7 +13,9 @@ export function createApproveTokensUserOp({
   spender,
   amount = ethers.constants.MaxUint256,
 }: Params): UserOperation {
+  console.log("tokenAddress", tokenAddress);
   const contract = new ethers.Contract(tokenAddress, Token.abi);
+  console.log("contract", contract);
 
   const calldata = contract.interface.encodeFunctionData("approve", [
     spender,
