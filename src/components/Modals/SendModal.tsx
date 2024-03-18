@@ -19,6 +19,7 @@ interface SendModalProps {
     const [status, sendTransfer] = useERC20Transfer(tokenAddress, BigNumber.from(amount), recipient);
     const { sendUserOperations } = useUserOperations();
     const { simStatus, simTransfer } = useSimUO();
+    const [simulationResult, setSimulationResult] = useState<any>(null);
 
     const handleSend = async () => {
         if (
@@ -53,7 +54,8 @@ interface SendModalProps {
         }
         const resultTx: any = await sendTransfer();
 
-        await simTransfer(resultTx);
+        const result = await simTransfer(resultTx);
+        setSimulationResult(result);
     };
 
     return (
@@ -67,7 +69,7 @@ interface SendModalProps {
                     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
                     position: 'relative',
                     width: 'auto',
-                    maxWidth: '90%',
+                    maxWidth: '500px',
                     margin: 'auto',
                     transition: 'all 0.3s ease',
                     background: '#FFF',
@@ -94,21 +96,21 @@ interface SendModalProps {
                             type="text"
                             placeholder="Token Address"
                             value={tokenAddress}
-                            onChange={(e: any) => setTokenAddress(e.target.value)}
-                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px' , backgroundColor: '#f5f5f5', margin: '10px'}}
+                            onChange={(e) => setTokenAddress(e.target.value)}
+                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px' }}
                         />
                         <input
                             type="text"
                             placeholder="Amount"
                             value={amount}
-                            onChange={(e: any) => setAmount(e.target.value)}
-                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px'}}
+                            onChange={(e) => setAmount(e.target.value)}
+                            style={{ marginBottom: '10px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px' }}
                         />
                         <input
                             type="text"
                             placeholder="Recipient Address"
                             value={recipient}
-                            onChange={(e: any) => setRecipient(e.target.value)}
+                            onChange={(e) => setRecipient(e.target.value)}
                             style={{ marginBottom: '15px', padding: '10px', borderRadius: '5px', backgroundColor: '#f5f5f5', margin: '10px' }}
                         />
                         <button onClick={handleSend} style={{
@@ -117,21 +119,50 @@ interface SendModalProps {
                             border: 'none',
                             borderRadius: '5px',
                             transition: 'background-color 0.3s ease',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            color: '#FFF',
+                            marginBottom: '10px'
                         }}>
                             Send
                         </button>
-                        <button onClick={handleSim} >Simulate</button>
-                        {simStatus && typeof simStatus !== 'function' && (
-                            <p>
-                                {simStatus.loading ? 'Loading...' : simStatus.error ? simStatus.error : simStatus.success}
-                            </p>
+                        <button onClick={handleSim} style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#4caf50',
+                            border: 'none',
+                            borderRadius: '5px',
+                            transition: 'background-color 0.3s ease',
+                            cursor: 'pointer',
+                            color: '#FFF',
+                            marginBottom: '10px'
+                        }}>
+                            Simulate
+                        </button>
+                        {simulationResult && (
+                            <div style={{
+                                marginTop: '20px',
+                                padding: '15px',
+                                backgroundColor: '#f7f7f7',
+                                borderRadius: '8px',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                            }}>
+                                <h3 style={{ color: '#333' }}>Transaction Summary</h3>
+                                <p>Estimated Network Fee: {simulationResult.changes[0].amount} {simulationResult.changes[0].symbol}</p>
+                                {/* Skip the first element which is the fee */}
+                                {simulationResult.changes.slice(2).map((change, index) => (
+                                    <div key={index} style={{ marginBottom: '10px' }}>
+                                        <p>You will send: {change.amount} {change.symbol}</p>
+                                        <p>To: {change.to}</p>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
         </Dialog>
     );
+    
+    
 };
 
 export default SendModal;
