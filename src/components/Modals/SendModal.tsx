@@ -6,7 +6,12 @@ import { useNotification } from "@/context/NotificationContextProvider";
 import { useUserOperations } from "@/hooks/useUserOperations";
 import { useSimUO } from "@/hooks/useSimUO";
 
-const SendModal = async ({ isOpen, onClose }) => {
+interface SendModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+  }
+
+  const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose }) => {
     const [tokenAddress, setTokenAddress] = useState<string>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
     const [amount, setAmount] = useState<string>('1000000');
     const [recipient, setRecipient] = useState<string>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');

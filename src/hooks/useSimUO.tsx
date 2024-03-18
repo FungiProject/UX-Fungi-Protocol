@@ -27,6 +27,6 @@ export function useSimUO() {
             setSimStatus({ loading: false, error: 'Simulation failed. Please try again.', success: null });
           }
     }
-    return [simStatus, simTransfer];
+    return {simStatus, simTransfer};
   }
   
