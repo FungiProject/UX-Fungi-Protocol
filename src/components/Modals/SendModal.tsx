@@ -4,14 +4,16 @@ import { useERC20Transfer } from '@/hooks/useERC20Transfer';
 import { BigNumber } from 'alchemy-sdk';
 import { useNotification } from "@/context/NotificationContextProvider";
 import { useUserOperations } from "@/hooks/useUserOperations";
+import { useSimUO } from "@/hooks/useSimUO";
 
-const SendModal = ({ isOpen, onClose }) => {
+const SendModal = async ({ isOpen, onClose }) => {
     const [tokenAddress, setTokenAddress] = useState<string>('0xaf88d065e77c8cc2239327c5edb3a432268e5831');
     const [amount, setAmount] = useState<string>('1000000');
     const [recipient, setRecipient] = useState<string>('0x141571912eC34F9bE50a6b8DC805e71Df70fAdAD');
     const { showNotification } = useNotification();
     const [status, sendTransfer] = useERC20Transfer(tokenAddress, BigNumber.from(amount), recipient);
     const { sendUserOperations } = useUserOperations();
+    const { simStatus, simTransfer } = useSimUO();
 
     const handleSend = async () => {
         if (
@@ -29,6 +31,24 @@ const SendModal = ({ isOpen, onClose }) => {
         const resultTx: any = await sendTransfer();
 
         await sendUserOperations(resultTx);
+    };
+
+    const handleSim = async () => {
+        if (
+            tokenAddress === undefined ||
+            amount === undefined ||
+            recipient === undefined ||
+            typeof sendTransfer !== "function"
+        ) {
+            showNotification({
+                message: "Error sending tokens",
+                type: "error",
+            });
+            return Promise.resolve();
+        }
+        const resultTx: any = await sendTransfer();
+
+        await simTransfer(resultTx);
     };
 
     return (
@@ -96,6 +116,12 @@ const SendModal = ({ isOpen, onClose }) => {
                         }}>
                             Send
                         </button>
+                        <button onClick={handleSim} >Simulate</button>
+                        {simStatus && typeof simStatus !== 'function' && (
+                            <p>
+                                {simStatus.loading ? 'Loading...' : simStatus.error ? simStatus.error : simStatus.success}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
