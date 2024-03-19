@@ -40,7 +40,7 @@ export function NotificationContextProvider({ children }: ProviderProps) {
     setNotification(notification);
 
     timeoutId = setTimeout(() => {
-      setNotification(null);
+      notification.type !== "loading" && setNotification(null);
     }, 5000);
   };
 
@@ -70,7 +70,7 @@ export function getColorForType(type: NotificationType["type"]): string {
       return NOTIFICATION_ERROR_COLOR;
     case "warning":
       return NOTIFICATION_WARNING_COLOR;
-    case "info":
+    case "loading":
       return NOTIFICATION_INFO_COLOR;
     default:
       return NOTIFICATION_INFO_COLOR;

@@ -18,7 +18,7 @@ export function computeRebalance(
   const tokenInfoBalanceUsd = computeTokensUsd(balances);
 
   //Eliminamos lo que tengan un balance bajo porque falla lifi
-  const tokenInfoRemoveLow = removeTokenLowBalance(tokenInfoBalanceUsd)
+  const tokenInfoRemoveLow = removeTokenLowBalance(tokenInfoBalanceUsd);
 
   //Calculamos la suma de todos los balances en usd
   const totalUsd = computeTotalValueUsdBalance(tokenInfoRemoveLow);
@@ -36,13 +36,12 @@ export function computeRebalance(
 }
 
 function removeTokenLowBalance(balances: TokenInfoTotalUsd[]) {
-
-  const newTokensBalances = balances.filter(token => {
+  const newTokensBalances = balances.filter((token) => {
     if (token.totalValueUsd && token.totalValueUsd > 0.05) {
       return true;
     }
     return false;
-  })
+  });
   return newTokensBalances;
 }
 
@@ -92,18 +91,17 @@ export async function getUserOpRebalance(
 
 //Obtiene el valor en usd del monto total del balance de este token
 function computeTokensUsd(balances: TokenInfo[]): TokenInfoTotalUsd[] {
-
-  const balancesUsdValue: TokenInfoTotalUsd[] = balances.map(token => {
+  const balancesUsdValue: TokenInfoTotalUsd[] = balances.map((token) => {
     return {
       ...token,
-      totalValueUsd: Number(token.priceUSD) *
-        Number(ethers.utils.formatUnits(token.balance || "0", token.decimals))
-    }
-  })
+      totalValueUsd:
+        Number(token.priceUSD) *
+        Number(ethers.utils.formatUnits(token.balance || "0", token.decimals)),
+    };
+  });
 
   return balancesUsdValue;
 }
-
 
 function computeTotalValueUsdBalance(balances: TokenInfoTotalUsd[]) {
   return balances.reduce(
@@ -115,14 +113,13 @@ function computeTotalValueUsdBalance(balances: TokenInfoTotalUsd[]) {
   );
 }
 
-
 function getRebalanceSwaps(
   totalUsd: number,
   balancesToken: TokenInfoTotalUsd[],
   rebalances: TokenInfoRebalanceInput[]
 ): RebalanceSwap[] {
-
-  const { balanceTokensSorted, rebalancesSorted } = sortTokenBalanceAndRebalance(balancesToken, rebalances);
+  const { balanceTokensSorted, rebalancesSorted } =
+    sortTokenBalanceAndRebalance(balancesToken, rebalances);
 
   //Añadimos el campo usdAvailable que será el que lleve la cuenta de la cantidad que falta sin userOp
   interface BalanceTokenParamsWithUsdAvailable extends TokenInfoTotalUsd {
@@ -146,23 +143,29 @@ function getRebalanceSwaps(
 
   let swaps: RebalanceSwap[] = [];
 
-
   //Primero vamos a buscar si hay algún token que tengamos en balance y que exista en rebalance para no generar swap innecesarios. Por lo que vamos a buscar ese balance y restarselo al amountUsdByPercentaje
   rebalancesSortedWithUsdRemain.forEach((rebalance) => {
-    const index = balanceTokensMap.findIndex(t => t.address == rebalance.address);
+    const index = balanceTokensMap.findIndex(
+      (t) => t.address == rebalance.address
+    );
     if (index != -1) {
-      if (rebalance.amountUsdByPercentaje > balanceTokensMap[index].usdAvailable) {
-        rebalance.amountUsdByPercentaje = rebalance.amountUsdByPercentaje - balanceTokensMap[index].usdAvailable;
+      if (
+        rebalance.amountUsdByPercentaje > balanceTokensMap[index].usdAvailable
+      ) {
+        rebalance.amountUsdByPercentaje =
+          rebalance.amountUsdByPercentaje -
+          balanceTokensMap[index].usdAvailable;
         balanceTokensMap[index].usdAvailable = 0;
       } else if (rebalance.amountUsdByPercentaje > 0) {
-        balanceTokensMap[index].usdAvailable = balanceTokensMap[index].usdAvailable - rebalance.amountUsdByPercentaje;
+        balanceTokensMap[index].usdAvailable =
+          balanceTokensMap[index].usdAvailable -
+          rebalance.amountUsdByPercentaje;
         rebalance.amountUsdByPercentaje = 0;
       }
     }
-  })
+  });
 
   rebalancesSortedWithUsdRemain.forEach((rebalance) => {
-
     for (let i = 0; i < balanceTokensMap.length; i++) {
       balanceTokensMap[i];
       if (rebalance.amountUsdByPercentaje === 0) {
@@ -170,15 +173,20 @@ function getRebalanceSwaps(
       }
 
       if (balanceTokensMap[i].usdAvailable > 0) {
-        if (rebalance.amountUsdByPercentaje > balanceTokensMap[i].usdAvailable) {
+        if (
+          rebalance.amountUsdByPercentaje > balanceTokensMap[i].usdAvailable
+        ) {
           if (balanceTokensMap[i].address != rebalance.address) {
             swaps.push({
               tokenIn: balanceTokensMap[i].address,
               amountIn: ethers.utils
                 .parseUnits(
                   (
-                    (balanceTokensMap[i].usdAvailable / Number(balanceTokensMap[i].priceUSD!)).toFixed(5)
-                  ).toString(),
+                    balanceTokensMap[i].usdAvailable /
+                    Number(balanceTokensMap[i].priceUSD!)
+                  )
+                    .toFixed(8)
+                    .toString(),
                   balanceTokensMap[i].decimals
                 )
                 .toString(),
@@ -193,7 +201,16 @@ function getRebalanceSwaps(
           if (balanceTokensMap[i].address != rebalance.address) {
             swaps.push({
               tokenIn: balanceTokensMap[i].address,
-              amountIn: ethers.utils.parseUnits(((rebalance.amountUsdByPercentaje / Number(balanceTokensMap[i].priceUSD!)).toFixed(5)).toString(), balanceTokensMap[i].decimals)
+              amountIn: ethers.utils
+                .parseUnits(
+                  (
+                    rebalance.amountUsdByPercentaje /
+                    Number(balanceTokensMap[i].priceUSD!)
+                  )
+                    .toFixed(8)
+                    .toString(),
+                  balanceTokensMap[i].decimals
+                )
                 .toString(),
               tokenOut: rebalance.address,
             });
@@ -215,8 +232,8 @@ function getRebalanceSwaps(
 
 function sortTokenBalanceAndRebalance(
   balancesToken: TokenInfoTotalUsd[],
-  rebalances: TokenInfoRebalanceInput[]) {
-
+  rebalances: TokenInfoRebalanceInput[]
+) {
   //ordenamos de mayor a menor los balances y los porcentajes de los rebalances para empezar con ellos con los porcentajes mas grandes
   const balanceTokensSorted = balancesToken.sort((a, b) => {
     if (a.totalValueUsd && b.totalValueUsd) {
@@ -229,7 +246,9 @@ function sortTokenBalanceAndRebalance(
   // Construimos rebalancesSorted basándonos en el orden de los tokens en balanceTokensSorted
   const rebalancesSorted: TokenInfoRebalanceInput[] = [];
   for (const tokenInfo of balanceTokensSorted) {
-    const rebalance = rebalances.find(rebalance => rebalance.address === tokenInfo.address);
+    const rebalance = rebalances.find(
+      (rebalance) => rebalance.address === tokenInfo.address
+    );
     if (rebalance) {
       rebalancesSorted.push(rebalance);
     }
@@ -244,5 +263,3 @@ function sortTokenBalanceAndRebalance(
 
   return { balanceTokensSorted, rebalancesSorted };
 }
-
-

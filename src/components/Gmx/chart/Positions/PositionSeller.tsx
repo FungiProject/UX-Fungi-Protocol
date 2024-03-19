@@ -505,7 +505,10 @@ export function PositionSeller(p: Props) {
 
       return Promise.resolve();
     }
-
+    showNotification({
+      message: "Your transaction is being processed",
+      type: "loading",
+    });
     setIsSubmitting(true);
     const createSwapOrderOp = await createDecreaseOrderUserOp(
       chainId,
@@ -546,6 +549,7 @@ export function PositionSeller(p: Props) {
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }
+
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {

@@ -30,7 +30,7 @@ export default function Modal(props) {
     <Transition.Root show={isVisible} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-50 "
+        className="relative z-40 "
         onClose={() => setIsVisible(false)}
       >
         <Transition.Child

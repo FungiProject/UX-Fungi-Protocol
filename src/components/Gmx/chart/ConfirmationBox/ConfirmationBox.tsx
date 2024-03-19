@@ -591,6 +591,11 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
+    showNotification({
+      message: "Your transaction is being processed",
+      type: "loading",
+    });
+
     const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
         tokenAddress: address,
@@ -651,6 +656,11 @@ export function ConfirmationBox(p: Props) {
       });
       return Promise.resolve();
     }
+
+    showNotification({
+      message: "Your transaction is being processed",
+      type: "loading",
+    });
 
     const userOps = tokensToApprove.map((address: string) =>
       createApproveTokensUserOp({
@@ -1776,7 +1786,6 @@ export function ConfirmationBox(p: Props) {
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
-        {renderHighPriceImpactWarning()}
 
         <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
