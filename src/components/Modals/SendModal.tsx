@@ -52,10 +52,20 @@ interface SendModalProps {
             });
             return Promise.resolve();
         }
-        const resultTx: any = await sendTransfer();
-
-        const result = await simTransfer(resultTx);
-        setSimulationResult(result);
+        try {
+            const resultTx: any = await sendTransfer();
+            const result: any = await simTransfer(resultTx);
+            if (!result || result.error) {
+                throw new Error(result?.error || "Simulation failed. No result returned.");
+            }
+            setSimulationResult(result);
+        } catch (error: any) {
+            showNotification({
+                message: error.message,
+                type: "error",
+            });
+            setSimulationResult(null); // Clear previous simulation results
+        }
     };
 
     return (
@@ -137,7 +147,7 @@ interface SendModalProps {
                         }}>
                             Simulate
                         </button>
-                        {simulationResult && (
+                        {simulationResult ? (
                             <div style={{
                                 marginTop: '20px',
                                 padding: '15px',
@@ -155,6 +165,12 @@ interface SendModalProps {
                                     </div>
                                 ))}
                             </div>
+                        ) : (
+                            simStatus.loading ? (
+                                <p>Loading...</p>
+                            ) : simStatus.error ? (
+                                <p style={{ color: 'red' }}>{simStatus.error}</p>
+                            ) : null
                         )}
                     </div>
                 </div>
