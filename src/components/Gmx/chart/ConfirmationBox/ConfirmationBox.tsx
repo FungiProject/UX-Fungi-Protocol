@@ -190,7 +190,6 @@ export function ConfirmationBox(p: Props) {
     isLong,
     isShort,
     isPosition,
-    isSwap,
     isMarket,
     isLimit,
     isTrigger,
@@ -220,7 +219,7 @@ export function ConfirmationBox(p: Props) {
   }, [savedAllowedSlippage, p.isVisible]);
 
   const payAmount = useMemo(() => {
-    if (isSwap && !isWrapOrUnwrap) {
+    if (!isWrapOrUnwrap) {
       return swapAmounts?.amountIn;
     }
     if (isIncrease) {
@@ -229,7 +228,6 @@ export function ConfirmationBox(p: Props) {
   }, [
     increaseAmounts?.initialCollateralAmount,
     isIncrease,
-    isSwap,
     isWrapOrUnwrap,
     swapAmounts?.amountIn,
   ]);
@@ -315,7 +313,7 @@ export function ConfirmationBox(p: Props) {
   const swapSpreadInfo = useMemo(() => {
     let spread = BigNumber.from(0);
 
-    if (isSwap && fromToken && toToken) {
+    if (fromToken && toToken) {
       const fromSpread = getSpread(fromToken.prices);
       const toSpread = getSpread(toToken.prices);
 
@@ -336,7 +334,7 @@ export function ConfirmationBox(p: Props) {
     const showSpread = isMarket;
 
     return { spread, showSpread, isHigh };
-  }, [isSwap, fromToken, toToken, isIncrease, indexToken, isMarket, isLong]);
+  }, [fromToken, toToken, isIncrease, indexToken, isMarket, isLong]);
 
   const collateralSpreadInfo = useMemo(() => {
     if (!indexToken || !collateralToken) {
@@ -362,10 +360,6 @@ export function ConfirmationBox(p: Props) {
 
   const title = useMemo(() => {
     if (isMarket) {
-      if (isSwap) {
-        return `Confirm Swap`;
-      }
-
       return isLong ? `Confirm Long` : `Confirm Short`;
     }
 
@@ -374,7 +368,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     return `Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
-  }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
+  }, [fixedTriggerOrderType, isLimit, isLong, isMarket]);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -428,11 +422,7 @@ export function ConfirmationBox(p: Props) {
     let text = "";
 
     if (isMarket) {
-      if (isSwap) {
-        text = `Swap`;
-      } else {
-        text = isLong ? `Long` : `Short`;
-      }
+      text = isLong ? `Long` : `Short`;
     } else if (isLimit) {
       text = `Confirm Limit Order`;
     } else {
@@ -457,7 +447,6 @@ export function ConfirmationBox(p: Props) {
     isMarket,
     fromToken?.assetSymbol,
     fromToken?.symbol,
-    isSwap,
     isLong,
     fixedTriggerOrderType,
   ]);
@@ -753,8 +742,6 @@ export function ConfirmationBox(p: Props) {
       return;
     } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
-    } else if (isSwap) {
-      txnPromise = onSubmitSwap();
     } else if (isIncrease) {
       txnPromise = onSubmitIncreaseOrder();
     } else {
@@ -791,36 +778,6 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderMain() {
-    if (isSwap) {
-      return (
-        <>
-          <div className="Confirmation-box-main">
-            <div className="flex text-lg justify-center">
-              <span className="mr-2">Pay</span>
-              {formatTokenAmountWithUsd(
-                swapAmounts?.amountIn,
-                swapAmounts?.usdIn,
-                fromToken?.symbol,
-                fromToken?.decimals
-              )}
-            </div>
-            <div className="flex items-center justify-center ">
-              <ArrowDownIcon className="h-7 w-7 my-1" />
-            </div>
-            <div className="flex text-lg justify-center">
-              <span className="mr-2">Receive</span>
-              {formatTokenAmountWithUsd(
-                swapAmounts?.amountOut,
-                swapAmounts?.usdOut,
-                toToken?.symbol,
-                toToken?.decimals
-              )}
-            </div>
-          </div>
-        </>
-      );
-    }
-
     if (isIncrease) {
       return (
         <>
@@ -1075,7 +1032,7 @@ export function ConfirmationBox(p: Props) {
 
     let tooltipContent = "";
 
-    if (isSwap && swapAmounts) {
+    if (swapAmounts) {
       availableLiquidityUsd = swapLiquidityUsd;
 
       availableLiquidityAmount = convertToTokenAmount(
@@ -1112,15 +1069,7 @@ export function ConfirmationBox(p: Props) {
         <Tooltip
           position="right-bottom"
           handleClassName={isLiquidityRisk ? "negative" : ""}
-          handle={
-            isSwap
-              ? formatTokenAmount(
-                  availableLiquidityAmount,
-                  toToken?.decimals,
-                  toToken?.symbol
-                )
-              : formatUsd(availableLiquidityUsd)
-          }
+          handle={formatUsd(availableLiquidityUsd)}
           renderContent={() => tooltipContent}
         />
       </ExchangeInfoRow>
@@ -1782,7 +1731,6 @@ export function ConfirmationBox(p: Props) {
         label={title}
         allowContentTouchMove
       >
-        {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}

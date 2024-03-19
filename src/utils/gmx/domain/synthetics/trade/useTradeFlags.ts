@@ -4,7 +4,6 @@ import { useMemo } from "react";
 export type TradeFlags = {
   isLong: boolean;
   isShort: boolean;
-  isSwap: boolean;
   isPosition: boolean;
   isIncrease: boolean;
   isTrigger: boolean;
@@ -12,11 +11,13 @@ export type TradeFlags = {
   isLimit: boolean;
 };
 
-export function useTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
+export function useTradeFlags(
+  tradeType: TradeType,
+  tradeMode: TradeMode
+): TradeFlags {
   return useMemo(() => {
     const isLong = tradeType === TradeType.Long;
     const isShort = tradeType === TradeType.Short;
-    const isSwap = tradeType === TradeType.Swap;
 
     const isPosition = isLong || isShort;
 
@@ -29,7 +30,6 @@ export function useTradeFlags(tradeType: TradeType, tradeMode: TradeMode): Trade
     return {
       isLong,
       isShort,
-      isSwap,
       isPosition,
       isIncrease,
       isMarket,
