@@ -73,12 +73,14 @@ export const useLiFiTx = (
             : maxResponse;
         }, filteredResponses[0]);
       } catch (error) {
-        console.error("Error obteining quotes:", error);
+        console.error("Error obtaining quotes:", error);
       }
 
       const spender: Hex = quote.transactionRequest.to;
       const tokenAddress: Hex = quote.action.fromToken.address;
       const amount: number = quote.estimate.fromAmount;
+
+      console.log("quote", quote);
 
       const userOps: UserOperation[] = [];
 

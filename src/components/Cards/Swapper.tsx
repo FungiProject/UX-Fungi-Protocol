@@ -13,6 +13,7 @@ import useWallet from "@/hooks/useWallet";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
 import { BigNumber } from "ethers";
 import { useNotification } from "@/context/NotificationContextProvider";
+import { useSimUO } from "@/hooks/useSimUO";
 
 type SwapperProps = {
   tokens: TokenInfo[];
@@ -36,6 +37,8 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
     undefined
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { simStatus, simTransfer } = useSimUO();
+  const [simulationResult, setSimulationResult] = useState<any>(null);
 
   const [tx, sendTx] = useLiFiTx(
     "Swap",
@@ -152,15 +155,15 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
     }
   }
 
-  async function onSubmit2() {
-    setIsSubmitting(true);
-    const uo = createApproveTokensUserOp({
-      tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
-      amount: BigNumber.from(1000000),
-    });
-    await sendUserOperations([uo], "OK");
-  }
+  // async function onSubmit2() {
+  //   setIsSubmitting(true);
+  //   const uo = createApproveTokensUserOp({
+  //     tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  //     spender: "0x28962eEdacA9D89b41fcE2D3A2e89A28469e1ecf",
+  //     amount: BigNumber.from(1000000),
+  //   });
+  //   await sendUserOperations([uo], "OK");
+  // }
 
   const onSubmitSwap = async () => {
     if (
@@ -184,6 +187,40 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
     const resultTx: any = await sendTx();
 
     await sendUserOperations(resultTx);
+  };
+
+  const simulateSwap = async () => {
+    if (
+      scAccount === undefined ||
+      amountFrom === undefined ||
+      tokenFrom === undefined ||
+      tokenTo === undefined ||
+      network === undefined ||
+      fromAddress === undefined ||
+      toAddress === undefined ||
+      slippage === undefined ||
+      typeof sendTx !== "function"
+    ) {
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
+      return Promise.resolve();
+    }
+    try {
+      const resultTx: any = await sendTx();
+      const result = await simTransfer(resultTx);
+      if (!result || result.error) {
+        throw new Error(result?.error || "Simulation failed. No result returned.");
+    }
+    setSimulationResult(result);
+    } catch (error: any) {
+      showNotification({
+        message: error.message,
+        type: "error",
+      });
+      setSimulationResult(null);
+    }
   };
 
   function onSwitchTokens() {
@@ -308,6 +345,61 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
       >
         {submitButtonState.text}
       </Button>
+      <button
+        onClick={simulateSwap}
+        className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded"
+        disabled={isSubmitting} // Assume isSubmitting indicates if a real transaction is in progress
+      >
+        Simulate Swap
+      </button>
+      {simulationResult ? (
+        <div style={{
+            marginTop: '20px',
+            padding: '15px',
+            backgroundColor: '#f7f7f7',
+            borderRadius: '8px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        }}>
+            <h3 style={{ color: '#333' }}>Swap Summary</h3>
+            {/* <p>Estimated Network Fee: {simulationResult.changes[0].amount} {simulationResult.changes[0].symbol}</p> */}
+            {/* Use the last transaction as reference */}
+            <div>
+        {simulationResult && simulationResult.changes && (
+          <>
+            {/* Render the element at index 0 */}
+            {simulationResult.changes[0] && (
+              <div style={{ marginBottom: "10px" }}>
+                <p>Fee: {simulationResult.changes[0].amount} {simulationResult.changes[0].symbol}</p>
+                {/* <p>To: {simulationResult.changes[0].to}</p> */}
+              </div>
+            )}
+
+            {/* Render the element at index 2 */}
+            {simulationResult.changes[2] && (
+              <div style={{ marginBottom: "10px" }}>
+                <p>You will swap: {simulationResult.changes[2].amount} {simulationResult.changes[2].symbol}</p>
+                {/* <p>To: {simulationResult.changes[2].to}</p> */}
+              </div>
+            )}
+
+            {/* Render the last element */}
+            {simulationResult.changes[simulationResult.changes.length - 3] && (
+              <div style={{ marginBottom: "10px" }}>
+                <p>For: {simulationResult.changes[simulationResult.changes.length - 3].amount} {simulationResult.changes[simulationResult.changes.length - 1].symbol}</p>
+                {/* <p>To: {simulationResult.changes[simulationResult.changes.length - 1].to}</p> */}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+                            </div>
+                        ) : (
+                            simStatus.loading ? (
+                                <p>Loading...</p>
+                            ) : simStatus.error ? (
+                                <p style={{ color: 'red' }}>{simStatus.error}</p>
+                            ) : null
+                        )}
       {/* <Button
         variant="primary-action"
         className={`mt-4 ${
