@@ -14,9 +14,12 @@ import { TokenInfo } from "@/domain/tokens/types";
 import { useTokenBalances } from "@/hooks/useTokensBalances";
 import { TokenInfoRebalanceInput } from "@/domain/tokens/types";
 import { useTokensInfo } from "@/hooks/useTokensInfo";
+import { useSimUO } from "@/hooks/useSimUO";
+import { useNotification } from "@/context/NotificationContextProvider";
 
 export default function Rebalancer() {
   const { chainId, scAccount } = useWallet();
+  const { showNotification } = useNotification();
   const [error, setError] = useState(false);
   const { tokens } = useTokensInfo();
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
@@ -29,6 +32,7 @@ export default function Rebalancer() {
   const [tokensCopy, setTokensCopy] = useState<TokenInfo[] | null>(null);
   const { tokensBalances } = useTokenBalances();
   const { sendUserOperations } = useUserOperations();
+  const { simStatus, simTransfer } = useSimUO();
 
   const getInfo = (query: string) => {
     setSearch(query);
@@ -126,6 +130,34 @@ export default function Rebalancer() {
       console.log(error);
     }
   }
+
+  async function simulate() {
+    if (!tokensBalances || !selectedTokens || !chainId || !scAccount) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const rebalances = computeRebalance(tokensBalances, selectedTokens);
+      const userOps = await getUserOpRebalance(chainId, scAccount!, rebalances);
+
+      let txnPromise = simTransfer(userOps);
+
+      txnPromise
+        .then(() => {
+          //onSubmitted();
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    } catch (error) {
+      console.log("Error generate user ops");
+      console.log(error);
+    }
+  }
+
+  
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -247,6 +279,15 @@ export default function Rebalancer() {
           ))}{" "}
       </div>
 
+      <div>
+      <button
+          onClick={simulate}
+          className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded"
+          disabled={isSubmitting} // Assume isSubmitting indicates if a real transaction is in progress
+        >
+          Simulate Bridge
+        </button>
+      </div>
       <div>
         <Button
           variant="primary-action"

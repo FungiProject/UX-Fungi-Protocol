@@ -472,45 +472,39 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
             <h3 style={{ color: '#333' }}>Swap Summary</h3>
-            {/* <p>Estimated Network Fee: {simulationResult.changes[0].amount} {simulationResult.changes[0].symbol}</p> */}
-            {/* Use the last transaction as reference */}
             <div>
         {simulationResult && simulationResult.changes && (
           <>
-            {/* Render the element at index 0 */}
             {simulationResult.changes[0] && (
               <div style={{ marginBottom: "10px" }}>
                 <p>Fee: {simulationResult.changes[0].amount} {simulationResult.changes[0].symbol}</p>
-                {/* <p>To: {simulationResult.changes[0].to}</p> */}
+                
               </div>
             )}
 
-            {/* Render the element at index 2 */}
             {simulationResult.changes[2] && (
               <div style={{ marginBottom: "10px" }}>
                 <p>You will swap: {simulationResult.changes[2].amount} {simulationResult.changes[2].symbol}</p>
-                {/* <p>To: {simulationResult.changes[2].to}</p> */}
+                
               </div>
             )}
 
-            {/* Render the last element */}
             {simulationResult.changes[simulationResult.changes.length - 3] && (
               <div style={{ marginBottom: "10px" }}>
                 <p>For: {simulationResult.changes[simulationResult.changes.length - 3].amount} {simulationResult.changes[simulationResult.changes.length - 1].symbol}</p>
-                {/* <p>To: {simulationResult.changes[simulationResult.changes.length - 1].to}</p> */}
               </div>
             )}
           </>
         )}
       </div>
-                            </div>
-                        ) : (
-                            simStatus.loading ? (
-                                <p>Loading...</p>
-                            ) : simStatus.error ? (
-                                <p style={{ color: 'red' }}>{simStatus.error}</p>
-                            ) : null
-                        )}
+              </div>  
+          ) : (
+              simStatus.loading ? (
+                  <p>Loading...</p>
+              ) : simStatus.error ? (
+                  <p style={{ color: 'red' }}>{simStatus.error}</p>
+              ) : null
+          )}
       <div className="text-sm px-2 mt-4 text-gray-400">
         The Bridge is operated by LI.FI, and we cannot take responsibility for
         any issues. For support related to the bridge, please refer to the LI.FI
