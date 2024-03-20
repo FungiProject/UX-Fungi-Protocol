@@ -266,8 +266,8 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
       const result = await simTransfer(resultTx);
       if (!result || result.error) {
         throw new Error(result?.error || "Simulation failed. No result returned.");
-    }
-    setSimulationResult(result);
+      }
+      setSimulationResult(result);
     } catch (error: any) {
       showNotification({
         message: error.message,
