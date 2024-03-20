@@ -30,7 +30,6 @@ export default function SpotTable({
   const [loading, setLoading] = useState(false);
   const { tokenMarketsData, fetchData, isLoading } = useTokenMarketData([]);
   const [portfolioEmpty, setPortfolioEmpty] = useState(false);
-  const [portfolioTokens, setPortfolioTokens] = useState<TokenInfo[]>([]);
 
   const checkTokens = () => {
     if (tokens && typeMember === "All") {
@@ -48,7 +47,6 @@ export default function SpotTable({
           1
         );
       });
-      setPortfolioTokens(tokensWithBalance);
 
       if (tokensWithBalance.length !== 0) {
         setPortfolioEmpty(false);
