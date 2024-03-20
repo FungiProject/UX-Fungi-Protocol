@@ -1793,7 +1793,7 @@ export function TradeBox(p: Props) {
     <div className="px-[32px] pt-[24px]">
       <Tab
         icons={tradeTypeIcons}
-        options={Object.values(TradeType)}
+        options={Object.values([TradeType.Long, TradeType.Short])}
         optionLabels={tradeTypeLabels}
         option={tradeType}
         onChange={onSelectTradeType}

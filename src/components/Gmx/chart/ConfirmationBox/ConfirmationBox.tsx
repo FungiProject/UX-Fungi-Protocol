@@ -634,7 +634,14 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createIncreaseOrderOp);
 
-    return sendUserOperations(userOps);
+    try {
+      await sendUserOperations(userOps);
+    } catch (e) {
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
+    }
   }
 
   async function onSubmitDecreaseOrder() {
@@ -740,7 +747,14 @@ export function ConfirmationBox(p: Props) {
 
     userOps.push(createDecreaseOrderOp);
 
-    return sendUserOperations(userOps);
+    try {
+      await sendUserOperations(userOps);
+    } catch (e) {
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
+    }
   }
 
   function onSubmit() {
