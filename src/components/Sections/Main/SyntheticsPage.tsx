@@ -124,7 +124,7 @@ export function SyntheticsPage(p) {
     ListSection.Positions
   );
 
-  const { isLong } = tradeFlags;
+  const { isSwap, isLong } = tradeFlags;
   const {
     indexTokens,
     sortedIndexTokensWithPoolValue,
@@ -142,11 +142,15 @@ export function SyntheticsPage(p) {
       const toToken = getToken(chainId, toTokenAddress);
 
       const chartToken =
-        toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-      const availableChartTokens = indexTokens;
+        isSwap && toToken?.isStable && !fromToken?.isStable
+          ? fromToken
+          : toToken;
+      const availableChartTokens = isSwap ? swapTokens : indexTokens;
       const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
         if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
-          const currentSortReferenceList = sortedIndexTokensWithPoolValue;
+          const currentSortReferenceList = isSwap
+            ? sortedLongAndShortTokens
+            : sortedIndexTokensWithPoolValue;
           return (
             currentSortReferenceList.indexOf(a.address) -
             currentSortReferenceList.indexOf(b.address)
@@ -166,6 +170,7 @@ export function SyntheticsPage(p) {
     chainId,
     fromTokenAddress,
     indexTokens,
+    isSwap,
     toTokenAddress,
     sortedIndexTokensWithPoolValue,
     swapTokens,

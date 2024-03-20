@@ -94,6 +94,7 @@ import {
 import { BigNumber } from "ethers";
 import longImg from "../../../../img/long.svg";
 import shortImg from "../../../../img/short.svg";
+import swapImg from "../../../../img/swap.svg";
 import { useChainId } from "../../../../utils/gmx/lib/chains";
 import { DUST_BNB, USD_DECIMALS } from "../../../../utils/gmx/lib/legacy";
 import { useLocalStorageSerializeKey } from "../../../../utils/gmx/lib/localstorage";
@@ -157,6 +158,7 @@ export type Props = {
 const tradeTypeIcons = {
   [TradeType.Long]: longImg.src,
   [TradeType.Short]: shortImg.src,
+  [TradeType.Swap]: swapImg.src,
 };
 
 export function TradeBox(p: Props) {
@@ -195,8 +197,15 @@ export function TradeBox(p: Props) {
     setPendingTxns,
     switchTokenAddresses,
   } = p;
-  const { isLong, isIncrease, isPosition, isLimit, isTrigger, isMarket } =
-    tradeFlags;
+  const {
+    isLong,
+    isSwap,
+    isIncrease,
+    isPosition,
+    isLimit,
+    isTrigger,
+    isMarket,
+  } = tradeFlags;
   const { login, scAccount } = useWallet();
   const {
     swapTokens,
@@ -211,6 +220,7 @@ export function TradeBox(p: Props) {
     return {
       [TradeType.Long]: `Long`,
       [TradeType.Short]: `Short`,
+      [TradeType.Swap]: `Swap`,
     };
   }, []);
 
@@ -275,8 +285,12 @@ export function TradeBox(p: Props) {
       return undefined;
     }
 
+    if (isSwap) {
+      return toToken.prices.minPrice;
+    }
+
     return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
-  }, [isIncrease, isLong, toToken]);
+  }, [isIncrease, isLong, isSwap, toToken]);
 
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
@@ -288,7 +302,7 @@ export function TradeBox(p: Props) {
   const [triggerRatioInputValue, setTriggerRatioInputValue] =
     useState<string>("");
   const { markRatio, triggerRatio } = useMemo(() => {
-    if (!fromToken || !toToken || !fromTokenPrice || !markPrice) {
+    if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
       return {};
     }
 
@@ -315,7 +329,14 @@ export function TradeBox(p: Props) {
       markRatio,
       triggerRatio,
     };
-  }, [fromToken, fromTokenPrice, markPrice, toToken, triggerRatioInputValue]);
+  }, [
+    fromToken,
+    fromTokenPrice,
+    isSwap,
+    markPrice,
+    toToken,
+    triggerRatioInputValue,
+  ]);
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(
     getLeverageKey(chainId),
@@ -341,7 +362,7 @@ export function TradeBox(p: Props) {
   });
 
   const swapAmounts = useMemo(() => {
-    if (!fromToken || !toToken || !fromTokenPrice) {
+    if (!isSwap || !fromToken || !toToken || !fromTokenPrice) {
       return undefined;
     }
 
@@ -394,6 +415,7 @@ export function TradeBox(p: Props) {
     fromTokenAmount,
     fromTokenPrice,
     isLimit,
+    isSwap,
     isWrapOrUnwrap,
     markRatio,
     swapRoute.findSwapPath,
@@ -571,7 +593,7 @@ export function TradeBox(p: Props) {
       return {};
     }
 
-    if (swapAmounts?.swapPathStats) {
+    if (isSwap && swapAmounts?.swapPathStats) {
       const estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
         swapsCount: swapAmounts.swapPathStats.swapPath.length,
       });
@@ -685,6 +707,7 @@ export function TradeBox(p: Props) {
     gasPrice,
     increaseAmounts,
     isIncrease,
+    isSwap,
     isTrigger,
     swapAmounts,
     tokensData,
@@ -796,7 +819,24 @@ export function TradeBox(p: Props) {
 
     let tradeError: ValidationResult = [undefined];
 
-    if (isIncrease) {
+    if (isSwap) {
+      tradeError = getSwapError({
+        fromToken,
+        toToken,
+        fromTokenAmount,
+        fromUsd: swapAmounts?.usdIn,
+        toTokenAmount,
+        toUsd: swapAmounts?.usdOut,
+        swapPathStats: swapAmounts?.swapPathStats,
+        swapLiquidity: swapOutLiquidity,
+        priceImpactWarning: priceImpactWarningState,
+        isLimit,
+        isWrapOrUnwrap,
+        triggerRatio,
+        markRatio,
+        fees,
+      });
+    } else if (isIncrease) {
       tradeError = getIncreaseError({
         marketInfo,
         indexToken: toToken,
@@ -875,6 +915,7 @@ export function TradeBox(p: Props) {
     chainId,
     scAccount,
     hasOutdatedUi,
+    isSwap,
     isIncrease,
     isTrigger,
     fromToken,
@@ -926,7 +967,11 @@ export function TradeBox(p: Props) {
     }
 
     if (isMarket) {
-      return `${tradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
+      if (isSwap) {
+        return `Swap ${fromToken?.symbol}`;
+      } else {
+        return `${tradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
+      }
     } else if (isLimit) {
       return `Create Limit order`;
     } else {
@@ -940,7 +985,7 @@ export function TradeBox(p: Props) {
     fromToken?.symbol,
     isLimit,
     isMarket,
-
+    isSwap,
     toToken?.symbol,
     tradeType,
     tradeTypeLabels,
@@ -980,12 +1025,37 @@ export function TradeBox(p: Props) {
     setStage("confirmation");
   }
 
-  const prevIsISwap = usePrevious(false);
+  const prevIsISwap = usePrevious(isSwap);
 
   useEffect(
     function updateInputAmounts() {
-      if (!fromToken || !toToken || !isIncrease) {
+      if (!fromToken || !toToken || (!isSwap && !isIncrease)) {
         return;
+      }
+
+      // reset input values when switching between swap and position tabs
+      if (isSwap !== prevIsISwap) {
+        setFocusedInput("from");
+        setFromTokenInputValue("", true);
+        return;
+      }
+
+      if (isSwap && swapAmounts) {
+        if (focusedInput === "from") {
+          setToTokenInputValue(
+            swapAmounts.amountOut.gt(0)
+              ? formatAmountFree(swapAmounts.amountOut, toToken.decimals)
+              : "",
+            false
+          );
+        } else {
+          setFromTokenInputValue(
+            swapAmounts.amountIn.gt(0)
+              ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals)
+              : "",
+            false
+          );
+        }
       }
 
       if (isIncrease && increaseAmounts) {
@@ -1017,6 +1087,7 @@ export function TradeBox(p: Props) {
       fromToken,
       increaseAmounts,
       isIncrease,
+      isSwap,
       prevIsISwap,
       setFromTokenInputValue,
       setToTokenInputValue,
@@ -1222,6 +1293,52 @@ export function TradeBox(p: Props) {
           <ArrowsUpDownIcon className="h-7 w-7" />
         </div>
 
+        {isSwap && (
+          <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
+            <BuyInputSection
+              topLeftLabel={`Receive`}
+              topLeftValue={
+                swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""
+              }
+              topRightLabel={`Balance`}
+              topRightValue={formatTokenAmount(
+                toToken?.balance,
+                toToken?.decimals,
+                "",
+                {
+                  useCommas: true,
+                }
+              )}
+              inputValue={toTokenInputValue}
+              onInputValueChange={(e) => {
+                setFocusedInput("to");
+                setToTokenInputValue(e.target.value, true);
+              }}
+              showMaxButton={false}
+              preventFocusOnLabelClick="right"
+            >
+              {toTokenAddress && (
+                <TokenSelector
+                  label={`Receive`}
+                  chainId={chainId}
+                  tokenAddress={toTokenAddress}
+                  onSelectToken={(token) =>
+                    onSelectToTokenAddress(token.address)
+                  }
+                  height="h-[400px]"
+                  tokens={swapTokens}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showBalances={true}
+                  showTokenImgInDropdown={true}
+                  extendedSortSequence={sortedLongAndShortTokens}
+                />
+              )}
+            </BuyInputSection>{" "}
+          </div>
+        )}
+
         {isIncrease && (
           <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px]">
             <BuyInputSection
@@ -1337,6 +1454,41 @@ export function TradeBox(p: Props) {
           }}
         >
           USD
+        </BuyInputSection>
+      </div>
+    );
+  }
+
+  function renderTriggerRatioInput() {
+    return (
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
+        <BuyInputSection
+          topLeftLabel={`Price`}
+          topRightLabel={`Mark`}
+          topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+          onClickTopRightLabel={() => {
+            setTriggerRatioInputValue(
+              formatAmount(markRatio?.ratio, USD_DECIMALS, 10)
+            );
+          }}
+          inputValue={triggerRatioInputValue}
+          onInputValueChange={(e) => {
+            setTriggerRatioInputValue(e.target.value);
+          }}
+        >
+          {markRatio && (
+            <div className="flex">
+              <TokenWithIcon
+                symbol={markRatio.smallestToken.symbol}
+                displaySize={24}
+              />{" "}
+              <span className="mx-2">per</span>
+              <TokenWithIcon
+                symbol={markRatio.largestToken.symbol}
+                displaySize={24}
+              />
+            </div>
+          )}
         </BuyInputSection>
       </div>
     );
@@ -1682,7 +1834,7 @@ export function TradeBox(p: Props) {
         optionLabels={tradeTypeLabels}
         option={tradeType}
         onChange={onSelectTradeType}
-        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-2 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold "
+        className="h-[40px] p-[4px] w-full rounded-full grid grid-cols-3 bg-white items-center text-center shadow-input text-sm mb-4 font-semibold "
       />
       <Tab
         options={availableTradeModes}
@@ -1700,12 +1852,17 @@ export function TradeBox(p: Props) {
           onSubmit();
         }}
       >
-        {isIncrease && renderTokenInputs()}{" "}
+        {(isSwap || isIncrease) && renderTokenInputs()}{" "}
         {isTrigger && renderDecreaseSizeInput()}
+        {isSwap && isLimit && renderTriggerRatioInput()}{" "}
         {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}{" "}
         <div className="SwapBox-info-section">
           {isPosition && <>{renderPositionControls()}</>}{" "}
-          <div className="border-b-1 border-gray-200 my-[30px]" />
+          <div
+            className={`${
+              isSwap ? "" : "border-b-1 border-gray-200"
+            } my-[30px]`}
+          />
           {isIncrease && renderIncreaseOrderInfo()}
           {isTrigger && renderTriggerOrderInfo()}{" "}
           {feesType && (

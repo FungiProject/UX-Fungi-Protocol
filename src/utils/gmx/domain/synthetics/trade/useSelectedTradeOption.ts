@@ -98,20 +98,24 @@ export function useSelectedTradeOption(
     return {
       [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
       [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
     }[tradeType];
   }, [tradeType]);
 
   const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
-  const { isLong, isPosition } = tradeFlags;
+  const { isSwap, isLong, isPosition } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
   const fromToken = getByKey(tokensData, fromTokenAddress);
 
-  const toTokenAddress = storedOptions!.tokens.indexTokenAddress;
+  const toTokenAddress = tradeFlags.isSwap
+    ? storedOptions!.tokens.swapToTokenAddress
+    : storedOptions!.tokens.indexTokenAddress;
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const isWrapOrUnwrap = Boolean(
-    fromToken &&
+    isSwap &&
+      fromToken &&
       toToken &&
       (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
@@ -168,19 +172,23 @@ export function useSelectedTradeOption(
         oldState.tradeType = tradeType;
       }
 
-      oldState.tokens.indexTokenAddress = tokenAddress;
-      if (tokenAddress && marketTokenAddress) {
-        oldState.markets[tokenAddress] = oldState.markets[tokenAddress] || {};
-        if (oldState.tradeType === TradeType.Long) {
-          oldState.markets[tokenAddress].long = marketTokenAddress;
-        } else if (oldState.tradeType === TradeType.Short) {
-          oldState.markets[tokenAddress].short = marketTokenAddress;
+      if (tradeFlags.isSwap) {
+        oldState.tokens.swapToTokenAddress = tokenAddress;
+      } else {
+        oldState.tokens.indexTokenAddress = tokenAddress;
+        if (tokenAddress && marketTokenAddress) {
+          oldState.markets[tokenAddress] = oldState.markets[tokenAddress] || {};
+          if (oldState.tradeType === TradeType.Long) {
+            oldState.markets[tokenAddress].long = marketTokenAddress;
+          } else if (oldState.tradeType === TradeType.Short) {
+            oldState.markets[tokenAddress].short = marketTokenAddress;
+          }
         }
       }
 
       setStoredOptions(oldState);
     },
-    [setStoredOptions, storedOptions]
+    [setStoredOptions, storedOptions, tradeFlags.isSwap]
   );
 
   const switchTokenAddresses = useCallback(() => {
@@ -188,10 +196,20 @@ export function useSelectedTradeOption(
 
     oldState.tokens.fromTokenAddress = toTokenAddress;
 
-    oldState.tokens.indexTokenAddress = fromTokenAddress;
+    if (tradeFlags.isSwap) {
+      oldState.tokens.swapToTokenAddress = fromTokenAddress;
+    } else {
+      oldState.tokens.indexTokenAddress = fromTokenAddress;
+    }
 
     setStoredOptions(oldState);
-  }, [fromTokenAddress, setStoredOptions, storedOptions, toTokenAddress]);
+  }, [
+    fromTokenAddress,
+    setStoredOptions,
+    storedOptions,
+    toTokenAddress,
+    tradeFlags.isSwap,
+  ]);
 
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
@@ -263,7 +281,7 @@ export function useSelectedTradeOption(
 
   useEffect(
     function updateSwapTokens() {
-      if (!swapTokens.length) {
+      if (!isSwap || !swapTokens.length) {
         return;
       }
 
@@ -285,6 +303,7 @@ export function useSelectedTradeOption(
     },
     [
       fromTokenAddress,
+      isSwap,
       setFromTokenAddress,
       setToTokenAddress,
       swapTokens,

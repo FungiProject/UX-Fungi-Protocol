@@ -78,9 +78,11 @@ export function usePriceImpactWarningState({
       shouldShowWarning = isHighSwapImpact;
       shouldShowWarningForSwap = isHighSwapImpact;
     } else if (place === "confirmationBox") {
-      validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
-      shouldShowWarning = isHighPositionImpact;
-      shouldShowWarningForPosition = isHighPositionImpact;
+      if (!tradeFlags.isSwap) {
+        validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
+        shouldShowWarning = isHighPositionImpact;
+        shouldShowWarningForPosition = isHighPositionImpact;
+      }
     } else if (place === "positionSeller") {
       validationError =
         (isHighPositionImpact && !isHighPositionImpactAccepted) ||
@@ -108,5 +110,6 @@ export function usePriceImpactWarningState({
     isHighSwapImpact,
     isHighSwapImpactAccepted,
     place,
+    tradeFlags.isSwap,
   ]);
 }

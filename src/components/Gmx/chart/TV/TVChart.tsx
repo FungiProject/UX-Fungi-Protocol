@@ -212,6 +212,7 @@ export function TVChart({
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
       const nextTradeType = tradeType ?? currentTradeType;
 
+      if (nextTradeType === TradeType.Swap) return;
       if (marketInfo && nextTradeType) {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);

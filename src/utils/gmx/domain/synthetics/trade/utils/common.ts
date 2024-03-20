@@ -11,6 +11,7 @@ import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;
   const isShort = tradeType === TradeType.Short;
+  const isSwap = tradeType === TradeType.Swap;
   const isPosition = isLong || isShort;
   const isMarket = tradeMode === TradeMode.Market;
   const isLimit = tradeMode === TradeMode.Limit;
@@ -20,6 +21,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   return {
     isLong,
     isShort,
+    isSwap,
     isPosition,
     isIncrease,
     isTrigger,

@@ -49,7 +49,7 @@ export default function ChartTokenSelector(props: Props) {
     positionsInfo,
   } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isLong, isShort } = tradeFlags || {};
+  const { isSwap, isLong, isShort } = tradeFlags || {};
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: {
@@ -111,6 +111,13 @@ export default function ChartTokenSelector(props: Props) {
     const tokenAddress = convertTokenAddress(chainId, token.address, "wrapped");
 
     if (tokenAddress === selectedToken?.address) return;
+
+    if (tradeFlags?.isSwap) {
+      onSelect({
+        indexTokenAddress: token.address,
+      });
+      return;
+    }
 
     const currentExistingPositions = Object.values(positionsInfo || {}).filter(
       (position) => {
@@ -227,10 +234,10 @@ export default function ChartTokenSelector(props: Props) {
                         <tr>
                           <th className="font-normal px-[20px]">Market</th>
                           <th className="font-normal px-[20px]">
-                            {`LONG LIQ.`}
+                            {!isSwap && `LONG LIQ.`}
                           </th>
                           <th className="font-normal pl-[36px]">
-                            {`SHORT LIQ.`}
+                            {!isSwap && `SHORT LIQ.`}
                           </th>
                         </tr>
                       </thead>
@@ -264,7 +271,7 @@ export default function ChartTokenSelector(props: Props) {
                                 />
                                 <span className="ml-3">
                                   {" "}
-                                  {token.symbol} {"/ USD"}
+                                  {token.symbol} {!isSwap && "/ USD"}
                                 </span>
                               </span>
                             </td>
@@ -279,7 +286,7 @@ export default function ChartTokenSelector(props: Props) {
                                 });
                               }}
                             >
-                              {maxLongLiquidityPool
+                              {!isSwap && maxLongLiquidityPool
                                 ? formatUsd(
                                     maxLongLiquidityPool?.maxLongLiquidity
                                   )
@@ -296,7 +303,7 @@ export default function ChartTokenSelector(props: Props) {
                               }}
                               className="pl-6 rounded-r-xl"
                             >
-                              {maxShortLiquidityPool
+                              {!isSwap && maxShortLiquidityPool
                                 ? formatUsd(
                                     maxShortLiquidityPool?.maxShortLiquidity
                                   )
