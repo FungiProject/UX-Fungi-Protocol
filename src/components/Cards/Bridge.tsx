@@ -16,7 +16,7 @@ import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import Button from "../Gmx/common/Buttons/Button";
 import NetworkDropdown from "../Dropdown/NetworkDropdown";
 import { networks } from "../../../constants/Constants";
-import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { formatAmountFree, formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { useNotification } from "@/context/NotificationContextProvider";
 import { getChainIdLifi } from "@/lib/lifi/getChainIdLifi";
 import { useSimUO } from "@/hooks/useSimUO";
@@ -228,13 +228,12 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
     const resultTx: any = await sendTx();
 
     try {
-      // await sendUserOperations(resultTx);
+      await sendUserOperations(resultTx);
       showNotification({
         message: "Bridge complete",
         type: "success",
       });
     } catch (error) {
-      console.error("Error al ejecutar sendUserOperations:", error);
       showNotification({
         message: "Error in the bridge",
         type: "error",
@@ -299,13 +298,9 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
 
   const onMaxClickFrom = () => {
     if (tokenFrom?.balance) {
-      const formattedAmount = formatTokenAmount(
-        tokenFrom?.balance,
-        tokenFrom?.decimals,
-        "",
-        {
-          useCommas: true,
-        }
+      const formattedAmount = formatAmountFree(
+        tokenFrom.balance,
+        tokenFrom.decimals
       );
 
       setAmountFrom(Number(formattedAmount));
@@ -423,7 +418,7 @@ export default function Bridge({ tokens, chainId }: BridgeProps) {
                 useCommas: true,
               }
             )}
-            inputValue={amountToReceive?.toFixed(4)}
+            inputValue={amountToReceive?.toFixed(8)}
             staticInput={true}
             showMaxButton={false}
             preventFocusOnLabelClick="right"

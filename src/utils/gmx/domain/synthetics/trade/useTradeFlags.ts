@@ -12,7 +12,10 @@ export type TradeFlags = {
   isLimit: boolean;
 };
 
-export function useTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
+export function useTradeFlags(
+  tradeType: TradeType,
+  tradeMode: TradeMode
+): TradeFlags {
   return useMemo(() => {
     const isLong = tradeType === TradeType.Long;
     const isShort = tradeType === TradeType.Short;

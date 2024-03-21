@@ -23,7 +23,11 @@ export default function useTokensWithBalance() {
         }
 
         const tokensWithBalance = tokensInfo.filter((tokenData: any) => {
-          return Number(tokenData.balance) !== 0;
+          return (
+            (Number(tokenData.balance) / 10 ** Number(tokenData.decimals)) *
+              Number(tokenData.priceUSD) >
+            1
+          );
         });
 
         setTokensWithBalance(tokensWithBalance);

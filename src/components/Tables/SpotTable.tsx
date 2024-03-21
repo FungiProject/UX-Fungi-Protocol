@@ -39,8 +39,13 @@ export default function SpotTable({
       getLength(tokens.length);
     } else if (tokens && typeMember === "Portfolio") {
       setLoading(true);
+
       const tokensWithBalance = tokens.filter((tokenData: any) => {
-        return Number(tokenData.balance) !== 0;
+        return (
+          (Number(tokenData.balance) / 10 ** Number(tokenData.decimals)) *
+            Number(tokenData.priceUSD) >
+          1
+        );
       });
 
       if (tokensWithBalance.length !== 0) {
@@ -67,9 +72,9 @@ export default function SpotTable({
     checkTokens();
   }, [startIndex, endIndex]);
 
-  const getTypeMember = (action: string) => {
-    setTypeMember(action);
-  };
+  // const getTypeMember = (action: string) => {
+  //   setTypeMember(action);
+  // };
 
   return (
     <div className="mt-[20px] w-full h-[574px] pt-[24px] bg-white rounded-lg">

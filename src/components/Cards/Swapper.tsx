@@ -7,7 +7,7 @@ import { useLiFiTx } from "./useLiFiTx";
 import Button from "../Gmx/common/Buttons/Button";
 import BuyInputSection from "../Gmx/common/BuyInputSection/BuyInputSection";
 import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
-import { formatTokenAmount } from "@/utils/gmx/lib/numbers";
+import { formatAmountFree, formatTokenAmount } from "@/utils/gmx/lib/numbers";
 import { TokenInfo } from "@/domain/tokens/types";
 import useWallet from "@/hooks/useWallet";
 import { createApproveTokensUserOp } from "@/lib/userOperations/getApproveUserOp";
@@ -21,7 +21,11 @@ type SwapperProps = {
   tokenFrom?: TokenInfo;
 };
 
-export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: SwapperProps) {
+export default function Swapper({
+  tokens,
+  chainId,
+  tokenFrom: tokenFromTable,
+}: SwapperProps) {
   const { scAccount } = useWallet();
   const { showNotification } = useNotification();
   const { login: openConnectModal } = useWallet();
@@ -59,9 +63,9 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
 
   const isNotMatchAvailableBalance = tokenFrom?.balance?.gt(0);
 
-  useEffect(()=>{
+  useEffect(() => {
     setTokenFrom(tokenFromTable);
-  },[tokenFromTable])
+  }, [tokenFromTable]);
 
   useEffect(() => {
     if (tokenFrom && tokenTo && amountFrom) {
@@ -139,19 +143,7 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
       openConnectModal?.();
       return;
     } else {
-      txnPromise = onSubmitSwap()
-        .then(() => {
-          showNotification({
-            message: "Swap successfully executed",
-            type: "success",
-          });
-        })
-        .catch((e) => {
-          showNotification({
-            message: "Error submitting swap",
-            type: "error",
-          });
-        });
+      txnPromise = onSubmitSwap();
     }
   }
 
@@ -183,10 +175,21 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
       });
       return Promise.resolve();
     }
+    showNotification({
+      message: "Your transaction is being processed",
+      type: "loading",
+    });
 
     const resultTx: any = await sendTx();
 
-    await sendUserOperations(resultTx);
+    try {
+      await sendUserOperations(resultTx);
+    } catch (e) {
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
+    }
   };
 
   const simulateSwap = async () => {
@@ -242,15 +245,10 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
 
   function onMaxClick() {
     if (tokenFrom?.balance) {
-      const formattedAmount = formatTokenAmount(
-        tokenFrom?.balance,
-        tokenFrom?.decimals,
-        "",
-        {
-          useCommas: true,
-        }
+      const formattedAmount = formatAmountFree(
+        tokenFrom.balance,
+        tokenFrom.decimals
       );
-
       handleAmountChange(Number(formattedAmount));
     }
   }
@@ -318,7 +316,7 @@ export default function Swapper({ tokens, chainId, tokenFrom: tokenFromTable }: 
                 useCommas: true,
               }
             )}
-            inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 5)}
+            inputValue={amountToReceive?.toFixed(amountToReceive === 0 ? 2 : 8)}
             staticInput={true}
             showMaxButton={false}
             preventFocusOnLabelClick="right"

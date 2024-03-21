@@ -158,6 +158,7 @@ export type Props = {
 const tradeTypeIcons = {
   [TradeType.Long]: longImg.src,
   [TradeType.Short]: shortImg.src,
+  [TradeType.Swap]: swapImg.src,
 };
 
 export function TradeBox(p: Props) {
@@ -219,6 +220,7 @@ export function TradeBox(p: Props) {
     return {
       [TradeType.Long]: `Long`,
       [TradeType.Short]: `Short`,
+      [TradeType.Swap]: `Swap`,
     };
   }, []);
 
@@ -1457,6 +1459,41 @@ export function TradeBox(p: Props) {
     );
   }
 
+  function renderTriggerRatioInput() {
+    return (
+      <div className="flex items-start justify-between w-full shadow-input rounded-2xl pl-[11px] pr-[25px] py-[24px] text-black font-medium h-[120px] mt-4">
+        <BuyInputSection
+          topLeftLabel={`Price`}
+          topRightLabel={`Mark`}
+          topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+          onClickTopRightLabel={() => {
+            setTriggerRatioInputValue(
+              formatAmount(markRatio?.ratio, USD_DECIMALS, 10)
+            );
+          }}
+          inputValue={triggerRatioInputValue}
+          onInputValueChange={(e) => {
+            setTriggerRatioInputValue(e.target.value);
+          }}
+        >
+          {markRatio && (
+            <div className="flex">
+              <TokenWithIcon
+                symbol={markRatio.smallestToken.symbol}
+                displaySize={24}
+              />{" "}
+              <span className="mx-2">per</span>
+              <TokenWithIcon
+                symbol={markRatio.largestToken.symbol}
+                displaySize={24}
+              />
+            </div>
+          )}
+        </BuyInputSection>
+      </div>
+    );
+  }
+
   function renderPositionControls() {
     return (
       <>
@@ -1793,7 +1830,7 @@ export function TradeBox(p: Props) {
     <div className="px-[32px] pt-[24px]">
       <Tab
         icons={tradeTypeIcons}
-        options={Object.values(TradeType)}
+        options={Object.values([TradeType.Long, TradeType.Short])}
         optionLabels={tradeTypeLabels}
         option={tradeType}
         onChange={onSelectTradeType}
@@ -1815,12 +1852,17 @@ export function TradeBox(p: Props) {
           onSubmit();
         }}
       >
-        {isIncrease && renderTokenInputs()}{" "}
+        {(isSwap || isIncrease) && renderTokenInputs()}{" "}
         {isTrigger && renderDecreaseSizeInput()}
+        {isSwap && isLimit && renderTriggerRatioInput()}{" "}
         {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}{" "}
         <div className="SwapBox-info-section">
           {isPosition && <>{renderPositionControls()}</>}{" "}
-          <div className="border-b-1 border-gray-200 my-[30px]" />
+          <div
+            className={`${
+              isSwap ? "" : "border-b-1 border-gray-200"
+            } my-[30px]`}
+          />
           {isIncrease && renderIncreaseOrderInfo()}
           {isTrigger && renderTriggerOrderInfo()}{" "}
           {feesType && (

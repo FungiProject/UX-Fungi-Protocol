@@ -38,15 +38,10 @@ export function useUserOperations() {
       });
     } catch (e) {
       console.error(e);
-      console.log("error");
-      //TODO
-      // const { failMsg, autoCloseToast } = getErrorMessage(
-      //   chainId,
-      //   e,
-      //   undefined
-      // );
-      // helperToast.error(failMsg, { autoClose: autoCloseToast });
-      //throw e;
+      showNotification({
+        message: "Error submitting order",
+        type: "error",
+      });
     }
   };
 
