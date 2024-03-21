@@ -4,7 +4,6 @@ import { useERC20Transfer } from "@/hooks/useERC20Transfer";
 import { BigNumber } from "alchemy-sdk";
 import { useNotification } from "@/context/NotificationContextProvider";
 import { useUserOperations } from "@/hooks/useUserOperations";
-import { useSimUO } from "@/hooks/useSimUO";
 
 const SendModal = ({ isOpen, onClose }) => {
   const [tokenAddress, setTokenAddress] = useState<string>(
