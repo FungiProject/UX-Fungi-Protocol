@@ -64,6 +64,8 @@ export async function getUserOpRebalance(
     )
   );
 
+  console.log("Promises: ", promises);
+
   const swapsResolved = await Promise.all(promises);
 
   const userOps: UserOperation[] = [];
