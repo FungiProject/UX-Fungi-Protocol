@@ -28,7 +28,7 @@ export default function Swapper({
   const { scAccount } = useWallet();
   const { showNotification } = useNotification();
   const { login: openConnectModal } = useWallet();
-  const { sendUserOperations } = useUserOperations();
+  const { sendUserOperations, estimateGasUserOperations } = useUserOperations();
   const [amountFrom, setAmountFrom] = useState<number | undefined>(undefined);
   const [tokenFrom, setTokenFrom] = useState<TokenInfo | undefined>(undefined);
   const [tokenTo, setTokenTo] = useState<TokenInfo | undefined>(undefined);
@@ -224,8 +224,8 @@ export default function Swapper({
             topLeftLabel={`Pay`}
             topLeftValue={
               amountFrom !== 0 &&
-              amountFrom !== undefined &&
-              tokenTo !== undefined
+                amountFrom !== undefined &&
+                tokenTo !== undefined
                 ? `$${(amountFrom * Number(tokenFrom?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -265,8 +265,8 @@ export default function Swapper({
             topLeftLabel={`Receive`}
             topLeftValue={
               amountToReceive !== 0 &&
-              amountToReceive !== undefined &&
-              tokenTo !== undefined
+                amountToReceive !== undefined &&
+                tokenTo !== undefined
                 ? `$${(amountToReceive * Number(tokenTo?.priceUSD)).toFixed(2)}`
                 : ""
             }
@@ -297,9 +297,8 @@ export default function Swapper({
       </div>
       <Button
         variant="primary-action"
-        className={`mt-4 ${
-          submitButtonState.disabled ? "opacity-50" : ""
-        } w-full bg-main rounded-xl py-3 text-white font-semibold`}
+        className={`mt-4 ${submitButtonState.disabled ? "opacity-50" : ""
+          } w-full bg-main rounded-xl py-3 text-white font-semibold`}
         type="submit"
         onClick={onSubmit}
         disabled={submitButtonState.disabled}

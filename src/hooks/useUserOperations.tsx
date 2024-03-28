@@ -3,11 +3,13 @@ import { getExplorerUrl } from "@/utils/gmx/config/chains";
 import { UserOperation } from "@/lib/userOperations/types";
 import useWallet from "@/utils/gmx/lib/wallets/useWallet";
 import { sendUserOperations as sendUserOperationAlchemy } from "@/lib/userOperations/sendUserOperations";
+import { estimateGasUserOp as estimateGasUserOperationAlchemy } from "@/lib/userOperations/estimateGas";
+import { simulateUserOperations } from "@/lib/userOperations/simulation";
 import { useGlobalContext } from "@/context/FungiContextProvider";
 import { useNotification } from "@/context/NotificationContextProvider";
 
 export function useUserOperations() {
-  const { chainId } = useWallet();
+  const { chainId, scAccount } = useWallet();
   const { alchemyScaProvider } = useGlobalContext();
   const { showNotification } = useNotification();
   const sendUserOperations = async (
@@ -16,6 +18,18 @@ export function useUserOperations() {
   ) => {
     try {
       if (!alchemyScaProvider) {
+        return;
+      }
+
+      const simulateResult = await simulateUserOperations(alchemyScaProvider,
+        userOperations
+      );
+
+      if (simulateResult.error) {
+        showNotification({
+          message: "Simulation failed. No result returned.",
+          type: "error",
+        });
         return;
       }
 
@@ -45,5 +59,9 @@ export function useUserOperations() {
     }
   };
 
-  return { sendUserOperations };
+  const estimateGasUserOperations = async (userOperations: UserOperation[]) => {
+    await estimateGasUserOperationAlchemy(alchemyScaProvider, userOperations);
+  }
+
+  return { sendUserOperations, estimateGasUserOperations };
 }

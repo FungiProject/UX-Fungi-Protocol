@@ -16,10 +16,10 @@ import {
 import { Alchemy } from "alchemy-sdk";
 import { ARBITRUM } from "@/config/chains";
 import { getApiKeyChain } from "@/config/alchemyConfig";
-import { createModularAccountAlchemyClient } from "@alchemy/aa-alchemy";
+import { createModularAccountAlchemyClient, alchemyFeeEstimator } from "@alchemy/aa-alchemy";
 import { getViemChain } from "@/config/chains";
 import { MagicMultichainClient } from "@/lib/magic/MagicMultichainClient";
-import {  AlchemySmartAccountClient  } from "@alchemy/aa-alchemy"
+import { AlchemySmartAccountClient } from "@alchemy/aa-alchemy"
 
 
 import {
@@ -92,7 +92,7 @@ export function FungiGlobalContextProvider({
       if (alchemyMultichainClient) {
         setAlchemyClient(
           alchemyMultichainClient?.forNetwork(chain) ||
-            alchemyMultichainClient?.forNetwork(ARBITRUM)
+          alchemyMultichainClient?.forNetwork(ARBITRUM)
         );
         /*setAlchemyScaProvider(
           alchemyMultichainClient?.forNetworkScProvider(chain)
@@ -103,8 +103,8 @@ export function FungiGlobalContextProvider({
         const magicForNetwork = magicMultichainClient.forNetwork(chain);
         if (magicForNetwork) {
           setMagicClient(magicForNetwork);
-          (async ()=> {
-           await login()
+          (async () => {
+            await login()
           })()
         }
       }
@@ -113,7 +113,7 @@ export function FungiGlobalContextProvider({
 
   useEffect(() => {
     (async () => {
-      if(alchemyScaProvider){
+      if (alchemyScaProvider) {
         console.log(alchemyScaProvider.account?.address)
         if (alchemyScaProvider) {
           setScaAddress(alchemyScaProvider.account?.address);
@@ -134,7 +134,7 @@ export function FungiGlobalContextProvider({
 
       console.log(connectedProvider)
       setAlchemyScaProvider(connectedProvider);
-      
+
       return connectedProvider;
     },
     [alchemyScaProvider, chain]
@@ -169,11 +169,11 @@ export function FungiGlobalContextProvider({
     await connectProviderToAccount(signer as SmartAccountSigner);
 
     let signerAddress
-    (async ()=>{
+    (async () => {
       signerAddress = await signer.getAddress();
     })()
 
-    setScaAddress(alchemyScaProvider?.getAddress({account: signerAddress}));
+    setScaAddress(alchemyScaProvider?.getAddress({ account: signerAddress }));
     setIsConnected(true);
   }, [magicClient, connectProviderToAccount, alchemyScaProvider]);
 
